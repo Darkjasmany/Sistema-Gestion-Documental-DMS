@@ -1,0 +1,25 @@
+{
+  "name": "dms-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Sistema de Gestión Documental -DMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Jasmany Franco Peralta",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "i": "^0.3.7",
+    "nodemon": "^3.1.5",
+    "npm": "^10.8.3",
+    "o": "^2.3.2",
+    "save-de": "^1.0.7"
+  }
+}
