@@ -1,5 +1,6 @@
 import pg from "pg"; // Importar el cliente de PostgreSQL
 
+/*
 const usuarioSchema = async () => {
   const query = `
      CREATE TABLE IF NOT EXISTS usuarios (
@@ -25,3 +26,4 @@ const usuarioSchema = async () => {
 };
 
 usuarioSchema();
+*/
