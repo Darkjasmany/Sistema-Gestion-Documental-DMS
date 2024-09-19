@@ -1,12 +1,74 @@
 import { Sequelize, Model, DataTypes } from "sequelize";
 
-const Usuarios = Sequelize.Model({
-  nombre: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    trim: true,
-  },
-});
+const Usuario = class extends Model {
+  // Método estático para definir el esquema del modelo
+  static initModel(Sequelize) {
+    Usuario.init(
+      {
+        id: {
+          type: DataTypes.BIGINT,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        nombres: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          trim: true,
+        },
+        apellidos: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          trim: true,
+        },
+        email: {
+          type: DataTypes,
+          allowNull: false,
+          unique: true, // Email único
+          trim: true,
+        },
+        password: {
+          type: DataTypes.STRING,
+          allowNull: false, // Contraseña encriptada
+        },
+        telefono: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          defaultValue: null,
+          trim: true,
+        },
+        token: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          // defaultValue: generarId(), // Usamos el helper para generar el token
+        },
+        confirmado: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false, // No confirmado por defecto
+        },
+        fecha_creacion: {
+          type: DataTypes.DATE,
+          defaultValue: DataTypes.NOW, // Valor por defecto fecha actual
+          field: "fecha_creación", // Para que coincida con el nombre en la base de datos
+        },
+      },
+      {
+        Sequelize,
+        modelName: "Usuario", // Nombre del modelo
+        timestamps: true, // Incluye las columnas `createdAt` y `updatedAt`
+        tableName: "usuarios", // Nombre de la tabla en la base de datos
+      }
+    );
+  }
+};
+
+export default Usuario;
+// const Usuarios = Sequelize.Model({
+//   nombre: {
+//     type: DataTypes.STRING,
+//     allowNull: false,
+//     trim: true,
+//   },
+// });
 
 /*
 const usuarioSchema = async () => {

@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import conectarDB from "./config/db.js";
+import usuarioRoutes from "./routes/usuarioRoutes.js";
 
 dotenv.config(); // Escanea y busca el archivo .env
 
@@ -11,9 +12,7 @@ const PORT = process.env.PORT || 3000;
 conectarDB();
 
 // Routing
-app.use("/", (req, res) => {
-  console.log("Hola Mundo");
-});
+app.use("/api/usuarios", usuarioRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando por el puerto: ${PORT}`);
