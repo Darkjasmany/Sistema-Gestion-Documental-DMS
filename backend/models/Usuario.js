@@ -1,4 +1,12 @@
-import pg from "pg"; // Importar el cliente de PostgreSQL
+import { Sequelize, Model, DataTypes } from "sequelize";
+
+const Usuarios = Sequelize.Model({
+  nombre: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    trim: true,
+  },
+});
 
 /*
 const usuarioSchema = async () => {
