@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 const sequelize = await conectarDB();
 
 // Definir el modelo pasándole la instancia de Sequelize
-const Usuario = defineUsuario(sequelize);
+// const Usuario = defineUsuario(sequelize);
 
 // Sincronizar los modelos
 sequelize

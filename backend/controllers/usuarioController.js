@@ -20,13 +20,12 @@ const registrar = async (req, res) => {
     const usuarioGuardado = await usuario.save();
 
     res.json(usuarioGuardado);
+    // res.json({
+    //   msg: "Registrando usuario ...",
+    // });
   } catch (error) {
     console.error(`Error al registrar el Usuario: ${error}`);
   }
-
-  res.json({
-    msg: "Registrando usuario ...",
-  });
 };
 
 const perfil = (req, res) => {
