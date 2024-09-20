@@ -1,38 +1,28 @@
-import express from "express";
+import express from "express"; // Importar express
 import dotenv from "dotenv";
-import conectarDB from "./config/db.js";
-import usuarioRoutes from "./routes/usuarioRoutes.js";
-import defineUsuario from "./models/Usuario.js";
+import { sequelize } from "./config/db.js"; // Importamos la Instancia del Objeto Sequelize
+import "./models/Usuario.js";
 
-const app = express();
-app.use(express.json()); //Indicar a Express que vamos a recibir datos en forma de JSON
+async function main() {
+  try {
+    const app = express();
+    dotenv.config(); // Escanea y busca el archivo .env
 
-dotenv.config(); // Escanea y busca el archivo .env
+    // await sequelize.authenticate();
+    await sequelize.sync();
+    const res = await sequelize.query("SELECT NOW()");
+    console.log(
+      `PostgreSQL conectado en: ${sequelize.config.host}:${sequelize.config.port} - Hora actual: ${res[0][0].now}`
+    );
 
-const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Servidor escuchando por el puerto: ${PORT}`);
+    });
+  } catch (error) {
+    console.error(`Error de conexión a PostgreSQL: ${error.message}`);
+    process.exit(1); // Termina el proceso en caso de error
+  }
+}
 
-// conectarDB();
-
-/*Codigo ´por probar */
-// Conectar a la base de datos
-const sequelize = await conectarDB();
-
-// Definir el modelo pasándole la instancia de Sequelize
-// const Usuario = defineUsuario(sequelize);
-
-// Sincronizar los modelos
-sequelize
-  .sync()
-  .then(() => {
-    console.log("Tablas sincronizadas correctamente");
-  })
-  .catch((error) => {
-    console.error("Error al sincronizar las tablas:", error);
-  });
-
-// Routing
-app.use("/api/usuarios", usuarioRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando por el puerto: ${PORT}`);
-});
+main();
