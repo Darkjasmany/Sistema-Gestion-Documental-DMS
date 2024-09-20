@@ -1,4 +1,4 @@
-/*import Usuario from "../models/Usuario.js";
+import Usuario from "../models/Usuario.js";
 
 const registrar = async (req, res) => {
   // TODO leer datos de un formulario req.body
@@ -9,7 +9,15 @@ const registrar = async (req, res) => {
 
   // TODO: Guardar Nuevo Veterinario
   try {
-    const usuario = new Usuario.build(req.body);
+    // Crear una instancia del modelo Usuario (sin guardar aún en la BD)
+    const usuario = Usuario.build({
+      nombres,
+      apellidos,
+      email,
+      password, // Asegúrate de hashear la contraseña antes de guardar
+    });
+    // Guardar el usuario en la base de datos
+    const usuarioGuardado = await usuario.save();
 
     res.json(usuarioGuardado);
   } catch (error) {
@@ -26,4 +34,3 @@ const perfil = (req, res) => {
 };
 
 export { registrar, perfil };
-*/
