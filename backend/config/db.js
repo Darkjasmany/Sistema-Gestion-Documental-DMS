@@ -2,39 +2,39 @@ import { Sequelize } from "sequelize"; // Importar el ORM de Sequelize
 
 const conectarDB = async () => {
   try {
-    // Configurar la conexión a la base de datos PostgreSQL con Sequelize
-    const db = new Sequelize(
+    // Crear la instancia de Sequelize
+    const sequelize = new Sequelize(
       process.env.PG_DATABASE,
       process.env.PG_USER,
       process.env.PG_PASSWORD,
       {
         host: process.env.PG_HOST,
-        port: process.env.PG_PORT, // Opcional: el puerto por defecto es 5432
-        dialect: "postgres",
+        port: process.env.PG_PORT || 5432, // Puerto
+        dialect: "postgres", // Dialecto (en este caso, PostgreSQL)
         logging: false, // Opcional: desactiva el logging de SQL en la consola
-        // Pool Conection: Si se conecta a la base de datos desde un solo proceso, debe crear solo una instancia de Sequelize
         pool: {
           max: 5,
           min: 0,
           acquire: 30000,
           idle: 10000,
         },
-        // Datos Adicionales
         define: {
-          timestamps: false,
+          timestamps: false, // Opcional: desactiva la creación automática de timestamps en los modelos
         },
-        operatorsAliases: false,
       }
     );
-    // Verificar conexión
-    const res = await db.query("SELECT NOW()");
+
+    await sequelize.authenticate(); // Probar la conexión
+
+    const res = await sequelize.query("SELECT NOW()");
     console.log(
-      `PostgreSQL conectado en: ${db.config.host}:${db.config.port} - Hora actual: ${res[0][0].now}`
+      `PostgreSQL conectado en: ${sequelize.config.host}:${sequelize.config.port} - Hora actual: ${res[0][0].now}`
     );
-    return db; // Devuelve el pool para ser usado en otros módulos si es necesario
+
+    return sequelize; // Devuelve la instancia de Sequelize
   } catch (error) {
     console.error(`Error de conexión a PostgreSQL: ${error.message}`);
-    process.exit(1); // Salir del proceso si hay un error de conexión
+    process.exit(1); // Termina el proceso en caso de error
   }
 };
 
