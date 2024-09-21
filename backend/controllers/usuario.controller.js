@@ -1,5 +1,5 @@
-import Usuario from "../models/Usuario.js";
-
+// import Usuario from "../models/Usuario.js";
+/*
 const registrar = async (req, res) => {
   // TODO leer datos de un formulario req.body
   // console.log(req.body); // Cuando se envian datos accedemos a ellos con req.body
@@ -26,6 +26,11 @@ const registrar = async (req, res) => {
   } catch (error) {
     console.error(`Error al registrar el Usuario: ${error}`);
   }
+};
+*/
+
+const registrar = (req, res) => {
+  res.json({ msg: "Mostrando Registrar ..." });
 };
 
 const perfil = (req, res) => {

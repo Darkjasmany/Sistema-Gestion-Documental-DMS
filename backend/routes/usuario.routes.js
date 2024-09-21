@@ -1,5 +1,6 @@
-import { perfil, registrar } from "../controllers/usuarioController.js";
 import express from "express";
+import { perfil, registrar } from "../controllers/usuario.controller.js";
+
 const router = express.Router();
 
 router.post("/", registrar);

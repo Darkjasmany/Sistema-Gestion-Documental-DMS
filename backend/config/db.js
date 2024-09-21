@@ -17,8 +17,19 @@ export const sequelize = new Sequelize(
       acquire: 30000,
       idle: 10000,
     },
-    define: {
-      timestamps: true, // Opcional: desactiva la creación automática de timestamps en los modelos
-    },
   }
 );
+
+// Verificar la conexión
+(async () => {
+  try {
+    await sequelize.authenticate();
+    const res = await sequelize.query("SELECT NOW()");
+    console.log(
+      `PostgreSQL conectado en: ${sequelize.config.host}:${sequelize.config.port} - Hora actual: ${res[0][0].now}`
+    );
+  } catch (error) {
+    console.error(`Error de conexión a PostgreSQL: ${error.message}`);
+    process.exit(1); // Termina el proceso en caso de error
+  }
+})();
