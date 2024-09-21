@@ -1,4 +1,4 @@
-// import Usuario from "../models/Usuario.js";
+// import {Usuario} from "../models/Usuario.js";
 /*
 const registrar = async (req, res) => {
   // TODO leer datos de un formulario req.body

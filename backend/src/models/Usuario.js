@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.js";
+import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { Tarea } from "./Tarea.js";
 
 export const Usuario = sequelize.define(

@@ -1,10 +1,10 @@
-import express from "express";
+import { Router } from "express";
 import {
   agregarTarea,
   obtenerTareas,
 } from "../controllers/tarea.controller.js";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/tarea", obtenerTareas);
 router.post("/tarea", agregarTarea);

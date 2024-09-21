@@ -1,8 +1,9 @@
 import { Sequelize } from "sequelize"; // Importar el ORM de Sequelize
 import dotenv from "dotenv";
 
-dotenv.config(); // Cargar el archivo .env
+dotenv.config(); // Cargar las variables de entorno
 
+// Crear una instancia de Sequelize
 export const sequelize = new Sequelize(
   process.env.PG_DATABASE,
   process.env.PG_USER,
@@ -22,7 +23,7 @@ export const sequelize = new Sequelize(
 );
 
 // Verificar la conexión
-(async () => {
+export const conectarDB = async () => {
   try {
     await sequelize.authenticate();
     const res = await sequelize.query("SELECT NOW()");
@@ -33,4 +34,6 @@ export const sequelize = new Sequelize(
     console.error(`Error de conexión a PostgreSQL: ${error.message}`);
     process.exit(1); // Termina el proceso en caso de error
   }
-})();
+};
+
+// export { sequelize, conectarDB };

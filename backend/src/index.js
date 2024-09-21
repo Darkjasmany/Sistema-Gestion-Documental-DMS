@@ -1,12 +1,14 @@
-import app from "./app.js";
-import { sequelize } from "./config/db.js";
-import dotenv from "dotenv";
+import app from "./app.js"; // Importamos la app con Express configurado
+import { conectarDB } from "./config/db.js"; // Importamos la conexión a la base de datos
+
+import dotenv from "dotenv"; // Cargar variables de entorno
 
 dotenv.config(); // Escanea y busca el archivo .env
 
-async function main() {
+// Función principal para iniciar la aplicación
+const startServer = async () => {
   try {
-    await sequelize.sync({ force: false }); // force o alter
+    await conectarDB(); // Conectar a la base de datos
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
@@ -16,6 +18,6 @@ async function main() {
     console.error("Error al iniciar el servidor:", error);
     process.exit(1);
   }
-}
+};
 
-main();
+startServer();
