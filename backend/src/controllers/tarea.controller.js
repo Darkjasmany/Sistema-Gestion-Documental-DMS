@@ -1,4 +1,4 @@
-import { Tarea } from "../models/Tarea.js";
+// import { Tarea } from "../routes/tarea.routes.js";
 
 const obtenerTareas = (req, res) => {
   res.send("Obteniendo Tareas");

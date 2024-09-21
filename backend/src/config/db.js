@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize"; // Importar el ORM de Sequelize
 import dotenv from "dotenv";
+
 dotenv.config(); // Cargar el archivo .env
 
 export const sequelize = new Sequelize(
