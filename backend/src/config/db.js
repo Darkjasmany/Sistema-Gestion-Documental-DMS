@@ -35,5 +35,3 @@ export const conectarDB = async () => {
     process.exit(1); // Termina el proceso en caso de error
   }
 };
-
-// export { sequelize, conectarDB };

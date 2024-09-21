@@ -29,12 +29,10 @@ const registrar = async (req, res) => {
 };
 */
 
-const registrar = (req, res) => {
+export const registrar = (req, res) => {
   res.json({ msg: "Mostrando Registrar ..." });
 };
 
-const perfil = (req, res) => {
+export const perfil = (req, res) => {
   res.json({ msg: "Mostrando Perfil ..." });
 };
-
-export { registrar, perfil };
