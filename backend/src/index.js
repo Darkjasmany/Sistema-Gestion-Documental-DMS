@@ -1,6 +1,5 @@
 import app from "./app.js"; // Importamos la app con Express configurado
 import { conectarDB } from "./config/db.js"; // Importamos la conexión a la base de datos
-
 import dotenv from "dotenv"; // Cargar variables de entorno
 
 dotenv.config(); // Escanea y busca el archivo .env

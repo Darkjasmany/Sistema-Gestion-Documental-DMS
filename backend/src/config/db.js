@@ -26,12 +26,17 @@ export const sequelize = new Sequelize(
 export const conectarDB = async () => {
   try {
     await sequelize.authenticate();
+    console.log("Autenticación exitosa con la base de datos.");
+    /*
+    await sequelize.sync({ force: true });
+    console.log("Modelos sincronizados correctamente.");
+*/
     const res = await sequelize.query("SELECT NOW()");
     console.log(
       `PostgreSQL conectado en: ${sequelize.config.host}:${sequelize.config.port} - Hora actual: ${res[0][0].now}`
     );
   } catch (error) {
     console.error(`Error de conexión a PostgreSQL: ${error.message}`);
-    process.exit(1); // Termina el proceso en caso de error
+    process.exit(1); // Termina el proceso si ocurre un error
   }
 };

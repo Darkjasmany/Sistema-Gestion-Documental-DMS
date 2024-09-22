@@ -29,7 +29,8 @@ export const Usuario = sequelize.define(
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false, //Asegúrate de hashear la contraseña antes de guardar
+      // allowNull: false, //Asegúrate de hashear la contraseña antes de guardar
+      defaultValue: null,
     },
     telefono: {
       type: DataTypes.STRING,
