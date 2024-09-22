@@ -9,20 +9,29 @@ export const Tarea = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    titulo: {
+    asunto: {
       type: DataTypes.STRING,
       allowNull: false,
-      trim: true,
     },
     descripcion: {
       type: DataTypes.TEXT,
       defaultValue: null,
-      trim: true,
     },
     numeroTramite: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      trim: true,
+    },
+    remitente: {
+      type: DataTypes.TEXT,
+      defaultValue: null,
+    },
+    departamenteRemitente: {
+      type: DataTypes.TEXT,
+      defaultValue: null,
+    },
+    numeroOficioDespacho: {
+      type: DataTypes.STRING,
+      defaultValue: null,
     },
     estado: {
       type: DataTypes.STRING(50),
@@ -32,10 +41,19 @@ export const Tarea = sequelize.define(
         isIn: [["ingresada", "pendiente", "completada", "entregada"]],
       },
     },
-    fechaLimite: {
+    responsable: {
+      type: DataTypes.STRING,
+      defaultValue: null,
+    },
+    fechaDespacho: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: Date.now(),
+    },
+    horaDespacho: {
+      type: DataTypes.TIME,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     done: {
       type: DataTypes.BOOLEAN,

@@ -14,18 +14,18 @@ export const Usuario = sequelize.define(
     nombres: {
       type: DataTypes.STRING,
       allowNull: false,
-      trim: true,
+      // trim: true, // trim no es necesario en Sequelize
     },
     apellidos: {
       type: DataTypes.STRING,
       allowNull: false,
-      trim: true,
+      // trim: true,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      trim: true,
+      // trim: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -35,7 +35,7 @@ export const Usuario = sequelize.define(
     telefono: {
       type: DataTypes.STRING,
       defaultValue: null,
-      trim: true,
+      // trim: true,
     },
     rol: {
       type: DataTypes.STRING(50),

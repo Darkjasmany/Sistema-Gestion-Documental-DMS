@@ -27,10 +27,9 @@ export const conectarDB = async () => {
   try {
     await sequelize.authenticate();
     console.log("Autenticación exitosa con la base de datos.");
-    /*
     await sequelize.sync({ force: true });
     console.log("Modelos sincronizados correctamente.");
-*/
+
     const res = await sequelize.query("SELECT NOW()");
     console.log(
       `PostgreSQL conectado en: ${sequelize.config.host}:${sequelize.config.port} - Hora actual: ${res[0][0].now}`
