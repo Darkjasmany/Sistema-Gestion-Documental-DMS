@@ -29,34 +29,82 @@ export const agregarTarea = async (req, res) => {
     });
     res.json(tramiteGuardado); // Envio los datos al cliente
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 export const obtenerTareas = async (req, res) => {
   try {
-    const { usuarioId } = req.body;
-    // const tareas = await Tarea.findAll(); // Todas las tareas
-    const tareas = await Tarea.findAll({
-      where: {
-        usuarioId: usuarioId,
-      },
-    }); // Todas las tareas de 1 usuario en especifico
-
+    const tareas = await Tarea.findAll();
     res.json(tareas);
+
+    // const { usuarioId } = req.body;
+    // // const tareas = await Tarea.findAll(); // Todas las tareas
+    // const tareas = await Tarea.findAll({
+    //   where: {
+    //     // usuarioId: usuarioId,
+    //     usuarioId,
+    //   },
+    // }); // Todas las tareas de 1 usuario en especifico
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-export const obtenerTarea = (req, res) => {
+export const obtenerTarea = async (req, res) => {
+  console.log(req.params); // obtener lo que se envia por la URL
+  const { id } = req.params;
+
+  const tarea = await Tarea.findOne({
+    where: {
+      id,
+    },
+  });
+
+  // const { usuarioId } = req.body;
+  // // const tareas = await Tarea.findAll(); // Todas las tareas
+  // const tareas = await Tarea.findAll({
+  //   where: {
+  //     // usuarioId: usuarioId,
+  //     usuarioId,
+  //   },
+  // }); // Todas las tareas de 1 usuario en especifico
+
   res.send("Obtener Tarea");
 };
 
 export const actualizarTarea = (req, res) => {
+  const { id } = req.params;
+
   res.send("Actualiza Tarea");
 };
 
-export const eliminarTarea = (req, res) => {
-  res.send("eliminar Tarea");
+export const eliminarTarea = async (req, res) => {
+  const { id } = req.params; // obtener ID que se envia por la URL
+  const tarea = await Tarea.findByPk(id); // Busco la tarea en la BD por el id que se envia en la URL
+
+  if (!tarea) {
+    // Si la tarea no existe, devolvemos un error 404
+    return res.status(404).json({ message: "No Encontrado" });
+  }
+  /*
+  // Verificamos si la tarea pertenece al usuario que está intentando eliminarlo
+  if (tarea.usuarioId.toString() !== req.usuarioId.toString()) {
+    // Si no pertenecen al mismo veterinario, devolvemos un mensaje de acción no válida
+    return res.status(403).json({ msg: "Acción no válida" });
+  }
+*/
+  try {
+    // Metodo para buscar y eliminar al mismo tiempo
+    await Tarea.destroy({
+      where: {
+        // id: id,
+        id,
+      },
+    });
+
+    res.json({ message: "Tarea Eliminada" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
