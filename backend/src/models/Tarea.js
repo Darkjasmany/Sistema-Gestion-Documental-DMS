@@ -1,5 +1,6 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
+import { generarHora } from "../helpers/generarHora.helpers.js";
 
 export const Tarea = sequelize.define(
   "tarea",
@@ -23,7 +24,7 @@ export const Tarea = sequelize.define(
     },
     remitente: {
       type: DataTypes.TEXT,
-      defaultValue: null,
+      allowNull: false,
     },
     departamenteRemitente: {
       type: DataTypes.TEXT,
@@ -41,6 +42,10 @@ export const Tarea = sequelize.define(
         isIn: [["ingresada", "pendiente", "completada", "entregada"]],
       },
     },
+    referenciaTramite: {
+      type: DataTypes.STRING(50),
+      defaultValue: null,
+    },
     responsable: {
       type: DataTypes.STRING,
       defaultValue: null,
@@ -48,12 +53,13 @@ export const Tarea = sequelize.define(
     fechaDespacho: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: Date.now(),
+      defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
     },
     horaDespacho: {
       type: DataTypes.TIME,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
+      defaultValue: generarHora(),
+      // defaultValue: sequelize.literal("CURRENT_TIME"), // Hora actual sin fecha ni zona horaria
     },
     done: {
       type: DataTypes.BOOLEAN,
