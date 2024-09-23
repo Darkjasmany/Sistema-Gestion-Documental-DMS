@@ -2,9 +2,8 @@ import { Op } from "sequelize";
 import { Tarea } from "../models/Tarea.js";
 
 export const agregarTarea = async (req, res) => {
-  // console.log(req.body);
-  const { asunto, descripcion, numeroTramite, remitente, usuario_id } =
-    req.body;
+  console.log(req.body);
+  const { asunto, descripcion, numeroTramite, remitente, usuarioId } = req.body;
 
   // Buscar si el número de trámite ya existe, sin importar mayúsculas/minúsculas
   const tramiteExiste = await Tarea.findOne({
@@ -26,7 +25,7 @@ export const agregarTarea = async (req, res) => {
       descripcion,
       numeroTramite,
       remitente,
-      usuario_id,
+      usuarioId,
     });
     res.json(tramiteGuardado); // Envio los datos al cliente
   } catch (error) {
@@ -36,9 +35,14 @@ export const agregarTarea = async (req, res) => {
 
 export const obtenerTareas = async (req, res) => {
   try {
-    const { usuario_id } = req.body;
+    const { usuarioId } = req.body;
     // const tareas = await Tarea.findAll(); // Todas las tareas
-    const tareas = await Tarea.find().where("usuario_id").equals(usuario_id);
+    const tareas = await Tarea.findAll({
+      where: {
+        usuarioId: usuarioId,
+      },
+    }); // Todas las tareas de 1 usuario en especifico
+
     res.json(tareas);
   } catch (error) {
     return res.status(500).json({ message: error });
