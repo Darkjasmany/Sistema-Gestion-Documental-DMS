@@ -2,10 +2,10 @@ import { Op } from "sequelize";
 import { Tarea } from "../models/Tarea.js";
 
 export const agregarTarea = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { asunto, descripcion, numeroTramite, remitente, usuarioId } = req.body;
 
-  // Buscar si el número de trámite ya existe, sin importar mayúsculas/minúsculas
+  // Buscar por campos metodo findOne. Buscar si el número de trámite ya existe, sin importar mayúsculas/minúsculas
   const tramiteExiste = await Tarea.findOne({
     where: {
       numeroTramite: {
@@ -37,17 +37,22 @@ export const obtenerTareas = async (req, res) => {
   try {
     const tareas = await Tarea.findAll();
     res.json(tareas);
-
-    // const { usuarioId } = req.body;
-    // // const tareas = await Tarea.findAll(); // Todas las tareas
-    // const tareas = await Tarea.findAll({
-    //   where: {
-    //     // usuarioId: usuarioId,
-    //     usuarioId,
-    //   },
-    // }); // Todas las tareas de 1 usuario en especifico
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+export const obtenerTareasUsuarios = async (req, res) => {
+  try {
+    // Consulta filtrando las tareas por usuarioLogueado
+    const tareas = await Tarea.findAll({
+      where: {
+        usuarioId: req.usuarioId,
+      },
+    });
+    res.json(tareas);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -75,6 +80,16 @@ export const obtenerTarea = async (req, res) => {
 
 export const actualizarTarea = (req, res) => {
   const { id } = req.params;
+  const { asunto, descripcion, numeroTramite, remitente } = req.body;
+
+  console.log(id);
+  console.log(req.body);
+
+  try {
+    await Tarea.findByPk()
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 
   res.send("Actualiza Tarea");
 };
