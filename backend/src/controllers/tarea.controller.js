@@ -1,11 +1,19 @@
+import { Op } from "sequelize";
 import { Tarea } from "../models/Tarea.js";
 
 export const agregarTarea = async (req, res) => {
   // console.log(req.body);
   const { asunto, descripcion, numeroTramite, remitente } = req.body;
 
-  // validar que el nroTramite no este repetido;
-  const tramiteExiste = await Tarea.findOne({ numeroTramite });
+  // Buscar si el número de trámite ya existe, sin importar mayúsculas/minúsculas
+  const tramiteExiste = await Tarea.findOne({
+    where: {
+      numeroTramite: {
+        [Op.iLike]: numeroTramite, // Compara de forma insensible a mayúsculas/minúsculas
+      },
+    },
+  });
+
   if (tramiteExiste) {
     const error = new Error("Número de Trámite ya Ingresado");
     return res.status(400).json({ msg: error.message });
