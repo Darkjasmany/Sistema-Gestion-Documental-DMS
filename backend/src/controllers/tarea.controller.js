@@ -3,7 +3,8 @@ import { Tarea } from "../models/Tarea.js";
 
 export const agregarTarea = async (req, res) => {
   // console.log(req.body);
-  const { asunto, descripcion, numeroTramite, remitente } = req.body;
+  const { asunto, descripcion, numeroTramite, remitente, usuario_id } =
+    req.body;
 
   // Buscar si el número de trámite ya existe, sin importar mayúsculas/minúsculas
   const tramiteExiste = await Tarea.findOne({
@@ -16,7 +17,7 @@ export const agregarTarea = async (req, res) => {
 
   if (tramiteExiste) {
     const error = new Error("Número de Trámite ya Ingresado");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ message: error.message });
   }
   // Guardar tramite
   try {
@@ -25,15 +26,23 @@ export const agregarTarea = async (req, res) => {
       descripcion,
       numeroTramite,
       remitente,
+      usuario_id,
     });
-    res.json(tramiteGuardado);
+    res.json(tramiteGuardado); // Envio los datos al cliente
   } catch (error) {
-    console.error(`Error al registrar el Trámite: ${error}`);
+    return res.status(500).json({ message: error });
   }
 };
 
-export const obtenerTareas = (req, res) => {
-  res.send("Obteniendo Tareas");
+export const obtenerTareas = async (req, res) => {
+  try {
+    const { usuario_id } = req.body;
+    // const tareas = await Tarea.findAll(); // Todas las tareas
+    const tareas = await Tarea.find().where("usuario_id").equals(usuario_id);
+    res.json(tareas);
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
 };
 
 export const obtenerTarea = (req, res) => {
