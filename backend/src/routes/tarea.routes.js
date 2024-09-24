@@ -5,11 +5,15 @@ import {
   obtenerTarea,
   actualizarTarea,
   eliminarTarea,
+  obtenerAllTareas,
 } from "../controllers/tarea.controller.js";
 
 const router = Router();
 
-router.route("/").post(agregarTarea).get(obtenerTareas);
+router.route("/").post(agregarTarea).get(obtenerAllTareas);
+// router.route("/").post(agregarTarea).get(obtenerTareas);
+
+router.get("/tareas", obtenerTarea);
 
 router
   .route("/:id")

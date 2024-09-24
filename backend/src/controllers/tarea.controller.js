@@ -14,10 +14,9 @@ export const agregarTarea = async (req, res) => {
     },
   });
 
-  if (tramiteExiste) {
-    const error = new Error("Número de Trámite ya Ingresado");
-    return res.status(400).json({ message: error.message });
-  }
+  if (tramiteExiste)
+    return res.status(400).json({ message: "Número de Trámite ya Ingresado" });
+
   // Guardar tramite
   try {
     const tramiteGuardado = await Tarea.create({
@@ -33,7 +32,7 @@ export const agregarTarea = async (req, res) => {
   }
 };
 
-export const obtenerTareas = async (req, res) => {
+export const obtenerAllTareas = async (req, res) => {
   try {
     const tareas = await Tarea.findAll();
     res.json(tareas);
@@ -42,7 +41,7 @@ export const obtenerTareas = async (req, res) => {
   }
 };
 
-export const obtenerTareasUsuarios = async (req, res) => {
+export const obtenerTareas = async (req, res) => {
   try {
     // Consulta filtrando las tareas por usuarioLogueado
     const tareas = await Tarea.findAll({
@@ -57,51 +56,70 @@ export const obtenerTareasUsuarios = async (req, res) => {
 };
 
 export const obtenerTarea = async (req, res) => {
-  console.log(req.params); // obtener lo que se envia por la URL
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const tarea = await Tarea.findOne({
-    where: {
-      id,
-    },
-  });
+    const tarea = await Tarea.findByPk(id);
 
-  // const { usuarioId } = req.body;
-  // // const tareas = await Tarea.findAll(); // Todas las tareas
-  // const tareas = await Tarea.findAll({
-  //   where: {
-  //     // usuarioId: usuarioId,
-  //     usuarioId,
-  //   },
-  // }); // Todas las tareas de 1 usuario en especifico
+    if (!tarea) return res.status(404).json({ message: "No encontrado" });
 
-  res.send("Obtener Tarea");
+    res.json(tarea);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-export const actualizarTarea = (req, res) => {
-  const { id } = req.params;
-  const { asunto, descripcion, numeroTramite, remitente } = req.body;
-
-  console.log(id);
-  console.log(req.body);
-
+export const actualizarTarea = async (req, res) => {
   try {
-    await Tarea.findByPk()
+    const { id } = req.params;
+    const {
+      asunto,
+      descripcion,
+      numeroTramite,
+      remitente,
+      departamenteRemitente,
+      referenciaTramite,
+    } = req.body;
+
+    // Obtenemos 1 objeto de la consulta
+    const tareaActualizada = await Tarea.findByPk(id);
+
+    if (!tareaActualizada)
+      return res.status(404).json({ message: "No encontrado" });
+
+    /*
+  // Verificamos si la tarea pertenece al usuario que está intentando eliminarlo
+  if (tarea.usuarioId.toString() !== req.usuarioId.toString()) {
+    // Si no pertenecen al mismo veterinario, devolvemos un mensaje de acción no válida
+    return res.status(403).json({ msg: "Acción no válida" });
+  }
+*/
+
+    // Actualizamos los datos del objeto
+    tareaActualizada.asunto = asunto || tareaActualizada.asunto;
+    tareaActualizada.descripcion = descripcion || tareaActualizada.descripcion;
+    tareaActualizada.numeroTramite =
+      numeroTramite || tareaActualizada.numeroTramite;
+    tareaActualizada.remitente = remitente || tareaActualizada.remitente;
+    tareaActualizada.departamenteRemitente =
+      departamenteRemitente || tareaActualizada.departamenteRemitente;
+    tareaActualizada.referenciaTramite =
+      referenciaTramite || tareaActualizada.referenciaTramite;
+
+    // Guardamos los datos actualizados del objeto
+    await tareaActualizada.save();
+    res.status(200).json(tareaActualizada);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-
-  res.send("Actualiza Tarea");
 };
 
 export const eliminarTarea = async (req, res) => {
   const { id } = req.params; // obtener ID que se envia por la URL
   const tarea = await Tarea.findByPk(id); // Busco la tarea en la BD por el id que se envia en la URL
 
-  if (!tarea) {
-    // Si la tarea no existe, devolvemos un error 404
-    return res.status(404).json({ message: "No Encontrado" });
-  }
+  // Si la tarea no existe, devolvemos un error 404
+  if (!tarea) return res.status(404).json({ message: "No Encontrado" });
   /*
   // Verificamos si la tarea pertenece al usuario que está intentando eliminarlo
   if (tarea.usuarioId.toString() !== req.usuarioId.toString()) {
@@ -118,7 +136,7 @@ export const eliminarTarea = async (req, res) => {
       },
     });
 
-    res.json({ message: "Tarea Eliminada" });
+    res.status(200).json({ message: "Tarea Eliminada" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
