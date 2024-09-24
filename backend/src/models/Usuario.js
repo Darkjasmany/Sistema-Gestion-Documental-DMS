@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { Tarea } from "./Tarea.js";
+import { generarId } from "../helpers/generarId.helpers.js";
 
 export const Usuario = sequelize.define(
   "usuario",
@@ -47,7 +48,7 @@ export const Usuario = sequelize.define(
     },
     token: {
       type: DataTypes.STRING,
-      defaultValue: null, // Puedes generar el token dinámicamente si es necesario
+      defaultValue: generarId(), // generar el token dinámicamente
     },
     confirmado: {
       type: DataTypes.BOOLEAN,
