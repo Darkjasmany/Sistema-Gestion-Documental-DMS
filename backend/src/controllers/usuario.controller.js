@@ -1,3 +1,4 @@
+import { Tarea } from "../models/Tarea.js";
 import { Usuario } from "../models/Usuario.js";
 
 export const registrar = async (req, res) => {
@@ -29,4 +30,18 @@ export const registrar = async (req, res) => {
 
 export const perfil = (req, res) => {
   res.json({ msg: "Mostrando Perfil ..." });
+};
+
+export const obtenerTareas = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tareas = await Tarea.findAll({
+      where: {
+        usuarioId: id,
+      },
+    });
+    res.json(tareas);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

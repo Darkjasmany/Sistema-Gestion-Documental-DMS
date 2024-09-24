@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   agregarTarea,
-  obtenerTareas,
   obtenerTarea,
   actualizarTarea,
   eliminarTarea,

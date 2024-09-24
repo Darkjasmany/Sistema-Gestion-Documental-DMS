@@ -41,20 +41,6 @@ export const obtenerAllTareas = async (req, res) => {
   }
 };
 
-export const obtenerTareas = async (req, res) => {
-  try {
-    // Consulta filtrando las tareas por usuarioLogueado
-    const tareas = await Tarea.findAll({
-      where: {
-        usuarioId: req.usuarioId,
-      },
-    });
-    res.json(tareas);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 export const obtenerTarea = async (req, res) => {
   try {
     const { id } = req.params;

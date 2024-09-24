@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { perfil, registrar } from "../controllers/usuario.controller.js";
-import { obtenerTareas } from "../controllers/tarea.controller.js";
+import {
+  perfil,
+  registrar,
+  obtenerTareas,
+} from "../controllers/usuario.controller.js";
 
 const router = Router();
 
