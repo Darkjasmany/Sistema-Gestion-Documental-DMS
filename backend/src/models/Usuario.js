@@ -1,4 +1,5 @@
 import { DataTypes } from "sequelize";
+import bcrypt from "bcrypt";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { Tarea } from "./Tarea.js";
 import { generarId } from "../helpers/generarId.helpers.js";
@@ -48,7 +49,7 @@ export const Usuario = sequelize.define(
     },
     token: {
       type: DataTypes.STRING,
-      defaultValue: generarId(), // generar el token dinámicamente
+      defaultValue: () => generarId(), // Llamar a la función para que se ejecute
     },
     confirmado: {
       type: DataTypes.BOOLEAN,
@@ -62,6 +63,21 @@ export const Usuario = sequelize.define(
   {
     tableName: "usuario", // Nombre de la tabla en la BD
     timestamps: true, // Incluye `createdAt` y `updatedAt`
+    // TODO: Hook para hashear el password antes de crear o actualizar
+    hooks: {
+      beforeCreate: async (usuario) => {
+        if (usuario.password) {
+          const salt = await bcrypt.genSalt(10);
+          usuario.password = await bcrypt.hash(usuario.password, salt);
+        }
+      },
+      beforeUpdate: async (usuario) => {
+        if (usuario.changed("password") && usuario.password) {
+          const salt = await bcrypt.genSalt(10);
+          usuario.password = await bcrypt.hash(usuario.password, salt);
+        }
+      },
+    },
   }
 );
 
