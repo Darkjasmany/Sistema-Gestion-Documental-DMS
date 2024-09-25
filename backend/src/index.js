@@ -1,15 +1,13 @@
 import app from "./app.js"; // Importamos la app con Express configurado
 import { conectarDB } from "./config/db.js"; // Importamos la conexión a la base de datos
-import dotenv from "dotenv"; // Cargar variables de entorno
-
-dotenv.config(); // Escanea y busca el archivo .env
 
 // Función principal para iniciar la aplicación
 const startServer = async () => {
   try {
     await conectarDB(); // Conectar a la base de datos
 
-    const PORT = process.env.PORT || 3000;
+    // const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT;
     app.listen(PORT, () => {
       console.log(`Servidor escuchando por el puerto: ${PORT}`);
     });
@@ -19,4 +17,5 @@ const startServer = async () => {
   }
 };
 
+// Inicializa la App
 startServer();
