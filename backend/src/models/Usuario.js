@@ -16,28 +16,23 @@ export const Usuario = sequelize.define(
     nombres: {
       type: DataTypes.STRING,
       allowNull: false,
-      // trim: true, // trim no es necesario en Sequelize
     },
     apellidos: {
       type: DataTypes.STRING,
       allowNull: false,
-      // trim: true,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      // trim: true,
     },
     password: {
       type: DataTypes.STRING,
-      // allowNull: false, //Asegúrate de hashear la contraseña antes de guardar
-      defaultValue: null,
+      allowNull: false,
     },
     telefono: {
       type: DataTypes.STRING,
       defaultValue: null,
-      // trim: true,
     },
     rol: {
       type: DataTypes.STRING(50),
@@ -76,6 +71,13 @@ export const Usuario = sequelize.define(
           const salt = await bcrypt.genSalt(10);
           usuario.password = await bcrypt.hash(usuario.password, salt);
         }
+      },
+      // Hook para eliminar los espacios en Blanco
+      beforeSave: (usuario) => {
+        usuario.nombres = usuario.nombres.trim();
+        usuario.apellidos = usuario.apellidos.trim();
+        usuario.email = usuario.email.trim();
+        usuario.password = usuario.password.trim();
       },
     },
   }

@@ -69,5 +69,12 @@ export const Tarea = sequelize.define(
   {
     tableName: "tarea",
     timestamps: true,
+    hooks: {
+      beforeSave: (tarea) => {
+        tarea.asunto = tarea.asunto.trim();
+        tarea.numeroTramite = tarea.numeroTramite.trim();
+        tarea.remitente = tarea.remitente.trim();
+      },
+    },
   }
 );

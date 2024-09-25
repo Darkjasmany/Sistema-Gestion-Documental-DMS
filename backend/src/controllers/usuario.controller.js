@@ -3,10 +3,10 @@ import { Usuario } from "../models/Usuario.js";
 
 export const registrar = async (req, res) => {
   // TODO leer datos enviados de un formulario con req.body
-  const { nombres, apellidos, email } = req.body;
+  const { nombres, apellidos, email, password } = req.body;
 
   // TODO: Validar que los campos obligatorios no estén vacíos
-  if (!nombres || !apellidos || !email)
+  if (!nombres || !apellidos || !email || !password)
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
@@ -16,6 +16,12 @@ export const registrar = async (req, res) => {
   if (!emailValido.test(email))
     return res.status(400).json({ message: "Email inválido" });
 
+  // TODO: Validar que la contraseña tenga una longitud mínima
+  if (password.length < 6)
+    return res
+      .status(400)
+      .json({ message: "La constraseña debe tener al menos 6 caracteres " });
+
   // TODO: Prevenir usuarios duplicados, en el model Usuario ya esta definido el campo unique: true, para el email, pero se hara una verificación complementaria
   const usuarioExiste = await Usuario.findOne({ where: { email } });
   if (usuarioExiste)
@@ -23,10 +29,14 @@ export const registrar = async (req, res) => {
 
   // TODO: Guardar nuevo Usuario
   try {
+    // Guardar usuario directamente con req.body
+    // const usuarioGuardado = await Usuario.create(req.body);
+    // Filtrar campos importantes para mayor seguridad y claridad
     const usuarioGuardado = await Usuario.create({
       nombres,
       apellidos,
       email,
+      password,
     });
 
     return res.status(201).json(usuarioGuardado);
