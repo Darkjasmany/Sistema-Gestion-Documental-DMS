@@ -97,19 +97,19 @@ export const autenticar = async (req, res) => {
     if (!usuario.estado)
       return res.status(403).json({ message: "El usuario esta suspendido" });
 
-    // Comparar la contraseña ingresada con la contraseña hasheada
-    const passwordMatch = await bcrypt.compare(password, usuario.password);
-    if (passwordMatch) {
-      res.status(200).json({
-        id: usuario.id,
-        nombres: usuario.nombres,
-        apellidos: usuario.apellidos,
-        email: usuario.email,
-        token: generarJWT(usuario.id),
-      });
-    } else {
-      res.status(401).json({ message: "Contraseña incorrecta" });
+    // TODO: Comparar la contraseña ingresada con la contraseña hasheada
+    if (!(await bcrypt.compare(password, usuario.password))) {
+      return res.status(401).json({ message: "Contraseña incorrecta" });
     }
+
+    res.status(200).json({
+      id: usuario.id,
+      nombres: usuario.nombres,
+      apellidos: usuario.apellidos,
+      email: usuario.email,
+      rol: usuario.rol,
+      token: generarJWT(usuario.id),
+    });
   } catch (error) {
     console.log(`Error al autenticar: ${error.message}`);
     return res.status(500).json({
