@@ -1,6 +1,7 @@
+import bcrypt from "bcrypt";
 import { Tarea } from "../models/Tarea.js";
 import { Usuario } from "../models/Usuario.js";
-import bcrypt from "bcrypt";
+import { generarJWT } from "../helpers/generarJWT.helpers.js";
 
 export const registrar = async (req, res) => {
   // TODO leer datos enviados de un formulario con req.body
@@ -104,6 +105,7 @@ export const autenticar = async (req, res) => {
         nombres: usuario.nombres,
         apellidos: usuario.apellidos,
         email: usuario.email,
+        token: generarJWT(usuario.id),
       });
     } else {
       res.status(401).json({ message: "Contraseña incorrecta" });
