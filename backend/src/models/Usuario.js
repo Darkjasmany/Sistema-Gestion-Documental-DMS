@@ -62,6 +62,7 @@ export const Usuario = sequelize.define(
     hooks: {
       // TODO: beforeSave es más eficiente y simplifica el código al abarcar tanto la creación como la actualización
       // Hook para eliminar los espacios en Blanco y hashear password
+      //  beforeCreate: async (usuario) => {
       beforeSave: async (usuario) => {
         usuario.nombres = usuario.nombres.trim();
         usuario.apellidos = usuario.apellidos.trim();
@@ -71,15 +72,10 @@ export const Usuario = sequelize.define(
         if (usuario.password) {
           usuario.password = usuario.password.trim();
           const salt = await bcrypt.genSalt(10);
-          usuario.password = bcrypt.hash(usuario.password, salt);
+          usuario.password = await bcrypt.hash(usuario.password, salt);
         }
       },
-      // beforeCreate: async (usuario) => {
-      //   if (usuario.password) {
-      //     const salt = await bcrypt.genSalt(10);
-      //     usuario.password = await bcrypt.hash(usuario.password, salt);
-      //   }
-      // },
+
       beforeUpdate: async (usuario) => {
         if (usuario.changed("password") && usuario.password) {
           usuario.password = usuario.password.trim();

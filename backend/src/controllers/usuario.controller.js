@@ -1,5 +1,6 @@
 import { Tarea } from "../models/Tarea.js";
 import { Usuario } from "../models/Usuario.js";
+import bcrypt from "bcrypt";
 
 export const registrar = async (req, res) => {
   // TODO leer datos enviados de un formulario con req.body
@@ -78,6 +79,39 @@ export const confirmar = async (req, res) => {
     console.error(`Error al confirmar el usuario: ${error.message}`);
     return res.status(500).json({
       message: `Error al confirmar el usuario: ${error.message}`,
+    });
+  }
+};
+
+export const autenticar = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const usuario = await Usuario.findOne({ where: { email } });
+
+    if (!usuario) return res.status(404).json({ message: "Usuario no existe" });
+
+    if (!usuario.confirmado)
+      return res.status(403).json({ message: "El usuario no esta confirmado" });
+
+    if (!usuario.estado)
+      return res.status(403).json({ message: "El usuario esta suspendido" });
+
+    // Comparar la contraseña ingresada con la contraseña hasheada
+    const passwordMatch = await bcrypt.compare(password, usuario.password);
+    if (passwordMatch) {
+      res.status(200).json({
+        id: usuario.id,
+        nombres: usuario.nombres,
+        apellidos: usuario.apellidos,
+        email: usuario.email,
+      });
+    } else {
+      res.status(401).json({ message: "Contraseña incorrecta" });
+    }
+  } catch (error) {
+    console.log(`Error al autenticar: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al autenticar el usuario, intente nuevamente más tarde.",
     });
   }
 };

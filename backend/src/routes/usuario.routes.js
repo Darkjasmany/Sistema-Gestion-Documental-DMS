@@ -4,6 +4,7 @@ import {
   registrar,
   obtenerTareas,
   confirmar,
+  autenticar,
 } from "../controllers/usuario.controller.js";
 
 const router = Router();
@@ -11,6 +12,7 @@ const router = Router();
 // Rutas Públicas
 router.post("/", registrar);
 router.get("/confirmar/:token", confirmar);
+router.post("/login", autenticar);
 
 // Rutas Privadas
 router.get("/perfil", perfil);
