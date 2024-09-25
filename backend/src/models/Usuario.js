@@ -60,24 +60,32 @@ export const Usuario = sequelize.define(
     timestamps: true, // Incluye `createdAt` y `updatedAt`
     // TODO: Hook para hashear el password antes de crear o actualizar
     hooks: {
-      beforeCreate: async (usuario) => {
-        if (usuario.password) {
-          const salt = await bcrypt.genSalt(10);
-          usuario.password = await bcrypt.hash(usuario.password, salt);
-        }
-      },
-      beforeUpdate: async (usuario) => {
-        if (usuario.changed("password") && usuario.password) {
-          const salt = await bcrypt.genSalt(10);
-          usuario.password = await bcrypt.hash(usuario.password, salt);
-        }
-      },
-      // Hook para eliminar los espacios en Blanco
-      beforeSave: (usuario) => {
+      // TODO: beforeSave es más eficiente y simplifica el código al abarcar tanto la creación como la actualización
+      // Hook para eliminar los espacios en Blanco y hashear password
+      beforeSave: async (usuario) => {
         usuario.nombres = usuario.nombres.trim();
         usuario.apellidos = usuario.apellidos.trim();
         usuario.email = usuario.email.trim();
-        usuario.password = usuario.password.trim();
+
+        // Eliminar espacios en blancos del password si existe antes de hashearlo
+        if (usuario.password) {
+          usuario.password = usuario.password.trim();
+          const salt = await bcrypt.genSalt(10);
+          usuario.password = bcrypt.hash(usuario.password, salt);
+        }
+      },
+      // beforeCreate: async (usuario) => {
+      //   if (usuario.password) {
+      //     const salt = await bcrypt.genSalt(10);
+      //     usuario.password = await bcrypt.hash(usuario.password, salt);
+      //   }
+      // },
+      beforeUpdate: async (usuario) => {
+        if (usuario.changed("password") && usuario.password) {
+          usuario.password = usuario.password.trim();
+          const salt = await bcrypt.genSalt(10);
+          usuario.password = await bcrypt.hash(usuario.password, salt);
+        }
       },
     },
   }
