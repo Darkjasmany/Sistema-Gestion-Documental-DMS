@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Tarea } from "../models/Tarea.js";
+import { Tarea } from "../models/Tarea.model.js";
 
 export const agregarTarea = async (req, res) => {
   // console.log(req.body);

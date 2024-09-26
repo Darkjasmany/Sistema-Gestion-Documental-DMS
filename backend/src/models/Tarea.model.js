@@ -1,6 +1,6 @@
 import { DataTypes, Sequelize } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
-import { generarHora } from "../helpers/generarHora.helpers.js";
+import { generarHora } from "../utils/generarHora.js";
 
 export const Tarea = sequelize.define(
   "tarea",

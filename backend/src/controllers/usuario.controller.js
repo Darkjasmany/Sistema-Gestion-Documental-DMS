@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import { Tarea } from "../models/Tarea.js";
-import { Usuario } from "../models/Usuario.js";
-import { generarJWT } from "../helpers/generarJWT.helpers.js";
+import { Tarea } from "../models/Tarea.model.js";
+import { Usuario } from "../models/Usuario.model.js";
+import { generarJWT } from "../utils/generarJWT.js";
 
 export const registrar = async (req, res) => {
   // TODO leer datos enviados de un formulario con req.body

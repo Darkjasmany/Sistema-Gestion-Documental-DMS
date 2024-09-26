@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
-import { Tarea } from "./Tarea.js";
-import { generarId } from "../helpers/generarId.helpers.js";
+import { Tarea } from "./Tarea.model.js";
+import { generarId } from "../utils/generarId.js";
 
 export const Usuario = sequelize.define(
   "usuario",
