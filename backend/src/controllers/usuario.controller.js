@@ -51,7 +51,10 @@ export const registrar = async (req, res) => {
 };
 
 export const perfil = (req, res) => {
-  res.json({ msg: "Mostrando Perfil ..." });
+  const { usuario } = req;
+
+  res.status(200).json({ usuario });
+  // res.status(200).json({ perfil: usuario }); // indicar como queremos llamar al objeto
 };
 
 export const confirmar = async (req, res) => {
