@@ -6,8 +6,7 @@ const startServer = async () => {
   try {
     await conectarDB(); // Conectar a la base de datos
 
-    // const PORT = process.env.PORT || 3000;
-    const PORT = process.env.PORT;
+    const PORT = process.env.PORT ?? 3000;
     app.listen(PORT, () => {
       console.log(`Servidor escuchando por el puerto: ${PORT}`);
     });

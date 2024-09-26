@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { generarHora } from "../utils/generarHora.js";
 
