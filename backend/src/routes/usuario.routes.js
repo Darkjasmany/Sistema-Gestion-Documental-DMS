@@ -6,6 +6,7 @@ import {
   confirmar,
   autenticar,
 } from "../controllers/usuario.controller.js";
+import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -15,7 +16,7 @@ router.get("/confirmar/:token", confirmar);
 router.post("/login", autenticar);
 
 // Rutas Privadas
-router.get("/perfil", perfil);
+router.get("/perfil", checkAuth, perfil);
 router.get("/:id/tareas", obtenerTareas);
 
 export default router;
