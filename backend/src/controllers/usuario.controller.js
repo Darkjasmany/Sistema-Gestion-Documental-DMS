@@ -159,7 +159,22 @@ export const olvidePassword = async (req, res) => {
   }
 };
 
-export const comprobarToken = (req, res) => {};
+export const comprobarToken = async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const tokenValido = await Usuario.findOne({ where: { token } });
+    if (!tokenValido)
+      return res.status(400).json({ message: "Token no válido o expirado" });
+
+    return res.status(200).json({ message: "Token válido" });
+  } catch (error) {
+    console.error(`Error al validar token: ${error.message}`);
+    return res.status(500).json({
+      message: "Hubo un error al validar el token, inténtalo más tarde.",
+    });
+  }
+};
 
 export const nuevoPassword = (req, res) => {};
 
