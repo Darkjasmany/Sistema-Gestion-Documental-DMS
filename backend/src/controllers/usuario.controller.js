@@ -71,11 +71,15 @@ export const confirmarCuenta = async (req, res) => {
       return res.status(404).json({ message: "Token no válido" });
 
     // TODO: Actualizamos los datos del usuario
-    usuarioConfirmar.set({
+    /* usuarioConfirmar.set({
       token: null,
       confirmado: true,
       estado: true,
-    });
+    });*/
+    // TODO: Esto elimina el uso del SET
+    usuarioConfirmar.token = null;
+    usuarioConfirmar.confirmado = true;
+    usuarioConfirmar.estado = true;
 
     // TODO: Guardamos los cambios en la base de datos
     await usuarioConfirmar.save();
@@ -176,7 +180,29 @@ export const comprobarToken = async (req, res) => {
   }
 };
 
-export const nuevoPassword = (req, res) => {};
+export const nuevoPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+  try {
+    const usuarioExiste = await Usuario.findOne({ where: { token } });
+    if (!usuarioExiste)
+      return res.status(400).json({ message: "Token no válido o expirado" });
+
+    usuarioExiste.token = null;
+    usuarioExiste.password = password;
+    await usuarioExiste.save();
+
+    return res
+      .status(200)
+      .json({ message: "Contraseña actualizada correctamente" });
+  } catch (error) {
+    console.error(`Error al actualizar la contraseña: ${error.message}`);
+    return res.status(500).json({
+      message:
+        "Hubo un error al actualizar la contraseña, inténtalo más tarde.",
+    });
+  }
+};
 
 export const obtenerTareasUsuario = async (req, res) => {
   const { id } = req.params;
