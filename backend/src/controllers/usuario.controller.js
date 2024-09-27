@@ -22,12 +22,12 @@ export const registrarUsuario = async (req, res) => {
       .status(400)
       .json({ message: "La constraseña debe tener al menos 6 caracteres " });
 
-  // TODO: Prevenir usuarios duplicados, en el model Usuario ya esta definido el campo unique: true, para el email, pero se hara una verificación complementaria
+  // Prevenir usuarios duplicados, en el model Usuario ya esta definido el campo unique: true, para el email, pero se hara una verificación complementaria
   const usuarioExiste = await Usuario.findOne({ where: { email } });
   if (usuarioExiste)
     return res.status(400).json({ message: "Usuario ya registrado" });
 
-  // TODO: Guardar nuevo Usuario
+  // Guardar nuevo Usuario
   try {
     // Guardar usuario directamente con req.body
     // const usuarioGuardado = await Usuario.create(req.body);
@@ -198,7 +198,9 @@ export const obtenerTareasUsuario = async (req, res) => {
   try {
     const tareasUsuario = await Tarea.findAll({
       where: { usuarioId: id },
+      attributes: { exclude: ["createdAt", "updatedAt", "usuarioId"] },
     });
+
     res.status(200).json(tareasUsuario);
   } catch (error) {
     console.error(`Error al obtener las tareas del usuario : ${error.message}`);
