@@ -3,24 +3,20 @@ import { Tarea } from "../models/Tarea.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { generarJWT } from "../utils/generarJWT.js";
 import { generarId } from "../utils/generarId.js";
-import { enviarOlvidePassword } from "../utils/enviarOlvidePassword.js";
+import { emailOlvidePassword } from "../utils/emailOlvidePassword.js";
 
 export const registrarUsuario = async (req, res) => {
-  // TODO leer datos enviados de un formulario con req.body
   const { nombres, apellidos, email, password } = req.body;
 
-  // TODO: Validar que los campos obligatorios no estén vacíos
   if (!nombres || !apellidos || !email || !password)
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
 
-  // TODO: Verificar si el email tiene un formato válido
   const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailValido.test(email))
     return res.status(400).json({ message: "Email inválido" });
 
-  // TODO: Validar que la contraseña tenga una longitud mínima
   if (password.length < 6)
     return res
       .status(400)
@@ -56,33 +52,30 @@ export const perfilUsuario = (req, res) => {
   const { usuario } = req;
 
   res.status(200).json({ usuario });
-  // res.status(200).json({ perfil: usuario }); // indicar como queremos llamar al objeto
 };
 
 export const confirmarCuenta = async (req, res) => {
-  // TODO: token es lo que enviamos en la url
+  // token es lo que enviamos en la url
   const { token } = req.params;
 
   try {
-    const usuarioConfirmar = await Usuario.findOne({ where: { token } });
+    const usuario = await Usuario.findOne({ where: { token } });
 
-    // TODO: Verificar si existe el token
-    if (!usuarioConfirmar)
-      return res.status(404).json({ message: "Token no válido" });
+    if (!usuario) return res.status(404).json({ message: "Token no válido" });
 
-    // TODO: Actualizamos los datos del usuario
-    /* usuarioConfirmar.set({
+    // Actualizamos los datos del usuario
+    /* usuario.set({
       token: null,
       confirmado: true,
       estado: true,
     });*/
-    // TODO: Esto elimina el uso del SET
-    usuarioConfirmar.token = null;
-    usuarioConfirmar.confirmado = true;
-    usuarioConfirmar.estado = true;
+    // Esto elimina el uso del SET
+    usuario.token = null;
+    usuario.confirmado = true;
+    usuario.estado = true;
 
-    // TODO: Guardamos los cambios en la base de datos
-    await usuarioConfirmar.save();
+    // Guardamos los cambios en la base de datos
+    await usuario.save();
 
     res.status(200).json({ message: "Cuenta confirmada exitosamente" });
   } catch (error) {
@@ -96,29 +89,28 @@ export const confirmarCuenta = async (req, res) => {
 export const autenticarUsuario = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const usuarioAutenticar = await Usuario.findOne({ where: { email } });
+    const usuario = await Usuario.findOne({ where: { email } });
 
-    if (!usuarioAutenticar)
-      return res.status(404).json({ message: "Usuario no existe" });
+    if (!usuario) return res.status(404).json({ message: "Usuario no existe" });
 
-    if (!usuarioAutenticar.confirmado)
+    if (!usuario.confirmado)
       return res.status(403).json({ message: "El usuario no esta confirmado" });
 
-    if (!usuarioAutenticar.estado)
+    if (!usuario.estado)
       return res.status(403).json({ message: "El usuario esta suspendido" });
 
     // TODO: Comparar la contraseña ingresada con la contraseña hasheada
-    if (!(await bcrypt.compare(password, usuarioAutenticar.password))) {
+    if (!(await bcrypt.compare(password, usuario.password))) {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
     res.status(200).json({
-      id: usuarioAutenticar.id,
-      nombres: usuarioAutenticar.nombres,
-      apellidos: usuarioAutenticar.apellidos,
-      email: usuarioAutenticar.email,
-      rol: usuarioAutenticar.rol,
-      token: generarJWT(usuarioAutenticar.id),
+      id: usuario.id,
+      nombres: usuario.nombres,
+      apellidos: usuario.apellidos,
+      email: usuario.email,
+      rol: usuario.rol,
+      token: generarJWT(usuario.id),
     });
   } catch (error) {
     console.log(`Error al autenticar: ${error.message}`);
@@ -131,24 +123,21 @@ export const autenticarUsuario = async (req, res) => {
 export const olvidePassword = async (req, res) => {
   const { email } = req.body;
 
-  // Validar formato de email
   if (!email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
     return res.status(400).json({ message: "Formato de email no válido" });
   }
 
   try {
-    const usuarioOlvide = await Usuario.findOne({ where: { email } });
-    if (!usuarioOlvide)
-      return res.status(404).json({ message: "Usuario no existe" });
+    const usuario = await Usuario.findOne({ where: { email } });
+    if (!usuario) return res.status(404).json({ message: "Usuario no existe" });
 
-    // Actualizar el token del usuario
-    await usuarioOlvide.update({ token: generarId() });
+    await usuario.update({ token: generarId() });
 
-    enviarOlvidePassword({
+    await emailOlvidePassword({
       email,
-      nombres: usuarioOlvide.nombres,
-      apellidos: usuarioOlvide.apellidos,
-      token: usuarioOlvide.token,
+      nombres: usuario.nombres,
+      apellidos: usuario.apellidos,
+      token: usuario.token,
     });
 
     res.status(200).json({
@@ -184,13 +173,13 @@ export const nuevoPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
   try {
-    const usuarioExiste = await Usuario.findOne({ where: { token } });
-    if (!usuarioExiste)
+    const usuario = await Usuario.findOne({ where: { token } });
+    if (!usuario)
       return res.status(400).json({ message: "Token no válido o expirado" });
 
-    usuarioExiste.token = null;
-    usuarioExiste.password = password;
-    await usuarioExiste.save();
+    usuario.token = null;
+    usuario.password = password;
+    await usuario.save();
 
     return res
       .status(200)
