@@ -2,8 +2,10 @@ import bcrypt from "bcrypt";
 import { Tarea } from "../models/Tarea.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { generarJWT } from "../utils/generarJWT.js";
+import { generarId } from "../utils/generarId.js";
+import { enviarOlvidePassword } from "../utils/enviarOlvidePassword.js";
 
-export const registrar = async (req, res) => {
+export const registrarUsuario = async (req, res) => {
   // TODO leer datos enviados de un formulario con req.body
   const { nombres, apellidos, email, password } = req.body;
 
@@ -43,21 +45,21 @@ export const registrar = async (req, res) => {
 
     return res.status(201).json(usuarioGuardado);
   } catch (error) {
-    console.error(`Error al registrar el Usuario: ${error.message}`);
+    console.error(`Error al registrar el usuario: ${error.message}`);
     return res.status(500).json({
-      message: `Error al registrar el usuario: ${error.message}`,
+      message: "Error al registrar el usuario.",
     });
   }
 };
 
-export const perfil = (req, res) => {
+export const perfilUsuario = (req, res) => {
   const { usuario } = req;
 
   res.status(200).json({ usuario });
   // res.status(200).json({ perfil: usuario }); // indicar como queremos llamar al objeto
 };
 
-export const confirmar = async (req, res) => {
+export const confirmarCuenta = async (req, res) => {
   // TODO: token es lo que enviamos en la url
   const { token } = req.params;
 
@@ -82,36 +84,37 @@ export const confirmar = async (req, res) => {
   } catch (error) {
     console.error(`Error al confirmar el usuario: ${error.message}`);
     return res.status(500).json({
-      message: `Error al confirmar el usuario: ${error.message}`,
+      message: "Error al confirmar el usuario",
     });
   }
 };
 
-export const autenticar = async (req, res) => {
+export const autenticarUsuario = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const usuario = await Usuario.findOne({ where: { email } });
+    const usuarioAutenticar = await Usuario.findOne({ where: { email } });
 
-    if (!usuario) return res.status(404).json({ message: "Usuario no existe" });
+    if (!usuarioAutenticar)
+      return res.status(404).json({ message: "Usuario no existe" });
 
-    if (!usuario.confirmado)
+    if (!usuarioAutenticar.confirmado)
       return res.status(403).json({ message: "El usuario no esta confirmado" });
 
-    if (!usuario.estado)
+    if (!usuarioAutenticar.estado)
       return res.status(403).json({ message: "El usuario esta suspendido" });
 
     // TODO: Comparar la contraseña ingresada con la contraseña hasheada
-    if (!(await bcrypt.compare(password, usuario.password))) {
+    if (!(await bcrypt.compare(password, usuarioAutenticar.password))) {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
     res.status(200).json({
-      id: usuario.id,
-      nombres: usuario.nombres,
-      apellidos: usuario.apellidos,
-      email: usuario.email,
-      rol: usuario.rol,
-      token: generarJWT(usuario.id),
+      id: usuarioAutenticar.id,
+      nombres: usuarioAutenticar.nombres,
+      apellidos: usuarioAutenticar.apellidos,
+      email: usuarioAutenticar.email,
+      rol: usuarioAutenticar.rol,
+      token: generarJWT(usuarioAutenticar.id),
     });
   } catch (error) {
     console.log(`Error al autenticar: ${error.message}`);
@@ -121,17 +124,57 @@ export const autenticar = async (req, res) => {
   }
 };
 
-export const obtenerTareas = async (req, res) => {
+export const olvidePassword = async (req, res) => {
+  const { email } = req.body;
+
+  // Validar formato de email
+  if (!email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+    return res.status(400).json({ message: "Formato de email no válido" });
+  }
+
+  try {
+    const usuarioOlvide = await Usuario.findOne({ where: { email } });
+    if (!usuarioOlvide)
+      return res.status(404).json({ message: "Usuario no existe" });
+
+    // Actualizar el token del usuario
+    await usuarioOlvide.update({ token: generarId() });
+
+    enviarOlvidePassword({
+      email,
+      nombres: usuarioOlvide.nombres,
+      apellidos: usuarioOlvide.apellidos,
+      token: usuarioOlvide.token,
+    });
+
+    res.status(200).json({
+      message: "Se ha enviado un correo para restablecer su contraseña",
+    });
+  } catch (error) {
+    console.log(`Error al recuperar Password: ${error.message}`);
+    return res.status(500).json({
+      message:
+        "Error al recuperar el password del usuario, intente nuevamente más tarde.",
+    });
+  }
+};
+
+export const comprobarToken = (req, res) => {};
+
+export const nuevoPassword = (req, res) => {};
+
+export const obtenerTareasUsuario = async (req, res) => {
   const { id } = req.params;
   try {
-    const tareas = await Tarea.findAll({
+    const tareasUsuario = await Tarea.findAll({
       where: { usuarioId: id },
     });
-    res.status(200).json(tareas);
+    res.status(200).json(tareasUsuario);
   } catch (error) {
     console.error(`Error al obtener las tareas del usuario : ${error.message}`);
     return res.status(500).json({
-      message: `Error al obtener las tareas del usuario : ${error.message}`,
+      message:
+        "Error al obtener las tareas del usuario, intente nuevamente más tarde.",
     });
   }
 };

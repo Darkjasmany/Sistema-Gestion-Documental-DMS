@@ -1,22 +1,27 @@
 import { Router } from "express";
 import {
-  perfil,
-  registrar,
-  obtenerTareas,
-  confirmar,
-  autenticar,
+  perfilUsuario,
+  registrarUsuario,
+  obtenerTareasUsuario,
+  confirmarCuenta,
+  autenticarUsuario,
+  olvidePassword,
+  comprobarToken,
+  nuevoPassword,
 } from "../controllers/usuario.controller.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 // Rutas Públicas
-router.post("/", registrar);
-router.get("/confirmar/:token", confirmar);
-router.post("/login", autenticar);
+router.post("/", registrarUsuario);
+router.get("/confirmar/:token", confirmarCuenta);
+router.post("/login", autenticarUsuario);
+router.post("/olvide-password", olvidePassword);
+router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
 
 // Rutas Privadas
-router.get("/perfil", checkAuth, perfil);
-router.get("/:id/tareas", obtenerTareas);
+router.get("/perfil", checkAuth, perfilUsuario);
+router.get("/:id/tareas", obtenerTareasUsuario);
 
 export default router;
