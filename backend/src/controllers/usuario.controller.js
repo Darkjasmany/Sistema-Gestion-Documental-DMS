@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
-import { Tarea } from "../models/Tarea.model.js";
+import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
+// import { IntentoFallido } from "../models/IntentoFallido.models.js";
 import { generarJWT } from "../utils/generarJWT.js";
 import { generarId } from "../utils/generarId.js";
 import { emailOlvidePassword } from "../utils/emailOlvidePassword.js";
@@ -50,7 +51,6 @@ export const registrarUsuario = async (req, res) => {
 
 export const perfilUsuario = (req, res) => {
   const { usuario } = req;
-
   res.status(200).json({ usuario });
 };
 
@@ -91,13 +91,25 @@ export const autenticarUsuario = async (req, res) => {
   try {
     const usuario = await Usuario.findOne({ where: { email } });
 
-    if (!usuario) return res.status(404).json({ message: "Usuario no existe" });
+    if (!usuario) {
+      // await IntentoFallido.create({
+      //   usuarioId: null,
+      //   ip: req.ip,
+      //   exito: false,
+      // });
+      return res.status(404).json({ message: "Usuario no existe" });
+    }
 
-    if (!usuario.confirmado)
-      return res.status(403).json({ message: "El usuario no esta confirmado" });
-
-    if (!usuario.estado)
-      return res.status(403).json({ message: "El usuario esta suspendido" });
+    if (!usuario.confirmado || !usuario.estado) {
+      // await IntentoFallido.create({
+      //   usuario_Id: null,
+      //   ip: req.ip,
+      //   exito: false,
+      // });
+      return res
+        .status(403)
+        .json({ message: "Usuario no confirmado o suspendido" });
+    }
 
     // TODO: Comparar la contraseña ingresada con la contraseña hasheada
     if (!(await bcrypt.compare(password, usuario.password))) {
@@ -193,15 +205,15 @@ export const nuevoPassword = async (req, res) => {
   }
 };
 
-export const obtenerTareasUsuario = async (req, res) => {
+export const obtenerTramitesUsuario = async (req, res) => {
   const { id } = req.params;
   try {
-    const tareasUsuario = await Tarea.findAll({
+    const tramitesUsuario = await Tramite.findAll({
       where: { usuarioId: id },
       attributes: { exclude: ["createdAt", "updatedAt", "usuarioId"] },
     });
 
-    res.status(200).json(tareasUsuario);
+    res.status(200).json(tramitesUsuario);
   } catch (error) {
     console.error(`Error al obtener las tareas del usuario : ${error.message}`);
     return res.status(500).json({

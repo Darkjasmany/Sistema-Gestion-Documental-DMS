@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { generarHora } from "../utils/generarHora.js";
 
-export const Tarea = sequelize.define(
-  "tarea",
+export const Tramite = sequelize.define(
+  "tramite",
   {
     id: {
       type: DataTypes.BIGINT,
@@ -67,13 +67,13 @@ export const Tarea = sequelize.define(
     },
   },
   {
-    tableName: "tarea",
-    timestamps: true,
+    tableName: "tramite",
+    // timestamps: true,
     hooks: {
-      beforeSave: (tarea) => {
-        tarea.asunto = tarea.asunto.trim();
-        tarea.numeroTramite = tarea.numeroTramite.trim();
-        tarea.remitente = tarea.remitente.trim();
+      beforeSave: (tramite) => {
+        tramite.asunto = tramite.asunto.trim();
+        tramite.numeroTramite = tramite.numeroTramite.trim();
+        tramite.remitente = tramite.remitente.trim();
       },
     },
   }

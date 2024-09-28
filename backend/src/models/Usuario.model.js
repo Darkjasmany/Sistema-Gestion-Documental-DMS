@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
-import { Tarea } from "./Tarea.model.js";
+import { Tramite } from "./Tramite.model.js";
 import { generarId } from "../utils/generarId.js";
 
 export const Usuario = sequelize.define(
@@ -57,7 +57,7 @@ export const Usuario = sequelize.define(
   },
   {
     tableName: "usuario", // Nombre de la tabla en la BD
-    timestamps: true, // Incluye `createdAt` y `updatedAt`
+    // timestamps: true, // Incluye `createdAt` y `updatedAt`
     // TODO: Hook para hashear el password antes de crear o actualizar
     hooks: {
       // TODO: beforeSave es más eficiente y simplifica el código al abarcar tanto la creación como la actualización que beforeCreate
@@ -80,13 +80,13 @@ export const Usuario = sequelize.define(
 
 // TODO: Definir Relaciones
 // 1 usuario puede tener muchas tareas
-Usuario.hasMany(Tarea, {
+Usuario.hasMany(Tramite, {
   foreignKey: "usuarioId", // NombreCampo
   sourceKey: "id", // Con que lo va a enlazar
 });
 
 // Muchas tareas pueden pertenecer a 1 mismo usuario
-Tarea.belongsTo(Usuario, {
+Tramite.belongsTo(Usuario, {
   foreignKey: "usuarioId",
   targetId: "id",
 });

@@ -1,12 +1,12 @@
 import { Op } from "sequelize";
-import { Tarea } from "../models/Tarea.model.js";
+import { Tramite } from "../models/Tramite.model.js";
 
-export const agregarTarea = async (req, res) => {
+export const agregarTramite = async (req, res) => {
   // console.log(req.body);
   const { asunto, descripcion, numeroTramite, remitente, usuarioId } = req.body;
 
   // Buscar por campos metodo findOne. Buscar si el número de trámite ya existe, sin importar mayúsculas/minúsculas
-  const tramiteExiste = await Tarea.findOne({
+  const tramiteExiste = await Tramite.findOne({
     where: {
       numeroTramite: {
         [Op.iLike]: numeroTramite, // Compara de forma insensible a mayúsculas/minúsculas
@@ -19,7 +19,7 @@ export const agregarTarea = async (req, res) => {
 
   // Guardar tramite
   try {
-    const tramiteGuardado = await Tarea.create({
+    const tramiteGuardado = await Tramite.create({
       asunto,
       descripcion,
       numeroTramite,
@@ -32,30 +32,30 @@ export const agregarTarea = async (req, res) => {
   }
 };
 
-export const obtenerAllTareas = async (req, res) => {
+export const obtenerAllTramites = async (req, res) => {
   try {
-    const tareas = await Tarea.findAll();
-    res.json(tareas);
+    const tramite = await Tramite.findAll();
+    res.json(tramite);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-export const obtenerTarea = async (req, res) => {
+export const obtenerTramite = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const tarea = await Tarea.findByPk(id);
+    const tramite = await Tramite.findByPk(id);
 
-    if (!tarea) return res.status(404).json({ message: "No encontrado" });
+    if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
-    res.json(tarea);
+    res.json(tramite);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const actualizarTarea = async (req, res) => {
+export const actualizarTramite = async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -68,9 +68,9 @@ export const actualizarTarea = async (req, res) => {
     } = req.body;
 
     // Obtenemos 1 objeto de la consulta
-    const tareaActualizada = await Tarea.findByPk(id);
+    const tramiteActualizado = await Tarea.findByPk(id);
 
-    if (!tareaActualizada)
+    if (!tramiteActualizado)
       return res.status(404).json({ message: "No encontrado" });
 
     /*
@@ -82,30 +82,31 @@ export const actualizarTarea = async (req, res) => {
 */
 
     // Actualizamos los datos del objeto
-    tareaActualizada.asunto = asunto || tareaActualizada.asunto;
-    tareaActualizada.descripcion = descripcion || tareaActualizada.descripcion;
-    tareaActualizada.numeroTramite =
-      numeroTramite || tareaActualizada.numeroTramite;
-    tareaActualizada.remitente = remitente || tareaActualizada.remitente;
-    tareaActualizada.departamenteRemitente =
-      departamenteRemitente || tareaActualizada.departamenteRemitente;
-    tareaActualizada.referenciaTramite =
-      referenciaTramite || tareaActualizada.referenciaTramite;
+    tramiteActualizado.asunto = asunto || tramiteActualizado.asunto;
+    tramiteActualizado.descripcion =
+      descripcion || tramiteActualizado.descripcion;
+    tramiteActualizado.numeroTramite =
+      numeroTramite || tramiteActualizado.numeroTramite;
+    tramiteActualizado.remitente = remitente || tramiteActualizado.remitente;
+    tramiteActualizado.departamenteRemitente =
+      departamenteRemitente || tramiteActualizado.departamenteRemitente;
+    tramiteActualizado.referenciaTramite =
+      referenciaTramite || tramiteActualizado.referenciaTramite;
 
     // Guardamos los datos actualizados del objeto
-    await tareaActualizada.save();
-    res.status(200).json(tareaActualizada);
+    await tramiteActualizado.save();
+    res.status(200).json(tramiteActualizado);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-export const eliminarTarea = async (req, res) => {
+export const eliminarTramite = async (req, res) => {
   const { id } = req.params; // obtener ID que se envia por la URL
-  const tarea = await Tarea.findByPk(id); // Busco la tarea en la BD por el id que se envia en la URL
+  const tramite = await Tramite.findByPk(id); // Busco la tarea en la BD por el id que se envia en la URL
 
   // Si la tarea no existe, devolvemos un error 404
-  if (!tarea) return res.status(404).json({ message: "No Encontrado" });
+  if (!tramite) return res.status(404).json({ message: "No Encontrado" });
   /*
   // Verificamos si la tarea pertenece al usuario que está intentando eliminarlo
   if (tarea.usuarioId.toString() !== req.usuarioId.toString()) {
@@ -115,14 +116,14 @@ export const eliminarTarea = async (req, res) => {
 */
   try {
     // Metodo para buscar y eliminar al mismo tiempo
-    await Tarea.destroy({
+    await Tramite.destroy({
       where: {
         // id: id,
         id,
       },
     });
 
-    res.status(200).json({ message: "Tarea Eliminada" });
+    res.status(200).json({ message: "Tramite Eliminada" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

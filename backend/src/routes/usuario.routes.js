@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   perfilUsuario,
   registrarUsuario,
-  obtenerTareasUsuario,
+  obtenerTramitesUsuario,
   confirmarCuenta,
   autenticarUsuario,
   olvidePassword,
@@ -22,6 +22,6 @@ router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
 
 // Rutas Privadas
 router.get("/perfil", checkAuth, perfilUsuario);
-router.get("/:id/tareas", obtenerTareasUsuario);
+router.get("/:id/tareas", obtenerTramitesUsuario);
 
 export default router;
