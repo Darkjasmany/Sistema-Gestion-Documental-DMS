@@ -40,13 +40,7 @@ export const Tramite = sequelize.define(
       defaultValue: "pendiente",
       validate: {
         isIn: [
-          [
-            "pendiente",
-            "en_revision",
-            "completado",
-            "correccion",
-            "finalizado",
-          ],
+          ["pendiente", "revision", "completado", "correccion", "finalizado"],
         ],
       },
     },

@@ -1,11 +1,11 @@
 import { Op } from "sequelize";
 import { Tramite } from "../models/Tramite.model.js";
+import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarTramite = async (req, res) => {
-  // console.log(req.body);
+  console.log(req);
   const { asunto, descripcion, numeroTramite, remitente, usuarioId } = req.body;
-
-  // Buscar por campos metodo findOne. Buscar si el número de trámite ya existe, sin importar mayúsculas/minúsculas
+  // const coordinadorId = await Departamento.findAll()
   const tramiteExiste = await Tramite.findOne({
     where: {
       numeroTramite: {
@@ -17,7 +17,6 @@ export const agregarTramite = async (req, res) => {
   if (tramiteExiste)
     return res.status(400).json({ message: "Número de Trámite ya Ingresado" });
 
-  // Guardar tramite
   try {
     const tramiteGuardado = await Tramite.create({
       asunto,
@@ -26,7 +25,8 @@ export const agregarTramite = async (req, res) => {
       remitente,
       usuarioId,
     });
-    res.json(tramiteGuardado); // Envio los datos al cliente
+
+    res.json(tramiteGuardado);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
