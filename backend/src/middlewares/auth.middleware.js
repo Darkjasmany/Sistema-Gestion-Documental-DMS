@@ -28,7 +28,7 @@ export const checkAuth = async (req, res, next) => {
       include: [
         {
           model: Departamento,
-          attributes: ["nombre"],
+          attributes: ["nombre", "coordinadorId"],
         },
       ],
     });

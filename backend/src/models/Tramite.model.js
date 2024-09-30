@@ -5,11 +5,6 @@ import { generarHora } from "../utils/generarHora.js";
 export const Tramite = sequelize.define(
   "tramite",
   {
-    id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     asunto: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -63,11 +58,14 @@ export const Tramite = sequelize.define(
     usuarioId: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      defaultValue: 1,
     },
     revisorId: {
       type: DataTypes.BIGINT,
       defaultValue: null,
+    },
+    departamentoId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
     },
     coordinadorId: {
       type: DataTypes.BIGINT,

@@ -96,6 +96,10 @@ export const autenticarUsuario = async (req, res) => {
   const { email, password } = req.body;
   try {
     const usuario = await Usuario.findOne({ where: { email } });
+    const departamento = await Departamento.findOne({
+      where: { id: usuario.departamentoId },
+      attributes: ["nombre", "coordinadorId"],
+    });
 
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no existe" });
@@ -107,41 +111,19 @@ export const autenticarUsuario = async (req, res) => {
         .json({ message: "Usuario no confirmado o suspendido" });
     }
 
-    // TODO: Cuando ya se implemente el FrontEND, eliminar la validacion del departamento, ya que lo obtendremos del auth.middleware, asi mismo eliminar el import del model Departamento
     if (usuario.departamentoId === null)
       return res
         .status(500)
         .json("El usuario no tiene asignado ningún departamento");
 
-    const departamento = await Departamento.findOne({
-      where: { id: usuario.departamentoId },
-      attributes: ["nombre"],
-    });
-
     if (!departamento)
       return res.status(404).json("El departamento asignado no existe");
-
-    // TODO: hasta aqui
 
     // * Comparar la contraseña ingresada con la contraseña hasheada
     if (!(await bcrypt.compare(password, usuario.password))) {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    // TODO: Este es el res que quedara definido cuando se implemente en el FrontEND
-
-    /* Uso del middleware checkAuth: El middleware ya ha verificado el token y ha cargado al usuario con su departamento en req.usuario. Esto significa que cuando llegas a este punto en la función, ya tienes acceso a todos los datos del usuario y su departamento sin hacer una consulta adicional a la base de datos.
-    res.status(200).json({
-      id: req.usuario.id,
-      nombres: req.usuario.nombres,
-      apellidos: req.usuario.apellidos,
-      email: req.usuario.email,
-      rol: req.usuario.rol,
-      token: generarJWT(req.usuario.id),
-      departamentoId: req.usuario.departamentoId,
-      departamento: req.usuario.Departamento.nombre,
-    });
-*/
     res.status(200).json({
       id: usuario.id,
       nombres: usuario.nombres,
@@ -151,6 +133,7 @@ export const autenticarUsuario = async (req, res) => {
       token: generarJWT(usuario.id),
       departamentoId: usuario.departamentoId,
       departamento: departamento.nombre,
+      coordinadorId: departamento.coordinadorId,
     });
   } catch (error) {
     console.log(`Error al autenticar: ${error.message}`);

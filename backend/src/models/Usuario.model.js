@@ -9,11 +9,11 @@ export const Usuario = sequelize.define(
   "usuario",
   {
     // Se puede omitir y el ORM crea la columna ID por defecto
-    id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
-      autoIncrement: true, //Generado automáticamente
-    },
+    // id: {
+    //   type: DataTypes.BIGINT,
+    //   primaryKey: true,
+    //   autoIncrement: true, //Generado automáticamente
+    // },
     nombres: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -75,7 +75,7 @@ export const Usuario = sequelize.define(
       beforeSave: async (usuario) => {
         usuario.nombres = usuario.nombres.trim();
         usuario.apellidos = usuario.apellidos.trim();
-        usuario.email = usuario.email.trim();
+        usuario.email = usuario.email.trim().toLowerCase();
 
         // *changed("password") se asegura de que la contraseña solo sea hasheada si fue modificada o creada por primera vez.
         if (usuario.changed("password")) {
@@ -102,7 +102,7 @@ Tramite.belongsTo(Usuario, {
   targetId: "id",
 });
 
-// Relación con Departamento
+// Departamento
 Usuario.belongsTo(Departamento, {
   foreignKey: "departamentoId",
   targetId: "id",

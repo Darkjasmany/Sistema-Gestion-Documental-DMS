@@ -1,11 +1,9 @@
 import { Op } from "sequelize";
 import { Tramite } from "../models/Tramite.model.js";
-import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarTramite = async (req, res) => {
-  console.log(req);
-  const { asunto, descripcion, numeroTramite, remitente, usuarioId } = req.body;
-  // const coordinadorId = await Departamento.findAll()
+  // console.log(req.usuario.departamento.coordinadorId);
+  const { asunto, descripcion, numeroTramite, remitente } = req.body;
   const tramiteExiste = await Tramite.findOne({
     where: {
       numeroTramite: {
@@ -23,7 +21,9 @@ export const agregarTramite = async (req, res) => {
       descripcion,
       numeroTramite,
       remitente,
-      usuarioId,
+      usuarioId: req.usuario.id,
+      coordinadorId: req.usuario.departamento.coordinadorId,
+      departamentoId: req.usuario.departamentoId,
     });
 
     res.json(tramiteGuardado);
