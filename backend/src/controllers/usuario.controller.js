@@ -7,9 +7,9 @@ import { generarId } from "../utils/generarId.js";
 import { emailOlvidePassword } from "../utils/emailOlvidePassword.js";
 
 export const registrarUsuario = async (req, res) => {
-  const { nombres, apellidos, email, password } = req.body;
+  const { nombres, apellidos, email, password, departamentoId } = req.body;
 
-  if (!nombres || !apellidos || !email || !password)
+  if (!nombres || !apellidos || !email || !password || !departamentoId)
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
@@ -38,6 +38,7 @@ export const registrarUsuario = async (req, res) => {
       apellidos,
       email,
       password,
+      departamentoId,
     });
 
     return res.status(201).json(usuarioGuardado);

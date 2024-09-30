@@ -16,7 +16,7 @@ export const Tramite = sequelize.define(
     },
     descripcion: {
       type: DataTypes.TEXT,
-      defaultValue: null,
+      allowNull: false,
     },
     numeroTramite: {
       type: DataTypes.STRING(50),
@@ -37,17 +37,21 @@ export const Tramite = sequelize.define(
     estado: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: "ingresada",
+      defaultValue: "pendiente",
       validate: {
-        isIn: [["ingresada", "pendiente", "completada", "entregada"]],
+        isIn: [
+          [
+            "pendiente",
+            "en_revision",
+            "completado",
+            "correccion",
+            "finalizado",
+          ],
+        ],
       },
     },
     referenciaTramite: {
       type: DataTypes.STRING(50),
-      defaultValue: null,
-    },
-    responsable: {
-      type: DataTypes.STRING,
       defaultValue: null,
     },
     fechaDespacho: {
@@ -61,9 +65,19 @@ export const Tramite = sequelize.define(
       defaultValue: generarHora(),
       // defaultValue: sequelize.literal("CURRENT_TIME"), // Hora actual sin fecha ni zona horaria
     },
-    done: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+    // Relación con el usuario que creó el trámite.
+    usuarioId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    revisorId: {
+      type: DataTypes.BIGINT,
+      defaultValue: null,
+    },
+    coordinadorId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
     },
   },
   {
@@ -74,6 +88,7 @@ export const Tramite = sequelize.define(
         tramite.asunto = tramite.asunto.trim();
         tramite.numeroTramite = tramite.numeroTramite.trim();
         tramite.remitente = tramite.remitente.trim();
+        tramite.descripcion = tramite.descripcion.trim();
       },
     },
   }

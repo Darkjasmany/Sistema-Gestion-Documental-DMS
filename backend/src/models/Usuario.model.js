@@ -1,8 +1,9 @@
 import { DataTypes } from "sequelize";
-import bcrypt from "bcrypt";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { Tramite } from "./Tramite.model.js";
+import { Departamento } from "./Departamento.model.js";
 import { generarId } from "../utils/generarId.js";
+import bcrypt from "bcrypt";
 
 export const Usuario = sequelize.define(
   "usuario",
@@ -37,9 +38,9 @@ export const Usuario = sequelize.define(
     rol: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: "usuario", // Valor por defecto 'usuario'
+      defaultValue: "USUARIO", // Valor por defecto 'usuario'
       validate: {
-        isIn: [["admin", "usuario"]], // Solo permite 'admin' o 'usuario'
+        isIn: [["ADMIN", "COORDINADOR", "REVISOR", "USUARIO"]],
       },
     },
     token: {
@@ -54,20 +55,29 @@ export const Usuario = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    departamentoId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: 1, // Valor por defecto para el departamento "Sistemas"
+      references: {
+        model: "departamento",
+        key: "id",
+      },
+    },
   },
   {
     tableName: "usuario", // Nombre de la tabla en la BD
     // timestamps: true, // Incluye `createdAt` y `updatedAt`
-    // TODO: Hook para hashear el password antes de crear o actualizar
+    // * Hook para hashear el password antes de crear o actualizar
     hooks: {
-      // TODO: beforeSave es más eficiente y simplifica el código al abarcar tanto la creación como la actualización que beforeCreate
+      // * beforeSave es más eficiente y simplifica el código al abarcar tanto la creación como la actualización que beforeCreate
       // Hook para eliminar los espacios en Blanco y hashear password
       beforeSave: async (usuario) => {
         usuario.nombres = usuario.nombres.trim();
         usuario.apellidos = usuario.apellidos.trim();
         usuario.email = usuario.email.trim();
 
-        // TODO: changed("password") se asegura de que la contraseña solo sea hasheada si fue modificada o creada por primera vez.
+        // *changed("password") se asegura de que la contraseña solo sea hasheada si fue modificada o creada por primera vez.
         if (usuario.changed("password")) {
           usuario.password = usuario.password.trim();
           const salt = await bcrypt.genSalt(10);
@@ -78,7 +88,8 @@ export const Usuario = sequelize.define(
   }
 );
 
-// TODO: Definir Relaciones
+// * Definir Relaciones
+// TRAMITE
 // 1 usuario puede tener muchas tareas
 Usuario.hasMany(Tramite, {
   foreignKey: "usuarioId", // NombreCampo
@@ -88,5 +99,11 @@ Usuario.hasMany(Tramite, {
 // Muchas tareas pueden pertenecer a 1 mismo usuario
 Tramite.belongsTo(Usuario, {
   foreignKey: "usuarioId",
+  targetId: "id",
+});
+
+// Relación con Departamento
+Usuario.belongsTo(Departamento, {
+  foreignKey: "departamentoId",
   targetId: "id",
 });
