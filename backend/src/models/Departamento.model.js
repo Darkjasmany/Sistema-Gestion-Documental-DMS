@@ -5,11 +5,6 @@ import { Tramite } from "./Tramite.model.js";
 export const Departamento = sequelize.define(
   "departamento",
   {
-    id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     nombre: {
       type: DataTypes.STRING,
       allowNull: false,
