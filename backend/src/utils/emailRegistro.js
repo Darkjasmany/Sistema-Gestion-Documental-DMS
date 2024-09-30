@@ -1,4 +1,4 @@
-import { enviarEmail } from "./enviarEmail";
+import { enviarEmail } from "./enviarEmail.js";
 
 export const emailRegistro = async (datos) => {
   const { email, nombres, apellidos, token } = datos;
