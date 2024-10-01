@@ -2,8 +2,14 @@ import { Op } from "sequelize";
 import { Tramite } from "../models/Tramite.model.js";
 
 export const agregarTramite = async (req, res) => {
-  // console.log(req.usuario.departamento.coordinadorId);
-  const { asunto, descripcion, numeroTramite, remitente } = req.body;
+  const {
+    numeroTramite,
+    departamentoRemitenteId,
+    remitenteId,
+    asunto,
+    descripcion,
+  } = req.body;
+
   const tramiteExiste = await Tramite.findOne({
     where: {
       numeroTramite: {
@@ -11,17 +17,17 @@ export const agregarTramite = async (req, res) => {
       },
     },
   });
-
   if (tramiteExiste)
     return res.status(400).json({ message: "Número de Trámite ya Ingresado" });
 
   try {
     const tramiteGuardado = await Tramite.create({
+      numeroTramite,
+      departamentoRemitenteId,
+      remitenteId,
       asunto,
       descripcion,
-      numeroTramite,
-      remitente,
-      usuarioId: req.usuario.id,
+      usuarioCreacionId: req.usuario.id,
       coordinadorId: req.usuario.departamento.coordinadorId,
       departamentoId: req.usuario.departamentoId,
     });
