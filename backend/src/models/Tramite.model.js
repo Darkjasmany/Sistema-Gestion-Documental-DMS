@@ -1,18 +1,11 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { generarHora } from "../utils/generarHora.js";
+import { Departamento } from "./Departamento.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
   {
-    asunto: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    descripcion: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
     numeroTramite: {
       type: DataTypes.STRING(50),
       allowNull: false,
@@ -21,12 +14,20 @@ export const Tramite = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    departamenteRemitente: {
-      type: DataTypes.TEXT,
-      defaultValue: null,
+    departamentoRemitenteId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
     },
-    numeroOficioDespacho: {
+    asunto: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    descripcion: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    referenciaTramite: {
+      type: DataTypes.STRING(50),
       defaultValue: null,
     },
     estado: {
@@ -39,8 +40,16 @@ export const Tramite = sequelize.define(
         ],
       },
     },
-    referenciaTramite: {
-      type: DataTypes.STRING(50),
+    numeroOficioDespacho: {
+      type: DataTypes.STRING,
+      defaultValue: null,
+    },
+    destinatario: {
+      type: DataTypes.TEXT,
+      defaultValue: null,
+    },
+    departamentoDestinatarioId: {
+      type: DataTypes.BIGINT,
       defaultValue: null,
     },
     fechaDespacho: {
@@ -52,14 +61,12 @@ export const Tramite = sequelize.define(
       type: DataTypes.TIME,
       allowNull: false,
       defaultValue: generarHora(),
-      // defaultValue: sequelize.literal("CURRENT_TIME"), // Hora actual sin fecha ni zona horaria
     },
-    // Relación con el usuario que creó el trámite.
-    usuarioId: {
+    usuarioCreacionId: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    revisorId: {
+    usuarioRevisorId: {
       type: DataTypes.BIGINT,
       defaultValue: null,
     },
@@ -74,7 +81,6 @@ export const Tramite = sequelize.define(
   },
   {
     tableName: "tramite",
-    // timestamps: true,
     hooks: {
       beforeSave: (tramite) => {
         tramite.asunto = tramite.asunto.trim();
@@ -85,3 +91,39 @@ export const Tramite = sequelize.define(
     },
   }
 );
+// * Relaciones
+// 1 tramite pertenece a 1 departamento remitente
+Tramite.belongsTo(Departamento, {
+  foreignKey: "departamentoRemitenteId", // campo en la tabla Tramite que contiene el ID del departamento
+  targetId: "id", // campo en la tabla Departamento que se enlaza
+});
+
+// 1 tramite es despachado a 1 departamento destino
+Tramite.belongsTo(Departamento, {
+  foreignKey: "departamentoDestinatarioId",
+  targetId: "id",
+});
+
+// 1 tramite puede tener 1 coordinador
+Tramite.belongsTo(Departamento, {
+  foreignKey: "coordinadorId",
+  targetId: "coordinadorId",
+});
+
+// 1 departamento remitente puede tener muchos tramites
+Departamento.hasMany(Tramite, {
+  foreignKey: "departamentoRemitenteId",
+  sourceKey: "id",
+});
+
+// 1 departamento destino puede tener muchos tramites
+Departamento.hasMany(Tramite, {
+  foreignKey: "departamentoDestinatarioId",
+  sourceKey: "id",
+});
+
+// 1 coordinador puede tener muchos tramites
+Departamento.hasMany(Tramite, {
+  foreignKey: "coordinadorId",
+  sourceKey: "coordinadorId",
+});

@@ -58,11 +58,6 @@ export const Usuario = sequelize.define(
     departamentoId: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      defaultValue: 1, // Valor por defecto para el departamento "Sistemas"
-      references: {
-        model: "departamento",
-        key: "id",
-      },
     },
   },
   {
@@ -89,11 +84,10 @@ export const Usuario = sequelize.define(
 );
 
 // * Definir Relaciones
-// TRAMITE
 // 1 usuario puede tener muchas tareas
 Usuario.hasMany(Tramite, {
   foreignKey: "usuarioId", // NombreCampo
-  sourceKey: "id", // Con que lo va a enlazar
+  sourceKey: "id", // Con que lo va a enlazar no es necesario definirlo sourceKey o targetId NO ES OBLIGATORIO
 });
 
 // Muchas tareas pueden pertenecer a 1 mismo usuario
@@ -102,7 +96,13 @@ Tramite.belongsTo(Usuario, {
   targetId: "id",
 });
 
-// Departamento
+// un Departamento puede tener muchos Usuarios
+Departamento.hasMany(Usuario, {
+  foreignKey: "departamentoId",
+  sourceKey: "id",
+});
+
+// un usuario solo puede tener un departamento asignado
 Usuario.belongsTo(Departamento, {
   foreignKey: "departamentoId",
   targetId: "id",
