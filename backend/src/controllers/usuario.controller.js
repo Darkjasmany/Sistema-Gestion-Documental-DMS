@@ -10,6 +10,7 @@ import { emailRegistro } from "../utils/emailRegistro.js";
 
 export const registrarUsuario = async (req, res) => {
   const { nombres, apellidos, email, password, departamentoId } = req.body;
+  const departamento = await Departamento.findByPk(departamentoId);
 
   if (!nombres || !apellidos || !email || !password || !departamentoId)
     return res
@@ -29,6 +30,9 @@ export const registrarUsuario = async (req, res) => {
   const usuarioExiste = await Usuario.findOne({ where: { email } });
   if (usuarioExiste)
     return res.status(400).json({ message: "Usuario ya registrado" });
+
+  if (!departamento)
+    return res.status(400).json({ message: "Departamento no válido" });
 
   // Guardar nuevo Usuario
   try {

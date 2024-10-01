@@ -17,6 +17,11 @@ export const Departamento = sequelize.define(
   },
   {
     tableName: "departamento",
+    hooks: {
+      beforeSave: (departamento) => {
+        departamento.nombre = departamento.nombre.trim();
+      },
+    },
   }
 );
 
