@@ -1,6 +1,7 @@
+import { Op } from "sequelize";
 import { Departamento } from "../models/Departamento.model.js";
 
-export const agregarDepartamento = async (rea, res) => {
+export const agregarDepartamento = async (req, res) => {
   const { nombre, coordinadorId } = req.body;
   const departamentoExiste = await Departamento.findOne({
     where: {
@@ -30,6 +31,7 @@ export const agregarDepartamento = async (rea, res) => {
 export const cargarDepartamentos = async (req, res) => {
   try {
     const departamentos = await Departamento.findAll();
+    console.log(departamentos);
     res.status(200).json(departamentos);
   } catch (error) {
     console.error(`Error al cargar los departamento: ${error.message}`);
@@ -65,11 +67,12 @@ export const actualizarDepartamento = async (req, res) => {
     if (!departamentoActualizado)
       return res.status(400).json({ message: "Departamento no válido" });
 
+    console.log(departamentoActualizado);
     departamentoActualizado.nombre = nombre || departamentoActualizado.nombre;
     departamentoActualizado.coordinadorId =
       coordinadorId || departamentoActualizado.coordinadorId;
 
-    await tramiteActualizado.save();
+    await departamentoActualizado.save();
 
     res.status(200).json(departamentoActualizado);
   } catch (error) {

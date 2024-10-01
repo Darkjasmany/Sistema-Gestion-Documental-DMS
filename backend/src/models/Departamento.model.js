@@ -11,6 +11,7 @@ export const Departamento = sequelize.define(
     coordinadorId: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      defaultValue: 1, //TODO: Tengo que tener migrado todos los departamentos
     },
   },
   {
