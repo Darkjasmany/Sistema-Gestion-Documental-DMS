@@ -65,10 +65,18 @@ export const Tramite = sequelize.define(
     usuarioCreacionId: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: "usuario", // nombre de la tabla de referencia
+        key: "id", // clave primaria de la tabla de referencia
+      },
     },
     usuarioRevisorId: {
       type: DataTypes.BIGINT,
       defaultValue: null,
+      references: {
+        model: "usuario", // nombre de la tabla de referencia
+        key: "id", // clave primaria de la tabla de referencia
+      },
     },
     departamentoId: {
       type: DataTypes.BIGINT,
@@ -91,7 +99,8 @@ export const Tramite = sequelize.define(
     },
   }
 );
-// * Relaciones
+
+// ** Relaciones
 // 1 tramite pertenece a 1 departamento remitente
 Tramite.belongsTo(Departamento, {
   foreignKey: "departamentoRemitenteId", // campo en la tabla Tramite que contiene el ID del departamento

@@ -58,6 +58,10 @@ export const Usuario = sequelize.define(
     departamentoId: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: "departamento", // nombre de la tabla de referencia
+        key: "id", // clave primaria de la tabla de referencia
+      },
     },
   },
   {
@@ -83,27 +87,39 @@ export const Usuario = sequelize.define(
   }
 );
 
-// * Definir Relaciones
-// 1 usuario puede tener muchas tareas
-Usuario.hasMany(Tramite, {
-  foreignKey: "usuarioId", // NombreCampo
-  sourceKey: "id", // Con que lo va a enlazar no es necesario definirlo sourceKey o targetId NO ES OBLIGATORIO
-});
+// ** Relaciones
 
-// Muchas tareas pueden pertenecer a 1 mismo usuario
+// * TRAMITE
+// 1 tramite pertenece a 1 usuarioCreacion
+// Se creara el campo usuarioCreacionId de la relacion del modelo Usuario si no se define
 Tramite.belongsTo(Usuario, {
-  foreignKey: "usuarioId",
-  targetId: "id",
+  foreignKey: "usuarioCreacionId", // Campo que se crea en la tabla Tramite
+  targetKey: "id", // Con qué lo va a enlazar
+});
+// 1 usuario puede crear  muchos tramites
+Usuario.hasMany(Tramite, {
+  foreignKey: "usuarioCreacionId", // NombreCampo
+  sourceKey: "id", // Con qué lo va a enlazar
+});
+// 1 tramite pertenece a 1 usuario revisor
+Tramite.belongsTo(Usuario, {
+  foreignKey: "usuarioRevisorId", // Campo que se crea en la tabla Tramite
+  targetKey: "id", // Con qué lo va a enlazar
+});
+// 1 revisor puede tener muchos tramites asignados
+Usuario.hasMany(Tramite, {
+  foreignKey: "usuarioRevisorId", // NombreCampo
+  sourceKey: "id", // Con qué lo va a enlazar
 });
 
-// un Departamento puede tener muchos Usuarios
-Departamento.hasMany(Usuario, {
-  foreignKey: "departamentoId",
-  sourceKey: "id",
-});
-
-// un usuario solo puede tener un departamento asignado
+// * DEPARTAMENTO
+// Relación: Un usuario pertenece a un departamento
 Usuario.belongsTo(Departamento, {
-  foreignKey: "departamentoId",
-  targetId: "id",
+  foreignKey: "departamentoId", // campo en Usuario que contiene el ID del departamento
+  targetKey: "id", // clave primaria en Departamento
+});
+// Relación: Un departamento puede tener muchos usuarios
+Departamento.hasMany(Usuario, {
+  foreignKey: "departamentoId", // campo en Usuario que contiene el ID del departamento
+  sourceKey: "id", // clave primaria en Departamento
 });
