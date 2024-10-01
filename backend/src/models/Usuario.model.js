@@ -26,6 +26,9 @@ export const Usuario = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true, // validación para formato de email
+      },
     },
     password: {
       type: DataTypes.STRING,
@@ -33,7 +36,11 @@ export const Usuario = sequelize.define(
     },
     telefono: {
       type: DataTypes.STRING,
-      defaultValue: null,
+      allowNull: true, // campo opcional
+      validate: {
+        isNumeric: true, // validación para que solo acepte números
+        len: [10, 10], // Valida que la longitud sea exactamente de 10 caracteres
+      },
     },
     rol: {
       type: DataTypes.STRING(50),

@@ -3,6 +3,12 @@ import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarDepartamento = async (req, res) => {
   const { nombre, coordinadorId } = req.body;
+
+  if (!nombre)
+    return res
+      .status(400)
+      .json({ message: "Todos los campos son obligatorios" });
+
   const departamentoExiste = await Departamento.findOne({
     where: {
       nombre: {
@@ -10,7 +16,6 @@ export const agregarDepartamento = async (req, res) => {
       },
     },
   });
-
   if (departamentoExiste)
     return res.status(400).json({ message: "Departamento ya Ingresado" });
 
@@ -19,6 +24,7 @@ export const agregarDepartamento = async (req, res) => {
       nombre,
       coordinadorId: coordinadorId,
     });
+
     res.json(departamentoGuardado);
   } catch (error) {
     console.error(`Error al crear un departamento: ${error.message}`);
@@ -31,7 +37,7 @@ export const agregarDepartamento = async (req, res) => {
 export const cargarDepartamentos = async (req, res) => {
   try {
     const departamentos = await Departamento.findAll();
-    console.log(departamentos);
+
     res.status(200).json(departamentos);
   } catch (error) {
     console.error(`Error al cargar los departamento: ${error.message}`);
@@ -44,8 +50,8 @@ export const cargarDepartamentos = async (req, res) => {
 export const obtenerDepartamento = async (req, res) => {
   try {
     const { id } = req.params;
-    const departamento = await Departamento.findByPk(id);
 
+    const departamento = await Departamento.findByPk(id);
     if (!departamento)
       return res.status(400).json({ message: "Departamento no válido" });
 
@@ -63,11 +69,9 @@ export const actualizarDepartamento = async (req, res) => {
     const { nombre, coordinadorId } = req.body;
 
     const departamentoActualizado = await Departamento.findByPk(id);
-
     if (!departamentoActualizado)
       return res.status(400).json({ message: "Departamento no válido" });
 
-    console.log(departamentoActualizado);
     departamentoActualizado.nombre = nombre || departamentoActualizado.nombre;
     departamentoActualizado.coordinadorId =
       coordinadorId || departamentoActualizado.coordinadorId;
@@ -86,8 +90,8 @@ export const actualizarDepartamento = async (req, res) => {
 export const eliminarDepartamento = async (req, res) => {
   try {
     const { id } = req.params;
-    const departamento = await Departamento.findByPk(id);
 
+    const departamento = await Departamento.findByPk(id);
     if (!departamento)
       return res.status(400).json({ message: "Departamento no válido" });
 
