@@ -223,8 +223,15 @@ export const obtenerTramitesUsuario = async (req, res) => {
   const { id } = req.params;
   try {
     const tramitesUsuario = await Tramite.findAll({
-      where: { usuarioId: id },
-      attributes: { exclude: ["createdAt", "updatedAt", "usuarioId"] },
+      where: { usuarioRevisorId: id },
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt",
+          "departamentoId",
+          "usuarioRevisorId",
+        ],
+      },
     });
 
     res.status(200).json(tramitesUsuario);
