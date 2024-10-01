@@ -59,7 +59,6 @@ export const registrarUsuario = async (req, res) => {
 };
 
 export const perfilUsuario = (req, res) => {
-  console.log(req.usuario);
   const { usuario } = req;
   res.status(200).json({ usuario });
 };
