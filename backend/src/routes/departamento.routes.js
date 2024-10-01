@@ -1,15 +1,16 @@
 import { Router } from "express";
 import {
+  agregarDepartamento,
   cargarDepartamentos,
   obtenerDepartamento,
   actualizarDepartamento,
   eliminarDepartamento,
 } from "../controllers/departamento.controller.js";
-import { checkAuth } from "../middlewares/auth.middleware.js";
+// import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.get("/", cargarDepartamentos);
+router.route("/").post(agregarDepartamento).get(cargarDepartamentos);
 
 // TODO: Validacion para que solo la ruta pueda revisarla el usuario ADMIN
 router

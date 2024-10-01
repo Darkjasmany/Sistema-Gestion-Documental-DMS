@@ -1,5 +1,32 @@
 import { Departamento } from "../models/Departamento.model.js";
 
+export const agregarDepartamento = async (rea, res) => {
+  const { nombre, coordinadorId } = req.body;
+  const departamentoExiste = await Departamento.findOne({
+    where: {
+      nombre: {
+        [Op.iLike]: nombre,
+      },
+    },
+  });
+
+  if (departamentoExiste)
+    return res.status(400).json({ message: "Departamento ya Ingresado" });
+
+  try {
+    const departamentoGuardado = await Departamento.create({
+      nombre,
+      coordinadorId: coordinadorId,
+    });
+    res.json(departamentoGuardado);
+  } catch (error) {
+    console.error(`Error al crear un departamento: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al crear un departamento.",
+    });
+  }
+};
+
 export const cargarDepartamentos = async (req, res) => {
   try {
     const departamentos = await Departamento.findAll();
