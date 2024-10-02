@@ -1,5 +1,7 @@
 import { Op } from "sequelize";
 import { Tramite } from "../models/Tramite.model.js";
+import { Empleado } from "../models/Empleado.model.js";
+import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarTramite = async (req, res) => {
   const {
@@ -9,6 +11,25 @@ export const agregarTramite = async (req, res) => {
     descripcion,
     numeroTramite,
   } = req.body;
+
+  const departamentoExiste = await Departamento.findByPk(
+    departamentoRemitenteId
+  );
+  if (!departamentoExiste)
+    return res
+      .status(400)
+      .json({ message: "Departamento del remitente no encontrado" });
+
+  const empleadoExiste = await Empleado.findOne({
+    where: {
+      id: remitenteId,
+      departamentoId: departamentoRemitenteId,
+    },
+  });
+  if (!empleadoExiste)
+    return res.status(400).json({
+      message: "No existe ese empleado o no está asignado a ese departamento",
+    });
 
   const tramiteExiste = await Tramite.findOne({
     where: {
@@ -50,7 +71,6 @@ export const obtenerTramite = async (req, res) => {
     const { id } = req.params;
 
     const tramite = await Tramite.findByPk(id);
-
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
     res.json(tramite);

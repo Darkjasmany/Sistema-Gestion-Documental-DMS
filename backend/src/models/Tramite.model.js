@@ -32,6 +32,7 @@ export const Tramite = sequelize.define(
     },
     numeroTramite: {
       type: DataTypes.STRING(50),
+      unique: true,
       allowNull: false,
     },
     referenciaTramite: {
