@@ -3,11 +3,11 @@ import { Tramite } from "../models/Tramite.model.js";
 
 export const agregarTramite = async (req, res) => {
   const {
-    numeroTramite,
     departamentoRemitenteId,
     remitenteId,
     asunto,
     descripcion,
+    numeroTramite,
   } = req.body;
 
   const tramiteExiste = await Tramite.findOne({
@@ -28,8 +28,6 @@ export const agregarTramite = async (req, res) => {
       asunto,
       descripcion,
       usuarioCreacionId: req.usuario.id,
-      coordinadorId: req.usuario.departamento.coordinadorId,
-      departamentoId: req.usuario.departamentoId,
     });
 
     res.json(tramiteGuardado);

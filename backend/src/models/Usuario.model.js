@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { Tramite } from "./Tramite.model.js";
+import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 import { Departamento } from "./Departamento.model.js";
 import { generarId } from "../utils/generarId.js";
 import bcrypt from "bcrypt";
@@ -96,7 +97,7 @@ export const Usuario = sequelize.define(
 
 // ** Relaciones
 
-// * TRAMITE
+// * Trámite
 // 1 tramite pertenece a 1 usuarioCreacion
 // Se creara el campo usuarioCreacionId de la relacion del modelo Usuario si no se define
 Tramite.belongsTo(Usuario, {
@@ -108,18 +109,20 @@ Usuario.hasMany(Tramite, {
   foreignKey: "usuarioCreacionId", // NombreCampo
   sourceKey: "id", // Con qué lo va a enlazar
 });
+
+// * TramiteAsignacion
 // 1 tramite pertenece a 1 usuario revisor
-Tramite.belongsTo(Usuario, {
+TramiteAsignacion.belongsTo(Usuario, {
   foreignKey: "usuarioRevisorId", // Campo que se crea en la tabla Tramite
   targetKey: "id", // Con qué lo va a enlazar
 });
 // 1 revisor puede tener muchos tramites asignados
-Usuario.hasMany(Tramite, {
+Usuario.hasMany(TramiteAsignacion, {
   foreignKey: "usuarioRevisorId", // NombreCampo
   sourceKey: "id", // Con qué lo va a enlazar
 });
 
-// * DEPARTAMENTO
+// * Departamento
 // Relación: Un usuario pertenece a un departamento
 Usuario.belongsTo(Departamento, {
   foreignKey: "departamentoId", // campo en Usuario que contiene el ID del departamento

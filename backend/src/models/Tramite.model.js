@@ -1,16 +1,11 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { generarHora } from "../utils/generarHora.js";
-// import { Usuario } from "./Usuario.model.js";
 import { Departamento } from "./Departamento.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
   {
-    numeroTramite: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
     remitenteId: {
       type: DataTypes.BIGINT,
       allowNull: false,
@@ -35,6 +30,10 @@ export const Tramite = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    numeroTramite: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
     referenciaTramite: {
       type: DataTypes.STRING(50),
       allowNull: true,
@@ -50,7 +49,7 @@ export const Tramite = sequelize.define(
       },
     },
     numeroOficioDespacho: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(50),
       allowNull: true,
     },
     destinatarioId: {
@@ -87,22 +86,6 @@ export const Tramite = sequelize.define(
         key: "id", // clave primaria de la tabla de referencia
       },
     },
-    usuarioRevisorId: {
-      type: DataTypes.BIGINT,
-      defaultValue: null,
-      references: {
-        model: "usuario", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
-      },
-    },
-    departamentoId: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-    },
-    coordinadorId: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-    },
   },
   {
     tableName: "tramite",
@@ -129,12 +112,6 @@ Tramite.belongsTo(Departamento, {
   targetId: "id",
 });
 
-// 1 tramite puede tener 1 coordinador
-// Tramite.belongsTo(Usuario, {
-//   foreignKey: "coordinadorId",
-//   targetId: "id",
-// });
-
 // 1 departamento remitente puede tener muchos tramites
 Departamento.hasMany(Tramite, {
   foreignKey: "departamentoRemitenteId",
@@ -146,9 +123,3 @@ Departamento.hasMany(Tramite, {
   foreignKey: "departamentoDestinatarioId",
   sourceKey: "id",
 });
-
-// 1 coordinador puede tener muchos tramites
-// Usuario.hasMany(Tramite, {
-//   foreignKey: "coordinadorId",
-//   sourceKey: "id",
-// });
