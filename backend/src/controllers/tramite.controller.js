@@ -57,12 +57,32 @@ export const agregarTramite = async (req, res) => {
   }
 };
 
-export const obtenerAllTramites = async (req, res) => {
+export const listarTramitesUsuario = async (req, res) => {
   try {
-    const tramite = await Tramite.findAll();
-    res.json(tramite);
+    const tramites = await Tramite.findAll({
+      where: { usuarioCreacionId: req.usuario.id, estado: "pendiente" },
+      attributes: ["numeroTramite", "asunto", "descripcion"],
+      include: [
+        {
+          model: Departamento,
+          as: "departamentoRemitente", // Alias
+          attributes: ["nombre"], // Atributos del departamento remitente
+        },
+        {
+          model: Empleado,
+          as: "remitente", // Alias
+          attributes: ["nombres", "apellidos", "cedula"], // Atributos del remitente
+        },
+      ],
+    });
+
+    res.json(tramites);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(`Error al obtener las tareas del usuario : ${error.message}`);
+    return res.status(500).json({
+      message:
+        "Error al obtener las tareas del usuario, intente nuevamente más tarde.",
+    });
   }
 };
 

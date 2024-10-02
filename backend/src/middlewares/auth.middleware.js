@@ -39,3 +39,9 @@ export const checkAuth = async (req, res, next) => {
     return res.status(403).json({ msg: `Token no Válido: ${error.message}` });
   }
 };
+
+export const checkRole = (req, res, next) => {
+  console.log(req.usuario);
+
+  return next();
+};

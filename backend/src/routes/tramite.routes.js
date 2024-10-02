@@ -4,18 +4,32 @@ import {
   obtenerTramite,
   actualizarTramite,
   eliminarTramite,
-  obtenerAllTramites,
+  listarTramitesUsuario,
 } from "../controllers/tramite.controller.js";
-import { checkAuth } from "../middlewares/auth.middleware.js";
+import { checkAuth, checkRole } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/").post(checkAuth, agregarTramite).get(obtenerAllTramites);
+// Rutas para usuario normal (usuarioCreacion)
+router
+  .route("/")
+  .post(checkAuth, agregarTramite)
+  .get(checkAuth, checkRole, listarTramitesUsuario);
 
 router
   .route("/:id")
-  .get(obtenerTramite)
-  .put(actualizarTramite)
-  .delete(eliminarTramite);
+  .get(checkAuth, obtenerTramite)
+  .put(checkAuth, actualizarTramite)
+  .delete(checkAuth, eliminarTramite);
 
+// Rutas exclusivas para el coordinador
+/*
+router
+  .route("/coordinador/tramites")
+  .get(checkAuth, checkRole("coordinador"), listarTramitesCoordinador);
+
+router
+  .route("/coordinador/tramites/:id/asignar-revisor")
+  .put(checkAuth, checkRole("coordinador"), asignarRevisor);
+*/
 export default router;

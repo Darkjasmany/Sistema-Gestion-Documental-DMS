@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 // import { IntentoFallido } from "../models/IntentoFallido.models.js";
@@ -215,31 +214,6 @@ export const nuevoPassword = async (req, res) => {
     return res.status(500).json({
       message:
         "Hubo un error al actualizar la contraseña, inténtalo más tarde.",
-    });
-  }
-};
-
-export const obtenerTramitesUsuario = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const tramitesUsuario = await Tramite.findAll({
-      where: { usuarioRevisorId: id },
-      attributes: {
-        exclude: [
-          "createdAt",
-          "updatedAt",
-          "departamentoId",
-          "usuarioRevisorId",
-        ],
-      },
-    });
-
-    res.status(200).json(tramitesUsuario);
-  } catch (error) {
-    console.error(`Error al obtener las tareas del usuario : ${error.message}`);
-    return res.status(500).json({
-      message:
-        "Error al obtener las tareas del usuario, intente nuevamente más tarde.",
     });
   }
 };

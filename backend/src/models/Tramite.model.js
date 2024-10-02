@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
 import { generarHora } from "../utils/generarHora.js";
 import { Departamento } from "./Departamento.model.js";
+import { Empleado } from "./Empleado.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
@@ -104,23 +105,41 @@ export const Tramite = sequelize.define(
 // 1 tramite pertenece a 1 departamento remitente
 Tramite.belongsTo(Departamento, {
   foreignKey: "departamentoRemitenteId", // campo en la tabla Tramite que contiene el ID del departamento
-  targetId: "id", // campo en la tabla Departamento que se enlaza
+  targetKey: "id", // campo en la tabla Departamento que se enlaza
+  as: "departamentoRemitente", // Alias para esta relación
 });
 
 // 1 tramite es despachado a 1 departamento destino
 Tramite.belongsTo(Departamento, {
   foreignKey: "departamentoDestinatarioId",
-  targetId: "id",
+  targetKey: "id",
+  as: "departamentoDestinatario", // Alias para la relación destino
 });
 
 // 1 departamento remitente puede tener muchos tramites
 Departamento.hasMany(Tramite, {
   foreignKey: "departamentoRemitenteId",
   sourceKey: "id",
+  as: "tramitesRemitidos", // Alias para la relación inversa (remitente)
 });
 
 // 1 departamento destino puede tener muchos tramites
 Departamento.hasMany(Tramite, {
   foreignKey: "departamentoDestinatarioId",
   sourceKey: "id",
+  as: "tramitesRecibidos", // Alias para la relación inversa (destinatario)
+});
+
+// Relación entre Tramite y Empleado como remitente
+Tramite.belongsTo(Empleado, {
+  foreignKey: "remitenteId", // Este es el campo que almacena el id del remitente
+  targetKey: "id",
+  as: "remitente", // Alias que usarás en las consultas
+});
+
+// Relación entre Tramite y Empleado como destinatario
+Tramite.belongsTo(Empleado, {
+  foreignKey: "destinatarioId", // Este es el campo que almacena el id del destinatario
+  targetKey: "id",
+  as: "destinatario", // Alias para el destinatario en las consultas
 });
