@@ -14,7 +14,7 @@ const router = Router();
 router
   .route("/")
   .post(checkAuth, agregarTramite)
-  .get(checkAuth, checkRole, listarTramitesUsuario);
+  .get(checkAuth, listarTramitesUsuario);
 
 router
   .route("/:id")
@@ -22,8 +22,8 @@ router
   .put(checkAuth, actualizarTramite)
   .delete(checkAuth, eliminarTramite);
 
-// Rutas exclusivas para el coordinador
 /*
+  // Rutas exclusivas para el coordinador
 router
   .route("/coordinador/tramites")
   .get(checkAuth, checkRole("coordinador"), listarTramitesCoordinador);
@@ -31,5 +31,15 @@ router
 router
   .route("/coordinador/tramites/:id/asignar-revisor")
   .put(checkAuth, checkRole("coordinador"), asignarRevisor);
+
+// Rutas exclusivas para el revisor
+router
+  .route("/revisor/tramites")
+  .get(checkAuth, checkRole("revisor"), listarTramitesRevisor);
+
+router
+  .route("/revisor/tramites/:id")
+  .get(checkAuth, checkRole("revisor"), obtenerTramiteRevisor)
+  .put(checkAuth, checkRole("revisor"), actualizarTramiteRevisor);
 */
 export default router;

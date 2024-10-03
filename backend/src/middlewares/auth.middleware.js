@@ -40,8 +40,9 @@ export const checkAuth = async (req, res, next) => {
   }
 };
 
-export const checkRole = (req, res, next) => {
-  console.log(req.usuario);
+export const checkRole = (role) => (req, res, next) => {
+  if (req.usuario.rol === role)
+    return res.status(403).json({ message: "Acceso denegado" });
 
   return next();
 };

@@ -10,7 +10,19 @@ export const agregarTramite = async (req, res) => {
     asunto,
     descripcion,
     numeroTramite,
+    referenciaTramite,
   } = req.body;
+
+  if (
+    !departamentoRemitenteId ||
+    !remitenteId ||
+    !asunto ||
+    !descripcion ||
+    !numeroTramite
+  )
+    return res
+      .status(400)
+      .json({ message: "Todos los campos son obligatorios" });
 
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
@@ -48,6 +60,7 @@ export const agregarTramite = async (req, res) => {
       remitenteId,
       asunto,
       descripcion,
+      referenciaTramite,
       usuarioCreacionId: req.usuario.id,
     });
 
@@ -95,80 +108,143 @@ export const obtenerTramite = async (req, res) => {
 
     res.json(tramite);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(`Error al obtener la tarea seleccionada: ${error.message}`);
+    return res.status(500).json({
+      message:
+        "Error al obtener la tarea seleccionada, intente nuevamente más tarde.",
+    });
   }
 };
 
 export const actualizarTramite = async (req, res) => {
+  const transaction = await Tramite.sequelize.transaction(); // Inicia la transacción
+
   try {
     const { id } = req.params;
     const {
+      departamentoRemitenteId,
+      remitenteId,
       asunto,
       descripcion,
       numeroTramite,
-      remitente,
-      departamenteRemitente,
       referenciaTramite,
     } = req.body;
 
-    // Obtenemos 1 objeto de la consulta
-    const tramiteActualizado = await Tarea.findByPk(id);
+    if (
+      !departamentoRemitenteId ||
+      !remitenteId ||
+      !asunto ||
+      !descripcion ||
+      !numeroTramite
+    ) {
+      await transaction.rollback();
+      return res
+        .status(400)
+        .json({ message: "Todos los campos son obligatorios" });
+    }
 
-    if (!tramiteActualizado)
-      return res.status(404).json({ message: "No encontrado" });
+    const tramiteActualizado = await Tramite.findByPk(id, { transaction });
+    if (!tramiteActualizado) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Trámite no encontrado" });
+    }
 
-    /*
-  // Verificamos si la tarea pertenece al usuario que está intentando eliminarlo
-  if (tarea.usuarioId.toString() !== req.usuarioId.toString()) {
-    // Si no pertenecen al mismo veterinario, devolvemos un mensaje de acción no válida
-    return res.status(403).json({ msg: "Acción no válida" });
-  }
-*/
+    if (
+      tramiteActualizado.usuarioCreacionId.toString() !==
+      req.usuario.id.toString()
+    ) {
+      await transaction.rollback();
+      return res.status(403).json({ msg: "Acción no válida" });
+    }
 
-    // Actualizamos los datos del objeto
-    tramiteActualizado.asunto = asunto || tramiteActualizado.asunto;
-    tramiteActualizado.descripcion =
-      descripcion || tramiteActualizado.descripcion;
-    tramiteActualizado.numeroTramite =
-      numeroTramite || tramiteActualizado.numeroTramite;
-    tramiteActualizado.remitente = remitente || tramiteActualizado.remitente;
-    tramiteActualizado.departamenteRemitente =
-      departamenteRemitente || tramiteActualizado.departamenteRemitente;
+    const departamentoExiste = await Departamento.findByPk(
+      departamentoRemitenteId
+    );
+    if (!departamentoExiste) {
+      await transaction.rollback();
+      return res
+        .status(400)
+        .json({ message: "Departamento del remitente no encontrado" });
+    }
+
+    const remitenteExiste = await Empleado.findOne({
+      where: {
+        id: remitenteId,
+        departamentoId: departamentoRemitenteId,
+      },
+    });
+    if (!remitenteExiste) {
+      await transaction.rollback();
+      return res.status(400).json({
+        message: "No existe ese empleado o no está asignado a ese departamento",
+      });
+    }
+
+    const tramiteExiste = await Tramite.findOne({
+      where: {
+        numeroTramite: {
+          [Op.iLike]: numeroTramite, // Compara de forma insensible a mayúsculas/minúsculas
+        },
+        id: {
+          [Op.ne]: id, // Excluir el trámite que se está actualizando
+        },
+      },
+    });
+    if (tramiteExiste) {
+      await transaction.rollback();
+      return res
+        .status(400)
+        .json({ message: "Número de Trámite ya Ingresado" });
+    }
+
+    // Actualización de los campos del trámite
+    tramiteActualizado.departamentoRemitenteId = departamentoRemitenteId;
+    tramiteActualizado.remitenteId = remitenteId;
+    tramiteActualizado.asunto = asunto;
+    tramiteActualizado.descripcion = descripcion;
+    tramiteActualizado.numeroTramite = numeroTramite;
     tramiteActualizado.referenciaTramite =
       referenciaTramite || tramiteActualizado.referenciaTramite;
 
-    // Guardamos los datos actualizados del objeto
-    await tramiteActualizado.save();
+    // Guardar cambios dentro de la transacción
+    await tramiteActualizado.save({ transaction });
+
+    // Confirmar la transacción
+    await transaction.commit();
+
     res.status(200).json(tramiteActualizado);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    await transaction.rollback(); // Deshacer transacción en caso de error
+    console.error(`Error al actualizar el trámite: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al actualizar el trámite.",
+    });
   }
 };
 
 export const eliminarTramite = async (req, res) => {
-  const { id } = req.params; // obtener ID que se envia por la URL
-  const tramite = await Tramite.findByPk(id); // Busco la tarea en la BD por el id que se envia en la URL
-
-  // Si la tarea no existe, devolvemos un error 404
-  if (!tramite) return res.status(404).json({ message: "No Encontrado" });
-  /*
-  // Verificamos si la tarea pertenece al usuario que está intentando eliminarlo
-  if (tarea.usuarioId.toString() !== req.usuarioId.toString()) {
-    // Si no pertenecen al mismo veterinario, devolvemos un mensaje de acción no válida
-    return res.status(403).json({ msg: "Acción no válida" });
-  }
-*/
   try {
+    const { id } = req.params;
+
+    const tramite = await Tramite.findByPk(id);
+    if (!tramite)
+      return res.status(404).json({ message: "Trámite no encontrado" });
+
+    if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
+      return res.status(403).json({ msg: "Acción no válida" });
+
     // Metodo para buscar y eliminar al mismo tiempo
     await Tramite.destroy({
       where: {
-        // id: id,
         id,
       },
     });
 
-    res.status(200).json({ message: "Tramite Eliminada" });
+    res.status(200).json({ message: "Tramite eliminado" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(`Error al eliminar el trámite: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al eliminar el trámite.",
+    });
   }
 };
