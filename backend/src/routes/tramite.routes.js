@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { checkAuth, checkRole } from "../middlewares/auth.middleware.js";
+import { checkAuth } from "../middlewares/auth.middleware.js";
+import { checkRole } from "../middlewares/role.middleware.js";
 import * as tramiteController from "../controllers/tramite.controller.js";
 import * as tramiteCoordinador from "../controllers/tramiteCoordinador.controller.js";
 

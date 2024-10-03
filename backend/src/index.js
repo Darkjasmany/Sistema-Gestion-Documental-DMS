@@ -11,7 +11,7 @@ const startServer = async () => {
       console.log(`Servidor escuchando por el puerto: ${PORT}`);
     });
   } catch (error) {
-    console.error("Error al iniciar el servidor:", error);
+    console.error("Error al iniciar el servidor:", error.message);
     process.exit(1);
   }
 };
