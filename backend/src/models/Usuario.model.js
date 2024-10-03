@@ -46,9 +46,9 @@ export const Usuario = sequelize.define(
     rol: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: "USUARIO", // Valor por defecto 'usuario'
+      defaultValue: "usuario", // Valor por defecto 'usuario'
       validate: {
-        isIn: [["ADMIN", "COORDINADOR", "REVISOR", "USUARIO"]],
+        isIn: [["admin", "coordinador", "revisor", "usuario"]],
       },
     },
     token: {

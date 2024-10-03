@@ -41,8 +41,15 @@ export const checkAuth = async (req, res, next) => {
 };
 
 export const checkRole = (role) => (req, res, next) => {
-  if (req.usuario.rol === role)
+  if (req.usuario.rol !== role)
     return res.status(403).json({ message: "Acceso denegado" });
 
   return next();
+};
+
+export const isAdmin = (req, res, next) => {
+  if (req.usuario.rol === "admin") return next();
+  return res
+    .status(403)
+    .json({ message: "Acceso denegado para usuarios no admin." });
 };
