@@ -4,7 +4,7 @@ import { Tramite } from "./Tramite.model.js";
 import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 import { Departamento } from "./Departamento.model.js";
 import { generarId } from "../utils/generarId.js";
-import bcrypt from "bcrypt";
+import { passwordHash } from "../utils/passwordHash.js";
 
 export const Usuario = sequelize.define(
   "usuario",
@@ -87,8 +87,7 @@ export const Usuario = sequelize.define(
         // *changed("password") se asegura de que la contraseña solo sea hasheada si fue modificada o creada por primera vez.
         if (usuario.changed("password")) {
           usuario.password = usuario.password.trim();
-          const salt = await bcrypt.genSalt(10);
-          usuario.password = await bcrypt.hash(usuario.password, salt);
+          usuario.password = await passwordHash(usuario.password);
         }
       },
     },

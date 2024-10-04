@@ -4,8 +4,6 @@ import { Departamento } from "../models/Departamento.model.js";
 // import { IntentoFallido } from "../models/IntentoFallido.models.js";
 import { generarJWT } from "../utils/generarJWT.js";
 import { generarId } from "../utils/generarId.js";
-// import { emailOlvidePassword } from "../utils/emailOlvidePassword.js";
-// import { emailRegistro } from "../utils/emailRegistro.js";
 import {
   emailRegistro,
   emailOlvidePassword,
