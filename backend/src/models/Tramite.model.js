@@ -77,6 +77,11 @@ export const Tramite = sequelize.define(
         key: "id", // clave primaria de la tabla de referencia
       },
     },
+    fechaEntrega: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
+    },
     fechaDespacho: {
       type: DataTypes.DATE,
       allowNull: false,

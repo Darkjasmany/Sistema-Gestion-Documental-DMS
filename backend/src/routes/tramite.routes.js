@@ -22,7 +22,7 @@ router
 
 // Ruta para obtener trámites por estado
 router
-  .route("/coordinador")
+  .route("/coordinador/tramites")
   .get(
     checkAuth,
     checkRole("COORDINADOR"),
@@ -30,7 +30,7 @@ router
   );
 
 router
-  .route("/coordinador/:id")
+  .route("/coordinador/tramites/:id")
   .get(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.obtenerTramite)
   .post(
     checkAuth,
@@ -44,17 +44,17 @@ router
   );
 
 router
-  .route("/coordinador/:id/asignar-revisor")
+  .route("/coordinador/tramites/:id/asignar-revisor")
   .put(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.asignarRevisor);
 
 // Rutas exclusivas para el revisor
 
-router.route("/revisor").get(checkAuth, checkRole("revisor"), () => {
+router.route("/revisor/tramites").get(checkAuth, checkRole("revisor"), () => {
   res.send("Listar trámites asignados al revisor ");
 });
 
 router
-  .route("/revisor/:id")
+  .route("/revisor/tramites/:id")
   .get(checkAuth, checkRole("REVISOR"), () => {
     res.send("Obtener 1 trámites asignado al revisor ");
   })
