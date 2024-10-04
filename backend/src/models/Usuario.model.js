@@ -46,9 +46,9 @@ export const Usuario = sequelize.define(
     rol: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: "usuario", // Valor por defecto 'usuario'
+      defaultValue: "USUARIO", // Valor por defecto 'usuario'
       validate: {
-        isIn: [["admin", "coordinador", "revisor", "usuario"]],
+        isIn: [["ADMIN", "COORDINADOR", "REVISOR", "USUARIO"]],
       },
     },
     token: {
@@ -78,7 +78,6 @@ export const Usuario = sequelize.define(
     // * Hook para hashear el password antes de crear o actualizar
     hooks: {
       // * beforeSave es más eficiente y simplifica el código al abarcar tanto la creación como la actualización que beforeCreate
-      // Hook para eliminar los espacios en Blanco y hashear password
       beforeSave: async (usuario) => {
         usuario.nombres = usuario.nombres.trim();
         usuario.apellidos = usuario.apellidos.trim();
@@ -94,7 +93,7 @@ export const Usuario = sequelize.define(
   }
 );
 
-// ** Relaciones
+// * Relaciones
 
 // * Trámite
 // 1 tramite pertenece a 1 usuarioCreacion

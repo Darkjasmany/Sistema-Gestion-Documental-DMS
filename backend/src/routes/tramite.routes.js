@@ -22,48 +22,44 @@ router
 
 // Ruta para obtener trámites por estado
 router
-  .route("/coordinador/tramites")
+  .route("/coordinador")
   .get(
     checkAuth,
-    checkRole("coordinador"),
+    checkRole("COORDINADOR"),
     tramiteCoordinador.obtenerTramitesPorEstado
   );
 
 router
-  .route("/coordinador/tramites/:id")
-  .get(checkAuth, checkRole("coordinador"), tramiteCoordinador.obtenerTramite)
+  .route("/coordinador/:id")
+  .get(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.obtenerTramite)
   .post(
     checkAuth,
-    checkRole("coordinador"),
+    checkRole("COORDINADOR"),
     tramiteCoordinador.actualizarTramite
   )
   .delete(
     checkAuth,
-    checkRole("coordinador"),
+    checkRole("COORDINADOR"),
     tramiteCoordinador.eliminarTramite
   );
 
 router
-  .route("/coordinador/tramites/:id/asignar-revisor")
-  .put(checkAuth, checkRole("coordinador"), tramiteCoordinador.asignarRevisor);
+  .route("/coordinador/:id/asignar-revisor")
+  .put(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.asignarRevisor);
 
 // Rutas exclusivas para el revisor
 
-/*
-router
-  .route("/revisor/tramites")
-  .get(checkAuth, checkRole("revisor"), listarTramitesRevisor);
+router.route("/revisor").get(checkAuth, checkRole("revisor"), () => {
+  res.send("Listar trámites asignados al revisor ");
+});
 
 router
-  .route("/revisor/tramites/:id")
-  .get(checkAuth, checkRole("revisor"), obtenerTramiteRevisor)
-  .put(checkAuth, checkRole("revisor"), actualizarTramiteRevisor);
+  .route("/revisor/:id")
+  .get(checkAuth, checkRole("REVISOR"), () => {
+    res.send("Obtener 1 trámites asignado al revisor ");
+  })
+  .put(checkAuth, checkRole("REVISOR"), () => {
+    res.send("Obtener 1 trámites asignado al revisor ");
+  });
 
-
-
-
-  // Rutas para revisores
-router.get("/revisor", checkAuth, checkRole("revisor"), tramiteRevisorController.obtenerTramitesAsignados);
-router.put("/revisor/:id", checkAuth, checkRole("revisor"), tramiteRevisorController.actualizarEstadoTramite);
-*/
 export default router;

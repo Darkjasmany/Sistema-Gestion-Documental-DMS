@@ -1,8 +1,8 @@
 import express from "express";
-import {
-  notFound,
-  errorHandler,
-} from "./middlewares/errorHandler.middleware.js";
+// import {
+//   notFound,
+//   errorHandler,
+// } from "./middlewares/errorHandler.middleware.js";
 
 // Import routes
 import usuarioRoutes from "./routes/usuario.routes.js";

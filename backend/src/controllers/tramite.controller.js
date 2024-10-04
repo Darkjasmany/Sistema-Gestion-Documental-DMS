@@ -73,7 +73,7 @@ export const agregarTramite = async (req, res) => {
 export const listarTramitesUsuario = async (req, res) => {
   try {
     const tramites = await Tramite.findAll({
-      where: { usuarioCreacionId: req.usuario.id, estado: "pendiente" },
+      where: { usuarioCreacionId: req.usuario.id, estado: "INGRESADO" },
       attributes: ["numeroTramite", "asunto", "descripcion"],
       include: [
         {
