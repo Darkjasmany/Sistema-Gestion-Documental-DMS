@@ -11,6 +11,7 @@ export const agregarTramite = async (req, res) => {
     descripcion,
     numeroTramite,
     referenciaTramite,
+    prioridad,
   } = req.body;
 
   if (
@@ -61,6 +62,7 @@ export const agregarTramite = async (req, res) => {
       asunto,
       descripcion,
       referenciaTramite,
+      prioridad: prioridad || undefined,
       usuarioCreacionId: req.usuario.id,
     });
 
@@ -74,7 +76,7 @@ export const listarTramitesUsuario = async (req, res) => {
   try {
     const tramites = await Tramite.findAll({
       where: { usuarioCreacionId: req.usuario.id, estado: "INGRESADO" },
-      attributes: ["numeroTramite", "asunto", "descripcion"],
+      attributes: ["numeroTramite", "asunto", "descripcion", "prioridad"],
       include: [
         {
           model: Departamento,
@@ -121,6 +123,7 @@ export const actualizarTramite = async (req, res) => {
 
   try {
     const { id } = req.params;
+
     const {
       departamentoRemitenteId,
       remitenteId,
@@ -128,6 +131,7 @@ export const actualizarTramite = async (req, res) => {
       descripcion,
       numeroTramite,
       referenciaTramite,
+      prioridad,
     } = req.body;
 
     if (
@@ -205,6 +209,7 @@ export const actualizarTramite = async (req, res) => {
     tramiteActualizado.numeroTramite = numeroTramite;
     tramiteActualizado.referenciaTramite =
       referenciaTramite || tramiteActualizado.referenciaTramite;
+    tramiteActualizado.prioridad = prioridad || tramiteActualizado.prioridad;
 
     // Guardar cambios dentro de la transacción
     await tramiteActualizado.save({ transaction });

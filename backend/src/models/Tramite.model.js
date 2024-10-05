@@ -40,23 +40,6 @@ export const Tramite = sequelize.define(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    estado: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      defaultValue: "INGRESADO",
-      validate: {
-        isIn: [
-          [
-            "INGRESADO",
-            "PENDIENTE",
-            "POR_REVISAR",
-            "COMPLETADO",
-            "CORRECCION_PENDIENTE",
-            "FINALIZADO",
-          ],
-        ],
-      },
-    },
     numeroOficioDespacho: {
       type: DataTypes.STRING(50),
       allowNull: true,
@@ -98,6 +81,31 @@ export const Tramite = sequelize.define(
       references: {
         model: "usuario", // nombre de la tabla de referencia
         key: "id", // clave primaria de la tabla de referencia
+      },
+    },
+    prioridad: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      defaultValue: "NORMAL",
+      validate: {
+        isIn: [["NORMAL", "MEDIA", "ALTA"]],
+      },
+    },
+    estado: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      defaultValue: "INGRESADO",
+      validate: {
+        isIn: [
+          [
+            "INGRESADO",
+            "PENDIENTE",
+            "POR_REVISAR",
+            "COMPLETADO",
+            "CORRECCION_PENDIENTE",
+            "FINALIZADO",
+          ],
+        ],
       },
     },
   },
