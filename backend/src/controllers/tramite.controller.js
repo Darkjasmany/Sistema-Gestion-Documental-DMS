@@ -64,6 +64,7 @@ export const agregarTramite = async (req, res) => {
       referenciaTramite,
       prioridad: prioridad || undefined,
       usuarioCreacionId: req.usuario.id,
+      departamentoUsuarioId: req.usuario.departamentoId,
     });
 
     res.json(tramiteGuardado);
@@ -93,10 +94,12 @@ export const listarTramitesUsuario = async (req, res) => {
 
     res.json(tramites);
   } catch (error) {
-    console.error(`Error al obtener las tareas del usuario : ${error.message}`);
+    console.error(
+      `Error al obtener las trámites del usuario : ${error.message}`
+    );
     return res.status(500).json({
       message:
-        "Error al obtener las tareas del usuario, intente nuevamente más tarde.",
+        "Error al obtener las trámites del usuario, intente nuevamente más tarde.",
     });
   }
 };

@@ -83,6 +83,10 @@ export const Tramite = sequelize.define(
         key: "id", // clave primaria de la tabla de referencia
       },
     },
+    departamentoUsuarioId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     prioridad: {
       type: DataTypes.STRING(50),
       allowNull: false,

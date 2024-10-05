@@ -101,6 +101,7 @@ export const Usuario = sequelize.define(
 Tramite.belongsTo(Usuario, {
   foreignKey: "usuarioCreacionId", // Campo que se crea en la tabla Tramite
   targetKey: "id", // Con qué lo va a enlazar
+  as: "usuario",
 });
 // 1 usuario puede crear  muchos tramites
 Usuario.hasMany(Tramite, {
