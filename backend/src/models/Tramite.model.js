@@ -86,6 +86,10 @@ export const Tramite = sequelize.define(
     departamentoUsuarioId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: "departamento",
+        key: "id",
+      },
     },
     prioridad: {
       type: DataTypes.STRING(50),
@@ -166,4 +170,11 @@ Tramite.belongsTo(Empleado, {
   foreignKey: "destinatarioId", // Este es el campo que almacena el id del destinatario
   targetKey: "id",
   as: "destinatario", // Alias para el destinatario en las consultas
+});
+
+// 1 Tramite puede tener 1 departamento asigado del usuario de creacion
+Tramite.belongsTo(Departamento, {
+  foreignKey: "departamentoUsuarioId",
+  targetKey: "id",
+  as: "departamentoUsuarioCreacion",
 });

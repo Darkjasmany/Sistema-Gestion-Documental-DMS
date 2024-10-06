@@ -1,5 +1,4 @@
 import { Tramite } from "../models/Tramite.model.js";
-import { Usuario } from "../models/Usuario.model.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   try {
