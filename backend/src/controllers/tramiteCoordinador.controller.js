@@ -102,7 +102,7 @@ export const actualizarTramite = async (req, res) => {
 
     // Validación de permisos de actualización
     if (
-      tramiteUsuario.departamentoUsuarioId.toString() !==
+      tramiteActualizar.departamentoUsuarioId.toString() !==
       req.usuario.departamentoId.toString()
     ) {
       await transaction.rollback();
@@ -219,6 +219,7 @@ export const actualizarTramite = async (req, res) => {
         where: {
           id: usuarioRevisorId,
           departamentoId: req.usuario.departamentoId,
+          rol: "REVISOR",
         },
       });
       if (!existeUsuarioRevisor) {
@@ -233,6 +234,8 @@ export const actualizarTramite = async (req, res) => {
         usuarioRevisorId: usuarioRevisorId,
         descripcion: observacionRevisor,
       });
+
+      tramiteActualizar.estado = "PENDIENTE";
     }
 
     await tramiteActualizar.save();
