@@ -32,7 +32,7 @@ router
 router
   .route("/coordinador/tramites/:id")
   .get(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.obtenerTramite)
-  .post(
+  .put(
     checkAuth,
     checkRole("COORDINADOR"),
     tramiteCoordinador.actualizarTramite
@@ -42,10 +42,6 @@ router
     checkRole("COORDINADOR"),
     tramiteCoordinador.eliminarTramite
   );
-
-router
-  .route("/coordinador/tramites/:id/asignar-revisor")
-  .put(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.asignarRevisor);
 
 // Rutas exclusivas para el revisor
 

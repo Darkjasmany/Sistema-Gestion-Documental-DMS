@@ -111,12 +111,21 @@ export const obtenerTramite = async (req, res) => {
     const tramite = await Tramite.findByPk(id);
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
+    if (
+      tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
+      tramite.departamentoUsuarioId.toString() !==
+        req.usuario.departamentoId.toString()
+    )
+      return res
+        .status(404)
+        .json({ message: "El trámite seleccionado no te pertenece" });
+
     res.json(tramite);
   } catch (error) {
-    console.error(`Error al obtener la tarea seleccionada: ${error.message}`);
+    console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
       message:
-        "Error al obtener la tarea seleccionada, intente nuevamente más tarde.",
+        "Error al obtener el trámite seleccionado, intente nuevamente más tarde.",
     });
   }
 };
@@ -161,7 +170,7 @@ export const actualizarTramite = async (req, res) => {
       req.usuario.id.toString()
     ) {
       await transaction.rollback();
-      return res.status(403).json({ msg: "Acción no válida" });
+      return res.status(403).json({ message: "Acción no válida" });
     }
 
     const departamentoExiste = await Departamento.findByPk(

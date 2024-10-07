@@ -20,11 +20,6 @@ export const TramiteAsignacion = sequelize.define(
       },
       allowNull: false,
     },
-    fechaAsignacion: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
     descripcion: {
       type: DataTypes.TEXT,
       allowNull: true,
