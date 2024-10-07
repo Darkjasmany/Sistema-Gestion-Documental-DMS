@@ -5,6 +5,7 @@ import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 import { Departamento } from "./Departamento.model.js";
 import { generarId } from "../utils/generarId.js";
 import { passwordHash } from "../utils/passwordHash.js";
+import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 
 export const Usuario = sequelize.define(
   "usuario",
@@ -115,6 +116,12 @@ TramiteAsignacion.belongsTo(Usuario, {
   foreignKey: "usuarioRevisorId", // Campo que se crea en la tabla Tramite
   targetKey: "id", // Con qué lo va a enlazar
 });
+
+TramiteHistorialEstado.belongsTo(Usuario, {
+  foreignKey: "usuarioId", // Campo que se crea en la tabla Tramite
+  targetKey: "id", // Con qué lo va a enlazar
+});
+
 // 1 revisor puede tener muchos tramites asignados
 Usuario.hasMany(TramiteAsignacion, {
   foreignKey: "usuarioRevisorId", // NombreCampo

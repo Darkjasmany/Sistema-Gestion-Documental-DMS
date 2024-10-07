@@ -1,27 +1,17 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js"; // Importamos la conexión
-import { generarHora } from "../utils/generarHora.js";
 import { Departamento } from "./Departamento.model.js";
 import { Empleado } from "./Empleado.model.js";
+import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
+import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
   {
-    remitenteId: {
-      type: DataTypes.BIGINT,
+    numeroTramite: {
+      type: DataTypes.STRING(50),
+      unique: true,
       allowNull: false,
-      references: {
-        model: "empleado", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
-      },
-    },
-    departamentoRemitenteId: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: "departamento", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
-      },
     },
     asunto: {
       type: DataTypes.STRING,
@@ -31,10 +21,36 @@ export const Tramite = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    numeroTramite: {
-      type: DataTypes.STRING(50),
-      unique: true,
+    departamentoRemitenteId: {
+      type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: "departamento", // nombre de la tabla de referencia
+        key: "id", // clave primaria de la tabla de referencia
+      },
+    },
+    remitenteId: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "empleado", // nombre de la tabla de referencia
+        key: "id", // clave primaria de la tabla de referencia
+      },
+    },
+    prioridad: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      defaultValue: "NORMAL",
+      validate: {
+        isIn: [["NORMAL", "MEDIA", "ALTA"]],
+      },
+    },
+    fechaDocumento: {
+      type: DataTypes.DATEONLY,
+      defaultValue: DataTypes.NOW,
+      validate: {
+        isDate: true, // Valida que sea una fecha válida
+      },
     },
     referenciaTramite: {
       type: DataTypes.STRING(50),
@@ -44,14 +60,6 @@ export const Tramite = sequelize.define(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    destinatarioId: {
-      type: DataTypes.BIGINT,
-      defaultValue: null,
-      references: {
-        model: "empleado", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
-      },
-    },
     departamentoDestinatarioId: {
       type: DataTypes.BIGINT,
       allowNull: true,
@@ -60,12 +68,15 @@ export const Tramite = sequelize.define(
         key: "id", // clave primaria de la tabla de referencia
       },
     },
-    fechaTentativaEntrega: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
+    destinatarioId: {
+      type: DataTypes.BIGINT,
+      defaultValue: null,
+      references: {
+        model: "empleado", // nombre de la tabla de referencia
+        key: "id", // clave primaria de la tabla de referencia
+      },
     },
-    fechaEntrega: {
+    fechaMaximaContestacion: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
@@ -75,10 +86,10 @@ export const Tramite = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
     },
-    horaDespacho: {
-      type: DataTypes.TIME,
+    fechaEntregaFisica: {
+      type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: generarHora,
+      defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
     },
     usuarioCreacionId: {
       type: DataTypes.BIGINT,
@@ -94,14 +105,6 @@ export const Tramite = sequelize.define(
       references: {
         model: "departamento",
         key: "id",
-      },
-    },
-    prioridad: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      defaultValue: "NORMAL",
-      validate: {
-        isIn: [["NORMAL", "MEDIA", "ALTA"]],
       },
     },
     estado: {
@@ -129,6 +132,7 @@ export const Tramite = sequelize.define(
         tramite.asunto = tramite.asunto.trim();
         tramite.numeroTramite = tramite.numeroTramite.trim();
         tramite.descripcion = tramite.descripcion.trim();
+        tramite.numeroOficioDespacho = tramite.numeroOficioDespacho.trim();
       },
     },
   }
@@ -147,6 +151,16 @@ Tramite.belongsTo(Departamento, {
   foreignKey: "departamentoDestinatarioId",
   targetKey: "id",
   as: "departamentoDestinatario", // Alias para la relación destino
+});
+
+TramiteHistorialEstado.belongsTo(Tramite, {
+  foreignKey: "tramiteId",
+  targetKey: "id",
+});
+
+TramiteAsignacion.belongsTo(Tramite, {
+  foreignKey: "tramiteId",
+  targetKey: "id",
 });
 
 // 1 departamento remitente puede tener muchos tramites
