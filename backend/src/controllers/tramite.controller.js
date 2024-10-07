@@ -5,21 +5,23 @@ import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarTramite = async (req, res) => {
   const {
-    departamentoRemitenteId,
-    remitenteId,
+    numeroTramite,
     asunto,
     descripcion,
-    numeroTramite,
-    referenciaTramite,
+    departamentoRemitenteId,
+    remitenteId,
     prioridad,
+    fechaDocumento,
+    referenciaTramite,
   } = req.body;
 
   if (
-    !departamentoRemitenteId ||
-    !remitenteId ||
+    !numeroTramite ||
     !asunto ||
     !descripcion ||
-    !numeroTramite
+    !departamentoRemitenteId ||
+    !remitenteId ||
+    !fechaDocumento
   )
     return res
       .status(400)
@@ -57,12 +59,13 @@ export const agregarTramite = async (req, res) => {
   try {
     const tramiteGuardado = await Tramite.create({
       numeroTramite,
-      departamentoRemitenteId,
-      remitenteId,
       asunto,
       descripcion,
-      referenciaTramite,
+      departamentoRemitenteId,
+      remitenteId,
       prioridad: prioridad || undefined,
+      fechaDocumento,
+      referenciaTramite,
       usuarioCreacionId: req.usuario.id,
       departamentoUsuarioId: req.usuario.departamentoId,
     });
@@ -77,7 +80,15 @@ export const listarTramitesUsuario = async (req, res) => {
   try {
     const tramites = await Tramite.findAll({
       where: { usuarioCreacionId: req.usuario.id, estado: "INGRESADO" },
-      attributes: ["numeroTramite", "asunto", "descripcion", "prioridad"],
+      attributes: [
+        "numeroTramite",
+        "asunto",
+        "descripcion",
+        "prioridad",
+        "fechaDocumento",
+        "referenciaTramite",
+        "createdAt",
+      ],
       include: [
         {
           model: Departamento,
@@ -137,21 +148,23 @@ export const actualizarTramite = async (req, res) => {
     const { id } = req.params;
 
     const {
-      departamentoRemitenteId,
-      remitenteId,
+      numeroTramite,
       asunto,
       descripcion,
-      numeroTramite,
-      referenciaTramite,
+      departamentoRemitenteId,
+      remitenteId,
       prioridad,
+      fechaDocumento,
+      referenciaTramite,
     } = req.body;
 
     if (
-      !departamentoRemitenteId ||
-      !remitenteId ||
+      !numeroTramite ||
       !asunto ||
       !descripcion ||
-      !numeroTramite
+      !departamentoRemitenteId ||
+      !remitenteId ||
+      !fechaDocumento
     ) {
       await transaction.rollback();
       return res
@@ -214,14 +227,16 @@ export const actualizarTramite = async (req, res) => {
     }
 
     // Actualización de los campos del trámite
-    tramiteActualizado.departamentoRemitenteId = departamentoRemitenteId;
-    tramiteActualizado.remitenteId = remitenteId;
+    tramiteActualizado.numeroTramite = numeroTramite;
     tramiteActualizado.asunto = asunto;
     tramiteActualizado.descripcion = descripcion;
-    tramiteActualizado.numeroTramite = numeroTramite;
+    tramiteActualizado.departamentoRemitenteId = departamentoRemitenteId;
+    tramiteActualizado.remitenteId = remitenteId;
+    tramiteActualizado.prioridad = prioridad || tramiteActualizado.prioridad;
+    tramiteActualizado.fechaDocumento =
+      fechaDocumento || tramiteActualizado.fechaDocumento;
     tramiteActualizado.referenciaTramite =
       referenciaTramite || tramiteActualizado.referenciaTramite;
-    tramiteActualizado.prioridad = prioridad || tramiteActualizado.prioridad;
 
     // Guardar cambios dentro de la transacción
     await tramiteActualizado.save({ transaction });

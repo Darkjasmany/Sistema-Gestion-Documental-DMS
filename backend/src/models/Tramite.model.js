@@ -132,7 +132,9 @@ export const Tramite = sequelize.define(
         tramite.asunto = tramite.asunto.trim();
         tramite.numeroTramite = tramite.numeroTramite.trim();
         tramite.descripcion = tramite.descripcion.trim();
-        tramite.numeroOficioDespacho = tramite.numeroOficioDespacho.trim();
+        if (tramite.numeroOficioDespacho) {
+          tramite.numeroOficioDespacho = tramite.numeroOficioDespacho.trim();
+        }
       },
     },
   }
