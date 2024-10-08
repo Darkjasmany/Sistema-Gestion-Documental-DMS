@@ -87,9 +87,9 @@ export const listarTramitesUsuario = async (req, res) => {
           as: "remitente", // Alias
           attributes: [
             [
-              Sequelize.literal("CONCAT(nombres, ' ', apellidos)"),
+              Sequelize.literal("CONCAT(apellidos, ' ', nombres)"),
               "nombreCompleto",
-            ], // Concatenar nombres y apellidos
+            ],
             // "cedula",
           ],
         },

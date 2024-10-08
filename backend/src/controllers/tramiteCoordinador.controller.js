@@ -39,16 +39,24 @@ export const obtenerTramitesPorEstado = async (req, res) => {
           as: "remitente", // Alias
           attributes: [
             [
-              Sequelize.literal("CONCAT(nombres, ' ', apellidos)"),
-              "nombreCompleto",
-            ], // Concatenar nombres y apellidos
-            // "cedula",
+              Sequelize.literal(
+                'CONCAT("remitente"."apellidos", \' \', "remitente"."nombres")'
+              ),
+              "nombreRemitente",
+            ],
           ],
         },
         {
           model: Usuario,
           as: "usuario",
-          attributes: ["nombres", "apellidos"],
+          attributes: [
+            [
+              Sequelize.literal(
+                'CONCAT("usuario"."nombres", \' \', "usuario"."apellidos")'
+              ),
+              "nombreUsuario",
+            ],
+          ],
         },
       ],
       order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
