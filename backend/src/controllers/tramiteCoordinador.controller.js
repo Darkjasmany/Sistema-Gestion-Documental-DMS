@@ -1,13 +1,13 @@
-import { Op } from "sequelize";
 import { Departamento } from "../models/Departamento.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
+import { Op, Sequelize } from "sequelize";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
+  const { estado } = req.query; // envio como parametro adicional en la URL
   try {
-    const { estado } = req.query; // envio como parametro adicional en la URL
     if (!estado)
       return res.status(400).json({ message: "El estado es requerido" });
 
@@ -18,13 +18,49 @@ export const obtenerTramitesPorEstado = async (req, res) => {
         estado: estado,
         departamentoUsuarioId: departamentoId,
       },
+      attributes: [
+        "numeroTramite",
+        "asunto",
+        "descripcion",
+        "prioridad",
+        "fechaDocumento",
+        "referenciaTramite",
+        "estado",
+        "createdAt",
+      ],
+      include: [
+        {
+          model: Departamento,
+          as: "departamentoRemitente", // Alias
+          attributes: ["nombre"], // Atributos del departamento remitente
+        },
+        {
+          model: Empleado,
+          as: "remitente", // Alias
+          attributes: [
+            [
+              Sequelize.literal("CONCAT(nombres, ' ', apellidos)"),
+              "nombreCompleto",
+            ], // Concatenar nombres y apellidos
+            // "cedula",
+          ],
+        },
+        {
+          model: Usuario,
+          as: "usuario",
+          attributes: ["nombres", "apellidos"],
+        },
+      ],
+      order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
     });
 
     res.json(tramites);
   } catch (error) {
-    console.error(`Error al obtener los trámites ${estado}: ${error.message}`);
+    console.error(
+      `Error al obtener los trámites con estado: ${estado}: ${error.message}`
+    );
     return res.status(500).json({
-      message: `Error al obtener los trámites ${estado}, intente nuevamente más tarde.`,
+      message: `Error al obtener los trámites con estado: ${estado}, intente nuevamente más tarde.`,
     });
   }
 };

@@ -1,6 +1,7 @@
 import { Tramite } from "../models/Tramite.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
+import { Sequelize } from "sequelize";
 
 export const agregarTramite = async (req, res) => {
   const {
@@ -84,7 +85,13 @@ export const listarTramitesUsuario = async (req, res) => {
         {
           model: Empleado,
           as: "remitente", // Alias
-          attributes: ["nombres", "apellidos", "cedula"], // Atributos del remitente
+          attributes: [
+            [
+              Sequelize.literal("CONCAT(nombres, ' ', apellidos)"),
+              "nombreCompleto",
+            ], // Concatenar nombres y apellidos
+            // "cedula",
+          ],
         },
       ],
       order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
