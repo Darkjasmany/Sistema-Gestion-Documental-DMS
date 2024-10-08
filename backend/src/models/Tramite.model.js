@@ -9,9 +9,9 @@ export const Tramite = sequelize.define(
   "tramite",
   {
     numeroTramite: {
-      type: DataTypes.STRING(50),
-      unique: true,
+      type: DataTypes.INTEGER,
       allowNull: false,
+      unique: true,
     },
     asunto: {
       type: DataTypes.STRING,
@@ -107,6 +107,10 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
+    numeroTramiteEspecial: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     estado: {
       type: DataTypes.STRING(50),
       allowNull: false,
@@ -130,15 +134,29 @@ export const Tramite = sequelize.define(
     hooks: {
       beforeSave: (tramite) => {
         tramite.asunto = tramite.asunto.trim();
-        tramite.numeroTramite = tramite.numeroTramite.trim();
         tramite.descripcion = tramite.descripcion.trim();
         if (tramite.numeroOficioDespacho) {
           tramite.numeroOficioDespacho = tramite.numeroOficioDespacho.trim();
+        }
+        if (tramite.numeroTramiteEspecial) {
+          tramite.numeroTramiteEspecial = tramite.numeroTramiteEspecial.trim();
         }
       },
     },
   }
 );
+
+// ** AGREGAR EL HOOK beforeValidate para el campo numeroTramite, garantizas que numeroTramite se establezca antes de que se valide el objeto, evitando que se produzca la violación de la restricción de no nulo.
+Tramite.addHook("beforeValidate", async (tramite) => {
+  const lastTramite = await Tramite.findOne({
+    order: [["numeroTramite", "DESC"]],
+  });
+
+  tramite.numeroTramite = lastTramite
+    ? lastTramite.numeroTramite + 1
+    : process.env.TRAMITE;
+  // :1; // Iniciar en 1 si no hay registros
+});
 
 // ** Relaciones
 // 1 tramite pertenece a 1 departamento remitente

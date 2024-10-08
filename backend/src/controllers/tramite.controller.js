@@ -1,11 +1,9 @@
-import { Op } from "sequelize";
 import { Tramite } from "../models/Tramite.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarTramite = async (req, res) => {
   const {
-    numeroTramite,
     asunto,
     descripcion,
     departamentoRemitenteId,
@@ -16,7 +14,6 @@ export const agregarTramite = async (req, res) => {
   } = req.body;
 
   if (
-    !numeroTramite ||
     !asunto ||
     !descripcion ||
     !departamentoRemitenteId ||
@@ -46,19 +43,8 @@ export const agregarTramite = async (req, res) => {
       message: "No existe ese empleado o no está asignado a ese departamento",
     });
 
-  const tramiteExiste = await Tramite.findOne({
-    where: {
-      numeroTramite: {
-        [Op.iLike]: numeroTramite, // Compara de forma insensible a mayúsculas/minúsculas
-      },
-    },
-  });
-  if (tramiteExiste)
-    return res.status(400).json({ message: "Número de Trámite ya Ingresado" });
-
   try {
     const tramiteGuardado = await Tramite.create({
-      numeroTramite,
       asunto,
       descripcion,
       departamentoRemitenteId,
@@ -101,6 +87,7 @@ export const listarTramitesUsuario = async (req, res) => {
           attributes: ["nombres", "apellidos", "cedula"], // Atributos del remitente
         },
       ],
+      order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
     });
 
     res.json(tramites);
@@ -148,7 +135,6 @@ export const actualizarTramite = async (req, res) => {
     const { id } = req.params;
 
     const {
-      numeroTramite,
       asunto,
       descripcion,
       departamentoRemitenteId,
@@ -159,7 +145,6 @@ export const actualizarTramite = async (req, res) => {
     } = req.body;
 
     if (
-      !numeroTramite ||
       !asunto ||
       !descripcion ||
       !departamentoRemitenteId ||
@@ -209,25 +194,7 @@ export const actualizarTramite = async (req, res) => {
       });
     }
 
-    const tramiteExiste = await Tramite.findOne({
-      where: {
-        numeroTramite: {
-          [Op.iLike]: numeroTramite, // Compara de forma insensible a mayúsculas/minúsculas
-        },
-        id: {
-          [Op.ne]: id, // Excluir el trámite que se está actualizando
-        },
-      },
-    });
-    if (tramiteExiste) {
-      await transaction.rollback();
-      return res
-        .status(400)
-        .json({ message: "Número de Trámite ya Ingresado" });
-    }
-
     // Actualización de los campos del trámite
-    tramiteActualizado.numeroTramite = numeroTramite;
     tramiteActualizado.asunto = asunto;
     tramiteActualizado.descripcion = descripcion;
     tramiteActualizado.departamentoRemitenteId = departamentoRemitenteId;
