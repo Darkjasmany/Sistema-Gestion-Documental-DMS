@@ -5,6 +5,7 @@ import { Usuario } from "../models/Usuario.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
 import { Op } from "sequelize";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
+import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   const { estado } = req.query; // envio como parametro adicional en la URL
@@ -209,6 +210,8 @@ export const actualizarTramite = async (req, res) => {
         .json({ message: "Número de Despacho ya Ingresado" });
     }
 
+    const estadoAnterior = tramiteActualizar.estado;
+
     // Actualizar los datos
     tramiteActualizar.asunto = asunto || tramiteActualizar.asunto;
     tramiteActualizar.descripcion =
@@ -250,18 +253,31 @@ export const actualizarTramite = async (req, res) => {
           .json({ message: "Usuario Revisor no encontrado" });
       }
 
-      await TramiteAsignacion.create({
-        tramiteId: id,
-        usuarioRevisorId: usuarioRevisorId,
-        descripcion: observacionRevisor,
-      });
+      await TramiteAsignacion.create(
+        {
+          tramiteId: id,
+          usuarioRevisorId: usuarioRevisorId,
+          descripcion: observacionRevisor,
+        },
+        { transaction }
+      );
 
       tramiteActualizar.estado = "PENDIENTE";
     }
 
-    await tramiteActualizar.save();
+    // Guarda el trámite actualizado
+    await tramiteActualizar.save({ transaction });
 
-    await transaction.commit();
+    // Registrar el cambio de estado en el historial
+    await registrarHistorialEstado(
+      tramiteActualizar.id,
+      estadoAnterior,
+      tramiteActualizar.estado,
+      req.usuario.id,
+      transaction // Pasamos la transacción para incluir el registro del historial en ella
+    );
+
+    await transaction.commit(); // Confirmar la transacción
 
     res.status(200).json(tramiteActualizar);
   } catch (error) {
@@ -274,5 +290,19 @@ export const actualizarTramite = async (req, res) => {
 };
 
 export const eliminarTramite = async (req, res) => {
-  res.send("Desde eliminarTramite");
+  try {
+    const { id } = req.params;
+
+    const tramite = await Tramite.findByPk(id);
+    if (!tramite) return res.status(400).json({ message: "Accion no valida" });
+
+    console.log(tramite);
+    res.json(tramite);
+    res.json({ message: "Trámite Eliminado" });
+  } catch (error) {
+    console.error(`Error al eliminar el trámite: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al eliminar el trámite.",
+    });
+  }
 };
