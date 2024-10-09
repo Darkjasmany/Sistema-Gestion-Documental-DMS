@@ -3,63 +3,34 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
-import { Op, Sequelize } from "sequelize";
+import { Op } from "sequelize";
+import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   const { estado } = req.query; // envio como parametro adicional en la URL
+  // const { estado, limit = 10, offset = 0 } = req.query; // Limitar resultados y offset para paginación
   try {
     if (!estado)
       return res.status(400).json({ message: "El estado es requerido" });
 
+    const config = getConfiguracionPorEstado(estado);
+    if (!config)
+      return res.status(400).json({
+        message: `No se encontró una configuración válida para el estado: ${estado}`,
+      });
+
     const { departamentoId } = req.usuario;
 
     const tramites = await Tramite.findAll({
-      where: {
-        estado: estado,
-        departamentoUsuarioId: departamentoId,
-      },
-      attributes: [
-        "numeroTramite",
-        "asunto",
-        "descripcion",
-        "prioridad",
-        "fechaDocumento",
-        "referenciaTramite",
-        "estado",
-        "createdAt",
+      where: { estado, departamentoUsuarioId: departamentoId },
+      attributes: config.attributes,
+      include: config.include,
+      order: [
+        ["prioridad", "ASC"],
+        ["createdAt", "ASC"],
       ],
-      include: [
-        {
-          model: Departamento,
-          as: "departamentoRemitente", // Alias
-          attributes: ["nombre"], // Atributos del departamento remitente
-        },
-        {
-          model: Empleado,
-          as: "remitente", // Alias
-          attributes: [
-            [
-              Sequelize.literal(
-                'CONCAT("remitente"."apellidos", \' \', "remitente"."nombres")'
-              ),
-              "nombreRemitente",
-            ],
-          ],
-        },
-        {
-          model: Usuario,
-          as: "usuario",
-          attributes: [
-            [
-              Sequelize.literal(
-                'CONCAT("usuario"."nombres", \' \', "usuario"."apellidos")'
-              ),
-              "nombreUsuario",
-            ],
-          ],
-        },
-      ],
-      order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
+      // limit: parseInt(limit, 10),
+      // offset: parseInt(offset, 10),
     });
 
     res.json(tramites);
