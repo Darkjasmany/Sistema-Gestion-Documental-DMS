@@ -9,20 +9,18 @@ import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js
 export const obtenerTramitesPorEstado = async (req, res) => {
   const { estado } = req.query; // envio como parametro adicional en la URL
   // const { estado, limit = 10, offset = 0 } = req.query; // Limitar resultados y offset para paginación
-  try {
-    if (!estado)
-      return res.status(400).json({ message: "El estado es requerido" });
+  if (!estado)
+    return res.status(400).json({ message: "El estado es requerido" });
 
+  try {
     const config = getConfiguracionPorEstado(estado);
     if (!config)
       return res.status(400).json({
         message: `No se encontró una configuración válida para el estado: ${estado}`,
       });
 
-    const { departamentoId } = req.usuario;
-
     const tramites = await Tramite.findAll({
-      where: { estado, departamentoUsuarioId: departamentoId },
+      where: { estado, departamentoUsuarioId: req.usuario.departamentoId },
       attributes: config.attributes,
       include: config.include,
       order: [
@@ -77,30 +75,29 @@ export const actualizarTramite = async (req, res) => {
     const { id } = req.params;
 
     const {
-      departamentoRemitenteId,
-      remitenteId,
       asunto,
       descripcion,
-      numeroTramite,
+      departamentoRemitenteId,
+      remitenteId,
+      prioridad,
+      fechaDocumento,
       referenciaTramite,
       numeroOficioDespacho,
-      destinatarioId,
       departamentoDestinatarioId,
-      fechaTentativaEntrega,
-      prioridad,
+      destinatarioId,
+      fechaMaximaContestacion,
       usuarioRevisorId,
       observacionRevisor,
+      numeroTramiteModificado,
     } = req.body;
 
     if (
-      !departamentoRemitenteId ||
-      !remitenteId ||
       !asunto ||
       !descripcion ||
-      !numeroTramite ||
-      !destinatarioId ||
-      !departamentoDestinatarioId ||
-      !fechaTentativaEntrega
+      !departamentoRemitenteId ||
+      !remitenteId ||
+      !fechaDocumento ||
+      !fechaMaximaContestacion
     ) {
       await transaction.rollback();
       return res
@@ -132,7 +129,7 @@ export const actualizarTramite = async (req, res) => {
       remitenteExiste,
       departamentoDestinatario,
       destinatarioExiste,
-      tramiteExiste,
+      tramiteModificadoExiste,
       tramiteDespachoExiste,
     ] = await Promise.all([
       Departamento.findByPk(departamentoRemitenteId),
@@ -148,7 +145,14 @@ export const actualizarTramite = async (req, res) => {
       }),
       Tramite.findOne({
         where: {
-          numeroTramite: { [Op.iLike]: numeroTramite },
+          [Op.or]: [
+            numeroTramiteModificado
+              ? { numeroTramite: numeroTramiteModificado }
+              : {},
+            numeroTramiteModificado
+              ? { numeroTramiteModificado: numeroTramiteModificado }
+              : {},
+          ],
           id: { [Op.ne]: id },
         },
       }),
@@ -191,7 +195,7 @@ export const actualizarTramite = async (req, res) => {
     }
 
     // Validación de números duplicados de trámite y despacho
-    if (tramiteExiste) {
+    if (tramiteModificadoExiste) {
       await transaction.rollback();
       return res
         .status(400)
@@ -206,27 +210,29 @@ export const actualizarTramite = async (req, res) => {
     }
 
     // Actualizar los datos
+    tramiteActualizar.asunto = asunto || tramiteActualizar.asunto;
+    tramiteActualizar.descripcion =
+      descripcion || tramiteActualizar.descripcion;
     tramiteActualizar.departamentoRemitenteId =
       departamentoRemitenteId || tramiteActualizar.departamentoRemitenteId;
     tramiteActualizar.remitenteId =
       remitenteId || tramiteActualizar.remitenteId;
-    tramiteActualizar.asunto = asunto || tramiteActualizar.asunto;
-    tramiteActualizar.descripcion =
-      descripcion || tramiteActualizar.descripcion;
-    tramiteActualizar.numeroTramite =
-      numeroTramite || tramiteActualizar.numeroTramite;
+    tramiteActualizar.prioridad = prioridad || tramiteActualizar.prioridad;
+    tramiteActualizar.fechaDocumento =
+      fechaDocumento || tramiteActualizar.fechaDocumento;
     tramiteActualizar.referenciaTramite =
       referenciaTramite || tramiteActualizar.referenciaTramite;
     tramiteActualizar.numeroOficioDespacho =
       numeroOficioDespacho || tramiteActualizar.numeroOficioDespacho;
-    tramiteActualizar.destinatarioId =
-      destinatarioId || tramiteActualizar.destinatarioId;
     tramiteActualizar.departamentoDestinatarioId =
       departamentoDestinatarioId ||
       tramiteActualizar.departamentoDestinatarioId;
-    tramiteActualizar.fechaTentativaEntrega =
-      fechaTentativaEntrega || tramiteActualizar.fechaTentativaEntrega;
-    tramiteActualizar.prioridad = prioridad || tramiteActualizar.prioridad;
+    tramiteActualizar.destinatarioId =
+      destinatarioId || tramiteActualizar.destinatarioId;
+    tramiteActualizar.fechaMaximaContestacion =
+      fechaMaximaContestacion || tramiteActualizar.fechaMaximaContestacion;
+    tramiteActualizar.numeroTramiteModificado =
+      numeroTramiteModificado || tramiteActualizar.numeroTramiteModificado;
 
     // Asignar usuario revisor si está presente
     if (usuarioRevisorId) {

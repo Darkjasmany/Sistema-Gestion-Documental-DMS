@@ -107,7 +107,7 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
-    numeroTramiteEspecial: {
+    numeroTramiteModificado: {
       type: DataTypes.STRING,
       allowNull: true,
     },
