@@ -262,7 +262,7 @@ export const actualizarTramite = async (req, res) => {
         { transaction }
       );
 
-      tramiteActualizar.estado = "PENDIENTE";
+      //  tramiteActualizar.estado = "PENDIENTE";
     }
 
     // Guarda el trámite actualizado
@@ -296,13 +296,114 @@ export const eliminarTramite = async (req, res) => {
     const tramite = await Tramite.findByPk(id);
     if (!tramite) return res.status(400).json({ message: "Accion no valida" });
 
-    console.log(tramite);
-    res.json(tramite);
-    res.json({ message: "Trámite Eliminado" });
+    await Tramite.destroy({ where: id });
+
+    res.status(200).json({ message: "Tramite eliminado" });
   } catch (error) {
     console.error(`Error al eliminar el trámite: ${error.message}`);
     return res.status(500).json({
       message: "Error al eliminar el trámite.",
     });
   }
+};
+
+export const asignarRevisor = async (req, res) => {
+  const transaction = await Tramite.sequelize.transaction();
+
+  try {
+    const { id } = req.params;
+
+    const {
+      usuarioRevisorId,
+      fechaMaximaContestacion,
+      observacionRevisor,
+      prioridad,
+      referenciaTramite,
+    } = req.body;
+
+    if (!usuarioRevisorId || !fechaMaximaContestacion || !observacionRevisor) {
+      await transaction.rollback();
+      return res
+        .status(400)
+        .json({ message: "Todos los campos son obligatorios" });
+    }
+
+    const existeUsuarioRevisor = await Usuario.findOne({
+      where: {
+        id: usuarioRevisorId,
+        departamentoId: req.usuario.departamentoId,
+        rol: "REVISOR",
+      },
+    });
+    if (!existeUsuarioRevisor) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Usuario Revisor no encontrado" });
+    }
+
+    const tramiteAsignar = await Tramite.findOne({
+      where: { id, estado: "INGRESADO", usuarioRevisorId: null },
+    });
+    if (!tramiteAsignar) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Trámite no encontrado" });
+    }
+
+    if (
+      tramiteAsignar.departamentoUsuarioId.toString() !==
+      req.usuario.departamentoId.toString()
+    ) {
+      await transaction.rollback();
+      return res.status(403).json({
+        message: "Acción no válida",
+      });
+    }
+
+    const estadoAnterior = tramiteAsignar.estado;
+
+    tramiteAsignar.usuarioRevisorId =
+      usuarioRevisorId || tramiteAsignar.usuarioRevisorId;
+    tramiteAsignar.prioridad = prioridad || tramiteAsignar.prioridad;
+    tramiteAsignar.referenciaTramite =
+      referenciaTramite || tramiteAsignar.referenciaTramite;
+    tramiteAsignar.fechaMaximaContestacion =
+      fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
+    tramiteAsignar.estado = "PENDIENTE";
+
+    await TramiteAsignacion.create(
+      {
+        tramiteId: id,
+        usuarioRevisorId: usuarioRevisorId,
+        descripcion: observacionRevisor,
+      },
+      { transaction }
+    );
+
+    await tramiteAsignar.save({ transaction });
+
+    await registrarHistorialEstado(
+      tramiteAsignar.id,
+      estadoAnterior,
+      tramiteAsignar.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    await transaction.commit(); // Confirmar la transacción
+
+    console.log(estadoAnterior);
+    res.send(tramiteAsignar);
+  } catch (error) {
+    console.error(`Error al asignar trámites: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al asignar trámites, intente nuevamente más tarde.",
+    });
+  }
+};
+
+export const reasignarRevisor = (req, res) => {
+  res.send("Desde reasignar Revisor");
+};
+
+export const completarTramite = (req, res) => {
+  res.send("Desde completar Revisor");
 };

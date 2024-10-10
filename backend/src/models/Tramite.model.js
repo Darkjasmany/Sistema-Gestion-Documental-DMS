@@ -91,6 +91,14 @@ export const Tramite = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
     },
+    usuarioRevisorId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "usuario", // nombre de la tabla de referencia
+        key: "id", // clave primaria de la tabla de referencia
+      },
+    },
     usuarioCreacionId: {
       type: DataTypes.BIGINT,
       allowNull: false,

@@ -6,7 +6,7 @@ import * as tramiteCoordinador from "../controllers/tramiteCoordinador.controlle
 
 const router = Router();
 
-// Rutas para usuarios normales
+// *Rutas para usuarios normales
 router
   .route("/")
   .post(checkAuth, tramiteController.agregarTramite)
@@ -18,9 +18,7 @@ router
   .put(checkAuth, tramiteController.actualizarTramite)
   .delete(checkAuth, tramiteController.eliminarTramite);
 
-// Rutas exclusivas para el coordinador
-
-// Ruta para obtener trámites por estado
+// * Rutas exclusivas para el coordinador
 router
   .route("/coordinador/tramites")
   .get(
@@ -43,7 +41,26 @@ router
     tramiteCoordinador.eliminarTramite
   );
 
-// Rutas exclusivas para el revisor
+router.put(
+  "/coordinador/tramites/:id/asignar-revisor",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteCoordinador.asignarRevisor
+);
+router.put(
+  "/coordinador/tramites/:id/reasignar-revisor",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteCoordinador.reasignarRevisor
+);
+router.put(
+  "/coordinador/tramites/:id/completar",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteCoordinador.completarTramite
+);
+
+// * Rutas exclusivas para el revisor
 
 router.route("/revisor/tramites").get(checkAuth, checkRole("revisor"), () => {
   res.send("Listar trámites asignados al revisor ");

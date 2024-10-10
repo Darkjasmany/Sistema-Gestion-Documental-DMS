@@ -110,6 +110,17 @@ Usuario.hasMany(Tramite, {
   sourceKey: "id", // Con qué lo va a enlazar
 });
 
+Tramite.belongsTo(Usuario, {
+  foreignKey: "usuarioRevisorId",
+  targetKey: "id",
+  as: "usuarioRevisor",
+});
+
+Usuario.hasMany(Tramite, {
+  foreignKey: "usuarioRevisorId",
+  sourceKey: "id",
+});
+
 // * TramiteAsignacion
 // 1 tramite pertenece a 1 usuario revisor
 TramiteAsignacion.belongsTo(Usuario, {
