@@ -383,8 +383,13 @@ export const asignarOReasignarRevisor = async (req, res) => {
     }
     // Resignar Revisor
     else if (tramiteAsignar.estado === "PENDIENTE" && revisorAnterior) {
-      if (revisorAnterior === usuarioRevisorId) {
-        return res.json({ message: "esta poniendo el mismo reivor" });
+      if (
+        tramiteAsignar.usuarioRevisorId.toString() ===
+        usuarioRevisorId.toString()
+      ) {
+        return res.status(400).json({
+          message: "El usuario revisor es el mismo, no se puede reasignar.",
+        });
       }
 
       tramiteAsignar.usuarioRevisorId =
