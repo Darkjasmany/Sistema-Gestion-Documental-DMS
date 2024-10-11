@@ -3,7 +3,7 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
-import { json, Op } from "sequelize";
+import { Op } from "sequelize";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 

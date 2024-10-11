@@ -3,6 +3,7 @@ import { checkAuth } from "../middlewares/auth.middleware.js";
 import { checkRole } from "../middlewares/role.middleware.js";
 import * as tramiteController from "../controllers/tramite.controller.js";
 import * as tramiteCoordinador from "../controllers/tramiteCoordinador.controller.js";
+import * as tramiteRevisor from "../controllers/tramiteRevisor.controller.js";
 
 const router = Router();
 
@@ -56,17 +57,17 @@ router.put(
 
 // * Rutas exclusivas para el revisor
 
-router.route("/revisor/tramites").get(checkAuth, checkRole("revisor"), () => {
-  res.send("Listar trámites asignados al revisor ");
-});
+router
+  .route("/revisor/tramites")
+  .get(checkAuth, checkRole("REVISOR"), tramiteRevisor.listarTramitesRevisor);
 
 router
   .route("/revisor/tramites/:id")
-  .get(checkAuth, checkRole("REVISOR"), () => {
-    res.send("Obtener 1 trámites asignado al revisor ");
-  })
-  .put(checkAuth, checkRole("REVISOR"), () => {
-    res.send("Obtener 1 trámites asignado al revisor ");
-  });
+  .get(checkAuth, checkRole("REVISOR"), tramiteRevisor.obtenerTramiteRevisor)
+  .put(
+    checkAuth,
+    checkRole("REVISOR"),
+    tramiteRevisor.actualizarTramiteRevisor
+  );
 
 export default router;
