@@ -3,7 +3,7 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
-import { Op } from "sequelize";
+import { json, Op } from "sequelize";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 
@@ -307,7 +307,7 @@ export const eliminarTramite = async (req, res) => {
   }
 };
 
-export const asignarRevisor = async (req, res) => {
+export const asignarOReasignarRevisor = async (req, res) => {
   const transaction = await Tramite.sequelize.transaction();
 
   try {
@@ -328,21 +328,13 @@ export const asignarRevisor = async (req, res) => {
         .json({ message: "Todos los campos son obligatorios" });
     }
 
-    const existeUsuarioRevisor = await Usuario.findOne({
-      where: {
-        id: usuarioRevisorId,
-        departamentoId: req.usuario.departamentoId,
-        rol: "REVISOR",
-      },
-    });
+    const existeUsuarioRevisor = await Usuario.findByPk(id);
     if (!existeUsuarioRevisor) {
       await transaction.rollback();
       return res.status(404).json({ message: "Usuario Revisor no encontrado" });
     }
 
-    const tramiteAsignar = await Tramite.findOne({
-      where: { id, estado: "INGRESADO", usuarioRevisorId: null },
-    });
+    const tramiteAsignar = await Tramite.findByPk(id);
     if (!tramiteAsignar) {
       await transaction.rollback();
       return res.status(404).json({ message: "Trámite no encontrado" });
@@ -359,49 +351,75 @@ export const asignarRevisor = async (req, res) => {
     }
 
     const estadoAnterior = tramiteAsignar.estado;
+    const revisorAnterior = tramiteAsignar.usuarioRevisorId;
 
-    tramiteAsignar.usuarioRevisorId =
-      usuarioRevisorId || tramiteAsignar.usuarioRevisorId;
-    tramiteAsignar.prioridad = prioridad || tramiteAsignar.prioridad;
-    tramiteAsignar.referenciaTramite =
-      referenciaTramite || tramiteAsignar.referenciaTramite;
-    tramiteAsignar.fechaMaximaContestacion =
-      fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
-    tramiteAsignar.estado = "PENDIENTE";
+    // Asignar Revisor
+    if (tramiteAsignar.estado === "INGRESADO" && !revisorAnterior) {
+      tramiteAsignar.usuarioRevisorId =
+        usuarioRevisorId || tramiteAsignar.usuarioRevisorId;
+      tramiteAsignar.prioridad = prioridad || tramiteAsignar.prioridad;
+      tramiteAsignar.referenciaTramite =
+        referenciaTramite || tramiteAsignar.referenciaTramite;
+      tramiteAsignar.fechaMaximaContestacion =
+        fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
+      tramiteAsignar.estado = "PENDIENTE";
 
-    await TramiteAsignacion.create(
-      {
-        tramiteId: id,
-        usuarioRevisorId: usuarioRevisorId,
-        descripcion: observacionRevisor,
-      },
-      { transaction }
-    );
+      await TramiteAsignacion.create(
+        {
+          tramiteId: id,
+          usuarioRevisorId: usuarioRevisorId,
+          descripcion: observacionRevisor,
+        },
+        { transaction }
+      );
+
+      await registrarHistorialEstado(
+        tramiteAsignar.id,
+        estadoAnterior,
+        tramiteAsignar.estado,
+        req.usuario.id,
+        transaction
+      );
+    }
+    // Resignar Revisor
+    else if (tramiteAsignar.estado === "PENDIENTE" && revisorAnterior) {
+      if (revisorAnterior === usuarioRevisorId) {
+        return res.json({ message: "esta poniendo el mismo reivor" });
+      }
+
+      tramiteAsignar.usuarioRevisorId =
+        usuarioRevisorId || tramiteAsignar.usuarioRevisorId;
+      tramiteAsignar.prioridad = prioridad || tramiteAsignar.prioridad;
+      tramiteAsignar.referenciaTramite =
+        referenciaTramite || tramiteAsignar.referenciaTramite;
+      tramiteAsignar.fechaMaximaContestacion =
+        fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
+
+      await TramiteAsignacion.create(
+        {
+          tramiteId: id,
+          usuarioRevisorId: usuarioRevisorId,
+          descripcion: observacionRevisor,
+        },
+        { transaction }
+      );
+    }
 
     await tramiteAsignar.save({ transaction });
+    await transaction.commit();
 
-    await registrarHistorialEstado(
-      tramiteAsignar.id,
-      estadoAnterior,
-      tramiteAsignar.estado,
-      req.usuario.id,
-      transaction
-    );
-
-    await transaction.commit(); // Confirmar la transacción
-
-    console.log(estadoAnterior);
-    res.send(tramiteAsignar);
+    res.json({
+      message: "Revisor asignado/reasignado correctamente",
+      tramite: tramiteAsignar,
+    });
   } catch (error) {
-    console.error(`Error al asignar trámites: ${error.message}`);
+    await transaction.rollback();
+    console.error(`Error al asignar/reasignar el trámite: ${error.message}`);
     return res.status(500).json({
-      message: "Error al asignar trámites, intente nuevamente más tarde.",
+      message:
+        "Error al asignar/reasignar el trámite, intente nuevamente más tarde",
     });
   }
-};
-
-export const reasignarRevisor = (req, res) => {
-  res.send("Desde reasignar Revisor");
 };
 
 export const completarTramite = (req, res) => {

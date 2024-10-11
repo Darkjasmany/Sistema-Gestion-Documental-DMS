@@ -42,16 +42,10 @@ router
   );
 
 router.put(
-  "/coordinador/tramites/:id/asignar-revisor",
+  "/coordinador/tramites/:id/revisor",
   checkAuth,
   checkRole("COORDINADOR"),
-  tramiteCoordinador.asignarRevisor
-);
-router.put(
-  "/coordinador/tramites/:id/reasignar-revisor",
-  checkAuth,
-  checkRole("COORDINADOR"),
-  tramiteCoordinador.reasignarRevisor
+  tramiteCoordinador.asignarOReasignarRevisor
 );
 router.put(
   "/coordinador/tramites/:id/completar",

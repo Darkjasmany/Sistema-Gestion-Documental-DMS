@@ -128,6 +128,11 @@ TramiteAsignacion.belongsTo(Usuario, {
   targetKey: "id", // Con qué lo va a enlazar
 });
 
+Usuario.hasMany(TramiteAsignacion, {
+  foreignKey: "usuarioRevisorId", // Campo que se crea en la tabla Tramite
+  sourceKey: "id", // Con qué lo va a enlazar
+});
+
 TramiteHistorialEstado.belongsTo(Usuario, {
   foreignKey: "usuarioId", // Campo que se crea en la tabla Tramite
   targetKey: "id", // Con qué lo va a enlazar
