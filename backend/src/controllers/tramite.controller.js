@@ -5,6 +5,8 @@ import { Sequelize } from "sequelize";
 import { Archivo } from "../models/Achivo.model.js";
 
 export const agregarTramite = async (req, res) => {
+  // console.log(req.files);
+
   const {
     asunto,
     descripcion,
@@ -20,12 +22,15 @@ export const agregarTramite = async (req, res) => {
     !descripcion ||
     !departamentoRemitenteId ||
     !remitenteId ||
-    !fechaDocumento ||
-    !req.file
+    !fechaDocumento
   )
     return res.status(400).json({
-      message: "Todos los campos son obligatorios y debes subir un archivo",
+      message: "Todos los campos son obligatorios",
     });
+
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).send("Debes subir al menos un archivo");
+  }
 
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
@@ -46,6 +51,10 @@ export const agregarTramite = async (req, res) => {
       message: "No existe ese empleado o no está asignado a ese departamento",
     });
 
+  const archivos = req.files.map((file) => file.filename);
+  console.log(archivos);
+
+  return;
   try {
     const tramiteGuardado = await Tramite.create({
       asunto,

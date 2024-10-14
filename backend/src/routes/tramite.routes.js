@@ -11,7 +11,12 @@ const router = Router();
 // *Rutas para usuarios normales
 router
   .route("/")
-  .post(checkAuth, upload.single("archivo"), tramiteController.agregarTramite)
+  // .post(checkAuth, upload.single("archivo"), tramiteController.agregarTramite) // Cargar 1 archivo
+  .post(
+    checkAuth,
+    upload.array("archivos", 3), // upload.array('archivos', cantidadMáxima): Permite cargar varios archivos a la vez bajo el mismo nombre de campo.
+    tramiteController.agregarTramite
+  )
   .get(checkAuth, tramiteController.listarTramitesUsuario);
 
 router
