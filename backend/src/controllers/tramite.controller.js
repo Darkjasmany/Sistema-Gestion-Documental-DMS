@@ -2,9 +2,9 @@ import { Tramite } from "../models/Tramite.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 import { Sequelize } from "sequelize";
+import { Archivo } from "../models/Achivo.model.js";
 
 export const agregarTramite = async (req, res) => {
-  console.log(req.usuario);
   const {
     asunto,
     descripcion,
@@ -20,11 +20,12 @@ export const agregarTramite = async (req, res) => {
     !descripcion ||
     !departamentoRemitenteId ||
     !remitenteId ||
-    !fechaDocumento
+    !fechaDocumento ||
+    !req.file
   )
-    return res
-      .status(400)
-      .json({ message: "Todos los campos son obligatorios" });
+    return res.status(400).json({
+      message: "Todos los campos son obligatorios y debes subir un archivo",
+    });
 
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
@@ -58,7 +59,20 @@ export const agregarTramite = async (req, res) => {
       departamentoUsuarioId: req.usuario.departamentoId,
     });
 
-    res.json(tramiteGuardado);
+    const archivoGuardado = await Archivo.create({
+      fileName: req.file.filename,
+      originalName: req.file.originalname,
+      ruta: req.file.path,
+      tipo: req.file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
+      size: req.file.size, // Guardar en bytes (número entero)
+      tramiteId: tramiteGuardado.id,
+      usuarioCreacionId: req.usuario.id,
+    });
+
+    res.json({
+      tramite: tramiteGuardado,
+      archivo: archivoGuardado,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
