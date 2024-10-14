@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 import { checkRole } from "../middlewares/role.middleware.js";
+// import { upload } from "../config/multer.config.js"; // Importamos la configuracón de Multer
 import * as tramiteController from "../controllers/tramite.controller.js";
 import * as tramiteCoordinador from "../controllers/tramiteCoordinador.controller.js";
 import * as tramiteRevisor from "../controllers/tramiteRevisor.controller.js";

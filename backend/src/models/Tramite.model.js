@@ -1,9 +1,10 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.js"; // Importamos la conexión
+import { sequelize } from "../config/db.config.js"; // Importamos la conexión
 import { Departamento } from "./Departamento.model.js";
 import { Empleado } from "./Empleado.model.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
+import { Archivo } from "./Achivo.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
@@ -172,6 +173,11 @@ Tramite.belongsTo(Departamento, {
   foreignKey: "departamentoDestinatarioId",
   targetKey: "id",
   as: "departamentoDestinatario", // Alias para la relación destino
+});
+
+Tramite.hasMany(Archivo, {
+  foreignKey: "tramiteId",
+  sourceKey: "id",
 });
 
 TramiteHistorialEstado.belongsTo(Tramite, {

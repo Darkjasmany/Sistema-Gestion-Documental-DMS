@@ -4,6 +4,7 @@ import { Departamento } from "../models/Departamento.model.js";
 import { Sequelize } from "sequelize";
 
 export const agregarTramite = async (req, res) => {
+  console.log(req.usuario);
   const {
     asunto,
     descripcion,

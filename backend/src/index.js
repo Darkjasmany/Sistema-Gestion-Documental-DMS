@@ -1,5 +1,5 @@
 import app from "./app.js"; // Importamos la app con Express configurado
-import { conectarDB } from "./config/db.js"; // Importamos la conexión a la base de datos
+import { conectarDB } from "./config/db.config.js"; // Importamos la conexión a la base de datos
 
 // Función principal para iniciar la aplicación
 const startServer = async () => {

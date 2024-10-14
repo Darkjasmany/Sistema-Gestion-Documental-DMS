@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.js";
+import { sequelize } from "../config/db.config.js";
 import { Usuario } from "./Usuario.model.js";
 
 export const IntentoFallido = sequelize.define("intento_fallido", {
