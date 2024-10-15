@@ -12,9 +12,10 @@ const router = Router();
 router
   .route("/")
   // .post(checkAuth, upload.single("archivo"), tramiteController.agregarTramite) // Cargar 1 archivo
+  // upload.array('archivo', cantidadMáxima):'archivo' es el campo esperado y 5 es el máximo de archivos permitidos
   .post(
     checkAuth,
-    upload.array("archivos", 3), // upload.array('archivos', cantidadMáxima): Permite cargar varios archivos a la vez bajo el mismo nombre de campo.
+    upload.array("archivo", 3), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
     tramiteController.agregarTramite
   )
   .get(checkAuth, tramiteController.listarTramitesUsuario);

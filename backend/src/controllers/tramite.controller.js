@@ -5,8 +5,6 @@ import { Sequelize } from "sequelize";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 
 export const agregarTramite = async (req, res) => {
-  // console.log(req.files);
-
   const {
     asunto,
     descripcion,
@@ -22,15 +20,14 @@ export const agregarTramite = async (req, res) => {
     !descripcion ||
     !departamentoRemitenteId ||
     !remitenteId ||
-    !fechaDocumento
+    !fechaDocumento ||
+    !req.files ||
+    req.files.length === 0
   )
     return res.status(400).json({
-      message: "Todos los campos son obligatorios",
+      message:
+        "Todos los campos son obligatorios y debes subir al menos un archivo",
     });
-
-  // if (!req.files || req.files.length === 0) {
-  //   return res.status(400).send("Debes subir al menos un archivo");
-  // }
 
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
@@ -51,10 +48,6 @@ export const agregarTramite = async (req, res) => {
       message: "No existe ese empleado o no está asignado a ese departamento",
     });
 
-  const archivos = req.files.map((file) => file.filename);
-  console.log(archivos);
-
-  return;
   try {
     const tramiteGuardado = await Tramite.create({
       asunto,
@@ -68,15 +61,25 @@ export const agregarTramite = async (req, res) => {
       departamentoUsuarioId: req.usuario.departamentoId,
     });
 
-    const archivoGuardado = await TramiteArchivo.create({
-      fileName: req.file.filename,
-      originalName: req.file.originalname,
-      ruta: req.file.path,
-      tipo: req.file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
-      size: req.file.size, // Guardar en bytes (número entero)
-      tramiteId: tramiteGuardado.id,
-      usuarioCreacionId: req.usuario.id,
+    const nuevo = req.files.map((file) => {
+      return { filename: file.filename };
     });
+
+    console.log(nuevo);
+
+    const archivoGuardado = await Promise.all(
+      req.files.map(async (file) => {
+        await TramiteArchivo.create({
+          fileName: file.filename,
+          originalName: file.originalname,
+          ruta: file.path,
+          tipo: file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
+          size: file.size, // Guardar en bytes (número entero)
+          tramiteId: tramiteGuardado.id,
+          usuarioCreacionId: req.usuario.id,
+        });
+      })
+    );
 
     res.json({
       tramite: tramiteGuardado,
