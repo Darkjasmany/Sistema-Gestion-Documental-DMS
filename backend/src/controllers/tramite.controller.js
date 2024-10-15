@@ -2,7 +2,7 @@ import { Tramite } from "../models/Tramite.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 import { Sequelize } from "sequelize";
-import { Archivo } from "../models/Achivo.model.js";
+import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 
 export const agregarTramite = async (req, res) => {
   // console.log(req.files);
@@ -28,9 +28,9 @@ export const agregarTramite = async (req, res) => {
       message: "Todos los campos son obligatorios",
     });
 
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).send("Debes subir al menos un archivo");
-  }
+  // if (!req.files || req.files.length === 0) {
+  //   return res.status(400).send("Debes subir al menos un archivo");
+  // }
 
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
@@ -68,7 +68,7 @@ export const agregarTramite = async (req, res) => {
       departamentoUsuarioId: req.usuario.departamentoId,
     });
 
-    const archivoGuardado = await Archivo.create({
+    const archivoGuardado = await TramiteArchivo.create({
       fileName: req.file.filename,
       originalName: req.file.originalname,
       ruta: req.file.path,

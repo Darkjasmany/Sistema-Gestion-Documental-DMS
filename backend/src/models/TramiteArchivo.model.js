@@ -1,8 +1,8 @@
 import { sequelize } from "../config/db.config.js";
 import { DataTypes } from "sequelize";
 
-export const Archivo = sequelize.define(
-  "archivo",
+export const TramiteArchivo = sequelize.define(
+  "tramiteArchivo",
   {
     fileName: {
       type: DataTypes.STRING,
@@ -42,6 +42,6 @@ export const Archivo = sequelize.define(
     },
   },
   {
-    tableName: "archivo",
+    tableName: "tramiteArchivo",
   }
 );

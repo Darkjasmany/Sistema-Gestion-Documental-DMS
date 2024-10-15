@@ -4,7 +4,7 @@ import { Departamento } from "./Departamento.model.js";
 import { Empleado } from "./Empleado.model.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
-import { Archivo } from "./Achivo.model.js";
+import { TramiteArchivo } from "./TramiteArchivo.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
@@ -175,7 +175,7 @@ Tramite.belongsTo(Departamento, {
   as: "departamentoDestinatario", // Alias para la relación destino
 });
 
-Tramite.hasMany(Archivo, {
+Tramite.hasMany(TramiteArchivo, {
   foreignKey: "tramiteId",
   sourceKey: "id",
 });

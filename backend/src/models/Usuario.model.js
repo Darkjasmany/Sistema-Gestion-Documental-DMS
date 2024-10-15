@@ -6,7 +6,7 @@ import { Departamento } from "./Departamento.model.js";
 import { generarId } from "../utils/generarId.js";
 import { passwordHash } from "../utils/passwordHash.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
-import { Archivo } from "./Achivo.model.js";
+import { TramiteArchivo } from "./TramiteArchivo.model.js";
 
 export const Usuario = sequelize.define(
   "usuario",
@@ -122,7 +122,7 @@ Usuario.hasMany(Tramite, {
   sourceKey: "id",
 });
 
-Usuario.hasMany(Archivo, {
+Usuario.hasMany(TramiteArchivo, {
   foreignKey: "usuarioCreacionId",
   sourceKey: "id",
 });
