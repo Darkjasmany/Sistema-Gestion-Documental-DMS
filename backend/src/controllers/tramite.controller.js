@@ -120,6 +120,19 @@ export const listarTramitesUsuario = async (req, res) => {
             // "cedula",
           ],
         },
+        {
+          model: TramiteArchivo,
+          as: "tramiteArchivos", // Asegúrate de que el alias sea correcto
+          attributes: [
+            [
+              Sequelize.fn("COUNT", Sequelize.col("TramiteArchivo.id")),
+              "totalArchivos",
+            ], // Contar los archivos
+          ],
+          // Asegúrate de que la relación está definida correctamente
+          required: false, // Permite que los trámites sin archivos aún sean devueltos
+          group: ["TramiteArchivo.tramiteId"], // Agrupa por el id del trámite
+        },
       ],
       order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
     });
