@@ -151,10 +151,17 @@ export const obtenerTramite = async (req, res) => {
         req.usuario.departamentoId.toString()
     )
       return res
-        .status(404)
+        .status(403)
         .json({ message: "El trámite seleccionado no te pertenece" });
 
-    res.json(tramite);
+    const tramiteArchivo = await TramiteArchivo.findAll({
+      where: { tramiteId: id },
+    });
+
+    res.json({
+      tramite,
+      archivos: tramiteArchivo,
+    });
   } catch (error) {
     console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
@@ -272,6 +279,12 @@ export const eliminarTramite = async (req, res) => {
     await Tramite.destroy({
       where: {
         id,
+      },
+    });
+
+    await TramiteArchivo.destroy({
+      where: {
+        tramiteId: id,
       },
     });
 
