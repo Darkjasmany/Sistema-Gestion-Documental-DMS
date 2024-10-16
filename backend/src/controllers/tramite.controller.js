@@ -206,6 +206,10 @@ export const actualizarTramite = async (req, res) => {
       return res.status(404).json({ message: "Trámite no encontrado" });
     }
 
+    const tramiteArchivo = await TramiteArchivo.findAll({
+      where: { tramiteId: id },
+    });
+
     if (
       tramiteActualizado.usuarioCreacionId.toString() !==
       req.usuario.id.toString()
@@ -236,6 +240,7 @@ export const actualizarTramite = async (req, res) => {
         message: "No existe ese empleado o no está asignado a ese departamento",
       });
     }
+    // console.log(tramiteArchivo);
 
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
