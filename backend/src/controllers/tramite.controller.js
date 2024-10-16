@@ -3,6 +3,7 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 import { Sequelize } from "sequelize";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
+import multer from "multer";
 
 export const agregarTramite = async (req, res) => {
   const {
@@ -61,12 +62,6 @@ export const agregarTramite = async (req, res) => {
       departamentoUsuarioId: req.usuario.departamentoId,
     });
 
-    const nuevo = req.files.map((file) => {
-      return { filename: file.filename };
-    });
-
-    console.log(nuevo);
-
     const archivoGuardado = await Promise.all(
       req.files.map(async (file) => {
         await TramiteArchivo.create({
@@ -102,6 +97,13 @@ export const listarTramitesUsuario = async (req, res) => {
         "fechaDocumento",
         "referenciaTramite",
         "createdAt",
+        [
+          // Conteo de archivos de cada trámite
+          Sequelize.literal(
+            `(SELECT COUNT(*) FROM "tramiteArchivo" WHERE "tramiteArchivo"."tramiteId" = "tramite"."id")`
+          ),
+          "totalArchivosCargados",
+        ],
       ],
       include: [
         {
@@ -119,19 +121,6 @@ export const listarTramitesUsuario = async (req, res) => {
             ],
             // "cedula",
           ],
-        },
-        {
-          model: TramiteArchivo,
-          as: "tramiteArchivos", // Asegúrate de que el alias sea correcto
-          attributes: [
-            [
-              Sequelize.fn("COUNT", Sequelize.col("TramiteArchivo.id")),
-              "totalArchivos",
-            ], // Contar los archivos
-          ],
-          // Asegúrate de que la relación está definida correctamente
-          required: false, // Permite que los trámites sin archivos aún sean devueltos
-          group: ["TramiteArchivo.tramiteId"], // Agrupa por el id del trámite
         },
       ],
       order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees

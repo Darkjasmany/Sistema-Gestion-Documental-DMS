@@ -181,7 +181,11 @@ Tramite.hasMany(TramiteArchivo, {
   as: "tramiteArchivos",
 });
 
-TramiteArchivo.belongsTo(Tramite, { foreignKey: "tramiteId", as: "tramite" });
+TramiteArchivo.belongsTo(Tramite, {
+  foreignKey: "tramiteId",
+  targetKey: "id",
+  as: "tramite",
+});
 
 TramiteHistorialEstado.belongsTo(Tramite, {
   foreignKey: "tramiteId",
