@@ -3,7 +3,13 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 import { Sequelize } from "sequelize";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
-import multer from "multer";
+import fs from "fs"; // Se usa el módulo fs para verificar si la carpeta uploads/ existe con fs.existsSync().
+import path from "path"; // módulo path es parte de la API estándar de Node.js y se utiliza para manejar y transformar rutas de archivos y directorios.
+import { fileURLToPath } from "url";
+
+// Simular __dirname en ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const agregarTramite = async (req, res) => {
   const {
@@ -142,7 +148,9 @@ export const obtenerTramite = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const tramite = await Tramite.findByPk(id);
+    const tramite = await Tramite.findOne({
+      where: { id, estado: "INGRESADO" },
+    });
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
     if (
@@ -185,6 +193,7 @@ export const actualizarTramite = async (req, res) => {
       prioridad,
       fechaDocumento,
       referenciaTramite,
+      eliminarArchivos,
     } = req.body;
 
     if (
@@ -200,15 +209,16 @@ export const actualizarTramite = async (req, res) => {
         .json({ message: "Todos los campos son obligatorios" });
     }
 
-    const tramiteActualizado = await Tramite.findByPk(id, { transaction });
+    const tramiteActualizado = await Tramite.findOne(
+      {
+        where: { id, estado: "INGRESADO" },
+      },
+      { transaction }
+    );
     if (!tramiteActualizado) {
       await transaction.rollback();
       return res.status(404).json({ message: "Trámite no encontrado" });
     }
-
-    const tramiteArchivo = await TramiteArchivo.findAll({
-      where: { tramiteId: id },
-    });
 
     if (
       tramiteActualizado.usuarioCreacionId.toString() !==
@@ -240,7 +250,29 @@ export const actualizarTramite = async (req, res) => {
         message: "No existe ese empleado o no está asignado a ese departamento",
       });
     }
-    // console.log(tramiteArchivo);
+    //  ** Manejo de Archivos **
+    // 1. Eliminar archivos existentes si el usuario lo ha solicitado
+    if (eliminarArchivos && eliminarArchivos.length > 0) {
+      const archivosAEliminar = await TramiteArchivo.findAll({
+        where: { id: eliminarArchivos, tramiteId: id },
+      });
+
+      if (archivosAEliminar.length > 0) {
+        archivosAEliminar.forEach((archivo) => {
+          // Elimina archivo del sistema de archivos (almacenamiento local)
+          const filePath = path.join(__dirname, "..", "..", archivo.ruta); // ruta absoluta
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath); // Eliminar el archivo
+          }
+        });
+      }
+
+      await TramiteArchivo.destroy({ where: { id: eliminarArchivos } });
+    }
+
+    // TODO 2. Subir y agregar nuevos archivos si se incluyen en la solicitud y verificar que no sobre pase denuevo 3 archivos permitidos en su nivel
+
+    return;
 
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
@@ -273,12 +305,18 @@ export const eliminarTramite = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const tramite = await Tramite.findByPk(id);
+    const tramite = await Tramite.findOne({
+      where: { id, estado: "INGRESADO" },
+    });
     if (!tramite)
       return res.status(404).json({ message: "Trámite no encontrado" });
 
     if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
       return res.status(403).json({ msg: "Acción no válida" });
+
+    const tramiteArchivos = await TramiteArchivo.findAll({
+      where: { tramiteId: id },
+    });
 
     // Metodo para buscar y eliminar al mismo tiempo
     await Tramite.destroy({
@@ -291,6 +329,14 @@ export const eliminarTramite = async (req, res) => {
       where: {
         tramiteId: id,
       },
+    });
+
+    // Buscar los archivos y los elimina
+    tramiteArchivos.forEach((archivo) => {
+      const filePath = path.join(__dirname, "..", "..", archivo.ruta);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     });
 
     res.status(200).json({ message: "Tramite eliminado" });

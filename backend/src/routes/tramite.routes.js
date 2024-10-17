@@ -15,7 +15,7 @@ router
   // upload.array('archivo', cantidadMáxima):'archivo' es el campo esperado y 5 es el máximo de archivos permitidos
   .post(
     checkAuth,
-    upload.array("archivo", 3), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
+    upload.array("archivo", process.env.MAX_UPLOAD_FILES), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
     tramiteController.agregarTramite
   )
   .get(checkAuth, tramiteController.listarTramitesUsuario);
@@ -23,7 +23,11 @@ router
 router
   .route("/:id")
   .get(checkAuth, tramiteController.obtenerTramite)
-  .put(checkAuth, tramiteController.actualizarTramite)
+  .put(
+    checkAuth,
+    upload.array("archivo", process.env.MAX_UPLOAD_FILES),
+    tramiteController.actualizarTramite
+  )
   .delete(checkAuth, tramiteController.eliminarTramite);
 
 // * Rutas exclusivas para el coordinador
