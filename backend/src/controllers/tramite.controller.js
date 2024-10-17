@@ -250,11 +250,17 @@ export const actualizarTramite = async (req, res) => {
         message: "No existe ese empleado o no está asignado a ese departamento",
       });
     }
+
+    const nuevoArrayEliminar = eliminarArchivos
+      .filter((id) => id !== "") // Filtrar los valores no vacíos
+      .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
+      .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+
     //  ** Manejo de Archivos **
     // 1. Eliminar archivos existentes si el usuario lo ha solicitado
-    if (eliminarArchivos && eliminarArchivos.length > 0) {
+    if (nuevoArrayEliminar && nuevoArrayEliminar.length > 0) {
       const archivosAEliminar = await TramiteArchivo.findAll({
-        where: { id: eliminarArchivos, tramiteId: id },
+        where: { id: nuevoArrayEliminar, tramiteId: id },
       });
 
       if (archivosAEliminar.length > 0) {
@@ -262,17 +268,16 @@ export const actualizarTramite = async (req, res) => {
           // Elimina archivo del sistema de archivos (almacenamiento local)
           const filePath = path.join(__dirname, "..", "..", archivo.ruta); // ruta absoluta
           if (fs.existsSync(filePath)) {
+            console.log(filePath);
             fs.unlinkSync(filePath); // Eliminar el archivo
           }
         });
       }
 
-      await TramiteArchivo.destroy({ where: { id: eliminarArchivos } });
+      await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
     }
 
     // TODO 2. Subir y agregar nuevos archivos si se incluyen en la solicitud y verificar que no sobre pase denuevo 3 archivos permitidos en su nivel
-
-    return;
 
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
@@ -318,32 +323,27 @@ export const eliminarTramite = async (req, res) => {
       where: { tramiteId: id },
     });
 
-    // Metodo para buscar y eliminar al mismo tiempo
-    await Tramite.destroy({
-      where: {
-        id,
-      },
-    });
+    // Eliminar el trámite y los archivos en la base de datos
+    await Tramite.destroy({ where: { id } });
+    await TramiteArchivo.destroy({ where: { tramiteId: id } });
 
-    await TramiteArchivo.destroy({
-      where: {
-        tramiteId: id,
-      },
-    });
-
-    // Buscar los archivos y los elimina
-    tramiteArchivos.forEach((archivo) => {
+    // Eliminar los archivos físicamente
+    const deleteFilesPromises = tramiteArchivos.map((archivo) => {
       const filePath = path.join(__dirname, "..", "..", archivo.ruta);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath); // Eliminar el archivo
+        }
+      } catch (err) {
+        console.error(`Error al eliminar archivo: ${filePath}`, err.message);
       }
     });
 
-    res.status(200).json({ message: "Tramite eliminado" });
+    Promise.all(deleteFilesPromises);
+
+    res.status(200).json({ message: "Trámite eliminado" });
   } catch (error) {
     console.error(`Error al eliminar el trámite: ${error.message}`);
-    return res.status(500).json({
-      message: "Error al eliminar el trámite.",
-    });
+    return res.status(500).json({ message: "Error al eliminar el trámite." });
   }
 };
