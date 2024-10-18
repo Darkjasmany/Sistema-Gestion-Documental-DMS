@@ -328,18 +328,17 @@ export const eliminarTramite = async (req, res) => {
     await TramiteArchivo.destroy({ where: { tramiteId: id } });
 
     // Eliminar los archivos físicamente
-    const deleteFilesPromises = tramiteArchivos.map((archivo) => {
+    const deleteFilesPromises = tramiteArchivos.map(async (archivo) => {
       const filePath = path.join(__dirname, "..", "..", archivo.ruta);
       try {
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath); // Eliminar el archivo
-        }
-      } catch (err) {
-        console.error(`Error al eliminar archivo: ${filePath}`, err.message);
+        await fs.promises.unlink(filePath);
+        console.log(`Archivo eliminado: ${filePath}`);
+      } catch (error) {
+        console.error(`Error al eliminar archivo: ${filePath}`, error.message);
       }
     });
 
-    Promise.all(deleteFilesPromises);
+    await Promise.all(deleteFilesPromises);
 
     res.status(200).json({ message: "Trámite eliminado" });
   } catch (error) {
