@@ -68,7 +68,7 @@ export const agregarTramite = async (req, res) => {
       departamentoUsuarioId: req.usuario.departamentoId,
     });
 
-    const archivoGuardado = await Promise.all(
+    await Promise.all(
       req.files.map(async (file) => {
         await TramiteArchivo.create({
           fileName: file.filename,
@@ -82,10 +82,7 @@ export const agregarTramite = async (req, res) => {
       })
     );
 
-    res.json({
-      tramite: tramiteGuardado,
-      archivo: archivoGuardado,
-    });
+    res.json(tramiteGuardado);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -180,6 +177,7 @@ export const obtenerTramite = async (req, res) => {
 };
 
 export const actualizarTramite = async (req, res) => {
+  // Inicia la transacción
   const transaction = await Tramite.sequelize.transaction();
 
   try {
@@ -294,12 +292,16 @@ export const actualizarArchivos = async (req, res) => {
     });
 
     if (archivosAEliminar.length > 0) {
-      archivosAEliminar.forEach((archivo) => {
-        // Elimina archivo del sistema de archivos (almacenamiento local)
+      archivosAEliminar.map(async (archivo) => {
         const filePath = path.join(__dirname, "..", "..", archivo.ruta); // ruta absoluta
-        if (fs.existsSync(filePath)) {
-          console.log(filePath);
-          fs.unlinkSync(filePath); // Eliminar el archivo
+        try {
+          await fs.promises.unlink(filePath);
+          console.log(`Archivo eliminado: ${filePath}`);
+        } catch (error) {
+          console.error(
+            `Error al eliminar archivo: ${filePath}`,
+            error.message
+          );
         }
       });
     }
