@@ -23,12 +23,15 @@ router
 router
   .route("/:id")
   .get(checkAuth, tramiteController.obtenerTramite)
-  .put(
-    checkAuth,
-    upload.array("archivo", process.env.MAX_UPLOAD_FILES),
-    tramiteController.actualizarTramite
-  )
+  .put(checkAuth, tramiteController.actualizarTramite)
   .delete(checkAuth, tramiteController.eliminarTramite);
+
+router.put(
+  "/:id/archivos",
+  checkAuth,
+  upload.array("archivo", process.env.MAX_UPLOAD_FILES),
+  tramiteController.actualizarArchivos
+);
 
 // * Rutas exclusivas para el coordinador
 router

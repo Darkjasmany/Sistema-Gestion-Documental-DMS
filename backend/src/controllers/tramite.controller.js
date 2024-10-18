@@ -180,7 +180,7 @@ export const obtenerTramite = async (req, res) => {
 };
 
 export const actualizarTramite = async (req, res) => {
-  const transaction = await Tramite.sequelize.transaction(); // Inicia la transacción
+  const transaction = await Tramite.sequelize.transaction();
 
   try {
     const { id } = req.params;
@@ -193,7 +193,6 @@ export const actualizarTramite = async (req, res) => {
       prioridad,
       fechaDocumento,
       referenciaTramite,
-      eliminarArchivos,
     } = req.body;
 
     if (
@@ -204,16 +203,17 @@ export const actualizarTramite = async (req, res) => {
       !fechaDocumento
     ) {
       await transaction.rollback();
-      return res
-        .status(400)
-        .json({ message: "Todos los campos son obligatorios" });
+      return res.status(400).json({
+        message:
+          "Campos obligatorios : Asunto | Descripción | Remitente y su departamento | Fecha del Documento ",
+      });
     }
 
     const tramiteActualizado = await Tramite.findOne(
       {
         where: { id, estado: "INGRESADO" },
       },
-      { transaction }
+      transaction
     );
     if (!tramiteActualizado) {
       await transaction.rollback();
@@ -251,34 +251,6 @@ export const actualizarTramite = async (req, res) => {
       });
     }
 
-    const nuevoArrayEliminar = eliminarArchivos
-      .filter((id) => id !== "") // Filtrar los valores no vacíos
-      .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
-      .filter((id) => !isNaN(id)); // Filtrar los valores NaN
-
-    //  ** Manejo de Archivos **
-    // 1. Eliminar archivos existentes si el usuario lo ha solicitado
-    if (nuevoArrayEliminar && nuevoArrayEliminar.length > 0) {
-      const archivosAEliminar = await TramiteArchivo.findAll({
-        where: { id: nuevoArrayEliminar, tramiteId: id },
-      });
-
-      if (archivosAEliminar.length > 0) {
-        archivosAEliminar.forEach((archivo) => {
-          // Elimina archivo del sistema de archivos (almacenamiento local)
-          const filePath = path.join(__dirname, "..", "..", archivo.ruta); // ruta absoluta
-          if (fs.existsSync(filePath)) {
-            console.log(filePath);
-            fs.unlinkSync(filePath); // Eliminar el archivo
-          }
-        });
-      }
-
-      await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
-    }
-
-    // TODO 2. Subir y agregar nuevos archivos si se incluyen en la solicitud y verificar que no sobre pase denuevo 3 archivos permitidos en su nivel
-
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
     tramiteActualizado.descripcion = descripcion;
@@ -304,6 +276,38 @@ export const actualizarTramite = async (req, res) => {
       message: "Error al actualizar el trámite.",
     });
   }
+};
+
+export const actualizarArchivos = async (req, res) => {
+  const { eliminarArchivos } = req.body;
+
+  //  ** Manejo de Archivos **
+  // 1. Eliminar archivos existentes si el usuario lo ha solicitado
+  const nuevoArrayEliminar = eliminarArchivos
+    .filter((id) => id !== "") // Filtrar los valores no vacíos
+    .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
+    .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+
+  if (nuevoArrayEliminar && nuevoArrayEliminar.length > 0) {
+    const archivosAEliminar = await TramiteArchivo.findAll({
+      where: { id: nuevoArrayEliminar, tramiteId: id },
+    });
+
+    if (archivosAEliminar.length > 0) {
+      archivosAEliminar.forEach((archivo) => {
+        // Elimina archivo del sistema de archivos (almacenamiento local)
+        const filePath = path.join(__dirname, "..", "..", archivo.ruta); // ruta absoluta
+        if (fs.existsSync(filePath)) {
+          console.log(filePath);
+          fs.unlinkSync(filePath); // Eliminar el archivo
+        }
+      });
+    }
+
+    await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
+  }
+
+  // TODO 2. Subir y agregar nuevos archivos si se incluyen en la solicitud y verificar que no sobre pase denuevo 3 archivos permitidos en su nivel
 };
 
 export const eliminarTramite = async (req, res) => {
