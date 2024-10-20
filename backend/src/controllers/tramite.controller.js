@@ -279,16 +279,14 @@ export const actualizarTramite = async (req, res) => {
 export const subirArchivos = async (req, res) => {
   const { id } = req.params;
 
-  const tramiteArchivos = await Tramite.findOne({
+  const tramite = await Tramite.findOne({
     where: { id, estado: "INGRESADO" },
   });
 
-  if (!tramiteArchivos)
+  if (!tramite)
     return res.status(404).json({ message: "Trámite no encontrado" });
 
-  if (
-    tramiteArchivos.usuarioCreacionId.toString() !== req.usuario.id.toString()
-  )
+  if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
     return res.status(403).json({ message: "Acción no válida" });
 
   // Subir archivos si hay archivos en la solicitud
@@ -315,60 +313,47 @@ export const eliminarArchivos = async (req, res) => {
   const { id } = req.params;
   const { eliminarArchivos } = req.body; // Recibe un array con los IDs de los archivos a eliminar
 
-  const tramiteArchivos = await Tramite.findOne({
+  const tramite = await Tramite.findOne({
     where: { id, estado: "INGRESADO" },
   });
 
-  if (!tramiteArchivos)
+  if (!tramite)
     return res.status(404).json({ message: "Trámite no encontrado" });
 
-  if (
-    tramiteArchivos.usuarioCreacionId.toString() !== req.usuario.id.toString()
-  )
+  if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
     return res.status(403).json({ message: "Acción no válida" });
 
-  // Eliminar archivos solicitados
-  const nuevoArrayEliminar = eliminarArchivos
-    .filter((id) => id !== "") // Filtrar los valores no vacíos
-    .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
-    .filter((id) => !isNaN(id)); // Filtrar los valores NaN
-
-  if (nuevoArrayEliminar && nuevoArrayEliminar.length > 0) {
-    const archivosAEliminar = await TramiteArchivo.findAll({
-      where: { tramiteId: id, id: nuevoArrayEliminar },
-    });
-
-    if (!archivosAEliminar) {
-      return res.status(400).json({
-        message: "Acción no Válida",
-      });
-    }
-
-    if (archivosAEliminar.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "No se encontraron archivos para eliminar" });
-    }
-
-    // Eliminar físicamente los archivos del sistema de archivos
-    await Promise.all(
-      archivosAEliminar.map(async (archivo) => {
-        const filePath = path.join(__dirname, "..", "..", archivo.ruta);
-        try {
-          await fs.promises.unlink(filePath);
-          console.log(`Archivo eliminado: ${filePath}`);
-        } catch (error) {
-          console.error(
-            `Error al eliminar archivo: ${filePath}`,
-            error.message
-          );
-        }
-      })
-    );
-
-    // Eliminar registros de la base de datos
-    await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
+  // Validar que haya archivos para eliminar
+  if (!eliminarArchivos || eliminarArchivos.length === 0) {
+    return res
+      .status(400)
+      .json({ message: "No se enviaron archivos para eliminar" });
   }
+
+  // Filtrar los IDs válidos y eliminar archivos de la base de datos y del sistema de archivos
+  const archivosAEliminar = await TramiteArchivo.findAll({
+    where: { tramiteId: id, id: eliminarArchivos },
+  });
+
+  if (archivosAEliminar.length === 0) {
+    return res.status(400).json({ message: "Archivos no encontrados" });
+  }
+
+  // Eliminar físicamente los archivos del sistema de archivos
+  await Promise.all(
+    archivosAEliminar.map(async (archivo) => {
+      const filePath = path.join(__dirname, "..", "..", archivo.ruta);
+      try {
+        await fs.promises.unlink(filePath);
+        console.log(`Archivo eliminado: ${filePath}`);
+      } catch (error) {
+        console.error(`Error al eliminar archivo: ${filePath}`, error.message);
+      }
+    })
+  );
+
+  // Eliminar registros de la base de datos
+  await TramiteArchivo.destroy({ where: { id: eliminarArchivos } });
 
   return res
     .status(200)
