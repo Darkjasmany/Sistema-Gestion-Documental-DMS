@@ -320,6 +320,7 @@ export const eliminarArchivos = async (req, res) => {
   if (!tramite)
     return res.status(404).json({ message: "Trámite no encontrado" });
 
+  // Verificar que el usuario tenga permisos para eliminar
   if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
     return res.status(403).json({ message: "Acción no válida" });
 
@@ -330,9 +331,21 @@ export const eliminarArchivos = async (req, res) => {
       .json({ message: "No se enviaron archivos para eliminar" });
   }
 
-  // Filtrar los IDs válidos y eliminar archivos de la base de datos y del sistema de archivos
+  // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
+  const nuevoArrayEliminar = eliminarArchivos
+    .filter((id) => id != null) // Filtrar valores no nulos
+    .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
+    .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+
+  if (nuevoArrayEliminar.length === 0) {
+    return res
+      .status(400)
+      .json({ message: "Los archivos enviados no son válidos" });
+  }
+
+  // Buscar los archivos a eliminar en la base de datos
   const archivosAEliminar = await TramiteArchivo.findAll({
-    where: { tramiteId: id, id: eliminarArchivos },
+    where: { tramiteId: id, id: nuevoArrayEliminar },
   });
 
   if (archivosAEliminar.length === 0) {
@@ -344,7 +357,8 @@ export const eliminarArchivos = async (req, res) => {
     archivosAEliminar.map(async (archivo) => {
       const filePath = path.join(__dirname, "..", "..", archivo.ruta);
       try {
-        await fs.promises.unlink(filePath);
+        // TODO descomentar para que haga el eliminado
+        // await fs.promises.unlink(filePath);
         console.log(`Archivo eliminado: ${filePath}`);
       } catch (error) {
         console.error(`Error al eliminar archivo: ${filePath}`, error.message);
@@ -353,7 +367,8 @@ export const eliminarArchivos = async (req, res) => {
   );
 
   // Eliminar registros de la base de datos
-  await TramiteArchivo.destroy({ where: { id: eliminarArchivos } });
+  // TODO descomentar para que haga el eliminado
+  // await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
 
   return res
     .status(200)
