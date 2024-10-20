@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 import { checkRole } from "../middlewares/role.middleware.js";
+import { validarCantidadArchivos } from "../middlewares/validarCantidadArchivos.middleware.js";
 import { upload } from "../config/multer.config.js"; // Importamos la configuracón de Multer
 import * as tramiteController from "../controllers/tramite.controller.js";
 import * as tramiteCoordinador from "../controllers/tramiteCoordinador.controller.js";
@@ -26,11 +27,20 @@ router
   .put(checkAuth, tramiteController.actualizarTramite)
   .delete(checkAuth, tramiteController.eliminarTramite);
 
+// Ruta para subir archivos
 router.put(
-  "/:id/archivos",
+  "/:id/subir-archivos",
   checkAuth,
+  validarCantidadArchivos, // Middleware que valida que no se pasen de 3 archivos
   upload.array("archivo", process.env.MAX_UPLOAD_FILES),
-  tramiteController.actualizarArchivos
+  tramiteController.subirArchivos
+);
+
+// Ruta para eliminar archivos
+router.put(
+  "/:id/eliminar-archivos",
+  checkAuth,
+  tramiteController.eliminarArchivos
 );
 
 // * Rutas exclusivas para el coordinador
