@@ -6,6 +6,7 @@ import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import fs from "fs"; // Se usa el módulo fs para verificar si la carpeta uploads/ existe con fs.existsSync().
 import path from "path"; // módulo path es parte de la API estándar de Node.js y se utiliza para manejar y transformar rutas de archivos y directorios.
 import { fileURLToPath } from "url";
+import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -289,11 +290,15 @@ export const subirArchivos = async (req, res) => {
     where: { id, estado: "INGRESADO" },
   });
 
-  if (!tramite)
+  if (!tramite) {
+    borrarArchivosTemporales(req.files);
     return res.status(404).json({ message: "Trámite no encontrado" });
+  }
 
-  if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
+  if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString()) {
+    borrarArchivosTemporales(req.files);
     return res.status(403).json({ message: "Acción no válida" });
+  }
 
   const archivosExistentes = await TramiteArchivo.findAll({
     where: { tramiteId: id },
@@ -301,6 +306,7 @@ export const subirArchivos = async (req, res) => {
 
   const archivosNuevos = req.files ? req.files.length : 0;
   if (archivosExistentes.length + archivosNuevos > 3) {
+    borrarArchivosTemporales(req.files);
     return res
       .status(400)
       .json({ message: "Solo puedes tener 3 archivos subidos" });
@@ -322,6 +328,7 @@ export const subirArchivos = async (req, res) => {
       })
     );
   }
+  // }
 
   return res.status(200).json({ message: "Archivos subidos correctamente." });
 };
