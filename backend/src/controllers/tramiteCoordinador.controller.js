@@ -6,6 +6,7 @@ import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
 import { Op } from "sequelize";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
+import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   const { estado } = req.query; // envio como parametro adicional en la URL
@@ -47,19 +48,22 @@ export const obtenerTramite = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const tramiteUsuario = await Tramite.findByPk(id);
-    if (!tramiteUsuario)
-      return res.status(404).json({ message: "No encontrado" });
+    const tramite = await Tramite.findByPk(id);
+    if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
     if (
-      tramiteUsuario.departamentoUsuarioId.toString() !==
+      tramite.departamentoUsuarioId.toString() !==
       req.usuario.departamentoId.toString()
     )
       return res.status(403).json({
         message: "Acción no válida",
       });
 
-    res.json(tramiteUsuario);
+    const archivos = await TramiteArchivo.findAll({
+      where: { tramiteId: id },
+    });
+
+    res.json({ tramite, archivos });
   } catch (error) {
     console.log(`Error al obtener el trámite seleccionado: ${error.message} `);
     res.status(500).json({

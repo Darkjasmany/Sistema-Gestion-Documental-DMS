@@ -15,6 +15,13 @@ export const getConfiguracionPorEstado = (estado) => {
         "referenciaTramite",
         "estado",
         "createdAt",
+        [
+          // Conteo de archivos de cada trámite
+          Sequelize.literal(
+            `(SELECT COUNT(*) FROM "tramiteArchivo" WHERE "tramiteArchivo"."tramiteId" = "tramite"."id")`
+          ),
+          "totalArchivosCargados",
+        ],
       ],
       include: [
         {
@@ -47,6 +54,7 @@ export const getConfiguracionPorEstado = (estado) => {
           ],
         },
       ],
+      order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
     },
     PENDIENTE: {
       attributes: [
