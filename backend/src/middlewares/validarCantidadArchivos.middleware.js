@@ -9,11 +9,11 @@ export const validarCantidadArchivos = async (req, res, next) => {
   });
 
   // Si ya tiene 3 archivos, no permite subir más
-  if (archivosExistentes.length >= 3)
+  if (archivosExistentes.length >= 3) {
     return res.status(400).json({
       message: "Ya tienes 3 archivos subidos, no puedes agregar más.",
-      // message: `Ya tienes ${process.env.MAX_UPLOAD_FILES} archivos subidos, no puedes agregar más.`,
     });
+  }
 
   next(); // Continúa hacia la subida de archivos si pasa la validación
 };

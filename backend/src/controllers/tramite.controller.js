@@ -36,6 +36,12 @@ export const agregarTramite = async (req, res) => {
         "Todos los campos son obligatorios y debes subir al menos un archivo",
     });
 
+  const archivosNuevos = req.files ? req.files.length : 0;
+  if (archivosNuevos > process.env.MAX_UPLOAD_FILES)
+    return res
+      .status(400)
+      .json({ message: "Solo puedes tener 3 archivos subidos" });
+
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
   );
@@ -289,17 +295,28 @@ export const subirArchivos = async (req, res) => {
   if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
     return res.status(403).json({ message: "Acción no válida" });
 
+  const archivosExistentes = await TramiteArchivo.findAll({
+    where: { tramiteId: id },
+  });
+
+  const archivosNuevos = req.files ? req.files.length : 0;
+  if (archivosExistentes.length + archivosNuevos > 3) {
+    return res
+      .status(400)
+      .json({ message: "Solo puedes tener 3 archivos subidos" });
+  }
+
   // Subir archivos si hay archivos en la solicitud
   if (req.files && req.files.length > 0) {
     await Promise.all(
       req.files.map(async (file) => {
         await TramiteArchivo.create({
-          fielName: file.filename,
+          fileName: file.filename,
           originalName: file.originalname,
           ruta: file.path,
           tipo: file.mimetype.split("/")[1],
           size: file.size,
-          tramiteId: tramiteArchivos.id,
+          tramiteId: tramite.id,
           usuarioCreacionId: req.usuario.id,
         });
       })
@@ -320,7 +337,6 @@ export const eliminarArchivos = async (req, res) => {
   if (!tramite)
     return res.status(404).json({ message: "Trámite no encontrado" });
 
-  // Verificar que el usuario tenga permisos para eliminar
   if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
     return res.status(403).json({ message: "Acción no válida" });
 
@@ -357,8 +373,7 @@ export const eliminarArchivos = async (req, res) => {
     archivosAEliminar.map(async (archivo) => {
       const filePath = path.join(__dirname, "..", "..", archivo.ruta);
       try {
-        // TODO descomentar para que haga el eliminado
-        // await fs.promises.unlink(filePath);
+        await fs.promises.unlink(filePath);
         console.log(`Archivo eliminado: ${filePath}`);
       } catch (error) {
         console.error(`Error al eliminar archivo: ${filePath}`, error.message);
@@ -367,8 +382,7 @@ export const eliminarArchivos = async (req, res) => {
   );
 
   // Eliminar registros de la base de datos
-  // TODO descomentar para que haga el eliminado
-  // await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
+  await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
 
   return res
     .status(200)
