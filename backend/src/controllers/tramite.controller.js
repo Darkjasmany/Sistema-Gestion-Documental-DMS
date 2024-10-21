@@ -31,11 +31,13 @@ export const agregarTramite = async (req, res) => {
     !fechaDocumento ||
     !req.files ||
     req.files.length === 0
-  )
+  ) {
+    borrarArchivosTemporales(req.files);
     return res.status(400).json({
       message:
         "Todos los campos son obligatorios y debes subir al menos un archivo",
     });
+  }
 
   const archivosNuevos = req.files ? req.files.length : 0;
   if (archivosNuevos > process.env.MAX_UPLOAD_FILES)
@@ -46,10 +48,12 @@ export const agregarTramite = async (req, res) => {
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
   );
-  if (!departamentoExiste)
+  if (!departamentoExiste) {
+    borrarArchivosTemporales(req.files);
     return res
       .status(400)
       .json({ message: "Departamento del remitente no encontrado" });
+  }
 
   const empleadoExiste = await Empleado.findOne({
     where: {
@@ -57,10 +61,12 @@ export const agregarTramite = async (req, res) => {
       departamentoId: departamentoRemitenteId,
     },
   });
-  if (!empleadoExiste)
+  if (!empleadoExiste) {
+    borrarArchivosTemporales(req.files);
     return res.status(400).json({
       message: "No existe ese empleado o no está asignado a ese departamento",
     });
+  }
 
   try {
     const tramiteGuardado = await Tramite.create({
