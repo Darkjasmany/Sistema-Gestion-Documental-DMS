@@ -127,6 +127,17 @@ Usuario.hasMany(TramiteArchivo, {
   sourceKey: "id",
 });
 
+Tramite.belongsTo(Usuario, {
+  foreignKey: "usuarioEliminacionId",
+  targetKey: "id",
+  as: "usuarioEliminacion",
+});
+
+Usuario.hasMany(Tramite, {
+  foreignKey: "usuarioEliminacionId",
+  sourceKey: "id",
+});
+
 // * TramiteAsignacion
 // 1 tramite pertenece a 1 usuario revisor
 TramiteAsignacion.belongsTo(Usuario, {

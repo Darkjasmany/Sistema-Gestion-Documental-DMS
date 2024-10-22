@@ -7,6 +7,7 @@ import path from "path"; // módulo path es parte de la API estándar de Node.js
 import { fileURLToPath } from "url";
 import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
+import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -277,13 +278,13 @@ export const actualizarTramite = async (req, res) => {
     tramiteActualizado.referenciaTramite =
       referenciaTramite || tramiteActualizado.referenciaTramite;
 
-    // Guardar cambios dentro de la transacción
+    // Guardar cambios
     await tramiteActualizado.save({ transaction });
 
     // Confirmar la transacción
     await transaction.commit();
 
-    res.status(200).json(tramiteActualizado);
+    res.status(200).json({ message: "Trámite actualizado" });
   } catch (error) {
     await transaction.rollback(); // Deshacer transacción en caso de error
     console.error(`Error al actualizar el trámite: ${error.message}`);
@@ -419,5 +420,60 @@ export const eliminarTramite = async (req, res) => {
   } catch (error) {
     console.error(`Error al eliminar el trámite: ${error.message}`);
     return res.status(500).json({ message: "Error al eliminar el trámite." });
+  }
+};
+
+export const eliminadoLogicoTramite = async (req, res) => {
+  const transaction = await Tramite.sequelize.transaction();
+
+  try {
+    const { id } = req.params;
+    const { observacion } = req.body;
+
+    const tramite = await Tramite.findOne({
+      where: { id, estado: "INGRESADO", activo: true },
+    });
+    if (!tramite) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Trámite no encontrado" });
+    }
+
+    if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString()) {
+      await transaction.rollback();
+      return res.status(403).json({ msg: "Acción no válida" });
+    }
+
+    if (!observacion || observacion.trim() === "") {
+      await transaction.rollback();
+      return res.status(400).json("Debes escribir una Razón de Eliminación");
+    }
+
+    const estadoAnterior = tramite.estado;
+
+    // Campos a Actualizar
+    tramite.estado = "RECHAZADO";
+    // tramite.fechaEliminacion = Date.now();
+    tramite.usuarioEliminacionId = req.usuario.id;
+    tramite.observacionEliminacion = observacion;
+
+    // Actualizar registros en la BD
+    await Tramite.save({ transaction });
+
+    // Registrar Historial Estado
+    await registrarHistorialEstado(
+      id,
+      estadoAnterior,
+      tramite.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    console.error(`Error al eliminar el trámite: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al eliminar el trámite.",
+    });
   }
 };

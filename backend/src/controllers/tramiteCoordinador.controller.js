@@ -460,11 +460,11 @@ export const eliminarTramite = async (req, res) => {
 
     // Actualizar el estado
     tramite.estado = "RECHAZADO";
-
     await tramite.save({ transaction });
 
+    // Registrar Historial Estado
     await registrarHistorialEstado(
-      tramite.id,
+      id,
       estadoAnterior,
       tramite.estado,
       req.usuario.id,

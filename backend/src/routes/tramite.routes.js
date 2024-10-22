@@ -27,6 +27,12 @@ router
   .put(checkAuth, tramiteController.actualizarTramite)
   .delete(checkAuth, tramiteController.eliminarTramite);
 
+router.put(
+  "/:id/eliminar-tramite",
+  checkAuth,
+  tramiteController.eliminadoLogicoTramite
+);
+
 // Ruta para subir archivos
 router.put(
   "/:id/subir-archivos",

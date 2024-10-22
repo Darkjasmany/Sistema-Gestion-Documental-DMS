@@ -142,6 +142,22 @@ export const Tramite = sequelize.define(
       allowNull: false,
       defaultValue: true,
     },
+    fechaEliminacion: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    usuarioEliminacionId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "usuario",
+        key: "id",
+      },
+    },
+    observacionEliminacion: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     tableName: "tramite",
@@ -155,12 +171,17 @@ export const Tramite = sequelize.define(
         if (tramite.numeroTramiteEspecial) {
           tramite.numeroTramiteEspecial = tramite.numeroTramiteEspecial.trim();
         }
+        if (tramite.observacionEliminacion) {
+          tramite.observacionEliminacion =
+            tramite.observacionEliminacion.trim();
+        }
       },
     },
   }
 );
 
-// ** AGREGAR EL HOOK beforeValidate para el campo numeroTramite, garantizas que numeroTramite se establezca antes de que se valide el objeto, evitando que se produzca la violación de la restricción de no nulo.
+// ** AGREGAR EL HOOK
+//beforeValidate para el campo numeroTramite, garantizas que numeroTramite se establezca antes de que se valide el objeto, evitando que se produzca la violación de la restricción de no nulo.
 Tramite.addHook("beforeValidate", async (tramite) => {
   const lastTramite = await Tramite.findOne({
     order: [["numeroTramite", "DESC"]],
@@ -172,7 +193,7 @@ Tramite.addHook("beforeValidate", async (tramite) => {
   // :1; // Iniciar en 1 si no hay registros
 });
 
-// Defini un hook beforeUpdate que verifique si el estado cambia a RECHAZADO y automáticamente ajuste el campo activo:
+// beforeUpdate para verificar si el estado cambia a RECHAZADO y automáticamente ajuste el campo activo:
 Tramite.addHook("beforeUpdate", async (tramite) => {
   if (tramite.estado === "RECHAZADO") {
     tramite.activo = false;
