@@ -226,7 +226,7 @@ export const actualizarTramite = async (req, res) => {
       await transaction.rollback();
       return res.status(400).json({
         message:
-          "Campos obligatorios : Asunto | Descripción | Remitente y su departamento | Fecha del Documento ",
+          "Campos obligatorios : Asunto | Descripción | Remitente y su departamento | Fecha del documento",
       });
     }
 
@@ -303,9 +303,8 @@ export const subirArchivos = async (req, res) => {
   const { id } = req.params;
 
   const tramite = await Tramite.findOne({
-    where: { id, estado: "INGRESADO" },
+    where: { id, estado: "INGRESADO", activo: true },
   });
-
   if (!tramite) {
     borrarArchivosTemporales(req.files);
     return res.status(404).json({ message: "Trámite no encontrado" });

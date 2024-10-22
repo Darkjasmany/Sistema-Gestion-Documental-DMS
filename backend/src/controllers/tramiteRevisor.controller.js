@@ -18,6 +18,7 @@ export const listarTramitesRevisor = async (req, res) => {
         departamentoUsuarioId: req.usuario.departamentoId,
         usuarioRevisorId: req.usuario.id,
         estado,
+        activo: true,
       },
       attributes: config.attributes,
       include: config.include,

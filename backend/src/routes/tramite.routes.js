@@ -72,6 +72,31 @@ router
     tramiteCoordinador.eliminarTramite
   );
 
+// Ruta para subir archivos Coordinador
+router.put(
+  "/coordinador/tramites/:id/subir-archivos",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  validarCantidadArchivos, // Middleware que valida que no se pasen de 3 archivos
+  upload.array("archivo", process.env.MAX_UPLOAD_FILES),
+  tramiteController.subirArchivos
+);
+
+// Ruta para eliminar archivos Coordinador
+router.put(
+  "/coordinador/tramites/:id/eliminar-archivos",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteController.eliminarArchivos
+);
+
+router.put(
+  "/coordinador/tramites/:id/eliminar-tramite",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteCoordinador.eliminadoLogicoTramite
+);
+
 router.put(
   "/coordinador/tramites/:id/revisor",
   checkAuth,

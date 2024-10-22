@@ -3,7 +3,7 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
-import { Op, Transaction } from "sequelize";
+import { Op } from "sequelize";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
@@ -97,33 +97,37 @@ export const actualizarTramite = async (req, res) => {
       departamentoDestinatarioId,
       destinatarioId,
       fechaMaximaContestacion,
-      usuarioRevisorId,
       observacionRevisor,
       numeroTramiteModificado,
     } = req.body;
 
     if (
       !asunto ||
+      asunto.trim() === "" ||
       !descripcion ||
+      descripcion.trim() === "" ||
       !departamentoRemitenteId ||
       !remitenteId ||
       !fechaDocumento ||
-      !fechaMaximaContestacion
+      fechaDocumento.trim() === "" ||
+      !fechaMaximaContestacion ||
+      fechaMaximaContestacion.trim() === ""
     ) {
       await transaction.rollback();
-      return res
-        .status(400)
-        .json({ message: "Todos los campos son obligatorios" });
+      return res.status(400).json({
+        message:
+          "Campos obligatorios : Asunto | Descripción | Remitente y su departamento | Fecha del documento | Fecha de contestación",
+      });
     }
 
-    // Buscar el trámite por ID
-    const tramiteActualizar = await Tramite.findByPk(id);
+    const tramiteActualizar = await Tramite.findOne({
+      where: { id, activo: true },
+    });
     if (!tramiteActualizar) {
       await transaction.rollback();
       return res.status(404).json({ message: "Trámite no encontrado" });
     }
 
-    // Validación de permisos de actualización
     if (
       tramiteActualizar.departamentoUsuarioId.toString() !==
       req.usuario.departamentoId.toString()
@@ -244,52 +248,26 @@ export const actualizarTramite = async (req, res) => {
       destinatarioId || tramiteActualizar.destinatarioId;
     tramiteActualizar.fechaMaximaContestacion =
       fechaMaximaContestacion || tramiteActualizar.fechaMaximaContestacion;
+    tramiteActualizar.observacionRevisor =
+      observacionRevisor || tramiteActualizar.observacionRevisor;
     tramiteActualizar.numeroTramiteModificado =
       numeroTramiteModificado || tramiteActualizar.numeroTramiteModificado;
-
-    // Asignar usuario revisor si está presente
-    if (usuarioRevisorId) {
-      const existeUsuarioRevisor = await Usuario.findOne({
-        where: {
-          id: usuarioRevisorId,
-          departamentoId: req.usuario.departamentoId,
-          rol: "REVISOR",
-        },
-      });
-      if (!existeUsuarioRevisor) {
-        await transaction.rollback();
-        return res
-          .status(404)
-          .json({ message: "Usuario Revisor no encontrado" });
-      }
-
-      await TramiteAsignacion.create(
-        {
-          tramiteId: id,
-          usuarioRevisorId: usuarioRevisorId,
-          descripcion: observacionRevisor,
-        },
-        { transaction }
-      );
-
-      //  tramiteActualizar.estado = "PENDIENTE";
-    }
 
     // Guarda el trámite actualizado
     await tramiteActualizar.save({ transaction });
 
     // Registrar el cambio de estado en el historial
     await registrarHistorialEstado(
-      tramiteActualizar.id,
+      id,
       estadoAnterior,
       tramiteActualizar.estado,
       req.usuario.id,
-      transaction // Pasamos la transacción para incluir el registro del historial en ella
+      transaction
     );
 
     await transaction.commit(); // Confirmar la transacción
 
-    res.status(200).json(tramiteActualizar);
+    res.status(200).json({ message: "Trámite actualizado" });
   } catch (error) {
     await transaction.rollback();
     console.error(`Error al actualizar el trámite: ${error.message}`);
@@ -302,13 +280,9 @@ export const actualizarTramite = async (req, res) => {
 export const subirArchivos = async (req, res) => {
   const { id } = req.params;
 
-  const { estado } = req.query;
-  if (!estado) {
-    borrarArchivosTemporales(req.files);
-    return res.status(400).json({ message: "El estado es requerido" });
-  }
-
-  const tramite = await Tramite.findOne({ where: { id, estado } });
+  const tramite = await Tramite.findOne({
+    where: { id, activo: true },
+  });
   if (!tramite) {
     borrarArchivosTemporales(req.files);
     return res.status(404).json({ message: "Trámite no encontrado" });
@@ -333,10 +307,10 @@ export const subirArchivos = async (req, res) => {
     borrarArchivosTemporales(req.files);
     return res
       .status(400)
-      .json({ message: "Solo puedes tener 3 archivos subidos" });
+      .json({ message: "Solo puedes tener 6 archivos subidos" });
   }
 
-  // Subir Archivos
+  // Subir archivos si hay archivos en la solicitud
   if (req.files && req.files > 0) {
     await Promise.all(
       req.files.map(async (file) => {
@@ -358,10 +332,9 @@ export const subirArchivos = async (req, res) => {
 
 export const eliminarArchivos = async (req, res) => {
   const { id } = req.params;
-  const { estado } = req.query;
   const { eliminarArchivos } = req.body;
 
-  const tramite = await Tramite.findOne({ where: { id, estado } });
+  const tramite = await Tramite.findOne({ where: { id, activo: true } });
   if (!tramite)
     return res.status(404).json({ message: "Trámite no encontrado" });
 
@@ -395,9 +368,15 @@ export const eliminarArchivos = async (req, res) => {
     return res.status(400).json({ message: "Archivos no encontrados" });
 
   borrarArchivos(archivosAEliminar);
+
+  await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
+
+  return res
+    .status(200)
+    .json({ message: "Archivos eliminados correctamente." });
 };
 
-export const eliminarTramite1 = async (req, res) => {
+export const eliminarTramite = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -430,17 +409,18 @@ export const eliminarTramite1 = async (req, res) => {
   }
 };
 
-// export const eliminadoLogicoTramite = async (req, res) => {
-export const eliminarTramite = async (req, res) => {
+export const eliminadoLogicoTramite = async (req, res) => {
   const transaction = await Tramite.sequelize.transaction();
   try {
     const { id } = req.params;
+    const { observacion } = req.body;
 
-    // const { estado } = req.body;
-    // if (!estado)
-    //   return res.status(400).json({ message: "El estado es requerido" });
-
-    const tramite = await Tramite.findByPk(id);
+    const tramite = await Tramite.findOne(
+      {
+        where: { id, activo: true },
+      },
+      transaction
+    );
     if (!tramite) {
       await transaction.rollback();
       return res.status(400).json({ message: "Accion no valida" });
@@ -456,10 +436,21 @@ export const eliminarTramite = async (req, res) => {
       });
     }
 
+    if (!observacion || observacion.trim() === "") {
+      await transaction.rollback();
+      return res
+        .status(400)
+        .json({ message: "Debes escribir una Razón de Eliminación" });
+    }
+
     const estadoAnterior = tramite.estado;
 
     // Actualizar el estado
     tramite.estado = "RECHAZADO";
+    tramite.fechaEliminacion = Date.now();
+    tramite.usuarioEliminacionId = req.usuario.id;
+    tramite.observacionEliminacion = observacion;
+
     await tramite.save({ transaction });
 
     // Registrar Historial Estado
