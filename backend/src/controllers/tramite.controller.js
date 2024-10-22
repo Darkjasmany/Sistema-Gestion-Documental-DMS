@@ -26,10 +26,13 @@ export const agregarTramite = async (req, res) => {
 
   if (
     !asunto ||
+    asunto.trim() === "" ||
     !descripcion ||
+    descripcion.trim() === "" ||
     !departamentoRemitenteId ||
     !remitenteId ||
     !fechaDocumento ||
+    fechaDocumento.trim() === "" ||
     !req.files ||
     req.files.length === 0
   ) {
@@ -213,7 +216,9 @@ export const actualizarTramite = async (req, res) => {
 
     if (
       !asunto ||
+      asunto.trim() === "" ||
       !descripcion ||
+      descripcion.trim() === "" ||
       !departamentoRemitenteId ||
       !remitenteId ||
       !fechaDocumento
@@ -227,7 +232,7 @@ export const actualizarTramite = async (req, res) => {
 
     const tramiteActualizado = await Tramite.findOne(
       {
-        where: { id, estado: "INGRESADO" },
+        where: { id, estado: "INGRESADO", activo: true },
       },
       transaction
     );
@@ -430,9 +435,12 @@ export const eliminadoLogicoTramite = async (req, res) => {
     const { id } = req.params;
     const { observacion } = req.body;
 
-    const tramite = await Tramite.findOne({
-      where: { id, estado: "INGRESADO", activo: true },
-    });
+    const tramite = await Tramite.findOne(
+      {
+        where: { id, estado: "INGRESADO", activo: true },
+      },
+      transaction
+    );
     if (!tramite) {
       await transaction.rollback();
       return res.status(404).json({ message: "Trámite no encontrado" });
@@ -445,19 +453,21 @@ export const eliminadoLogicoTramite = async (req, res) => {
 
     if (!observacion || observacion.trim() === "") {
       await transaction.rollback();
-      return res.status(400).json("Debes escribir una Razón de Eliminación");
+      return res
+        .status(400)
+        .json({ message: "Debes escribir una Razón de Eliminación" });
     }
 
     const estadoAnterior = tramite.estado;
 
     // Campos a Actualizar
     tramite.estado = "RECHAZADO";
-    // tramite.fechaEliminacion = Date.now();
+    tramite.fechaEliminacion = Date.now();
     tramite.usuarioEliminacionId = req.usuario.id;
     tramite.observacionEliminacion = observacion;
 
     // Actualizar registros en la BD
-    await Tramite.save({ transaction });
+    await tramite.save({ transaction });
 
     // Registrar Historial Estado
     await registrarHistorialEstado(
@@ -469,6 +479,8 @@ export const eliminadoLogicoTramite = async (req, res) => {
     );
 
     await transaction.commit();
+
+    res.status(200).json({ message: "Trámite eliminado" });
   } catch (error) {
     await transaction.rollback();
     console.error(`Error al eliminar el trámite: ${error.message}`);
