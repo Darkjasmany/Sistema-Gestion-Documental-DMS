@@ -126,9 +126,21 @@ export const Tramite = sequelize.define(
       defaultValue: "INGRESADO",
       validate: {
         isIn: [
-          ["INGRESADO", "PENDIENTE", "POR_REVISAR", "COMPLETADO", "FINALIZADO"],
+          [
+            "INGRESADO",
+            "PENDIENTE",
+            "POR_REVISAR",
+            "COMPLETADO",
+            "FINALIZADO",
+            "RECHAZADO",
+          ],
         ],
       },
+    },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {
@@ -158,6 +170,13 @@ Tramite.addHook("beforeValidate", async (tramite) => {
     ? lastTramite.numeroTramite + 1
     : process.env.TRAMITE;
   // :1; // Iniciar en 1 si no hay registros
+});
+
+// Defini un hook beforeUpdate que verifique si el estado cambia a RECHAZADO y automáticamente ajuste el campo activo:
+Tramite.addHook("beforeUpdate", async (tramite) => {
+  if (tramite.estado === "RECHAZADO") {
+    tramite.activo = false;
+  }
 });
 
 // ** Relaciones

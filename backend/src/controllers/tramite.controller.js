@@ -3,7 +3,6 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 import { Sequelize } from "sequelize";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
-import fs from "fs"; // Se usa el módulo fs para verificar si la carpeta uploads/ existe con fs.existsSync().
 import path from "path"; // módulo path es parte de la API estándar de Node.js y se utiliza para manejar y transformar rutas de archivos y directorios.
 import { fileURLToPath } from "url";
 import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
@@ -105,7 +104,11 @@ export const agregarTramite = async (req, res) => {
 export const listarTramitesUsuario = async (req, res) => {
   try {
     const tramites = await Tramite.findAll({
-      where: { usuarioCreacionId: req.usuario.id, estado: "INGRESADO" },
+      where: {
+        usuarioCreacionId: req.usuario.id,
+        estado: "INGRESADO",
+        activo: true,
+      },
       attributes: [
         "numeroTramite",
         "asunto",
@@ -160,7 +163,7 @@ export const obtenerTramite = async (req, res) => {
     const { id } = req.params;
 
     const tramite = await Tramite.findOne({
-      where: { id, estado: "INGRESADO" },
+      where: { id, estado: "INGRESADO", activo: true },
     });
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 

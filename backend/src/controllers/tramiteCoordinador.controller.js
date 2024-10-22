@@ -24,7 +24,11 @@ export const obtenerTramitesPorEstado = async (req, res) => {
       });
 
     const tramites = await Tramite.findAll({
-      where: { estado, departamentoUsuarioId: req.usuario.departamentoId },
+      where: {
+        estado,
+        departamentoUsuarioId: req.usuario.departamentoId,
+        activo: true,
+      },
       attributes: config.attributes,
       include: config.include,
       order: [
@@ -393,7 +397,7 @@ export const eliminarArchivos = async (req, res) => {
   borrarArchivos(archivosAEliminar);
 };
 
-export const eliminarTramite = async (req, res) => {
+export const eliminarTramite1 = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -426,14 +430,15 @@ export const eliminarTramite = async (req, res) => {
   }
 };
 
-export const eliminadoLogicoTramite = async (req, res) => {
+// export const eliminadoLogicoTramite = async (req, res) => {
+export const eliminarTramite = async (req, res) => {
   const transaction = await Tramite.sequelize.transaction();
   try {
     const { id } = req.params;
 
-    const { estado } = req.body;
-    if (!estado)
-      return res.status(400).json({ message: "El estado es requerido" });
+    // const { estado } = req.body;
+    // if (!estado)
+    //   return res.status(400).json({ message: "El estado es requerido" });
 
     const tramite = await Tramite.findByPk(id);
     if (!tramite) {

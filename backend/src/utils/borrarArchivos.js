@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs"; // Se usa el módulo fs para verificar si la carpeta uploads/ existe con fs.existsSync().
 import path from "path";
 import { fileURLToPath } from "url";
 
