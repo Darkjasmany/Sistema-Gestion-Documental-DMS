@@ -3,10 +3,12 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
+import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
+import { borrarArchivos } from "../utils/borrarArchivos.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   const { estado } = req.query; // envio como parametro adicional en la URL
@@ -293,6 +295,104 @@ export const actualizarTramite = async (req, res) => {
   }
 };
 
+export const subirArchivos = async (req, res) => {
+  const { id } = req.params;
+
+  const { estado } = req.query;
+  if (!estado) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({ message: "El estado es requerido" });
+  }
+
+  const tramite = await Tramite.findOne({ where: { id, estado } });
+  if (!tramite) {
+    borrarArchivosTemporales(req.files);
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
+
+  if (
+    tramite.departamentoUsuarioId.toString() !==
+    req.usuario.departamentoId.toString()
+  ) {
+    borrarArchivosTemporales(req.files);
+    return res.status(403).json({
+      message: "Acción no válida",
+    });
+  }
+
+  const archivoExistentes = await TramiteArchivo.findAll({
+    where: { tramiteId: id },
+  });
+
+  const archivosNuevos = req.files ? req.files.length() : 0;
+  if (archivoExistentes.length + archivosNuevos > 6) {
+    borrarArchivosTemporales(req.files);
+    return res
+      .status(400)
+      .json({ message: "Solo puedes tener 3 archivos subidos" });
+  }
+
+  // Subir Archivos
+  if (req.files && req.files > 0) {
+    await Promise.all(
+      req.files.map(async (file) => {
+        await TramiteArchivo.create({
+          fileName: file.filename,
+          originalName: file.originalname,
+          ruta: file.path,
+          tipo: file.mimetype.split("/")[1],
+          size: file.size,
+          tramiteId: tramite.id,
+          usuarioCreacionId: req.usuario.id,
+        });
+      })
+    );
+  }
+
+  return res.status(200).json({ message: "Archivos subidos correctamente" });
+};
+
+export const eliminarArchivos = async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.query;
+  const { eliminarArchivos } = req.body;
+
+  const tramite = await Tramite.findOne({ where: { id, estado } });
+  if (!tramite)
+    return res.status(404).json({ message: "Trámite no encontrado" });
+
+  if (
+    tramite.departamentoUsuarioId.toString() !==
+    req.usuario.departamentoId.toString()
+  )
+    return res.status(403).json({
+      message: "Acción no válida",
+    });
+
+  if (!eliminarArchivos || eliminarArchivos.length === 0)
+    return res
+      .status(400)
+      .json({ message: "No se enviaron archivos para eliminar" });
+
+  const nuevoArrayEliminar = eliminarArchivos
+    .filter((id) => id !== null)
+    .map((id) => parseInt(id))
+    .filter((id) => !isNaN(id));
+
+  if (nuevoArrayEliminar.length === 0)
+    return res
+      .status(400)
+      .json({ message: "Los archivos enviados no son válidos" });
+
+  const archivosAEliminar = await TramiteArchivo.findAll({
+    where: { tramiteId: id, id: nuevoArrayEliminar },
+  });
+  if (archivosAEliminar.length === 0)
+    return res.status(400).json({ message: "Archivos no encontrados" });
+
+  borrarArchivos(archivosAEliminar);
+};
+
 export const eliminarTramite = async (req, res) => {
   try {
     const { id } = req.params;
@@ -300,10 +400,76 @@ export const eliminarTramite = async (req, res) => {
     const tramite = await Tramite.findByPk(id);
     if (!tramite) return res.status(400).json({ message: "Accion no valida" });
 
+    if (
+      tramite.departamentoUsuarioId.toString() !==
+      req.usuario.departamentoId.toString()
+    )
+      return res.status(403).json({
+        message: "Acción no válida",
+      });
+
+    const tramiteArchivos = await TramiteArchivo.findAll({
+      where: { tramiteId: id },
+    });
+
     await Tramite.destroy({ where: id });
+    await TramiteArchivo.destroy({ where: { tramiteId: id } });
+
+    borrarArchivos(tramiteArchivos);
 
     res.status(200).json({ message: "Tramite eliminado" });
   } catch (error) {
+    console.error(`Error al eliminar el trámite: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al eliminar el trámite.",
+    });
+  }
+};
+
+export const eliminadoLogicoTramite = async (req, res) => {
+  const transaction = await Tramite.sequelize.transaction();
+  try {
+    const { id } = req.params;
+
+    const { estado } = req.body;
+    if (!estado)
+      return res.status(400).json({ message: "El estado es requerido" });
+
+    const tramite = await Tramite.findByPk(id);
+    if (!tramite) {
+      await transaction.rollback();
+      return res.status(400).json({ message: "Accion no valida" });
+    }
+
+    if (
+      tramite.departamentoUsuarioId.toString() !==
+      req.usuario.departamentoId.toString()
+    ) {
+      await transaction.rollback();
+      return res.status(403).json({
+        message: "Acción no válida",
+      });
+    }
+
+    const estadoAnterior = tramite.estado;
+
+    // Actualizar el estado
+    tramite.estado = "RECHAZADO";
+
+    await tramite.save({ transaction });
+
+    await registrarHistorialEstado(
+      tramite.id,
+      estadoAnterior,
+      tramite.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    await transaction.commit();
+    res.status(200).json({ message: "Tramite eliminado" });
+  } catch (error) {
+    await transaction.rollback();
     console.error(`Error al eliminar el trámite: ${error.message}`);
     return res.status(500).json({
       message: "Error al eliminar el trámite.",

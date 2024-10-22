@@ -7,6 +7,7 @@ import fs from "fs"; // Se usa el módulo fs para verificar si la carpeta upload
 import path from "path"; // módulo path es parte de la API estándar de Node.js y se utiliza para manejar y transformar rutas de archivos y directorios.
 import { fileURLToPath } from "url";
 import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
+import { borrarArchivos } from "../utils/borrarArchivos.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -172,13 +173,13 @@ export const obtenerTramite = async (req, res) => {
         .status(403)
         .json({ message: "El trámite seleccionado no te pertenece" });
 
-    const tramiteArchivo = await TramiteArchivo.findAll({
+    const archivos = await TramiteArchivo.findAll({
       where: { tramiteId: id },
     });
 
     res.json({
       tramite,
-      archivos: tramiteArchivo,
+      archivos,
     });
   } catch (error) {
     console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
@@ -334,7 +335,6 @@ export const subirArchivos = async (req, res) => {
       })
     );
   }
-  // }
 
   return res.status(200).json({ message: "Archivos subidos correctamente." });
 };
@@ -354,11 +354,10 @@ export const eliminarArchivos = async (req, res) => {
     return res.status(403).json({ message: "Acción no válida" });
 
   // Validar que haya archivos para eliminar
-  if (!eliminarArchivos || eliminarArchivos.length === 0) {
+  if (!eliminarArchivos || eliminarArchivos.length === 0)
     return res
       .status(400)
       .json({ message: "No se enviaron archivos para eliminar" });
-  }
 
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
   const nuevoArrayEliminar = eliminarArchivos
@@ -366,33 +365,20 @@ export const eliminarArchivos = async (req, res) => {
     .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
     .filter((id) => !isNaN(id)); // Filtrar los valores NaN
 
-  if (nuevoArrayEliminar.length === 0) {
+  if (nuevoArrayEliminar.length === 0)
     return res
       .status(400)
       .json({ message: "Los archivos enviados no son válidos" });
-  }
 
   // Buscar los archivos a eliminar en la base de datos
   const archivosAEliminar = await TramiteArchivo.findAll({
     where: { tramiteId: id, id: nuevoArrayEliminar },
   });
-
-  if (archivosAEliminar.length === 0) {
+  if (archivosAEliminar.length === 0)
     return res.status(400).json({ message: "Archivos no encontrados" });
-  }
 
   // Eliminar físicamente los archivos del sistema de archivos
-  await Promise.all(
-    archivosAEliminar.map(async (archivo) => {
-      const filePath = path.join(__dirname, "..", "..", archivo.ruta);
-      try {
-        await fs.promises.unlink(filePath);
-        console.log(`Archivo eliminado: ${filePath}`);
-      } catch (error) {
-        console.error(`Error al eliminar archivo: ${filePath}`, error.message);
-      }
-    })
-  );
+  borrarArchivos(archivosAEliminar);
 
   // Eliminar registros de la base de datos
   await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
@@ -423,21 +409,8 @@ export const eliminarTramite = async (req, res) => {
     await Tramite.destroy({ where: { id } });
     await TramiteArchivo.destroy({ where: { tramiteId: id } });
 
-    // Eliminar los archivos físicamente usando promesas con map
-    await Promise.all(
-      tramiteArchivos.map(async (archivo) => {
-        const filePath = path.join(__dirname, "..", "..", archivo.ruta);
-        try {
-          await fs.promises.unlink(filePath);
-          console.log(`Archivo eliminado: ${filePath}`);
-        } catch (error) {
-          console.error(
-            `Error al eliminar archivo: ${filePath}`,
-            error.message
-          );
-        }
-      })
-    );
+    // Eliminar los archivos físicamente
+    borrarArchivos(tramiteArchivos);
 
     res.status(200).json({ message: "Trámite eliminado" });
   } catch (error) {
