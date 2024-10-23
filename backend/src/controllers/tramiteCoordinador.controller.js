@@ -10,6 +10,7 @@ import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
+import { validarFecha } from "../utils/validarFecha.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   const { estado } = req.query; // envio como parametro adicional en la URL
@@ -517,6 +518,12 @@ export const asignarOReasignarRevisor = async (req, res) => {
       return res.status(403).json({
         message: "Acción no válida",
       });
+    }
+
+    // Validamos la fecha usando la función de utils
+    const { valido, mensaje } = validarFecha(fechaMaximaContestacion);
+    if (!valido) {
+      return res.status(400).json({ error: mensaje });
     }
 
     const estadoAnterior = tramiteAsignar.estado;
