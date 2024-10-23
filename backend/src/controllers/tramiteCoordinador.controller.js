@@ -2,11 +2,12 @@ import { Departamento } from "../models/Departamento.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { Usuario } from "../models/Usuario.model.js";
+import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
+import { TramiteHistorialEstado } from "../models/TramiteHistorialEstado.model.js";
 import { Op } from "sequelize";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
-import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
 
@@ -395,8 +396,10 @@ export const eliminarTramite = async (req, res) => {
       where: { tramiteId: id },
     });
 
-    await Tramite.destroy({ where: id });
+    await TramiteHistorialEstado.destroy({ where: { tramiteId: id } });
+    await TramiteAsignacion.destroy({ where: { tramiteId: id } });
     await TramiteArchivo.destroy({ where: { tramiteId: id } });
+    await Tramite.destroy({ where: { id } });
 
     borrarArchivos(tramiteArchivos);
 
@@ -581,7 +584,6 @@ export const asignarOReasignarRevisor = async (req, res) => {
 
     res.json({
       message: "Revisor asignado/reasignado correctamente",
-      tramite: tramiteAsignar,
     });
   } catch (error) {
     await transaction.rollback();
