@@ -9,6 +9,7 @@ export const sequelize = new Sequelize(
     host: process.env.PG_HOST,
     port: process.env.PG_PORT || 5432, // Puerto
     dialect: "postgres", // Dialecto (en este caso, PostgreSQL)
+    timezone: "America/Guayaquil", // Zona horaria de Ecuador
     logging: false, // Opcional: desactiva el logging de SQL en la consola
     pool: {
       max: 5,
@@ -26,7 +27,7 @@ export const conectarDB = async () => {
     console.log("Autenticación exitosa con la base de datos.");
 
     await sequelize.sync();
-    // await sequelize.sync({ force: true });
+    //await sequelize.sync({ force: true });
     console.log("Modelos sincronizados correctamente.");
 
     const res = await sequelize.query("SELECT NOW()");

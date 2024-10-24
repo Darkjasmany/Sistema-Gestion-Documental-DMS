@@ -78,9 +78,11 @@ export const Tramite = sequelize.define(
       },
     },
     fechaMaximaContestacion: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
+      type: DataTypes.DATEONLY,
+      defaultValue: DataTypes.NOW,
+      validate: {
+        isDate: true, // Valida que sea una fecha válida
+      },
     },
     fechaDespacho: {
       type: DataTypes.DATE,
