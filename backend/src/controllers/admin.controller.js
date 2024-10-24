@@ -12,3 +12,8 @@ export const listarTodosLosDepartamentos = async (req, res) => {
 export const listarTodosLosEmpleados = async (req, res) => {
   return res.send("Desde Lista Empleados ADMIN");
 };
+
+// Todo: hacer las funcionalidades
+export const asignarDepartamento = async (req, res) => {
+  return res.send("Desde asignar Departamento ADMIN");
+};

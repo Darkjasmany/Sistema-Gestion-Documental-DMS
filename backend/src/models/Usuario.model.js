@@ -67,7 +67,7 @@ export const Usuario = sequelize.define(
     },
     departamentoId: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "departamento", // nombre de la tabla de referencia
         key: "id", // clave primaria de la tabla de referencia

@@ -10,10 +10,13 @@ import {
 } from "../services/email.service.js";
 
 export const registrarUsuario = async (req, res) => {
-  const { nombres, apellidos, email, password, departamentoId } = req.body;
-  const departamento = await Departamento.findByPk(departamentoId);
+  // const { nombres, apellidos, email, password, departamentoId } = req.body;
+  // const departamento = await Departamento.findByPk(departamentoId);
 
-  if (!nombres || !apellidos || !email || !password || !departamentoId)
+  const { nombres, apellidos, email, password } = req.body;
+
+  // if (!nombres || !apellidos || !email || !password || !departamentoId)
+  if (!nombres || !apellidos || !email || !password)
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
@@ -32,8 +35,8 @@ export const registrarUsuario = async (req, res) => {
   if (usuarioExiste)
     return res.status(400).json({ message: "Usuario ya registrado" });
 
-  if (!departamento)
-    return res.status(400).json({ message: "Departamento no válido" });
+  //if (!departamento)
+  //return res.status(400).json({ message: "Departamento no válido" });
 
   // Guardar nuevo Usuario
   try {
@@ -45,7 +48,7 @@ export const registrarUsuario = async (req, res) => {
       apellidos,
       email,
       password,
-      departamentoId,
+      // departamentoId,
     });
 
     emailRegistro({ email, nombres, apellidos, token: usuarioGuardado.token });
@@ -67,11 +70,15 @@ export const perfilUsuario = (req, res) => {
 export const confirmarCuenta = async (req, res) => {
   // token es lo que enviamos en la url
   const { token } = req.params;
+  const transaction = await Usuario.sequelize.transaction();
 
   try {
-    const usuario = await Usuario.findOne({ where: { token } });
+    const usuario = await Usuario.findOne({ where: { token } }, transaction);
 
-    if (!usuario) return res.status(404).json({ message: "Token no válido" });
+    if (!usuario) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Token no válido" });
+    }
 
     // Actualizamos los datos del usuario
     /* usuario.set({
@@ -85,10 +92,13 @@ export const confirmarCuenta = async (req, res) => {
     usuario.estado = true;
 
     // Guardamos los cambios en la base de datos
-    await usuario.save();
+    await usuario.save({ transaction });
+
+    await transaction.commit();
 
     res.status(200).json({ message: "Cuenta confirmada exitosamente" });
   } catch (error) {
+    await transaction.rollback();
     console.error(`Error al confirmar el usuario: ${error.message}`);
     return res.status(500).json({
       message: "Error al confirmar el usuario",
@@ -98,8 +108,10 @@ export const confirmarCuenta = async (req, res) => {
 
 export const autenticarUsuario = async (req, res) => {
   const { email, password } = req.body;
+
   try {
     const usuario = await Usuario.findOne({ where: { email } });
+
     const departamento = await Departamento.findOne({
       where: { id: usuario.departamentoId },
       attributes: ["nombre", "coordinadorId"],
@@ -116,9 +128,10 @@ export const autenticarUsuario = async (req, res) => {
     }
 
     if (usuario.departamentoId === null)
-      return res
-        .status(500)
-        .json("El usuario no tiene asignado ningún departamento");
+      return res.status(500).json({
+        message:
+          "El usuario no tiene asignado ningún departamento, comunicate con el departamento de Tecnología",
+      });
 
     if (!departamento)
       return res.status(404).json("El departamento asignado no existe");
@@ -148,6 +161,8 @@ export const autenticarUsuario = async (req, res) => {
 };
 
 export const olvidePassword = async (req, res) => {
+  const transaction = await Usuario.sequelize.transaction();
+
   const { email } = req.body;
 
   if (!email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
@@ -155,10 +170,15 @@ export const olvidePassword = async (req, res) => {
   }
 
   try {
-    const usuario = await Usuario.findOne({ where: { email } });
-    if (!usuario) return res.status(404).json({ message: "Usuario no existe" });
+    const usuario = await Usuario.findOne({ where: { email } }, transaction);
+    if (!usuario) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Usuario no existe" });
+    }
 
-    await usuario.update({ token: generarId() });
+    await usuario.update({ token: generarId() }, transaction);
+
+    await transaction.commit();
 
     await emailOlvidePassword({
       email,
@@ -171,6 +191,7 @@ export const olvidePassword = async (req, res) => {
       message: "Se ha enviado un correo para restablecer su contraseña",
     });
   } catch (error) {
+    await transaction.rollback();
     console.log(`Error al recuperar Password: ${error.message}`);
     return res.status(500).json({
       message:
@@ -199,19 +220,27 @@ export const comprobarToken = async (req, res) => {
 export const nuevoPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
+  const transaction = await Usuario.sequelize.transaction();
+
   try {
-    const usuario = await Usuario.findOne({ where: { token } });
-    if (!usuario)
+    const usuario = await Usuario.findOne({ where: { token } }, transaction);
+    if (!usuario) {
+      await transaction.rollback();
       return res.status(400).json({ message: "Token no válido o expirado" });
+    }
 
     usuario.token = null;
     usuario.password = password;
-    await usuario.save();
+
+    await usuario.save({ transaction });
+
+    await transaction.commit();
 
     return res
       .status(200)
       .json({ message: "Contraseña actualizada correctamente" });
   } catch (error) {
+    await transaction.rollback();
     console.error(`Error al actualizar la contraseña: ${error.message}`);
     return res.status(500).json({
       message:
