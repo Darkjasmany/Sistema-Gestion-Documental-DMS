@@ -79,20 +79,29 @@ export const Tramite = sequelize.define(
     },
     fechaMaximaContestacion: {
       type: DataTypes.DATEONLY,
-      defaultValue: DataTypes.NOW,
+      allowNull: true, // El campo puede estar vacío inicialmente
       validate: {
         isDate: true, // Valida que sea una fecha válida
       },
     },
     fechaDespacho: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+      validate: {
+        isDate: true,
+      },
     },
     fechaEntregaFisica: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+      validate: {
+        isDate: true,
+      },
+      /*
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
+      */
     },
     usuarioRevisorId: {
       type: DataTypes.BIGINT,
@@ -147,6 +156,9 @@ export const Tramite = sequelize.define(
     fechaEliminacion: {
       type: DataTypes.DATE,
       allowNull: true,
+      validate: {
+        isDate: true,
+      },
     },
     usuarioEliminacionId: {
       type: DataTypes.BIGINT,

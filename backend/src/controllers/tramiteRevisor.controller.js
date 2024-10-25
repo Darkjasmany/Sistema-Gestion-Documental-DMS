@@ -1,6 +1,7 @@
 import { Tramite } from "../models/Tramite.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
+import { validarFecha } from "../utils/validarFecha.js";
 
 export const listarTramitesRevisor = async (req, res) => {
   const { estado } = req.query;
@@ -72,5 +73,50 @@ export const obtenerTramiteRevisor = async (req, res) => {
 export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
-  const { observacion } = req.body;
+  const {
+    numeroOficioDespacho,
+    departamentoDestinatarioId,
+    destinatarioId,
+    referenciaTramite,
+    fechaDespacho,
+    observacion,
+  } = req.body;
+
+  if (
+    !numeroOficioDespacho ||
+    numeroOficioDespacho.trim() === "" ||
+    !departamentoDestinatarioId ||
+    !destinatarioId ||
+    !observacion ||
+    observacion.trim() === ""
+  ) {
+    return res.status(400).json({
+      message: "Todos los campos obligatorios",
+    });
+  }
+
+  const tramite = await Tramite.findOne({
+    where: { id, estado: "PENDIENTE", activo: true },
+  });
+
+  if (!tramite) {
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
+
+  if (
+    tramite.usuarioRevisorId.toString() !== req.usuario.id.toString() ||
+    tramite.departamentoTramiteId.toString() !==
+      req.usuario.departamentoId.toString()
+  ) {
+    return res
+      .status(404)
+      .json({ message: "El trámite seleccionado no te pertenece" });
+  }
+
+  const { valido, mensaje } = validarFecha(fechaDespacho);
+  if (!valido) {
+    return res.status(400).json({ error: mensaje });
+  }
+
+  console.log(req.body);
 };
