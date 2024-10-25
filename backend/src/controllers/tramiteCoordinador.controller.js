@@ -28,7 +28,7 @@ export const obtenerTramitesPorEstado = async (req, res) => {
     const tramites = await Tramite.findAll({
       where: {
         estado,
-        departamentoUsuarioId: req.usuario.departamentoId,
+        departamentoTramiteId: req.usuario.departamentoId,
         activo: true,
       },
       attributes: config.attributes,
@@ -60,7 +60,7 @@ export const obtenerTramite = async (req, res) => {
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
     if (
-      tramite.departamentoUsuarioId.toString() !==
+      tramite.departamentoTramiteId.toString() !==
       req.usuario.departamentoId.toString()
     )
       return res.status(403).json({
@@ -131,7 +131,7 @@ export const actualizarTramite = async (req, res) => {
     }
 
     if (
-      tramiteActualizar.departamentoUsuarioId.toString() !==
+      tramiteActualizar.departamentoTramiteId.toString() !==
       req.usuario.departamentoId.toString()
     ) {
       await transaction.rollback();
@@ -291,7 +291,7 @@ export const subirArchivos = async (req, res) => {
   }
 
   if (
-    tramite.departamentoUsuarioId.toString() !==
+    tramite.departamentoTramiteId.toString() !==
     req.usuario.departamentoId.toString()
   ) {
     borrarArchivosTemporales(req.files);
@@ -341,7 +341,7 @@ export const eliminarArchivos = async (req, res) => {
     return res.status(404).json({ message: "Trámite no encontrado" });
 
   if (
-    tramite.departamentoUsuarioId.toString() !==
+    tramite.departamentoTramiteId.toString() !==
     req.usuario.departamentoId.toString()
   )
     return res.status(403).json({
@@ -386,7 +386,7 @@ export const eliminarTramite = async (req, res) => {
     if (!tramite) return res.status(400).json({ message: "Accion no valida" });
 
     if (
-      tramite.departamentoUsuarioId.toString() !==
+      tramite.departamentoTramiteId.toString() !==
       req.usuario.departamentoId.toString()
     )
       return res.status(403).json({
@@ -431,7 +431,7 @@ export const eliminadoLogicoTramite = async (req, res) => {
     }
 
     if (
-      tramite.departamentoUsuarioId.toString() !==
+      tramite.departamentoTramiteId.toString() !==
       req.usuario.departamentoId.toString()
     ) {
       await transaction.rollback();
@@ -511,7 +511,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
     }
 
     if (
-      tramiteAsignar.departamentoUsuarioId.toString() !==
+      tramiteAsignar.departamentoTramiteId.toString() !==
       req.usuario.departamentoId.toString()
     ) {
       await transaction.rollback();

@@ -1,4 +1,5 @@
 import { Tramite } from "../models/Tramite.model.js";
+import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 
 export const listarTramitesRevisor = async (req, res) => {
@@ -15,7 +16,7 @@ export const listarTramitesRevisor = async (req, res) => {
 
     const tramite = await Tramite.findAll({
       where: {
-        departamentoUsuarioId: req.usuario.departamentoId,
+        departamentoTramiteId: req.usuario.departamentoId,
         usuarioRevisorId: req.usuario.id,
         estado,
         activo: true,
@@ -39,5 +40,37 @@ export const listarTramitesRevisor = async (req, res) => {
   }
 };
 
-export const obtenerTramiteRevisor = async (req, res) => {};
-export const actualizarTramiteRevisor = async (req, res) => {};
+export const obtenerTramiteRevisor = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const tramite = await Tramite.findOne({
+      where: { id, estado: "PENDIENTE", activo: true },
+    });
+    if (!tramite) return res.status(404).json({ message: "No encontrado" });
+
+    if (
+      tramite.usuarioRevisorId.toString() !== req.usuario.id.toString() ||
+      tramite.departamentoTramiteId.toString() !==
+        req.usuario.departamentoId.toString()
+    )
+      return res
+        .status(404)
+        .json({ message: "El trámite seleccionado no te pertenece" });
+
+    const archivos = await TramiteArchivo.findAll({ where: { tramiteId: id } });
+
+    res.json({ tramite, archivos });
+  } catch (error) {
+    console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
+    return res.status(500).json({
+      message:
+        "Error al obtener el trámite seleccionado, intente nuevamente más tarde.",
+    });
+  }
+};
+export const actualizarTramiteRevisor = async (req, res) => {
+  const { id } = req.params;
+
+  const { observacion } = req.body;
+};

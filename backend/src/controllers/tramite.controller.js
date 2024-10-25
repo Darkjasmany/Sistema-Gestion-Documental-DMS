@@ -82,7 +82,7 @@ export const agregarTramite = async (req, res) => {
       fechaDocumento,
       referenciaTramite,
       usuarioCreacionId: req.usuario.id,
-      departamentoUsuarioId: req.usuario.departamentoId,
+      departamentoTramiteId: req.usuario.departamentoId,
     });
 
     await Promise.all(
@@ -173,7 +173,7 @@ export const obtenerTramite = async (req, res) => {
 
     if (
       tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
-      tramite.departamentoUsuarioId.toString() !==
+      tramite.departamentoTramiteId.toString() !==
         req.usuario.departamentoId.toString()
     )
       return res
@@ -243,7 +243,9 @@ export const actualizarTramite = async (req, res) => {
 
     if (
       tramiteActualizado.usuarioCreacionId.toString() !==
-      req.usuario.id.toString()
+        req.usuario.id.toString() ||
+      tramiteActualizado.departamentoTramiteId.toString() !==
+        req.usuario.departamentoId.toString()
     ) {
       await transaction.rollback();
       return res.status(403).json({ message: "Acción no válida" });
@@ -310,7 +312,11 @@ export const subirArchivos = async (req, res) => {
     return res.status(404).json({ message: "Trámite no encontrado" });
   }
 
-  if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString()) {
+  if (
+    tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
+    tramite.departamentoTramiteId.toString() !==
+      req.usuario.departamentoId.toString()
+  ) {
     borrarArchivosTemporales(req.files);
     return res.status(403).json({ message: "Acción no válida" });
   }
@@ -358,7 +364,11 @@ export const eliminarArchivos = async (req, res) => {
   if (!tramite)
     return res.status(404).json({ message: "Trámite no encontrado" });
 
-  if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
+  if (
+    tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
+    tramite.departamentoTramiteId.toString() !==
+      req.usuario.departamentoId.toString()
+  )
     return res.status(403).json({ message: "Acción no válida" });
 
   // Validar que haya archivos para eliminar
@@ -445,7 +455,11 @@ export const eliminadoLogicoTramite = async (req, res) => {
       return res.status(404).json({ message: "Trámite no encontrado" });
     }
 
-    if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString()) {
+    if (
+      tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
+      tramite.departamentoTramiteId.toString() !==
+        req.usuario.departamentoId.toString()
+    ) {
       await transaction.rollback();
       return res.status(403).json({ msg: "Acción no válida" });
     }

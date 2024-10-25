@@ -111,7 +111,6 @@ router.put(
 );
 
 // * Rutas exclusivas para el revisor
-
 router
   .route("/revisor/tramites")
   .get(checkAuth, checkRole("REVISOR"), tramiteRevisor.listarTramitesRevisor);

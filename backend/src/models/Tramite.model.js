@@ -110,7 +110,7 @@ export const Tramite = sequelize.define(
         key: "id", // clave primaria de la tabla de referencia
       },
     },
-    departamentoUsuarioId: {
+    departamentoTramiteId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -269,7 +269,7 @@ Tramite.belongsTo(Empleado, {
 
 // 1 Tramite puede tener 1 departamento asigado del usuario de creacion
 Tramite.belongsTo(Departamento, {
-  foreignKey: "departamentoUsuarioId",
+  foreignKey: "departamentoTramiteId",
   targetKey: "id",
   as: "departamentoUsuarioCreacion",
 });
