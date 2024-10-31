@@ -5,6 +5,8 @@ import { Empleado } from "./Empleado.model.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 import { TramiteArchivo } from "./TramiteArchivo.model.js";
+import { TramiteObservacion } from "./TramiteObservacion.model.js";
+import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
@@ -57,10 +59,18 @@ export const Tramite = sequelize.define(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
+    fechaMaximaContestacion: {
+      type: DataTypes.DATEONLY,
+      allowNull: true, // El campo puede estar vacío inicialmente
+      validate: {
+        isDate: true, // Valida que sea una fecha válida
+      },
+    },
     numeroOficioDespacho: {
       type: DataTypes.STRING(50),
       allowNull: true,
     },
+    /*
     departamentoDestinatarioId: {
       type: DataTypes.BIGINT,
       allowNull: true,
@@ -76,14 +86,8 @@ export const Tramite = sequelize.define(
         model: "empleado", // nombre de la tabla de referencia
         key: "id", // clave primaria de la tabla de referencia
       },
-    },
-    fechaMaximaContestacion: {
-      type: DataTypes.DATEONLY,
-      allowNull: true, // El campo puede estar vacío inicialmente
-      validate: {
-        isDate: true, // Valida que sea una fecha válida
-      },
-    },
+    },*/
+
     fechaDespacho: {
       type: DataTypes.DATEONLY,
       allowNull: true,
@@ -153,25 +157,6 @@ export const Tramite = sequelize.define(
       allowNull: false,
       defaultValue: true,
     },
-    fechaEliminacion: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      validate: {
-        isDate: true,
-      },
-    },
-    usuarioEliminacionId: {
-      type: DataTypes.BIGINT,
-      allowNull: true,
-      references: {
-        model: "usuario",
-        key: "id",
-      },
-    },
-    observacionEliminacion: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
   },
   {
     tableName: "tramite",
@@ -222,13 +207,6 @@ Tramite.belongsTo(Departamento, {
   as: "departamentoRemitente", // Alias para esta relación
 });
 
-// 1 tramite es despachado a 1 departamento destino
-Tramite.belongsTo(Departamento, {
-  foreignKey: "departamentoDestinatarioId",
-  targetKey: "id",
-  as: "departamentoDestinatario", // Alias para la relación destino
-});
-
 Tramite.hasMany(TramiteArchivo, {
   foreignKey: "tramiteId",
   sourceKey: "id",
@@ -239,6 +217,24 @@ TramiteArchivo.belongsTo(Tramite, {
   foreignKey: "tramiteId",
   targetKey: "id",
   as: "tramite",
+});
+
+Tramite.hasMany(TramiteObservacion, {
+  foreignKey: "tramiteId",
+  sourceKey: "id",
+  as: "tramiteObservaciones",
+});
+
+TramiteObservacion.belongsTo(Tramite, {
+  foreignKey: "tramiteId",
+  targetKey: "id",
+  as: "observaciones",
+});
+
+TramiteEliminacion.belongsTo(Tramite, {
+  foreignKey: "tramiteId",
+  targetKey: "id",
+  as: "eliminacion",
 });
 
 TramiteHistorialEstado.belongsTo(Tramite, {
@@ -258,26 +254,20 @@ Departamento.hasMany(Tramite, {
   as: "tramitesRemitidos", // Alias para la relación inversa (remitente)
 });
 
-// 1 departamento destino puede tener muchos tramites
-Departamento.hasMany(Tramite, {
-  foreignKey: "departamentoDestinatarioId",
-  sourceKey: "id",
-  as: "tramitesRecibidos", // Alias para la relación inversa (destinatario)
-});
-
 // Relación entre Tramite y Empleado como remitente
 Tramite.belongsTo(Empleado, {
   foreignKey: "remitenteId", // Este es el campo que almacena el id del remitente
   targetKey: "id",
   as: "remitente", // Alias que usarás en las consultas
 });
-
+/*
 // Relación entre Tramite y Empleado como destinatario
 Tramite.belongsTo(Empleado, {
   foreignKey: "destinatarioId", // Este es el campo que almacena el id del destinatario
   targetKey: "id",
   as: "destinatario", // Alias para el destinatario en las consultas
 });
+*/
 
 // 1 Tramite puede tener 1 departamento asigado del usuario de creacion
 Tramite.belongsTo(Departamento, {

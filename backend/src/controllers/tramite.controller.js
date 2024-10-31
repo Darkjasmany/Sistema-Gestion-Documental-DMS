@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
+import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -409,6 +410,7 @@ export const eliminarArchivos = async (req, res) => {
 export const eliminarTramite = async (req, res) => {
   try {
     const { id } = req.params;
+    const { observacion } = req.body;
 
     const tramite = await Tramite.findOne({
       where: { id, estado: "INGRESADO" },
@@ -423,7 +425,20 @@ export const eliminarTramite = async (req, res) => {
       where: { tramiteId: id },
     });
 
+    if (!observacion || observacion.trim() === "") {
+      await transaction.rollback();
+      return res
+        .status(400)
+        .json({ message: "Debes escribir una Razón de Eliminación" });
+    }
+
     // Eliminar el trámite y los archivos en la base de datos
+    await TramiteEliminacion.create({
+      tramiteId: id,
+      usuarioEliminacionId: req.usuario.id,
+      motivoEliminacion: observacion,
+      fechaEliminacion: Date.now(),
+    });
     await Tramite.destroy({ where: { id } });
     await TramiteArchivo.destroy({ where: { tramiteId: id } });
 
@@ -473,14 +488,23 @@ export const eliminadoLogicoTramite = async (req, res) => {
 
     const estadoAnterior = tramite.estado;
 
+    await TramiteEliminacion.create(
+      {
+        tramiteId: id,
+        usuarioEliminacionId: req.usuario.id,
+        motivoEliminacion: observacion,
+        fechaEliminacion: Date.now(),
+      },
+      {
+        transaction,
+      }
+    );
+
     // Campos a Actualizar
     tramite.estado = "RECHAZADO";
-    tramite.fechaEliminacion = Date.now();
-    tramite.usuarioEliminacionId = req.usuario.id;
-    tramite.observacionEliminacion = observacion;
+    await tramite.save({ transaction });
 
     // Actualizar registros en la BD
-    await tramite.save({ transaction });
 
     // Registrar Historial Estado
     await registrarHistorialEstado(

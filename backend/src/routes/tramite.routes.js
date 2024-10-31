@@ -25,7 +25,11 @@ router
   .route("/:id")
   .get(checkAuth, tramiteController.obtenerTramite)
   .put(checkAuth, tramiteController.actualizarTramite)
-  .delete(checkAuth, tramiteController.eliminarTramite);
+  .delete(
+    checkAuth,
+    checkRole("COORDINADOR"),
+    tramiteController.eliminarTramite
+  );
 
 router.put(
   "/:id/eliminar-tramite",

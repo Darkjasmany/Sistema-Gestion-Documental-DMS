@@ -7,6 +7,7 @@ import { generarId } from "../utils/generarId.js";
 import { passwordHash } from "../utils/passwordHash.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteArchivo } from "./TramiteArchivo.model.js";
+import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
 
 export const Usuario = sequelize.define(
   "usuario",
@@ -127,13 +128,13 @@ Usuario.hasMany(TramiteArchivo, {
   sourceKey: "id",
 });
 
-Tramite.belongsTo(Usuario, {
+TramiteEliminacion.belongsTo(Usuario, {
   foreignKey: "usuarioEliminacionId",
   targetKey: "id",
   as: "usuarioEliminacion",
 });
 
-Usuario.hasMany(Tramite, {
+Usuario.hasMany(TramiteEliminacion, {
   foreignKey: "usuarioEliminacionId",
   sourceKey: "id",
 });
