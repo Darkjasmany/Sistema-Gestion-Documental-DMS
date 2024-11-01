@@ -28,99 +28,32 @@ export const Tramite = sequelize.define(
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: "departamento", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
+        model: "departamento",
+        key: "id",
       },
     },
     remitenteId: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: "empleado", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
-      },
-    },
-    prioridad: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      defaultValue: "NORMAL",
-      validate: {
-        isIn: [["NORMAL", "MEDIA", "ALTA"]],
-      },
-    },
-    fechaDocumento: {
-      type: DataTypes.DATEONLY,
-      defaultValue: DataTypes.NOW,
-      validate: {
-        isDate: true, // Valida que sea una fecha válida
-      },
-    },
-    referenciaTramite: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    fechaMaximaContestacion: {
-      type: DataTypes.DATEONLY,
-      allowNull: true, // El campo puede estar vacío inicialmente
-      validate: {
-        isDate: true, // Valida que sea una fecha válida
-      },
-    },
-    numeroOficioDespacho: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    /*
-    departamentoDestinatarioId: {
-      type: DataTypes.BIGINT,
-      allowNull: true,
-      references: {
-        model: "departamento", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
-      },
-    },
-    destinatarioId: {
-      type: DataTypes.BIGINT,
-      defaultValue: null,
-      references: {
-        model: "empleado", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
-      },
-    },*/
-
-    fechaDespacho: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
-      validate: {
-        isDate: true,
-      },
-    },
-    fechaEntregaFisica: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
-      validate: {
-        isDate: true,
-      },
-      /*
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW, // Usamos Sequelize.NOW para la fecha actual
-      */
-    },
-    usuarioRevisorId: {
-      type: DataTypes.BIGINT,
-      allowNull: true,
-      references: {
-        model: "usuario", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
+        model: "empleado",
+        key: "id",
       },
     },
     usuarioCreacionId: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: "usuario", // nombre de la tabla de referencia
-        key: "id", // clave primaria de la tabla de referencia
+        model: "usuario",
+        key: "id",
+      },
+    },
+    usuarioActualizacionId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "usuario",
+        key: "id",
       },
     },
     departamentoTramiteId: {
@@ -131,9 +64,13 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
-    numeroTramiteModificado: {
-      type: DataTypes.STRING,
-      allowNull: true,
+    prioridad: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      defaultValue: "NORMAL",
+      validate: {
+        isIn: [["NORMAL", "MEDIA", "ALTA"]],
+      },
     },
     estado: {
       type: DataTypes.STRING(50),
@@ -156,6 +93,54 @@ export const Tramite = sequelize.define(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
+    },
+    fechaDocumento: {
+      type: DataTypes.DATEONLY,
+      defaultValue: DataTypes.NOW,
+      validate: {
+        isDate: true, // Valida que sea una fecha válida
+      },
+    },
+    fechaMaximaContestacion: {
+      type: DataTypes.DATEONLY,
+      allowNull: true, // El campo puede estar vacío inicialmente
+      validate: {
+        isDate: true, // Valida que sea una fecha válida
+      },
+    },
+    fechaDespacho: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+      validate: {
+        isDate: true,
+      },
+    },
+    fechaEntregaFisica: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+      validate: {
+        isDate: true,
+      },
+    },
+    referenciaTramite: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    numeroOficioDespacho: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    numeroTramiteModificado: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    usuarioRevisorId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "usuario",
+        key: "id",
+      },
     },
   },
   {
@@ -234,7 +219,6 @@ TramiteObservacion.belongsTo(Tramite, {
 TramiteEliminacion.belongsTo(Tramite, {
   foreignKey: "tramiteId",
   targetKey: "id",
-  as: "eliminacion",
 });
 
 TramiteHistorialEstado.belongsTo(Tramite, {

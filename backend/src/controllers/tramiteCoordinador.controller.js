@@ -11,6 +11,8 @@ import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
 import { validarFecha } from "../utils/validarFecha.js";
+import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
+import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   const { estado } = req.query; // envio como parametro adicional en la URL
@@ -254,6 +256,7 @@ export const actualizarTramite = async (req, res) => {
       observacionRevisor || tramiteActualizar.observacionRevisor;
     tramiteActualizar.numeroTramiteModificado =
       numeroTramiteModificado || tramiteActualizar.numeroTramiteModificado;
+    tramiteActualizar.usuarioActualizacionId = req.usuario.id;
 
     // Guarda el trámite actualizado
     await tramiteActualizar.save({ transaction });
@@ -382,7 +385,7 @@ export const eliminarTramite = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const tramite = await Tramite.findByPk(id);
+    const tramite = await Tramite.findOne({ where: { id, activo: true } });
     if (!tramite) return res.status(400).json({ message: "Accion no valida" });
 
     if (
@@ -398,8 +401,11 @@ export const eliminarTramite = async (req, res) => {
     });
 
     await TramiteHistorialEstado.destroy({ where: { tramiteId: id } });
+
     await TramiteAsignacion.destroy({ where: { tramiteId: id } });
+
     await TramiteArchivo.destroy({ where: { tramiteId: id } });
+
     await Tramite.destroy({ where: { id } });
 
     borrarArchivos(tramiteArchivos);
@@ -451,11 +457,17 @@ export const eliminadoLogicoTramite = async (req, res) => {
 
     // Actualizar el estado
     tramite.estado = "RECHAZADO";
-    tramite.fechaEliminacion = Date.now();
-    tramite.usuarioEliminacionId = req.usuario.id;
-    tramite.observacionEliminacion = observacion;
-
     await tramite.save({ transaction });
+
+    await TramiteEliminacion.create(
+      {
+        tramiteId: id,
+        usuarioEliminacionId: req.usuario.id,
+        motivoEliminacion: observacion,
+        fechaEliminacion: Date.now(),
+      },
+      { transaction }
+    );
 
     // Registrar Historial Estado
     await registrarHistorialEstado(
@@ -539,12 +551,24 @@ export const asignarOReasignarRevisor = async (req, res) => {
       tramiteAsignar.fechaMaximaContestacion =
         fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
       tramiteAsignar.estado = "PENDIENTE";
+      tramiteAsignar.usuarioActualizacionId = req.usuario.id;
 
       await TramiteAsignacion.create(
         {
           tramiteId: id,
           usuarioRevisorId: usuarioRevisorId,
-          descripcion: observacionRevisor,
+          fechaAsignacion: new Date(),
+          // descripcion: observacionRevisor,
+        },
+        { transaction }
+      );
+
+      await TramiteObservacion.create(
+        {
+          tramiteId: id,
+          observacion: observacionRevisor,
+          usuarioCreacionId: req.usuario.id,
+          fechaCreacion: new Date(),
         },
         { transaction }
       );
@@ -575,12 +599,24 @@ export const asignarOReasignarRevisor = async (req, res) => {
         referenciaTramite || tramiteAsignar.referenciaTramite;
       tramiteAsignar.fechaMaximaContestacion =
         fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
+      tramiteAsignar.usuarioActualizacionId = req.usuario.id;
 
       await TramiteAsignacion.create(
         {
           tramiteId: id,
           usuarioRevisorId: usuarioRevisorId,
-          descripcion: observacionRevisor,
+          fechaAsignacion: new Date(),
+          // descripcion: observacionRevisor,
+        },
+        { transaction }
+      );
+
+      await TramiteObservacion.create(
+        {
+          tramiteId: id,
+          observacion: observacionRevisor,
+          usuarioCreacionId: req.usuario.id,
+          fechaCreacion: new Date(),
         },
         { transaction }
       );

@@ -113,6 +113,17 @@ Usuario.hasMany(Tramite, {
 });
 
 Tramite.belongsTo(Usuario, {
+  foreignKey: "usuarioActualizacionId",
+  targetKey: "id",
+  as: "usuarioActualizacion",
+});
+
+Usuario.hasMany(Tramite, {
+  foreignKey: "usuarioActualizacionId",
+  sourceKey: "id",
+});
+
+Tramite.belongsTo(Usuario, {
   foreignKey: "usuarioRevisorId",
   targetKey: "id",
   as: "usuarioRevisor",

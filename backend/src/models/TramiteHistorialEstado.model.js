@@ -27,14 +27,15 @@ export const TramiteHistorialEstado = sequelize.define(
     },
     usuarioId: {
       type: DataTypes.BIGINT,
+      allowNull: true,
       references: {
         model: "usuario",
         key: "id",
       },
-      allowNull: true, // Opcional
     },
   },
   {
     tableName: "tramiteHistorialEstado",
+    timestamps: false,
   }
 );

@@ -285,6 +285,7 @@ export const actualizarTramite = async (req, res) => {
       fechaDocumento || tramiteActualizado.fechaDocumento;
     tramiteActualizado.referenciaTramite =
       referenciaTramite || tramiteActualizado.referenciaTramite;
+    tramiteActualizado.usuarioActualizacionId = req.usuario.id;
 
     // Guardar cambios
     await tramiteActualizado.save({ transaction });
@@ -410,7 +411,6 @@ export const eliminarArchivos = async (req, res) => {
 export const eliminarTramite = async (req, res) => {
   try {
     const { id } = req.params;
-    const { observacion } = req.body;
 
     const tramite = await Tramite.findOne({
       where: { id, estado: "INGRESADO" },
@@ -425,21 +425,9 @@ export const eliminarTramite = async (req, res) => {
       where: { tramiteId: id },
     });
 
-    if (!observacion || observacion.trim() === "") {
-      await transaction.rollback();
-      return res
-        .status(400)
-        .json({ message: "Debes escribir una Razón de Eliminación" });
-    }
-
     // Eliminar el trámite y los archivos en la base de datos
-    await TramiteEliminacion.create({
-      tramiteId: id,
-      usuarioEliminacionId: req.usuario.id,
-      motivoEliminacion: observacion,
-      fechaEliminacion: Date.now(),
-    });
     await Tramite.destroy({ where: { id } });
+
     await TramiteArchivo.destroy({ where: { tramiteId: id } });
 
     // Eliminar los archivos físicamente

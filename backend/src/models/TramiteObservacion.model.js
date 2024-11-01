@@ -12,21 +12,27 @@ export const TramiteObservacion = sequelize.define(
         key: "id",
       },
     },
-    usuarioId: {
+    observacion: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    usuarioCreacionId: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
         model: "usuario",
         key: "id",
       },
-      observacion: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
+    },
+    fechaCreacion: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
   },
   {
     tableName: "tramiteObservacion",
+    timestamps: false,
     hooks: {
       beforeSave: (TramiteObservacion) => {
         TramiteObservacion.observacion = TramiteObservacion.observacion.trim();

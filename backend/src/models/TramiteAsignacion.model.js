@@ -6,11 +6,11 @@ export const TramiteAsignacion = sequelize.define(
   {
     tramiteId: {
       type: DataTypes.BIGINT,
+      allowNull: false,
       references: {
         model: "tramite",
         key: "id",
       },
-      allowNull: false,
     },
     usuarioRevisorId: {
       type: DataTypes.BIGINT,
@@ -20,18 +20,14 @@ export const TramiteAsignacion = sequelize.define(
       },
       allowNull: false,
     },
-    descripcion: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+    fechaAsignacion: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
   },
   {
     tableName: "tramiteAsignacion",
-    hooks: {
-      beforeSave: (tramiteAsignacion) => {
-        if (tramiteAsignacion.descripcion)
-          tramiteAsignacion.descripcion = tramiteAsignacion.descripcion.trim();
-      },
-    },
+    timestamps: false,
   }
 );
