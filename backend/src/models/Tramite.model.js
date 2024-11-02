@@ -126,19 +126,20 @@ export const Tramite = sequelize.define(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    numeroMemo: {
+    secuencialMemo: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
-    numeroMemoDespacho: {
+    numeroOficioDespacho: {
       type: DataTypes.STRING(50),
       allowNull: true,
+      unique: true,
     },
-
-    numeroTramiteModificado: {
+    numeroOficioModificado: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     usuarioRevisorId: {
       type: DataTypes.BIGINT,
