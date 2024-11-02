@@ -1,5 +1,8 @@
 import { Tramite } from "../models/Tramite.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
+import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
+import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
+
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { validarFecha } from "../utils/validarFecha.js";
 
@@ -70,6 +73,7 @@ export const obtenerTramiteRevisor = async (req, res) => {
     });
   }
 };
+
 export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
@@ -117,6 +121,37 @@ export const actualizarTramiteRevisor = async (req, res) => {
   if (!valido) {
     return res.status(400).json({ error: mensaje });
   }
+
+  const numeroOficio = Tramite.findOne({
+    where: {
+      numeroOficioDespacho,
+    },
+  });
+
+  if (numeroOficio) {
+    return res
+      .status(409)
+      .json({ message: "El numero de Memo ya esta siendo utilizado" });
+  }
+
+  tramite.numeroOficioDespacho = numeroOficioDespacho;
+  tramite.referenciaTramite = referenciaTramite || tramite.referenciaTramite;
+  tramite.fechaDespacho = fechaDespacho;
+  await tramite.save();
+
+  await TramiteDestinatario.create({
+    tramiteId: id,
+    departamentoDestinatarioId,
+    destinatarioId,
+    usuarioCreacionId: req.usuario.id,
+  });
+
+  await TramiteObservacion.create({
+    tramiteId: id,
+    observacion,
+    usuarioCreacionId: req.usuario.id,
+    fechaCreacion: Date.now(),
+  });
 
   console.log(req.body);
 };

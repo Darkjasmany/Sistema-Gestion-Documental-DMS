@@ -126,10 +126,16 @@ export const Tramite = sequelize.define(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    numeroOficioDespacho: {
+    numeroMemo: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+    },
+    numeroMemoDespacho: {
       type: DataTypes.STRING(50),
       allowNull: true,
     },
+
     numeroTramiteModificado: {
       type: DataTypes.STRING,
       allowNull: true,

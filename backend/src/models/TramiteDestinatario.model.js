@@ -43,14 +43,6 @@ export const TramiteDestinatario = sequelize.define(
         key: "id",
       },
     },
-    usuarioActualizacionId: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: "usuario",
-        key: "id",
-      },
-    },
   },
   {
     tableName: "tramiteDestinatario",
@@ -67,7 +59,6 @@ TramiteDestinatario.belongsTo(Departamento, {
 TramiteDestinatario.hasMany(Departamento, {
   foreignKey: "departamentoDestinatarioId",
   sourceKey: "id",
-  as: "departamentoDestinatario", // Alias para la relación destino
 });
 
 // 1 departamento destino puede tener muchos tramitesDestinarios
