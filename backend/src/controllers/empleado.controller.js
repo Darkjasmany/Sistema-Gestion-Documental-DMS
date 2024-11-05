@@ -48,7 +48,7 @@ export const agregarEmpleado = async (req, res) => {
       nombres,
       apellidos,
       email,
-      departamentoId,
+      departamento_id: departamentoId,
     });
 
     res.status(201).json(empleadoCreado);
@@ -63,7 +63,7 @@ export const agregarEmpleado = async (req, res) => {
 export const cargarEmpleados = async (req, res) => {
   try {
     const empleados = await Empleado.findAll();
-    res.status(200).json(empleados);
+    res.json(empleados);
   } catch (error) {
     console.error(`Error al cargar los empleados: ${error.message}`);
     return res.status(500).json({
@@ -79,7 +79,7 @@ export const obtenerEmpleado = async (req, res) => {
     if (!empleado)
       return res.status(400).json({ message: "Empleado no válido" });
 
-    res.status(200).json(empleado);
+    res.json(empleado);
   } catch (error) {
     console.error(`Error al cargar el empleado: ${error.message}`);
     return res.status(500).json({
@@ -101,12 +101,12 @@ export const actualizarEmpleado = async (req, res) => {
     empleadoActualizar.nombres = nombres || empleadoActualizar.nombres;
     empleadoActualizar.apellidos = apellidos || empleadoActualizar.apellidos;
     empleadoActualizar.email = email || empleadoActualizar.email;
-    empleadoActualizar.departamentoId =
-      departamentoId || empleadoActualizar.departamentoId;
+    empleadoActualizar.departamento_id =
+      departamentoId || empleadoActualizar.departamento_id;
 
     await empleadoActualizar.save();
 
-    res.status(200).json(empleadoActualizar);
+    res.json(empleadoActualizar);
   } catch (error) {
     console.error(`Error al actualizar el empleado: ${error.message}`);
     return res.status(500).json({

@@ -21,14 +21,13 @@ export const checkAuth = async (req, res, next) => {
         "nombres",
         "apellidos",
         "email",
-        "telefono",
         "rol",
-        "departamentoId",
+        "departamento_id",
       ],
       include: [
         {
           model: Departamento,
-          attributes: ["nombre", "coordinadorId"],
+          attributes: ["nombre", "coordinador_id"],
         },
       ],
     });

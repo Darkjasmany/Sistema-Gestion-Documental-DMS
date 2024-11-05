@@ -8,7 +8,7 @@ export const Departamento = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    coordinadorId: {
+    coordinador_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
       defaultValue: 1, //TODO: Tengo que tener migrado todos los departamentos

@@ -2,9 +2,9 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.config.js";
 
 export const TramiteHistorialEstado = sequelize.define(
-  "tramiteHistorialEstado",
+  "tramite_historial_estado",
   {
-    tramiteId: {
+    tramite_id: {
       type: DataTypes.BIGINT,
       references: {
         model: "tramite",
@@ -12,20 +12,20 @@ export const TramiteHistorialEstado = sequelize.define(
       },
       allowNull: false,
     },
-    estadoAnterior: {
+    estado_anterior: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    estadoActual: {
+    estado_actual: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    fechaCambio: {
+    fecha_cambio: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: false,
     },
-    usuarioId: {
+    usuario_creacion: {
       type: DataTypes.BIGINT,
       allowNull: true,
       references: {
@@ -35,7 +35,7 @@ export const TramiteHistorialEstado = sequelize.define(
     },
   },
   {
-    tableName: "tramiteHistorialEstado",
+    tableName: "tramite_historial_estado",
     timestamps: false,
   }
 );

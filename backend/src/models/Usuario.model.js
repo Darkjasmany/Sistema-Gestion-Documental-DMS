@@ -38,14 +38,6 @@ export const Usuario = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    telefono: {
-      type: DataTypes.STRING,
-      allowNull: true, // campo opcional
-      validate: {
-        isNumeric: true, // validación para que solo acepte números
-        len: [10, 10], // Valida que la longitud sea exactamente de 10 caracteres
-      },
-    },
     rol: {
       type: DataTypes.STRING(50),
       allowNull: false,
@@ -66,7 +58,7 @@ export const Usuario = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    departamentoId: {
+    departamento_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
       references: {
@@ -102,85 +94,85 @@ export const Usuario = sequelize.define(
 // 1 tramite pertenece a 1 usuarioCreacion
 // Se creara el campo usuarioCreacionId de la relacion del modelo Usuario si no se define
 Tramite.belongsTo(Usuario, {
-  foreignKey: "usuarioCreacionId", // Campo que se crea en la tabla Tramite
+  foreignKey: "usuario_creacion", // Campo que se crea en la tabla Tramite
   targetKey: "id", // Con qué lo va a enlazar
   as: "usuario",
 });
 // 1 usuario puede crear  muchos tramites
 Usuario.hasMany(Tramite, {
-  foreignKey: "usuarioCreacionId", // NombreCampo
+  foreignKey: "usuario_creacion", // NombreCampo
   sourceKey: "id", // Con qué lo va a enlazar
 });
 
 Tramite.belongsTo(Usuario, {
-  foreignKey: "usuarioActualizacionId",
+  foreignKey: "usuario_actualizacion",
   targetKey: "id",
   as: "usuarioActualizacion",
 });
 
 Usuario.hasMany(Tramite, {
-  foreignKey: "usuarioActualizacionId",
+  foreignKey: "usuario_actualizacion",
   sourceKey: "id",
 });
 
 Tramite.belongsTo(Usuario, {
-  foreignKey: "usuarioRevisorId",
+  foreignKey: "usuario_revisor",
   targetKey: "id",
   as: "usuarioRevisor",
 });
 
 Usuario.hasMany(Tramite, {
-  foreignKey: "usuarioRevisorId",
+  foreignKey: "usuario_revisor",
   sourceKey: "id",
 });
 
 Usuario.hasMany(TramiteArchivo, {
-  foreignKey: "usuarioCreacionId",
+  foreignKey: "usuario_creacion",
   sourceKey: "id",
 });
 
 TramiteEliminacion.belongsTo(Usuario, {
-  foreignKey: "usuarioEliminacionId",
+  foreignKey: "usuario_eliminacion",
   targetKey: "id",
   as: "usuarioEliminacion",
 });
 
 Usuario.hasMany(TramiteEliminacion, {
-  foreignKey: "usuarioEliminacionId",
+  foreignKey: "usuario_eliminacion",
   sourceKey: "id",
 });
 
 // * TramiteAsignacion
 // 1 tramite pertenece a 1 usuario revisor
 TramiteAsignacion.belongsTo(Usuario, {
-  foreignKey: "usuarioRevisorId", // Campo que se crea en la tabla Tramite
+  foreignKey: "usuario_revisor", // Campo que se crea en la tabla Tramite
   targetKey: "id", // Con qué lo va a enlazar
 });
 
 Usuario.hasMany(TramiteAsignacion, {
-  foreignKey: "usuarioRevisorId", // Campo que se crea en la tabla Tramite
+  foreignKey: "usuario_revisor", // Campo que se crea en la tabla Tramite
   sourceKey: "id", // Con qué lo va a enlazar
 });
 
 TramiteHistorialEstado.belongsTo(Usuario, {
-  foreignKey: "usuarioId", // Campo que se crea en la tabla Tramite
+  foreignKey: "usuario_creacion", // Campo que se crea en la tabla Tramite
   targetKey: "id", // Con qué lo va a enlazar
 });
 
 // 1 revisor puede tener muchos tramites asignados
 Usuario.hasMany(TramiteAsignacion, {
-  foreignKey: "usuarioRevisorId", // NombreCampo
+  foreignKey: "usuario_revisor", // NombreCampo
   sourceKey: "id", // Con qué lo va a enlazar
 });
 
 // * Departamento
 // Relación: Un usuario pertenece a un departamento
 Usuario.belongsTo(Departamento, {
-  foreignKey: "departamentoId", // campo en Usuario que contiene el ID del departamento
+  foreignKey: "departamento_id", // campo en Usuario que contiene el ID del departamento
   targetKey: "id", // clave primaria en Departamento
 });
 // Relación: Un departamento puede tener muchos usuarios
 Departamento.hasMany(Usuario, {
-  foreignKey: "departamentoId", // campo en Usuario que contiene el ID del departamento
+  foreignKey: "departamento_id", // campo en Usuario que contiene el ID del departamento
   sourceKey: "id", // clave primaria en Departamento
 });

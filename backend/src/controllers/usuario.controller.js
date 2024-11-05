@@ -113,8 +113,8 @@ export const autenticarUsuario = async (req, res) => {
     const usuario = await Usuario.findOne({ where: { email } });
 
     const departamento = await Departamento.findOne({
-      where: { id: usuario.departamentoId },
-      attributes: ["nombre", "coordinadorId"],
+      where: { id: usuario.departamento_id },
+      attributes: ["nombre", "coordinador_id"],
     });
 
     if (!usuario) {
@@ -127,7 +127,7 @@ export const autenticarUsuario = async (req, res) => {
         .json({ message: "Usuario no confirmado o suspendido" });
     }
 
-    if (usuario.departamentoId === null)
+    if (usuario.departamento_id === null)
       return res.status(500).json({
         message:
           "El usuario no tiene asignado ningún departamento, comunicate con el departamento de Tecnología",
@@ -148,9 +148,9 @@ export const autenticarUsuario = async (req, res) => {
       email: usuario.email,
       rol: usuario.rol,
       token: generarJWT(usuario.id),
-      departamentoId: usuario.departamentoId,
+      departamentoId: usuario.departamento_id,
       departamento: departamento.nombre,
-      coordinadorId: departamento.coordinadorId,
+      coordinadorId: departamento.coordinador_id,
     });
   } catch (error) {
     console.log(`Error al autenticar: ${error.message}`);

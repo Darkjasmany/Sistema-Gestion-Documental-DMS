@@ -37,7 +37,7 @@ export const Empleado = sequelize.define(
         len: [10, 10], // longitud para el teléfono
       },
     },
-    departamentoId: {
+    departamento_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -65,6 +65,6 @@ export const Empleado = sequelize.define(
 // ** Relaciones
 // 1 empleado solo puede estar en 1 departamento
 Empleado.belongsTo(Departamento, {
-  foreignKey: "departamentoId",
+  foreignKey: "departamento_id",
   targetKey: "id",
 });
