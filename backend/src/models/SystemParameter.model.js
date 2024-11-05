@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.config.js";
 
-export const SystemParameter = sequelize.define(
-  "SystemParameter",
+export const ParametroSistema = sequelize.define(
+  "sis_parametros",
   {
     clave: {
       type: DataTypes.STRING,
@@ -13,9 +13,13 @@ export const SystemParameter = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    descripcion: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
-    tableName: "SystemParameter",
+    tableName: "sis_parametros",
     timestamps: false,
   }
 );
