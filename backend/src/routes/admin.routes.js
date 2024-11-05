@@ -26,6 +26,17 @@ router.post(
   adminController.asignarDepartamento
 );
 
+// Parametros
+router
+  .route("/parametros")
+  .post(checkAuth, adminController.agregarParametros)
+  .get(checkAuth, adminController.listarParametros);
+
+router
+  .route("/parametros/:id")
+  .put(checkAuth, adminController.actualizarParametros)
+  .delete(checkAuth, adminController.eliminarParametros);
+
 export default router;
 
 // TODO, tengo que crear la funcionalidad para que el admin vea todos los usuarios confirmados, seleccione 1 y asigne departamento, asi mismo definir bien las rutas del admin en relacion a la creacion de departamentos y empleados, definir un modelo para los roles

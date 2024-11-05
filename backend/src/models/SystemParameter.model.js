@@ -17,9 +17,24 @@ export const ParametroSistema = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    usuarioCreacionId: {
+      type: DataTypes.BIGINT,
+      references: {
+        model: "usuario",
+        key: "id",
+      },
+      allowNull: false,
+    },
+    usuarioActualizacionId: {
+      type: DataTypes.BIGINT,
+      references: {
+        model: "usuario",
+        key: "id",
+      },
+      allowNull: true,
+    },
   },
   {
     tableName: "sis_parametros",
-    timestamps: false,
   }
 );
