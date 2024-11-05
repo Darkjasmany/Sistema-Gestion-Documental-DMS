@@ -7,6 +7,7 @@ import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 import { TramiteArchivo } from "./TramiteArchivo.model.js";
 import { TramiteObservacion } from "./TramiteObservacion.model.js";
 import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
+import { config } from "../config/parametros.config.js";
 
 export const Tramite = sequelize.define(
   "tramite",
@@ -180,7 +181,8 @@ Tramite.addHook("beforeValidate", async (tramite) => {
 
   tramite.numeroTramite = lastTramite
     ? lastTramite.numeroTramite + 1
-    : process.env.TRAMITE;
+    : config.TRAMITE;
+  // : process.env.TRAMITE;
   // :1; // Iniciar en 1 si no hay registros
 });
 
