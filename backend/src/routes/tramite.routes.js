@@ -6,6 +6,7 @@ import { upload } from "../config/multer.config.js"; // Importamos la configurac
 import * as tramiteController from "../controllers/tramite.controller.js";
 import * as tramiteCoordinador from "../controllers/tramiteCoordinador.controller.js";
 import * as tramiteRevisor from "../controllers/tramiteRevisor.controller.js";
+import { config } from "../config/parametros.config.js";
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router
   // upload.array('archivo', cantidadMáxima):'archivo' es el campo esperado y 5 es el máximo de archivos permitidos
   .post(
     checkAuth,
-    upload.array("archivo", process.env.MAX_UPLOAD_FILES), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
+    upload.array("archivo", config.MAX_UPLOAD_FILES), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
     tramiteController.agregarTramite
   )
   .get(checkAuth, tramiteController.listarTramitesUsuario);
@@ -42,7 +43,7 @@ router.put(
   "/:id/subir-archivos",
   checkAuth,
   validarCantidadArchivos, // Middleware que valida que no se pasen de 3 archivos
-  upload.array("archivo", process.env.MAX_UPLOAD_FILES),
+  upload.array("archivo", config.MAX_UPLOAD_FILES),
   tramiteController.subirArchivos
 );
 
@@ -82,7 +83,7 @@ router.put(
   checkAuth,
   checkRole("COORDINADOR"),
   validarCantidadArchivos, // Middleware que valida que no se pasen de 3 archivos
-  upload.array("archivo", process.env.MAX_UPLOAD_FILES),
+  upload.array("archivo", config.MAX_UPLOAD_FILES),
   tramiteController.subirArchivos
 );
 

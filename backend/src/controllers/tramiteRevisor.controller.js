@@ -78,7 +78,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
   const {
-    numeroOficioDespacho,
+    // numeroOficioDespacho,
     departamentoDestinatarioId,
     destinatarioId,
     referenciaTramite,
@@ -87,8 +87,8 @@ export const actualizarTramiteRevisor = async (req, res) => {
   } = req.body;
 
   if (
-    !numeroOficioDespacho ||
-    numeroOficioDespacho.trim() === "" ||
+    // !numeroOficioDespacho ||
+    // numeroOficioDespacho.trim() === "" ||
     !departamentoDestinatarioId ||
     !destinatarioId ||
     !observacion ||
@@ -122,7 +122,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
     return res.status(400).json({ error: mensaje });
   }
 
-  const numeroOficio = Tramite.findOne({
+  const numeroOficio = await Tramite.findOne({
     where: {
       numeroOficioDespacho,
     },
