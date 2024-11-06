@@ -50,7 +50,7 @@ export const agregarParametros = async (req, res) => {
       clave,
       valor,
       descripcion,
-      usuarioCreacionId: req.usuario.id,
+      usuario_creacion: req.usuario.id,
     });
 
     res.json({ message: "Parametro agregado correctamente" });

@@ -2,9 +2,9 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.config.js";
 
 export const TramiteObservacion = sequelize.define(
-  "tramiteObservacion",
+  "tramite_observacion",
   {
-    tramiteId: {
+    tramite_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -16,7 +16,7 @@ export const TramiteObservacion = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    usuarioCreacionId: {
+    usuario_creacion: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -24,14 +24,14 @@ export const TramiteObservacion = sequelize.define(
         key: "id",
       },
     },
-    fechaCreacion: {
+    fecha_creacion: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: false,
     },
   },
   {
-    tableName: "tramiteObservacion",
+    tableName: "tramite_observacion",
     timestamps: false,
     hooks: {
       beforeSave: (TramiteObservacion) => {

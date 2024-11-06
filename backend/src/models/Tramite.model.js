@@ -12,7 +12,7 @@ import { config } from "../config/parametros.config.js";
 export const Tramite = sequelize.define(
   "tramite",
   {
-    numeroTramite: {
+    numero_tramite: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
@@ -25,7 +25,7 @@ export const Tramite = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    departamentoRemitenteId: {
+    departamento_remitente: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -33,7 +33,7 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
-    remitenteId: {
+    remitente_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -41,7 +41,7 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
-    usuarioCreacionId: {
+    usuario_creacion: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -49,7 +49,7 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
-    usuarioActualizacionId: {
+    usuario_actualizacion: {
       type: DataTypes.BIGINT,
       allowNull: true,
       references: {
@@ -57,7 +57,7 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
-    departamentoTramiteId: {
+    departamento_tramite: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -95,54 +95,54 @@ export const Tramite = sequelize.define(
       allowNull: false,
       defaultValue: true,
     },
-    fechaDocumento: {
+    fecha_documento: {
       type: DataTypes.DATEONLY,
       defaultValue: DataTypes.NOW,
       validate: {
         isDate: true, // Valida que sea una fecha válida
       },
     },
-    fechaMaximaContestacion: {
+    fecha_contestacion: {
       type: DataTypes.DATEONLY,
       allowNull: true, // El campo puede estar vacío inicialmente
       validate: {
         isDate: true, // Valida que sea una fecha válida
       },
     },
-    fechaDespacho: {
+    fecha_despacho: {
       type: DataTypes.DATEONLY,
       allowNull: true,
       validate: {
         isDate: true,
       },
     },
-    fechaEntregaFisica: {
+    fecha_entrega: {
       type: DataTypes.DATEONLY,
       allowNull: true,
       validate: {
         isDate: true,
       },
     },
-    referenciaTramite: {
+    referencia_tramite: {
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    secuencialMemo: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      unique: true,
-    },
-    numeroOficioDespacho: {
+    numero_oficio: {
       type: DataTypes.STRING(50),
       allowNull: true,
       unique: true,
     },
-    numeroOficioModificado: {
+    numero_oficio_modificado: {
       type: DataTypes.STRING,
       allowNull: true,
       unique: true,
     },
-    usuarioRevisorId: {
+    numero_tramite_modificado: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
+    usuario_revisor: {
       type: DataTypes.BIGINT,
       allowNull: true,
       references: {
@@ -157,15 +157,12 @@ export const Tramite = sequelize.define(
       beforeSave: (tramite) => {
         tramite.asunto = tramite.asunto.trim();
         tramite.descripcion = tramite.descripcion.trim();
-        if (tramite.numeroOficioDespacho) {
-          tramite.numeroOficioDespacho = tramite.numeroOficioDespacho.trim();
+        if (tramite.numero_oficio) {
+          tramite.numero_oficio = tramite.numero_oficio.trim();
         }
-        if (tramite.numeroTramiteEspecial) {
-          tramite.numeroTramiteEspecial = tramite.numeroTramiteEspecial.trim();
-        }
-        if (tramite.observacionEliminacion) {
-          tramite.observacionEliminacion =
-            tramite.observacionEliminacion.trim();
+        if (tramite.numero_oficio_modificado) {
+          tramite.numero_oficio_modificado =
+            tramite.numero_oficio_modificado.trim();
         }
       },
     },
@@ -176,11 +173,11 @@ export const Tramite = sequelize.define(
 //beforeValidate para el campo numeroTramite, garantizas que numeroTramite se establezca antes de que se valide el objeto, evitando que se produzca la violación de la restricción de no nulo.
 Tramite.addHook("beforeValidate", async (tramite) => {
   const lastTramite = await Tramite.findOne({
-    order: [["numeroTramite", "DESC"]],
+    order: [["numero_tramite", "DESC"]],
   });
 
-  tramite.numeroTramite = lastTramite
-    ? lastTramite.numeroTramite + 1
+  tramite.numero_tramite = lastTramite
+    ? lastTramite.numero_tramite + 1
     : config.TRAMITE;
   // : process.env.TRAMITE;
   // :1; // Iniciar en 1 si no hay registros
@@ -196,60 +193,60 @@ Tramite.addHook("beforeUpdate", async (tramite) => {
 // ** Relaciones
 // 1 tramite pertenece a 1 departamento remitente
 Tramite.belongsTo(Departamento, {
-  foreignKey: "departamentoRemitenteId", // campo en la tabla Tramite que contiene el ID del departamento
+  foreignKey: "departamento_remitente", // campo en la tabla Tramite que contiene el ID del departamento
   targetKey: "id", // campo en la tabla Departamento que se enlaza
   as: "departamentoRemitente", // Alias para esta relación
 });
 
 Tramite.hasMany(TramiteArchivo, {
-  foreignKey: "tramiteId",
+  foreignKey: "tramite_id",
   sourceKey: "id",
   as: "tramiteArchivos",
 });
 
 TramiteArchivo.belongsTo(Tramite, {
-  foreignKey: "tramiteId",
+  foreignKey: "tramite_id",
   targetKey: "id",
   as: "tramite",
 });
 
 Tramite.hasMany(TramiteObservacion, {
-  foreignKey: "tramiteId",
+  foreignKey: "tramite_id",
   sourceKey: "id",
   as: "tramiteObservaciones",
 });
 
 TramiteObservacion.belongsTo(Tramite, {
-  foreignKey: "tramiteId",
+  foreignKey: "tramite_id",
   targetKey: "id",
   as: "observaciones",
 });
 
 TramiteEliminacion.belongsTo(Tramite, {
-  foreignKey: "tramiteId",
+  foreignKey: "tramite_id",
   targetKey: "id",
 });
 
 TramiteHistorialEstado.belongsTo(Tramite, {
-  foreignKey: "tramiteId",
+  foreignKey: "tramite_id",
   targetKey: "id",
 });
 
 TramiteAsignacion.belongsTo(Tramite, {
-  foreignKey: "tramiteId",
+  foreignKey: "tramite_id",
   targetKey: "id",
 });
 
 // 1 departamento remitente puede tener muchos tramites
 Departamento.hasMany(Tramite, {
-  foreignKey: "departamentoRemitenteId",
+  foreignKey: "departamento_remitente",
   sourceKey: "id",
   as: "tramitesRemitidos", // Alias para la relación inversa (remitente)
 });
 
 // Relación entre Tramite y Empleado como remitente
 Tramite.belongsTo(Empleado, {
-  foreignKey: "remitenteId", // Este es el campo que almacena el id del remitente
+  foreignKey: "remitente_id", // Este es el campo que almacena el id del remitente
   targetKey: "id",
   as: "remitente", // Alias que usarás en las consultas
 });
@@ -264,7 +261,7 @@ Tramite.belongsTo(Empleado, {
 
 // 1 Tramite puede tener 1 departamento asigado del usuario de creacion
 Tramite.belongsTo(Departamento, {
-  foreignKey: "departamentoTramiteId",
+  foreignKey: "departamento_tramite",
   targetKey: "id",
   as: "departamentoUsuarioCreacion",
 });

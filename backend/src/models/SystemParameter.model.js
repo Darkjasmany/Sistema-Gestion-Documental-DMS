@@ -17,7 +17,7 @@ export const ParametroSistema = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    usuarioCreacionId: {
+    usuario_creacion: {
       type: DataTypes.BIGINT,
       references: {
         model: "usuario",
@@ -25,7 +25,7 @@ export const ParametroSistema = sequelize.define(
       },
       allowNull: false,
     },
-    usuarioActualizacionId: {
+    usuario_actualizacion: {
       type: DataTypes.BIGINT,
       references: {
         model: "usuario",
@@ -36,5 +36,12 @@ export const ParametroSistema = sequelize.define(
   },
   {
     tableName: "sis_parametros",
+    hooks: {
+      beforeSave: (Parametro) => {
+        Parametro.clave = Parametro.clave.trim();
+        Parametro.valor = Parametro.valor.trim();
+        Parametro.descripcion = Parametro.descripcion.trim();
+      },
+    },
   }
 );

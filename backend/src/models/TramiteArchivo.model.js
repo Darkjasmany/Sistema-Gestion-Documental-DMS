@@ -2,13 +2,13 @@ import { sequelize } from "../config/db.config.js";
 import { DataTypes } from "sequelize";
 
 export const TramiteArchivo = sequelize.define(
-  "tramiteArchivo",
+  "tramite_archivo",
   {
-    fileName: {
+    file_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    originalName: {
+    original_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -24,7 +24,7 @@ export const TramiteArchivo = sequelize.define(
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    tramiteId: {
+    tramite_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -32,7 +32,7 @@ export const TramiteArchivo = sequelize.define(
         key: "id",
       },
     },
-    usuarioCreacionId: {
+    usuario_creacion: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -42,6 +42,6 @@ export const TramiteArchivo = sequelize.define(
     },
   },
   {
-    tableName: "tramiteArchivo",
+    tableName: "tramite_archivo",
   }
 );

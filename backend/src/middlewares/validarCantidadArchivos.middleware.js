@@ -5,7 +5,7 @@ export const validarCantidadArchivos = async (req, res, next) => {
 
   // Busca todos los archivos asociados al trámite
   const archivosExistentes = await TramiteArchivo.findAll({
-    where: { tramiteId: id },
+    where: { tramite_id: id },
   });
 
   // Si ya tiene 3 archivos, no permite subir más

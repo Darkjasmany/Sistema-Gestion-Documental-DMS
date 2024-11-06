@@ -4,9 +4,9 @@ import { Departamento } from "./Departamento.model.js";
 import { Empleado } from "./Empleado.model.js";
 
 export const TramiteDestinatario = sequelize.define(
-  "tramiteDestinatario",
+  "tramite_destinatario",
   {
-    tramiteId: {
+    tramite_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -14,7 +14,7 @@ export const TramiteDestinatario = sequelize.define(
         key: "id",
       },
     },
-    departamentoDestinatarioId: {
+    departamento_destinatario: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -22,7 +22,7 @@ export const TramiteDestinatario = sequelize.define(
         key: "id",
       },
     },
-    destinatarioId: {
+    destinatario_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -35,7 +35,7 @@ export const TramiteDestinatario = sequelize.define(
       allowNull: false,
       defaultValue: true,
     },
-    usuarioCreacionId: {
+    usuario_creacion: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -45,38 +45,38 @@ export const TramiteDestinatario = sequelize.define(
     },
   },
   {
-    tableName: "tramiteDestinatario",
+    tableName: "tramite_destinatario",
   }
 );
 
 // 1 tramite es despachado a 1 departamento destino
 TramiteDestinatario.belongsTo(Departamento, {
-  foreignKey: "departamentoDestinatarioId",
+  foreignKey: "departamento_destinatario",
   targetKey: "id",
   as: "departamentoDestinatario", // Alias para la relación destino
 });
 
 TramiteDestinatario.hasMany(Departamento, {
-  foreignKey: "departamentoDestinatarioId",
+  foreignKey: "departamento_destinatario",
   sourceKey: "id",
 });
 
 // 1 departamento destino puede tener muchos tramitesDestinarios
 Departamento.hasMany(TramiteDestinatario, {
-  foreignKey: "departamentoDestinatarioId",
+  foreignKey: "departamento_destinatario",
   sourceKey: "id",
   as: "tramitesRecibidos", // Alias para la relación inversa (destinatario)
 });
 
 // Relación entre Tramite y Empleado como destinatario
 TramiteDestinatario.belongsTo(Empleado, {
-  foreignKey: "destinatarioId", // Este es el campo que almacena el id del destinatario
+  foreignKey: "destinatario_id", // Este es el campo que almacena el id del destinatario
   targetKey: "id",
   as: "destinatario", // Alias para el destinatario en las consultas
 });
 
 Empleado.hasMany(TramiteDestinatario, {
-  foreignKey: "destinatarioId", // Este es el campo que almacena el id del destinatario
+  foreignKey: "destinatario_id", // Este es el campo que almacena el id del destinatario
   sourceKey: "id",
   as: "tramiteDestinatario",
 });

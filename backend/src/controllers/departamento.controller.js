@@ -22,7 +22,7 @@ export const agregarDepartamento = async (req, res) => {
   try {
     const departamentoGuardado = await Departamento.create({
       nombre,
-      coordinadorId: coordinadorId,
+      coordinador_id: coordinadorId,
     });
 
     res.json(departamentoGuardado);
@@ -73,8 +73,8 @@ export const actualizarDepartamento = async (req, res) => {
       return res.status(400).json({ message: "Departamento no válido" });
 
     departamentoActualizado.nombre = nombre || departamentoActualizado.nombre;
-    departamentoActualizado.coordinadorId =
-      coordinadorId || departamentoActualizado.coordinadorId;
+    departamentoActualizado.coordinador_id =
+      coordinadorId || departamentoActualizado.coordinador_id;
 
     await departamentoActualizado.save();
 

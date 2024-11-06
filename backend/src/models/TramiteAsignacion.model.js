@@ -2,9 +2,9 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.config.js";
 
 export const TramiteAsignacion = sequelize.define(
-  "tramiteAsignacion",
+  "tramite_asignacion",
   {
-    tramiteId: {
+    tramite_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -12,7 +12,7 @@ export const TramiteAsignacion = sequelize.define(
         key: "id",
       },
     },
-    usuarioRevisorId: {
+    usuario_revisor: {
       type: DataTypes.BIGINT,
       references: {
         model: "usuario",
@@ -20,14 +20,14 @@ export const TramiteAsignacion = sequelize.define(
       },
       allowNull: false,
     },
-    fechaAsignacion: {
+    fecha_asignacion: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: false,
     },
   },
   {
-    tableName: "tramiteAsignacion",
+    tableName: "tramite_asignacion",
     timestamps: false,
   }
 );

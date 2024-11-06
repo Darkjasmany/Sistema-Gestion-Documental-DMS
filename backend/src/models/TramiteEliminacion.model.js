@@ -1,11 +1,10 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.config.js";
-import { Tramite } from "./Tramite.model.js";
 
 export const TramiteEliminacion = sequelize.define(
-  "tramiteEliminacion",
+  "tramite_eliminacion",
   {
-    tramiteId: {
+    tramite_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
@@ -13,7 +12,7 @@ export const TramiteEliminacion = sequelize.define(
         key: "id",
       },
     },
-    usuarioEliminacionId: {
+    usuario_eliminacion: {
       type: DataTypes.BIGINT,
       allowNull: true,
       references: {
@@ -21,11 +20,11 @@ export const TramiteEliminacion = sequelize.define(
         key: "id",
       },
     },
-    motivoEliminacion: {
+    motivo_eliminacion: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    fechaEliminacion: {
+    fecha_eliminacion: {
       type: DataTypes.DATE,
       allowNull: true,
       validate: {
@@ -34,12 +33,12 @@ export const TramiteEliminacion = sequelize.define(
     },
   },
   {
-    tableName: "tramiteEliminacion",
+    tableName: "tramite_eliminacion",
     timestamps: false,
     hooks: {
       beforeSave: (TramiteEliminacion) => {
-        TramiteEliminacion.motivoEliminacion =
-          TramiteEliminacion.motivoEliminacion.trim();
+        TramiteEliminacion.motivo_eliminacion =
+          TramiteEliminacion.motivo_eliminacion.trim();
       },
     },
   }

@@ -30,7 +30,7 @@ export const obtenerTramitesPorEstado = async (req, res) => {
     const tramites = await Tramite.findAll({
       where: {
         estado,
-        departamentoTramiteId: req.usuario.departamentoId,
+        departamento_tramite: req.usuario.departamento_id,
         activo: true,
       },
       attributes: config.attributes,
@@ -62,15 +62,15 @@ export const obtenerTramite = async (req, res) => {
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
     if (
-      tramite.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+      tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
     )
       return res.status(403).json({
         message: "Acción no válida",
       });
 
     const archivos = await TramiteArchivo.findAll({
-      where: { tramiteId: id },
+      where: { tramite_id: id },
     });
 
     res.json({ tramite, archivos });
@@ -133,8 +133,8 @@ export const actualizarTramite = async (req, res) => {
     }
 
     if (
-      tramiteActualizar.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+      tramiteActualizar.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
     ) {
       await transaction.rollback();
       return res.status(403).json({
@@ -153,23 +153,23 @@ export const actualizarTramite = async (req, res) => {
     ] = await Promise.all([
       Departamento.findByPk(departamentoRemitenteId),
       Empleado.findOne({
-        where: { id: remitenteId, departamentoId: departamentoRemitenteId },
+        where: { id: remitenteId, departamento_id: departamentoRemitenteId },
       }),
       Departamento.findByPk(departamentoDestinatarioId),
       Empleado.findOne({
         where: {
           id: destinatarioId,
-          departamentoId: departamentoDestinatarioId,
+          departamento_id: departamentoDestinatarioId,
         },
       }),
       Tramite.findOne({
         where: {
           [Op.or]: [
             numeroTramiteModificado
-              ? { numeroTramite: numeroTramiteModificado }
+              ? { numero_tramite: numeroTramiteModificado }
               : {},
             numeroTramiteModificado
-              ? { numeroTramiteModificado: numeroTramiteModificado }
+              ? { numero_tramite_modificado: numeroTramiteModificado }
               : {},
           ],
           id: { [Op.ne]: id },
@@ -177,7 +177,7 @@ export const actualizarTramite = async (req, res) => {
       }),
       Tramite.findOne({
         where: {
-          numeroOficioDespacho: { [Op.like]: numeroOficioDespacho },
+          numero_oficio: { [Op.like]: numeroOficioDespacho },
           id: { [Op.ne]: id },
         },
       }),
@@ -234,29 +234,29 @@ export const actualizarTramite = async (req, res) => {
     tramiteActualizar.asunto = asunto || tramiteActualizar.asunto;
     tramiteActualizar.descripcion =
       descripcion || tramiteActualizar.descripcion;
-    tramiteActualizar.departamentoRemitenteId =
-      departamentoRemitenteId || tramiteActualizar.departamentoRemitenteId;
-    tramiteActualizar.remitenteId =
-      remitenteId || tramiteActualizar.remitenteId;
+    tramiteActualizar.departamento_remitente =
+      departamentoRemitenteId || tramiteActualizar.departamento_remitente;
+    tramiteActualizar.remitente_id =
+      remitenteId || tramiteActualizar.remitente_id;
     tramiteActualizar.prioridad = prioridad || tramiteActualizar.prioridad;
-    tramiteActualizar.fechaDocumento =
-      fechaDocumento || tramiteActualizar.fechaDocumento;
-    tramiteActualizar.referenciaTramite =
-      referenciaTramite || tramiteActualizar.referenciaTramite;
-    tramiteActualizar.numeroOficioDespacho =
-      numeroOficioDespacho || tramiteActualizar.numeroOficioDespacho;
-    tramiteActualizar.departamentoDestinatarioId =
-      departamentoDestinatarioId ||
-      tramiteActualizar.departamentoDestinatarioId;
-    tramiteActualizar.destinatarioId =
-      destinatarioId || tramiteActualizar.destinatarioId;
-    tramiteActualizar.fechaMaximaContestacion =
-      fechaMaximaContestacion || tramiteActualizar.fechaMaximaContestacion;
-    tramiteActualizar.observacionRevisor =
-      observacionRevisor || tramiteActualizar.observacionRevisor;
-    tramiteActualizar.numeroTramiteModificado =
-      numeroTramiteModificado || tramiteActualizar.numeroTramiteModificado;
-    tramiteActualizar.usuarioActualizacionId = req.usuario.id;
+    tramiteActualizar.fecha_documento =
+      fechaDocumento || tramiteActualizar.fecha_documento;
+    tramiteActualizar.referencia_tramite =
+      referenciaTramite || tramiteActualizar.referencia_tramite;
+    tramiteActualizar.numero_oficio =
+      numeroOficioDespacho || tramiteActualizar.numero_oficio;
+    // tramiteActualizar.departamentoDestinatarioId =
+    //   departamentoDestinatarioId ||
+    //   tramiteActualizar.departamentoDestinatarioId;
+    // tramiteActualizar.destinatarioId =
+    //   destinatarioId || tramiteActualizar.destinatarioId;
+    tramiteActualizar.fecha_contestacion =
+      fechaMaximaContestacion || tramiteActualizar.fecha_contestacion;
+    // tramiteActualizar.observacionRevisor =
+    //   observacionRevisor || tramiteActualizar.observacionRevisor;
+    tramiteActualizar.numero_tramite_modificado =
+      numeroTramiteModificado || tramiteActualizar.numero_tramite_modificado;
+    tramiteActualizar.usuario_actualizacion = req.usuario.id;
 
     // Guarda el trámite actualizado
     await tramiteActualizar.save({ transaction });
@@ -294,8 +294,8 @@ export const subirArchivos = async (req, res) => {
   }
 
   if (
-    tramite.departamentoTramiteId.toString() !==
-    req.usuario.departamentoId.toString()
+    tramite.departamento_tramite.toString() !==
+    req.usuario.departamento_id.toString()
   ) {
     borrarArchivosTemporales(req.files);
     return res.status(403).json({
@@ -304,7 +304,7 @@ export const subirArchivos = async (req, res) => {
   }
 
   const archivoExistentes = await TramiteArchivo.findAll({
-    where: { tramiteId: id },
+    where: { tramite_id: id },
   });
 
   const archivosNuevos = req.files ? req.files.length() : 0;
@@ -320,13 +320,13 @@ export const subirArchivos = async (req, res) => {
     await Promise.all(
       req.files.map(async (file) => {
         await TramiteArchivo.create({
-          fileName: file.filename,
-          originalName: file.originalname,
+          file_name: file.filename,
+          original_name: file.originalname,
           ruta: file.path,
           tipo: file.mimetype.split("/")[1],
           size: file.size,
-          tramiteId: tramite.id,
-          usuarioCreacionId: req.usuario.id,
+          tramite_id: tramite.id,
+          usuario_creacion: req.usuario.id,
         });
       })
     );
@@ -344,8 +344,8 @@ export const eliminarArchivos = async (req, res) => {
     return res.status(404).json({ message: "Trámite no encontrado" });
 
   if (
-    tramite.departamentoTramiteId.toString() !==
-    req.usuario.departamentoId.toString()
+    tramite.departamento_tramite.toString() !==
+    req.usuario.departamento_id.toString()
   )
     return res.status(403).json({
       message: "Acción no válida",
@@ -367,7 +367,7 @@ export const eliminarArchivos = async (req, res) => {
       .json({ message: "Los archivos enviados no son válidos" });
 
   const archivosAEliminar = await TramiteArchivo.findAll({
-    where: { tramiteId: id, id: nuevoArrayEliminar },
+    where: { tramite_id: id, id: nuevoArrayEliminar },
   });
   if (archivosAEliminar.length === 0)
     return res.status(400).json({ message: "Archivos no encontrados" });
@@ -389,22 +389,22 @@ export const eliminarTramite = async (req, res) => {
     if (!tramite) return res.status(400).json({ message: "Accion no valida" });
 
     if (
-      tramite.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+      tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
     )
       return res.status(403).json({
         message: "Acción no válida",
       });
 
     const tramiteArchivos = await TramiteArchivo.findAll({
-      where: { tramiteId: id },
+      where: { tramite_id: id },
     });
 
-    await TramiteHistorialEstado.destroy({ where: { tramiteId: id } });
+    await TramiteHistorialEstado.destroy({ where: { tramite_id: id } });
 
     await TramiteAsignacion.destroy({ where: { tramiteId: id } });
 
-    await TramiteArchivo.destroy({ where: { tramiteId: id } });
+    await TramiteArchivo.destroy({ where: { tramite_id: id } });
 
     await Tramite.destroy({ where: { id } });
 
@@ -437,8 +437,8 @@ export const eliminadoLogicoTramite = async (req, res) => {
     }
 
     if (
-      tramite.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+      tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
     ) {
       await transaction.rollback();
       return res.status(403).json({
@@ -461,10 +461,10 @@ export const eliminadoLogicoTramite = async (req, res) => {
 
     await TramiteEliminacion.create(
       {
-        tramiteId: id,
-        usuarioEliminacionId: req.usuario.id,
-        motivoEliminacion: observacion,
-        fechaEliminacion: Date.now(),
+        tramite_id: id,
+        usuario_eliminacion: req.usuario.id,
+        motivo_eliminacion: observacion,
+        fecha_eliminacion: Date.now(),
       },
       { transaction }
     );
@@ -523,8 +523,8 @@ export const asignarOReasignarRevisor = async (req, res) => {
     }
 
     if (
-      tramiteAsignar.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+      tramiteAsignar.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
     ) {
       await transaction.rollback();
       return res.status(403).json({
@@ -539,36 +539,35 @@ export const asignarOReasignarRevisor = async (req, res) => {
     }
 
     const estadoAnterior = tramiteAsignar.estado;
-    const revisorAnterior = tramiteAsignar.usuarioRevisorId;
+    const revisorAnterior = tramiteAsignar.usuario_revisor;
 
     // Asignar Revisor
     if (tramiteAsignar.estado === "INGRESADO" && !revisorAnterior) {
-      tramiteAsignar.usuarioRevisorId =
-        usuarioRevisorId || tramiteAsignar.usuarioRevisorId;
+      tramiteAsignar.usuario_revisor =
+        usuarioRevisorId || tramiteAsignar.usuario_revisor;
       tramiteAsignar.prioridad = prioridad || tramiteAsignar.prioridad;
-      tramiteAsignar.referenciaTramite =
-        referenciaTramite || tramiteAsignar.referenciaTramite;
-      tramiteAsignar.fechaMaximaContestacion =
-        fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
+      tramiteAsignar.referencia_tramite =
+        referenciaTramite || tramiteAsignar.referencia_tramite;
+      tramiteAsignar.fecha_contestacion =
+        fechaMaximaContestacion || tramiteAsignar.fecha_contestacion;
       tramiteAsignar.estado = "PENDIENTE";
-      tramiteAsignar.usuarioActualizacionId = req.usuario.id;
+      tramiteAsignar.usuario_actualizacion = req.usuario.id;
 
       await TramiteAsignacion.create(
         {
-          tramiteId: id,
-          usuarioRevisorId: usuarioRevisorId,
-          fechaAsignacion: new Date(),
-          // descripcion: observacionRevisor,
+          tramite_id: id,
+          usuario_revisor: usuarioRevisorId,
+          fecha_asignacion: new Date(),
         },
         { transaction }
       );
 
       await TramiteObservacion.create(
         {
-          tramiteId: id,
+          tramite_id: id,
           observacion: observacionRevisor,
-          usuarioCreacionId: req.usuario.id,
-          fechaCreacion: new Date(),
+          usuario_creacion: req.usuario.id,
+          fecha_creacion: new Date(),
         },
         { transaction }
       );
@@ -584,7 +583,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
     // Resignar Revisor
     else if (tramiteAsignar.estado === "PENDIENTE" && revisorAnterior) {
       if (
-        tramiteAsignar.usuarioRevisorId.toString() ===
+        tramiteAsignar.usuario_revisor.toString() ===
         usuarioRevisorId.toString()
       ) {
         return res.status(400).json({
@@ -592,31 +591,30 @@ export const asignarOReasignarRevisor = async (req, res) => {
         });
       }
 
-      tramiteAsignar.usuarioRevisorId =
-        usuarioRevisorId || tramiteAsignar.usuarioRevisorId;
+      tramiteAsignar.usuario_revisor =
+        usuarioRevisorId || tramiteAsignar.usuario_revisor;
       tramiteAsignar.prioridad = prioridad || tramiteAsignar.prioridad;
-      tramiteAsignar.referenciaTramite =
-        referenciaTramite || tramiteAsignar.referenciaTramite;
-      tramiteAsignar.fechaMaximaContestacion =
-        fechaMaximaContestacion || tramiteAsignar.fechaMaximaContestacion;
-      tramiteAsignar.usuarioActualizacionId = req.usuario.id;
+      tramiteAsignar.referencia_tramite =
+        referenciaTramite || tramiteAsignar.referencia_tramite;
+      tramiteAsignar.fecha_contestacion =
+        fechaMaximaContestacion || tramiteAsignar.fecha_contestacion;
+      tramiteAsignar.usuario_actualizacion = req.usuario.id;
 
       await TramiteAsignacion.create(
         {
-          tramiteId: id,
-          usuarioRevisorId: usuarioRevisorId,
-          fechaAsignacion: new Date(),
-          // descripcion: observacionRevisor,
+          tramite_id: id,
+          usuario_revisor: usuarioRevisorId,
+          fecha_asignacion: new Date(),
         },
         { transaction }
       );
 
       await TramiteObservacion.create(
         {
-          tramiteId: id,
+          tramite_id: id,
           observacion: observacionRevisor,
-          usuarioCreacionId: req.usuario.id,
-          fechaCreacion: new Date(),
+          usuario_creacion: req.usuario.id,
+          fecha_creacion: new Date(),
         },
         { transaction }
       );

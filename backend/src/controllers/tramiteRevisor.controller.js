@@ -20,8 +20,8 @@ export const listarTramitesRevisor = async (req, res) => {
 
     const tramite = await Tramite.findAll({
       where: {
-        departamentoTramiteId: req.usuario.departamentoId,
-        usuarioRevisorId: req.usuario.id,
+        departamento_tramite: req.usuario.departamento_id,
+        usuario_revisor: req.usuario.id,
         estado,
         activo: true,
       },
@@ -54,15 +54,17 @@ export const obtenerTramiteRevisor = async (req, res) => {
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
     if (
-      tramite.usuarioRevisorId.toString() !== req.usuario.id.toString() ||
-      tramite.departamentoTramiteId.toString() !==
-        req.usuario.departamentoId.toString()
+      tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
+      tramite.departamento_tramite.toString() !==
+        req.usuario.departamento_id.toString()
     )
       return res
         .status(404)
         .json({ message: "El trámite seleccionado no te pertenece" });
 
-    const archivos = await TramiteArchivo.findAll({ where: { tramiteId: id } });
+    const archivos = await TramiteArchivo.findAll({
+      where: { tramite_id: id },
+    });
 
     res.json({ tramite, archivos });
   } catch (error) {
@@ -78,7 +80,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
   const {
-    // numeroOficioDespacho,
+    numeroOficioDespacho,
     departamentoDestinatarioId,
     destinatarioId,
     referenciaTramite,
@@ -87,8 +89,8 @@ export const actualizarTramiteRevisor = async (req, res) => {
   } = req.body;
 
   if (
-    // !numeroOficioDespacho ||
-    // numeroOficioDespacho.trim() === "" ||
+    !numeroOficioDespacho ||
+    numeroOficioDespacho.trim() === "" ||
     !departamentoDestinatarioId ||
     !destinatarioId ||
     !observacion ||
@@ -108,9 +110,9 @@ export const actualizarTramiteRevisor = async (req, res) => {
   }
 
   if (
-    tramite.usuarioRevisorId.toString() !== req.usuario.id.toString() ||
-    tramite.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+    tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
   ) {
     return res
       .status(404)
@@ -124,7 +126,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
   const numeroOficio = await Tramite.findOne({
     where: {
-      numeroOficioDespacho,
+      numero_oficio: numeroOficioDespacho,
     },
   });
 
@@ -134,23 +136,23 @@ export const actualizarTramiteRevisor = async (req, res) => {
       .json({ message: "El numero de Memo ya esta siendo utilizado" });
   }
 
-  tramite.numeroOficioDespacho = numeroOficioDespacho;
-  tramite.referenciaTramite = referenciaTramite || tramite.referenciaTramite;
-  tramite.fechaDespacho = fechaDespacho;
+  tramite.numero_oficio = numeroOficioDespacho;
+  tramite.referencia_tramite = referenciaTramite || tramite.referencia_tramite;
+  tramite.fecha_despacho = fechaDespacho;
   await tramite.save();
 
   await TramiteDestinatario.create({
-    tramiteId: id,
-    departamentoDestinatarioId,
-    destinatarioId,
-    usuarioCreacionId: req.usuario.id,
+    tramite_id: id,
+    departamento_destinatario: departamentoDestinatarioId,
+    destinatario_id: destinatarioId,
+    usuario_creacion: req.usuario.id,
   });
 
   await TramiteObservacion.create({
-    tramiteId: id,
+    tramite_id: id,
     observacion,
-    usuarioCreacionId: req.usuario.id,
-    fechaCreacion: Date.now(),
+    usuario_creacion: req.usuario.id,
+    fecha_creacion: Date.now(),
   });
 
   console.log(req.body);

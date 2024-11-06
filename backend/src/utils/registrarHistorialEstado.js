@@ -10,11 +10,11 @@ export const registrarHistorialEstado = async (
   try {
     await TramiteHistorialEstado.create(
       {
-        tramiteId,
-        estadoAnterior,
-        estadoActual,
-        fechaCambio: new Date(),
-        usuarioId,
+        tramite_id: tramiteId,
+        estado_anterior: estadoAnterior,
+        estado_actual: estadoActual,
+        fecha_cambio: new Date(),
+        usuario_creacion: usuarioId,
       },
       {
         transaction,

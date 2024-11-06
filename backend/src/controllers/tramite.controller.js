@@ -9,6 +9,7 @@ import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
+import { config } from "../config/parametros.config.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -45,7 +46,7 @@ export const agregarTramite = async (req, res) => {
   }
 
   const archivosNuevos = req.files ? req.files.length : 0;
-  if (archivosNuevos > process.env.MAX_UPLOAD_FILES)
+  if (archivosNuevos > config.MAX_UPLOAD_FILES)
     return res
       .status(400)
       .json({ message: "Solo puedes tener 3 archivos subidos" });
@@ -63,7 +64,7 @@ export const agregarTramite = async (req, res) => {
   const empleadoExiste = await Empleado.findOne({
     where: {
       id: remitenteId,
-      departamentoId: departamentoRemitenteId,
+      departamento_id: departamentoRemitenteId,
     },
   });
   if (!empleadoExiste) {
@@ -77,25 +78,25 @@ export const agregarTramite = async (req, res) => {
     const tramiteGuardado = await Tramite.create({
       asunto,
       descripcion,
-      departamentoRemitenteId,
-      remitenteId,
+      departamento_remitente: departamentoRemitenteId,
+      remitente_id: remitenteId,
       prioridad: prioridad || undefined,
-      fechaDocumento,
-      referenciaTramite,
-      usuarioCreacionId: req.usuario.id,
-      departamentoTramiteId: req.usuario.departamentoId,
+      fecha_documento: fechaDocumento,
+      referencia_tramite: referenciaTramite,
+      usuario_creacion: req.usuario.id,
+      departamento_tramite: req.usuario.departamento_id,
     });
 
     await Promise.all(
       req.files.map(async (file) => {
         await TramiteArchivo.create({
-          fileName: file.filename,
-          originalName: file.originalname,
+          file_name: file.filename,
+          original_name: file.originalname,
           ruta: file.path,
           tipo: file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
           size: file.size, // Guardar en bytes (número entero)
-          tramiteId: tramiteGuardado.id,
-          usuarioCreacionId: req.usuario.id,
+          tramite_id: tramiteGuardado.id,
+          usuario_creacion: req.usuario.id,
         });
       })
     );
@@ -110,22 +111,22 @@ export const listarTramitesUsuario = async (req, res) => {
   try {
     const tramites = await Tramite.findAll({
       where: {
-        usuarioCreacionId: req.usuario.id,
+        usuario_creacion: req.usuario.id,
         estado: "INGRESADO",
         activo: true,
       },
       attributes: [
-        "numeroTramite",
+        "numero_tramite",
         "asunto",
         "descripcion",
         "prioridad",
-        "fechaDocumento",
-        "referenciaTramite",
+        "fecha_documento",
+        "referencia_tramite",
         "createdAt",
         [
           // Conteo de archivos de cada trámite
           Sequelize.literal(
-            `(SELECT COUNT(*) FROM "tramiteArchivo" WHERE "tramiteArchivo"."tramiteId" = "tramite"."id")`
+            `(SELECT COUNT(*) FROM "tramite_archivo" WHERE "tramite_archivo"."tramite_id" = "tramite"."id")`
           ),
           "totalArchivosCargados",
         ],
@@ -148,7 +149,7 @@ export const listarTramitesUsuario = async (req, res) => {
           ],
         },
       ],
-      order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
+      order: [["numero_tramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
     });
 
     res.json(tramites);
@@ -173,16 +174,16 @@ export const obtenerTramite = async (req, res) => {
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
     if (
-      tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
-      tramite.departamentoTramiteId.toString() !==
-        req.usuario.departamentoId.toString()
+      tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
+      tramite.departamento_tramite.toString() !==
+        req.usuario.departamento_id.toString()
     )
       return res
         .status(403)
         .json({ message: "El trámite seleccionado no te pertenece" });
 
     const archivos = await TramiteArchivo.findAll({
-      where: { tramiteId: id },
+      where: { tramite_id: id },
     });
 
     res.json({
@@ -243,10 +244,10 @@ export const actualizarTramite = async (req, res) => {
     }
 
     if (
-      tramiteActualizado.usuarioCreacionId.toString() !==
+      tramiteActualizado.usuario_creacion.toString() !==
         req.usuario.id.toString() ||
-      tramiteActualizado.departamentoTramiteId.toString() !==
-        req.usuario.departamentoId.toString()
+      tramiteActualizado.departamento_tramite.toString() !==
+        req.usuario.departamento_id.toString()
     ) {
       await transaction.rollback();
       return res.status(403).json({ message: "Acción no válida" });
@@ -265,7 +266,7 @@ export const actualizarTramite = async (req, res) => {
     const remitenteExiste = await Empleado.findOne({
       where: {
         id: remitenteId,
-        departamentoId: departamentoRemitenteId,
+        departamento_id: departamentoRemitenteId,
       },
     });
     if (!remitenteExiste) {
@@ -278,14 +279,14 @@ export const actualizarTramite = async (req, res) => {
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
     tramiteActualizado.descripcion = descripcion;
-    tramiteActualizado.departamentoRemitenteId = departamentoRemitenteId;
-    tramiteActualizado.remitenteId = remitenteId;
+    tramiteActualizado.departamento_remitente = departamentoRemitenteId;
+    tramiteActualizado.remitente_id = remitenteId;
     tramiteActualizado.prioridad = prioridad || tramiteActualizado.prioridad;
-    tramiteActualizado.fechaDocumento =
-      fechaDocumento || tramiteActualizado.fechaDocumento;
-    tramiteActualizado.referenciaTramite =
-      referenciaTramite || tramiteActualizado.referenciaTramite;
-    tramiteActualizado.usuarioActualizacionId = req.usuario.id;
+    tramiteActualizado.fecha_documento =
+      fechaDocumento || tramiteActualizado.fecha_documento;
+    tramiteActualizado.referencia_tramite =
+      referenciaTramite || tramiteActualizado.referencia_tramite;
+    tramiteActualizado.usuario_actualizacion = req.usuario.id;
 
     // Guardar cambios
     await tramiteActualizado.save({ transaction });
@@ -315,16 +316,16 @@ export const subirArchivos = async (req, res) => {
   }
 
   if (
-    tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
-    tramite.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+    tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
   ) {
     borrarArchivosTemporales(req.files);
     return res.status(403).json({ message: "Acción no válida" });
   }
 
   const archivosExistentes = await TramiteArchivo.findAll({
-    where: { tramiteId: id },
+    where: { tramite_id: id },
   });
 
   const archivosNuevos = req.files ? req.files.length : 0;
@@ -340,13 +341,13 @@ export const subirArchivos = async (req, res) => {
     await Promise.all(
       req.files.map(async (file) => {
         await TramiteArchivo.create({
-          fileName: file.filename,
-          originalName: file.originalname,
+          file_name: file.filename,
+          original_name: file.originalname,
           ruta: file.path,
           tipo: file.mimetype.split("/")[1],
           size: file.size,
-          tramiteId: tramite.id,
-          usuarioCreacionId: req.usuario.id,
+          tramite_id: tramite.id,
+          usuario_creacion: req.usuario.id,
         });
       })
     );
@@ -367,9 +368,9 @@ export const eliminarArchivos = async (req, res) => {
     return res.status(404).json({ message: "Trámite no encontrado" });
 
   if (
-    tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
-    tramite.departamentoTramiteId.toString() !==
-      req.usuario.departamentoId.toString()
+    tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
   )
     return res.status(403).json({ message: "Acción no válida" });
 
@@ -392,7 +393,7 @@ export const eliminarArchivos = async (req, res) => {
 
   // Buscar los archivos a eliminar en la base de datos
   const archivosAEliminar = await TramiteArchivo.findAll({
-    where: { tramiteId: id, id: nuevoArrayEliminar },
+    where: { tramite_id: id, id: nuevoArrayEliminar },
   });
   if (archivosAEliminar.length === 0)
     return res.status(400).json({ message: "Archivos no encontrados" });
@@ -418,17 +419,17 @@ export const eliminarTramite = async (req, res) => {
     if (!tramite)
       return res.status(404).json({ message: "Trámite no encontrado" });
 
-    if (tramite.usuarioCreacionId.toString() !== req.usuario.id.toString())
+    if (tramite.usuario_creacion.toString() !== req.usuario.id.toString())
       return res.status(403).json({ msg: "Acción no válida" });
 
     const tramiteArchivos = await TramiteArchivo.findAll({
-      where: { tramiteId: id },
+      where: { tramite_id: id },
     });
 
     // Eliminar el trámite y los archivos en la base de datos
     await Tramite.destroy({ where: { id } });
 
-    await TramiteArchivo.destroy({ where: { tramiteId: id } });
+    await TramiteArchivo.destroy({ where: { tramite_id: id } });
 
     // Eliminar los archivos físicamente
     borrarArchivos(tramiteArchivos);
@@ -459,9 +460,9 @@ export const eliminadoLogicoTramite = async (req, res) => {
     }
 
     if (
-      tramite.usuarioCreacionId.toString() !== req.usuario.id.toString() ||
-      tramite.departamentoTramiteId.toString() !==
-        req.usuario.departamentoId.toString()
+      tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
+      tramite.departamento_tramite.toString() !==
+        req.usuario.departamento_id.toString()
     ) {
       await transaction.rollback();
       return res.status(403).json({ msg: "Acción no válida" });
@@ -478,10 +479,10 @@ export const eliminadoLogicoTramite = async (req, res) => {
 
     await TramiteEliminacion.create(
       {
-        tramiteId: id,
-        usuarioEliminacionId: req.usuario.id,
-        motivoEliminacion: observacion,
-        fechaEliminacion: Date.now(),
+        tramite_id: id,
+        usuario_eliminacion: req.usuario.id,
+        motivo_eliminacion: observacion,
+        fecha_eliminacion: Date.now(),
       },
       {
         transaction,
