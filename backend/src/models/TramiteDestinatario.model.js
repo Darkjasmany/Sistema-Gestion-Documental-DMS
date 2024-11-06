@@ -50,16 +50,16 @@ export const TramiteDestinatario = sequelize.define(
 );
 
 // 1 tramite es despachado a 1 departamento destino
-TramiteDestinatario.belongsTo(Departamento, {
-  foreignKey: "departamento_destinatario",
-  targetKey: "id",
-  as: "departamentoDestinatario", // Alias para la relación destino
-});
+// TramiteDestinatario.belongsTo(Departamento, {
+//   foreignKey: "departamento_destinatario",
+//   targetKey: "id",
+//   as: "departamentoDestinatario", // Alias para la relación destino
+// });
 
-TramiteDestinatario.hasMany(Departamento, {
-  foreignKey: "departamento_destinatario",
-  sourceKey: "id",
-});
+// TramiteDestinatario.hasMany(Departamento, {
+//   foreignKey: "departamento_destinatario",
+//   sourceKey: "id",
+// });
 
 // 1 departamento destino puede tener muchos tramitesDestinarios
 Departamento.hasMany(TramiteDestinatario, {
