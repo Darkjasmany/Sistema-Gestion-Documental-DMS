@@ -2,7 +2,7 @@ import { Tramite } from "../models/Tramite.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
-
+import { generarNumeroMemo } from "../utils/generarNumeroMemo.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { validarFecha } from "../utils/validarFecha.js";
 
@@ -80,24 +80,20 @@ export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
   const {
-    numeroOficioDespacho,
+    // numeroOficioDespacho,
     departamentoDestinatarioId,
-    destinatarioId,
+    destinatarios,
     referenciaTramite,
     fechaDespacho,
     observacion,
   } = req.body;
 
-  // Recorrer el arreglo de Destinatarios y empezarlos a ingresar
-  console.log(destinatarioId);
-
-  return;
-
   if (
-    !numeroOficioDespacho ||
-    numeroOficioDespacho.trim() === "" ||
+    // !numeroOficioDespacho ||
+    // numeroOficioDespacho.trim() === "" ||
     !departamentoDestinatarioId ||
-    !destinatarioId ||
+    !destinatarios ||
+    destinatarios.length === 0 ||
     !observacion ||
     observacion.trim() === ""
   ) {
@@ -128,18 +124,21 @@ export const actualizarTramiteRevisor = async (req, res) => {
   if (!valido) {
     return res.status(400).json({ error: mensaje });
   }
-
+  /*
   const numeroOficio = await Tramite.findOne({
     where: {
       numero_oficio: numeroOficioDespacho,
     },
   });
-
   if (numeroOficio) {
     return res
       .status(409)
       .json({ message: "El numero de Memo ya esta siendo utilizado" });
   }
+*/
+  const numeroOficio = await generarNumeroMemo();
+  console.log(numeroOficio);
+  return;
 
   tramite.numero_oficio = numeroOficioDespacho;
   tramite.referencia_tramite = referenciaTramite || tramite.referencia_tramite;
