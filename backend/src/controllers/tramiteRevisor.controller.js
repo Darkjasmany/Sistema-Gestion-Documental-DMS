@@ -88,6 +88,11 @@ export const actualizarTramiteRevisor = async (req, res) => {
     observacion,
   } = req.body;
 
+  // Recorrer el arreglo de Destinatarios y empezarlos a ingresar
+  console.log(destinatarioId);
+
+  return;
+
   if (
     !numeroOficioDespacho ||
     numeroOficioDespacho.trim() === "" ||
@@ -139,7 +144,10 @@ export const actualizarTramiteRevisor = async (req, res) => {
   tramite.numero_oficio = numeroOficioDespacho;
   tramite.referencia_tramite = referenciaTramite || tramite.referencia_tramite;
   tramite.fecha_despacho = fechaDespacho;
+  tramite.estado = "POR_REVISAR";
   await tramite.save();
+
+  // Recorrer el arreglo de Destinatarios y empezarlos a ingresar
 
   await TramiteDestinatario.create({
     tramite_id: id,

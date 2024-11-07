@@ -45,6 +45,14 @@ export const agregarTramite = async (req, res) => {
     });
   }
 
+  // CONFIG es un objeto con los parámetros del sistema. '!'config verifica que config no sea null o undefined, Object.keys(config).length === 0 verifica que el objeto config tenga al menos una propiedad. Si el objeto está vacío, esta condición devolverá true.
+  if (!config || Object.keys(config).length === 0) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: "Parametros del sistema no cargados, comunicate con Sistemas",
+    });
+  }
+
   const archivosNuevos = req.files ? req.files.length : 0;
   if (archivosNuevos > config.MAX_UPLOAD_FILES)
     return res

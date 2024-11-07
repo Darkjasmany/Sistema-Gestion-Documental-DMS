@@ -23,5 +23,3 @@ export const Departamento = sequelize.define(
     },
   }
 );
-
-// ** Relaciones
