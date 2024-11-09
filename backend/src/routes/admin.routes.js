@@ -37,6 +37,16 @@ router
   .put(checkAuth, adminController.actualizarParametros)
   .delete(checkAuth, adminController.eliminarParametros);
 
+// Tramite Secuancual
+router
+  .route("/tramite-secuencia")
+  .get(checkAuth, adminController.cargarSecuencia)
+  .post(checkAuth, adminController.agregarSecuencia);
+
+router
+  .route("/tramite-secuencia/:id")
+  .put(checkAuth, adminController.actualizarSecuencia);
+
 export default router;
 
 // TODO, tengo que crear la funcionalidad para que el admin vea todos los usuarios confirmados, seleccione 1 y asigne departamento, asi mismo definir bien las rutas del admin en relacion a la creacion de departamentos y empleados, definir un modelo para los roles

@@ -1,5 +1,4 @@
 export const generarAno = () => {
-  const today = new Date();
-  const year = today.getFullYear();
+  const year = new Date().getFullYear();
   return year;
 };

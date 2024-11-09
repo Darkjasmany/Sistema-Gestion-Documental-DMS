@@ -1,3 +1,4 @@
+import { config } from "../config/parametros.config.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
@@ -138,6 +139,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
 */
   const numeroOficio = await generarNumeroMemo();
   console.log(numeroOficio);
+  console.log(config.MEMO);
   return;
 
   tramite.numero_oficio = numeroOficioDespacho;

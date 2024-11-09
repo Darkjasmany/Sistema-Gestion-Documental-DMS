@@ -1,5 +1,6 @@
 import { ParametroSistema } from "../models/SystemParameter.model.js";
 import { Op } from "sequelize";
+import { TramiteSecuencia } from "../models/TramiteSecuencia.model.js";
 
 // Tramites
 export const listarTodosLosTramites = async (req, res) => {
@@ -75,3 +76,30 @@ export const actualizarParametros = async (req, res) => {
 export const eliminarParametros = async (req, res) => {
   return res.send("Desde eliminar Parametros ADMIN");
 };
+
+export const cargarSecuencia = async (req, res) => {
+  try {
+    const secuencia = await TramiteSecuencia.findAll();
+    res.json(secuencia);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const agregarSecuencia = async (req, res) => {
+  const { tipo } = req.body;
+
+  if (!tipo || tipo.trim() === "")
+    return res.status(400).json({
+      message: "Identificador del secuencia es obligatorio",
+    });
+
+  try {
+    await TramiteSecuencia.create({ tipo });
+    res.json({ message: "Identificador creado correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const actualizarSecuencia = async (req, res) => {};

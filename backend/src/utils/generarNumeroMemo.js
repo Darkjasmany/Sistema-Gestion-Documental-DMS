@@ -1,15 +1,25 @@
-import { Tramite } from "../models/Tramite.model.js";
 import { config } from "../config/parametros.config.js";
+import { generarAno } from "./generarAno.js";
+import { TramiteSecuencia } from "../models/TramiteSecuencia.model.js";
 
 export const generarNumeroMemo = async () => {
-  // Obtenemos el último número de trámite de forma asíncrona
-  const lastTramite = await Tramite.findOne({
-    order: [["numero_oficio", "DESC"]],
+  const tipoOficio = "numero_oficio:";
+  const anioActual = generarAno();
+
+  let secuencia = await TramiteSecuencia.findOne({
+    where: { tipo: tipoOficio, anio: anioActual },
   });
 
-  const numeroMemo = lastTramite
-    ? lastTramite.numero_oficio + 1
-    : parseInt(config.MEMO);
-
-  return numeroMemo;
+  if (!secuencia) {
+    secuencia = await TramiteSecuencia.create({
+      tipo: tipoOficio,
+      anio: anioActual,
+      valor_actual: parseInt(config.MEMO),
+    });
+    return secuencia.valor_actual;
+  } else {
+    secuencia.valor_actual += 1;
+    await secuencia.save();
+    return secuencia.valor_actual;
+  }
 };
