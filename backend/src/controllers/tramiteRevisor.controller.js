@@ -1,9 +1,9 @@
-import { config } from "../config/parametros.config.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
-import { generarNumeroMemo } from "../utils/generarNumeroMemo.js";
+import { generarMemo } from "../utils/generarMemo.js";
+import { generarSecuencia } from "../utils/generarSecuencia.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { validarFecha } from "../utils/validarFecha.js";
 
@@ -137,9 +137,18 @@ export const actualizarTramiteRevisor = async (req, res) => {
       .json({ message: "El numero de Memo ya esta siendo utilizado" });
   }
 */
-  const numeroOficio = await generarNumeroMemo();
-  console.log(numeroOficio);
-  console.log(config.MEMO);
+
+  console.log(destinatarios.length);
+  let numeroMemo;
+  if (destinatarios.length > 1) {
+    numeroMemo = await generarMemo(true);
+  } else {
+    numeroMemo = await generarMemo();
+  }
+
+  console.log(numeroMemo);
+  // const numeroOficio = await generarSecuencia();
+  // console.log(numeroOficio);
   return;
 
   tramite.numero_oficio = numeroOficioDespacho;

@@ -1,17 +1,16 @@
-import { Tramite } from "../models/Tramite.model.js";
 import { generarAno } from "./generarAno.js";
-import { generarNumeroMemo } from "./generarNumeroMemo.js";
+import { generarSecuencia } from "./generarSecuencia.js";
 
-export const generarMemo = async (tipo) => {
+export const generarMemo = async (multiplesDestinatarios = false) => {
   const year = generarAno();
+  const numeroSecuencia = await generarSecuencia();
 
-  // Llamamos a generarNumeroMemo para obtener y almacenar el nuevo numeroMemo en la BD
-  const numeroMemo = await generarNumeroMemo();
+  const prefijo = multiplesDestinatarios ? "Memorando Circular" : "Memorando";
 
-  // Generamos el número completo según el tipo de trámite
-  if (tipo === "MEMO") {
-    return `Memorandum-SEC-${numeroMemo}-${year}`;
-  } else {
-    return `Circular-SEC-${numeroMemo}-${year}`;
-  }
+  const numeroMemo = `${prefijo}-SEC-${year}-${String(numeroSecuencia).padStart(
+    5,
+    "0"
+  )}`;
+
+  return numeroMemo;
 };

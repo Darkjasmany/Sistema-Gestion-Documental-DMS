@@ -2,7 +2,7 @@ import { config } from "../config/parametros.config.js";
 import { generarAno } from "./generarAno.js";
 import { TramiteSecuencia } from "../models/TramiteSecuencia.model.js";
 
-export const generarNumeroMemo = async () => {
+export const generarSecuencia = async () => {
   const tipoOficio = "numero_oficio:";
   const anioActual = generarAno();
 
