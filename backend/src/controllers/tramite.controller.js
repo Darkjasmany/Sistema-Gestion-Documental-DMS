@@ -24,6 +24,7 @@ export const agregarTramite = async (req, res) => {
     prioridad,
     fechaDocumento,
     referenciaTramite,
+    tramiteExterno,
   } = req.body;
 
   if (
@@ -49,15 +50,15 @@ export const agregarTramite = async (req, res) => {
   if (!config || Object.keys(config).length === 0) {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
-      message: "Parametros del sistema no cargados, comunicate con Sistemas",
+      message: "Parámetros del sistema no cargados, comunícate con Sistemas",
     });
   }
 
   const archivosNuevos = req.files ? req.files.length : 0;
   if (archivosNuevos > config.MAX_UPLOAD_FILES)
-    return res
-      .status(400)
-      .json({ message: "Solo puedes tener 3 archivos subidos" });
+    return res.status(400).json({
+      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
+    });
 
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
@@ -82,6 +83,9 @@ export const agregarTramite = async (req, res) => {
     });
   }
 
+  // validación para considerar si un tramite es interno o no, si no es undefined asigna false, si lo es true
+  const externo = tramiteExterno !== undefined ? true : false;
+
   try {
     const tramiteGuardado = await Tramite.create({
       asunto,
@@ -93,6 +97,7 @@ export const agregarTramite = async (req, res) => {
       referencia_tramite: referenciaTramite,
       usuario_creacion: req.usuario.id,
       departamento_tramite: req.usuario.departamento_id,
+      externo,
     });
 
     await Promise.all(
@@ -222,6 +227,7 @@ export const actualizarTramite = async (req, res) => {
       prioridad,
       fechaDocumento,
       referenciaTramite,
+      tramiteExterno,
     } = req.body;
 
     if (
@@ -284,6 +290,8 @@ export const actualizarTramite = async (req, res) => {
       });
     }
 
+    const externo = tramiteExterno !== undefined ? true : false;
+
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
     tramiteActualizado.descripcion = descripcion;
@@ -295,6 +303,7 @@ export const actualizarTramite = async (req, res) => {
     tramiteActualizado.referencia_tramite =
       referenciaTramite || tramiteActualizado.referencia_tramite;
     tramiteActualizado.usuario_actualizacion = req.usuario.id;
+    tramiteActualizado.externo = externo || tramiteActualizado.externo;
 
     // Guardar cambios
     await tramiteActualizado.save({ transaction });

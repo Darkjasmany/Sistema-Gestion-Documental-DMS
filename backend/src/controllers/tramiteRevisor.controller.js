@@ -138,6 +138,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
   }
 */
 
+  console.log(tramite);
   console.log(destinatarios.length);
   let numeroMemo;
   if (destinatarios.length > 1) {

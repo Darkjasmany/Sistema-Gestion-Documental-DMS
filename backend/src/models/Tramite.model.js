@@ -90,10 +90,10 @@ export const Tramite = sequelize.define(
         ],
       },
     },
-    activo: {
+    externo: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true,
+      defaultValue: false,
     },
     fecha_documento: {
       type: DataTypes.DATEONLY,
@@ -149,6 +149,11 @@ export const Tramite = sequelize.define(
         model: "usuario",
         key: "id",
       },
+    },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {
