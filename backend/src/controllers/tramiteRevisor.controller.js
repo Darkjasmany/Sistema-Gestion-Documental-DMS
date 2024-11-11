@@ -137,19 +137,40 @@ export const actualizarTramiteRevisor = async (req, res) => {
       .json({ message: "El numero de Memo ya esta siendo utilizado" });
   }
 */
-
-  console.log(tramite);
+  /*
+  console.log(tramite.externo);
   console.log(destinatarios.length);
   let numeroMemo;
-  if (destinatarios.length > 1) {
-    numeroMemo = await generarMemo(true);
+  let tipo;
+  if (tramite.externo) {
+    tipo = "Oficio";
+    if (destinatarios.length > 1) {
+      numeroMemo = await generarMemo(true, tipo);
+    } else {
+      numeroMemo = await generarMemo(tipo);
+    }
   } else {
-    numeroMemo = await generarMemo();
+    tipo = "Memorando";
+    if (destinatarios.length > 1) {
+      numeroMemo = await generarMemo(true, tipo);
+    } else {
+      numeroMemo = await generarMemo(tipo);
+    }
   }
+    */
+
+  console.log(tramite.externo);
+  console.log(destinatarios.length);
+
+  let numeroMemo;
+  const tipo = tramite.externo ? "Oficio" : "Memorando";
+  const multiplesDestinatarios = destinatarios.length > 1;
+
+  console.log(multiplesDestinatarios);
+  numeroMemo = await generarMemo(multiplesDestinatarios, tipo);
 
   console.log(numeroMemo);
-  // const numeroOficio = await generarSecuencia();
-  // console.log(numeroOficio);
+
   return;
 
   tramite.numero_oficio = numeroOficioDespacho;
