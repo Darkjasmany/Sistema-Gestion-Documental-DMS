@@ -123,10 +123,13 @@ router
 router
   .route("/revisor/tramites/:id")
   .get(checkAuth, checkRole("REVISOR"), tramiteRevisor.obtenerTramiteRevisor)
-  .put(
-    checkAuth,
-    checkRole("REVISOR"),
-    tramiteRevisor.actualizarTramiteRevisor
-  );
+  .put(checkAuth, checkRole("REVISOR"), tramiteRevisor.completarTramiteRevisor);
+
+router.put(
+  "/revisor/tramites/:id/actualizar",
+  checkAuth,
+  checkRole("REVISOR"),
+  tramiteRevisor.actualizarTramiteRevisor
+);
 
 export default router;

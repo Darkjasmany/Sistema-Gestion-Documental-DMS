@@ -1,3 +1,4 @@
+import { sequelize } from "../config/db.config.js";
 import { Departamento } from "../models/Departamento.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Tramite } from "../models/Tramite.model.js";
@@ -62,7 +63,7 @@ export const obtenerTramiteRevisor = async (req, res) => {
         req.usuario.departamento_id.toString()
     )
       return res
-        .status(404)
+        .status(403)
         .json({ message: "El trámite seleccionado no te pertenece" });
 
     const archivos = await TramiteArchivo.findAll({
@@ -79,7 +80,7 @@ export const obtenerTramiteRevisor = async (req, res) => {
   }
 };
 
-export const actualizarTramiteRevisor = async (req, res) => {
+export const completarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
   const {
@@ -118,7 +119,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
         req.usuario.departamento_id.toString()
     ) {
       return res
-        .status(404)
+        .status(403)
         .json({ message: "El trámite seleccionado no te pertenece" });
     }
 
@@ -143,38 +144,111 @@ export const actualizarTramiteRevisor = async (req, res) => {
     const multiplesDestinatarios = destinatarios.length > 1;
     const numeroMemo = await generarMemo(multiplesDestinatarios, tipo);
 
-    // Recorrer el arreglo de destinatarios e ingresarlos en la BD
-    destinatarios.forEach(async (destinatario) => {
-      const departamentoDestinatario = await Empleado.findOne({
-        where: { id: destinatario.id },
-      });
+    // Actualizar el trámite en una transacción
+    await sequelize.transaction(async (transaction) => {
+      for (const destinatario of destinatarios) {
+        const departamentoDestinatario = await Empleado.findOne({
+          where: { id: destinatario.id },
+          transaction,
+        });
 
-      await TramiteDestinatario.create({
-        tramite_id: id,
-        departamento_destinatario: parseInt(
-          departamentoDestinatario.departamento_id
-        ),
-        destinatario_id: destinatario.id,
-        activo: true,
-        usuario_creacion: req.usuario.id,
-      });
-    });
+        if (departamentoDestinatario) {
+          await TramiteDestinatario.create(
+            {
+              tramite_id: id,
+              departamento_destinatario: parseInt(
+                departamentoDestinatario.departamento_id
+              ),
+              destinatario_id: destinatario.id,
+              activo: true,
+              usuario_creacion: req.usuario.id,
+            },
+            transaction
+          );
+        }
+      }
 
-    // Actualizar data Tramite
-    tramite.numero_oficio = numeroMemo;
-    tramite.fecha_despacho = fechaDespacho;
-    tramite.referencia_tramite =
-      referenciaTramite || tramite.referencia_tramite;
-    tramite.estado = "POR_REVISAR";
-    await tramite.save();
+      // Actualizar datos del Trámite
+      tramite.numero_oficio = numeroMemo;
+      tramite.fecha_despacho = fechaDespacho;
+      tramite.referencia_tramite =
+        referenciaTramite || tramite.referencia_tramite;
+      tramite.estado = "POR_REVISAR";
+      await tramite.save({ transaction });
 
-    await TramiteObservacion.create({
-      tramite_id: id,
-      observacion,
-      usuario_creacion: req.usuario.id,
+      await TramiteObservacion.create(
+        {
+          tramite_id: id,
+          observacion,
+          usuario_creacion: req.usuario.id,
+        },
+        { transaction }
+      );
     });
 
     return res.json({ message: "Tramite Completado" });
+  } catch (error) {
+    console.error(
+      `Error al completar el trámite seleccionado: ${error.message}`
+    );
+    return res.status(500).json({
+      message:
+        "Error al completar el trámite seleccionado, intente nuevamente más tarde.",
+    });
+  }
+};
+
+export const actualizarTramiteRevisor = async (req, res) => {
+  const { id } = req.params;
+
+  const {
+    // numeroOficioDespacho,
+    destinatarios,
+    referenciaTramite,
+    fechaDespacho,
+    observacion,
+  } = req.body;
+
+  if (
+    // !numeroOficioDespacho ||
+    // numeroOficioDespacho.trim() === "" ||
+    !destinatarios ||
+    destinatarios.length === 0 ||
+    !observacion ||
+    observacion.trim() === ""
+  ) {
+    return res.status(400).json({
+      message: "Todos los campos obligatorios",
+    });
+  }
+
+  try {
+    const tramite = await Tramite.findOne({
+      where: { id, estado: "POR REVISAR", activo: true },
+    });
+
+    if (!tramite) {
+      return res.status(404).json({ message: "Trámite no encontrado" });
+    }
+
+    if (
+      tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
+      tramite.departamento_tramite.toString() !==
+        req.usuario.departamento_id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "El trámite seleccionado no te pertenece" });
+    }
+
+    const { valido, mensaje } = validarFecha(fechaDespacho);
+    if (!valido) {
+      return res.status(400).json({ error: mensaje });
+    }
+
+    // TODO seguir con la logica de Actualizar un tramite
+
+    res.json({ message: "Trámite Actualizado Correctamente" });
   } catch (error) {
     console.error(
       `Error al actualizar el trámite seleccionado: ${error.message}`
