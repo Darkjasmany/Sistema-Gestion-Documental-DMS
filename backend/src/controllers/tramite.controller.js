@@ -16,6 +16,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const agregarTramite = async (req, res) => {
+  console.log(req.usuario);
   const {
     asunto,
     descripcion,

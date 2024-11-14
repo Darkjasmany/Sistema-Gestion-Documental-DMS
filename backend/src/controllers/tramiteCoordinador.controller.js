@@ -510,7 +510,10 @@ export const asignarOReasignarRevisor = async (req, res) => {
         .json({ message: "Todos los campos son obligatorios" });
     }
 
-    const existeUsuarioRevisor = await Usuario.findByPk(id);
+    const existeUsuarioRevisor = await Usuario.findOne({
+      where: { id: usuarioRevisorId, rol: "REVISOR" },
+    });
+
     if (!existeUsuarioRevisor) {
       await transaction.rollback();
       return res.status(404).json({ message: "Usuario Revisor no encontrado" });
@@ -540,6 +543,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
 
     const estadoAnterior = tramiteAsignar.estado;
     const revisorAnterior = tramiteAsignar.usuario_revisor;
+    let sms;
 
     // Asignar Revisor
     if (tramiteAsignar.estado === "INGRESADO" && !revisorAnterior) {
@@ -579,6 +583,8 @@ export const asignarOReasignarRevisor = async (req, res) => {
         req.usuario.id,
         transaction
       );
+
+      sms = "asignado";
     }
     // Resignar Revisor
     else if (tramiteAsignar.estado === "PENDIENTE" && revisorAnterior) {
@@ -618,13 +624,15 @@ export const asignarOReasignarRevisor = async (req, res) => {
         },
         { transaction }
       );
+      sms = "reasignado";
     }
 
     await tramiteAsignar.save({ transaction });
     await transaction.commit();
 
     res.json({
-      message: "Revisor asignado/reasignado correctamente",
+      // message: "Revisor asignado/reasignado correctamente",
+      message: `Revisor ${sms} correctamente`,
     });
   } catch (error) {
     await transaction.rollback();
