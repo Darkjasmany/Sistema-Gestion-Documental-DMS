@@ -511,7 +511,11 @@ export const asignarOReasignarRevisor = async (req, res) => {
     }
 
     const existeUsuarioRevisor = await Usuario.findOne({
-      where: { id: usuarioRevisorId, rol: "REVISOR" },
+      where: {
+        id: usuarioRevisorId,
+        rol: "REVISOR",
+        departamento_id: req.usuario.departamento_id,
+      },
     });
 
     if (!existeUsuarioRevisor) {

@@ -201,17 +201,10 @@ export const completarTramiteRevisor = async (req, res) => {
 export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
-  const {
-    // numeroOficioDespacho,
-    destinatarios,
-    referenciaTramite,
-    fechaDespacho,
-    observacion,
-  } = req.body;
+  const { destinatarios, referenciaTramite, fechaDespacho, observacion } =
+    req.body;
 
   if (
-    // !numeroOficioDespacho ||
-    // numeroOficioDespacho.trim() === "" ||
     !destinatarios ||
     destinatarios.length === 0 ||
     !observacion ||
@@ -224,7 +217,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
   try {
     const tramite = await Tramite.findOne({
-      where: { id, estado: "POR REVISAR", activo: true },
+      where: { id, estado: "POR_REVISAR", activo: true },
     });
 
     if (!tramite) {
@@ -248,7 +241,84 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
     // TODO seguir con la logica de Actualizar un tramite
 
+    const destinatariosTramite = await TramiteDestinatario.findAll({
+      where: {
+        tramite_id: id,
+        activo: true,
+      },
+    });
+    // console.log(destinatariosTramite);
+
+    const destinatarioExistente = destinatariosTramite.map(
+      (destinatarioActual) => parseInt(destinatarioActual.destinatario_id)
+    );
+
+    // console.log(destinatarios);
+    const destinatarioIngresado = destinatarios.map((destinatario) =>
+      parseInt(destinatario.id)
+    );
+
+    destinatarioExistente.sort();
+    destinatarioIngresado.sort();
+
+    // console.log(destinatarioExistente);
+    // console.log(destinatarioIngresado);
+
+    let destinarioBorrar = [];
+    let destinatarioIngresar = [];
+
+    // Comparar arreglos
+
+    for (let i = 0; i < destinatarioExistente.length; i++) {
+      // Extraemos los destinatarios que ya no estan
+      if (destinatarioExistente[i] !== destinatarioIngresado[i]) {
+        destinarioBorrar.push(destinatarioExistente[i]);
+      }
+    }
+
+    for (let i = 0; i < destinatarioIngresado.length; i++) {
+      // Extraemos los destinatarios que ya no estan
+      if (destinatarioIngresado[i] !== destinatarioExistente[i]) {
+        destinatarioIngresar.push(destinatarioIngresado[i]);
+      }
+    }
+
+    // console.log(destinarioBorrar);
+    // console.log(destinatarioIngresar);
+
+    // TODO: Actualizar destinarios
+
+    for (const eliminar of destinarioBorrar) {
+      const esteSi = await TramiteDestinatario.findOne({
+        where: { destinatario_id: eliminar },
+      });
+
+      esteSi.activo = false;
+
+      await esteSi.save();
+    }
+
+    for (const destinatario of destinatarioIngresar) {
+      const departamentoDestinatario = await Empleado.findOne({
+        where: { id: destinatario },
+      });
+
+      if (departamentoDestinatario) {
+        await TramiteDestinatario.create({
+          tramite_id: id,
+          departamento_destinatario: parseInt(
+            departamentoDestinatario.departamento_id
+          ),
+          destinatario_id: destinatario,
+          activo: true,
+          usuario_creacion: req.usuario.id,
+        });
+      }
+    }
+
     res.json({ message: "Trámite Actualizado Correctamente" });
+
+    return;
   } catch (error) {
     console.error(
       `Error al actualizar el trámite seleccionado: ${error.message}`
