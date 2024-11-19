@@ -253,6 +253,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
       (destinatarioActual) => parseInt(destinatarioActual.destinatario_id)
     );
 
+    // console.log(destinatarioExistente);
     // console.log(destinatarios);
     const destinatarioIngresado = destinatarios.map((destinatario) =>
       parseInt(destinatario.id)
@@ -276,15 +277,17 @@ export const actualizarTramiteRevisor = async (req, res) => {
       }
     }
 
+    //  console.log(destinarioBorrar);
+
     for (let i = 0; i < destinatarioIngresado.length; i++) {
-      // Extraemos los destinatarios que ya no estan
+      // Extraemos los destinatarios nuevos
       if (destinatarioIngresado[i] !== destinatarioExistente[i]) {
         destinatarioIngresar.push(destinatarioIngresado[i]);
       }
     }
 
-    // console.log(destinarioBorrar);
-    // console.log(destinatarioIngresar);
+    console.log(destinarioBorrar);
+    console.log(destinatarioIngresar);
 
     // TODO: Actualizar destinarios
 
