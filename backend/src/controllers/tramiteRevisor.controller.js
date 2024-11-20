@@ -239,55 +239,34 @@ export const actualizarTramiteRevisor = async (req, res) => {
       return res.status(400).json({ error: mensaje });
     }
 
-    // TODO seguir con la logica de Actualizar un tramite
+    //* Lógica para obtener destinatios ingresados en la BD y los que se envian por el formulario, para despues comparar e indentificar cual se inhabilita y cual se ingresa
 
+    // Obtener los destinatarios registrados en la BD
     const destinatariosTramite = await TramiteDestinatario.findAll({
       where: {
         tramite_id: id,
         activo: true,
       },
     });
-    // console.log(destinatariosTramite);
-
-    const destinatarioExistente = destinatariosTramite.map(
+    const destinatariosActuales = destinatariosTramite.map(
       (destinatarioActual) => parseInt(destinatarioActual.destinatario_id)
     );
 
-    // console.log(destinatarioExistente);
-    // console.log(destinatarios);
-    const destinatarioIngresado = destinatarios.map((destinatario) =>
+    // Destinatarios enviados en el formulario
+    const destinatariosIngresados = destinatarios.map((destinatario) =>
       parseInt(destinatario.id)
     );
 
-    destinatarioExistente.sort();
-    destinatarioIngresado.sort();
+    // Identificar los destinatarios que se mantenien y cuales son los nuevos y los que se deben inhabilitar
+    encontrarDestinariosABorrar(destinatariosActuales, destinatariosIngresados);
 
-    // console.log(destinatarioExistente);
-    // console.log(destinatarioIngresado);
+    console.log(destinatariosActuales); // Arreglo de los destinatarios BD
+    console.log(destinatariosIngresados); // Arreglo de los destinatarios Formulario
+    // console.log(destinarioBorrar);
 
-    let destinarioBorrar = [];
-    let destinatarioIngresar = [];
+    res.json({ message: "Trámite Actualizado Correctamente" });
 
-    // Comparar arreglos
-
-    for (let i = 0; i < destinatarioExistente.length; i++) {
-      // Extraemos los destinatarios que ya no estan
-      if (destinatarioExistente[i] !== destinatarioIngresado[i]) {
-        destinarioBorrar.push(destinatarioExistente[i]);
-      }
-    }
-
-    //  console.log(destinarioBorrar);
-
-    for (let i = 0; i < destinatarioIngresado.length; i++) {
-      // Extraemos los destinatarios nuevos
-      if (destinatarioIngresado[i] !== destinatarioExistente[i]) {
-        destinatarioIngresar.push(destinatarioIngresado[i]);
-      }
-    }
-
-    console.log(destinarioBorrar);
-    console.log(destinatarioIngresar);
+    return;
 
     // TODO: Actualizar destinarios
 
@@ -319,8 +298,6 @@ export const actualizarTramiteRevisor = async (req, res) => {
       }
     }
 
-    res.json({ message: "Trámite Actualizado Correctamente" });
-
     return;
   } catch (error) {
     console.error(
@@ -332,3 +309,22 @@ export const actualizarTramiteRevisor = async (req, res) => {
     });
   }
 };
+
+function encontrarDestinariosABorrar(
+  destinatariosActuales,
+  destinatariosIngresados
+) {
+  const destinatariosABorrar = [];
+
+  // Convertimos destinatariosIngresados a un conjunto para una búsqueda más rápida
+  const conjuntoIngresado = new Set(destinatariosIngresados);
+
+  // Iteramos sobre los destinatarios actuales y verificamos si están en el conjunto
+  for (const destinatario of destinatariosActuales) {
+    if (!conjuntoIngresado.has(destinatario)) {
+      destinatariosABorrar.push(destinatario);
+    }
+  }
+
+  return destinatariosABorrar;
+}
