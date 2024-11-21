@@ -6,7 +6,6 @@ import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { generarMemo } from "../utils/generarMemo.js";
-import { generarSecuencia } from "../utils/generarSecuencia.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { validarFecha } from "../utils/validarFecha.js";
 
@@ -257,30 +256,37 @@ export const actualizarTramiteRevisor = async (req, res) => {
       parseInt(destinatario.id)
     );
 
-    // Identificar los destinatarios que se mantenien y cuales son los nuevos y los que se deben inhabilitar
-    encontrarDestinariosABorrar(destinatariosActuales, destinatariosIngresados);
+    // Identificar los destinatarios que se nuevos a ingresar y los que se deben inhabilitar
+    const destinatariosEliminar = encontrarDestinariosABorrar(
+      destinatariosActuales,
+      destinatariosIngresados
+    );
+
+    const destinatariosIngresar = encontrarDestinatariosAIngresar(
+      destinatariosActuales,
+      destinatariosIngresados
+    );
 
     console.log(destinatariosActuales); // Arreglo de los destinatarios BD
     console.log(destinatariosIngresados); // Arreglo de los destinatarios Formulario
-    // console.log(destinarioBorrar);
+    console.log(destinatariosEliminar);
+    console.log(destinatariosIngresar);
 
-    res.json({ message: "Trámite Actualizado Correctamente" });
-
-    return;
-
-    // TODO: Actualizar destinarios
-
-    for (const eliminar of destinarioBorrar) {
-      const esteSi = await TramiteDestinatario.findOne({
-        where: { destinatario_id: eliminar },
+    // Inhabilitar los destinatarios eliminados
+    for (const eliminar of destinatariosEliminar) {
+      const destinatario = await TramiteDestinatario.findOne({
+        where: {
+          destinatario_id: eliminar,
+          activo: true,
+        },
       });
 
-      esteSi.activo = false;
-
-      await esteSi.save();
+      destinatario.activo = "false";
+      destinatario.save();
     }
 
-    for (const destinatario of destinatarioIngresar) {
+    // Insertar nuevos destinarios
+    for (const destinatario of destinatariosIngresar) {
       const departamentoDestinatario = await Empleado.findOne({
         where: { id: destinatario },
       });
@@ -298,7 +304,9 @@ export const actualizarTramiteRevisor = async (req, res) => {
       }
     }
 
-    return;
+    // TODO Actualizar información del Tramite
+
+    return res.json({ message: "Trámite Actualizado Correctamente" });
   } catch (error) {
     console.error(
       `Error al actualizar el trámite seleccionado: ${error.message}`
@@ -327,4 +335,21 @@ function encontrarDestinariosABorrar(
   }
 
   return destinatariosABorrar;
+}
+
+function encontrarDestinatariosAIngresar(
+  destinatariosActuales,
+  destinatariosIngresados
+) {
+  const destinariosAIngresar = [];
+
+  const conjuntoActual = new Set(destinatariosActuales);
+
+  for (const ingresado of destinatariosIngresados) {
+    if (!conjuntoActual.has(ingresado)) {
+      destinariosAIngresar.push(ingresado);
+    }
+  }
+
+  return destinariosAIngresar;
 }
