@@ -78,7 +78,30 @@ const PENDIENTE = {
     },
   ],
 };
-const POR_REVISAR = {};
+const POR_REVISAR = {
+  ...PENDIENTE,
+  attributes: [...PENDIENTE.attributes, "fecha_despacho", "numero_oficio"],
+  include: [
+    ...PENDIENTE.include,
+    {
+      model: Departamento,
+      as: "departamentoDestinatario",
+      attributes: ["nombre"],
+    },
+    {
+      model: Empleado,
+      as: "destinatario",
+      attributes: [
+        [
+          Sequelize.literal(
+            'CONCAT("remitente"."apellidos", \' \', "remitente"."nombres")'
+          ),
+          "nombreRemitente",
+        ],
+      ],
+    },
+  ],
+};
 const COMPLETADO = {};
 const CORRECCION_PENDIENTE = {};
 const FINALIZADO = {};
@@ -87,6 +110,7 @@ const FINALIZADO = {};
 const configuracionEstados = {
   INGRESADO,
   PENDIENTE,
+  POR_REVISAR,
 };
 
 export const getConfiguracionPorEstado = (estado) => {

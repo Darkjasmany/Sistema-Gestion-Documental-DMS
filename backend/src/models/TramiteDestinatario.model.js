@@ -75,6 +75,12 @@ TramiteDestinatario.belongsTo(Empleado, {
   as: "destinatario", // Alias para el destinatario en las consultas
 });
 
+TramiteDestinatario.belongsTo(Departamento, {
+  foreignKey: "departamento_destinatario", // campo en la tabla Tramite que contiene el ID del departamento
+  targetKey: "id", // campo en la tabla Departamento que se enlaza
+  as: "departamentoDestinatario", // Alias para esta relación
+});
+
 Empleado.hasMany(TramiteDestinatario, {
   foreignKey: "destinatario_id", // Este es el campo que almacena el id del destinatario
   sourceKey: "id",

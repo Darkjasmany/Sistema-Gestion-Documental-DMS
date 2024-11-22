@@ -50,9 +50,12 @@ export const listarTramitesRevisor = async (req, res) => {
 export const obtenerTramiteRevisor = async (req, res) => {
   try {
     const { id } = req.params;
+    const { estado } = req.query;
+    if (!estado)
+      return res.status(400).json({ message: "El estado es requerido" });
 
     const tramite = await Tramite.findOne({
-      where: { id, estado: "PENDIENTE", activo: true },
+      where: { id, estado, activo: true },
     });
     if (!tramite) return res.status(404).json({ message: "No encontrado" });
 
@@ -267,10 +270,10 @@ export const actualizarTramiteRevisor = async (req, res) => {
       destinatariosIngresados
     );
 
-    console.log(destinatariosActuales); // Arreglo de los destinatarios BD
-    console.log(destinatariosIngresados); // Arreglo de los destinatarios Formulario
-    console.log(destinatariosEliminar);
-    console.log(destinatariosIngresar);
+    // console.log(destinatariosActuales); // Arreglo de los destinatarios BD
+    // console.log(destinatariosIngresados); // Arreglo de los destinatarios Formulario
+    // console.log(destinatariosEliminar);
+    // console.log(destinatariosIngresar);
 
     // Inhabilitar los destinatarios eliminados
     for (const eliminar of destinatariosEliminar) {
@@ -304,7 +307,24 @@ export const actualizarTramiteRevisor = async (req, res) => {
       }
     }
 
-    // TODO Actualizar información del Tramite
+    // Actualizar información del Tramite
+
+    tramite.referencia_tramite =
+      referenciaTramite || tramite.referencia_tramite;
+    tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
+
+    await tramite.save();
+
+    // Actualizar observacion del tramite
+    const tramiteObservacion = await TramiteObservacion.findOne({
+      where: { tramite_id: id, usuario_creacion: req.usuario.id },
+      order: [["id", "DESC"]],
+    });
+
+    tramiteObservacion.observacion =
+      observacion || tramiteObservacion.observacion;
+
+    await tramiteObservacion.save();
 
     return res.json({ message: "Trámite Actualizado Correctamente" });
   } catch (error) {
