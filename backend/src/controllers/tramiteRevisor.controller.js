@@ -51,6 +51,8 @@ export const obtenerTramiteRevisor = async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.query;
+
+    console.log(estado);
     if (!estado)
       return res.status(400).json({ message: "El estado es requerido" });
 
@@ -70,9 +72,27 @@ export const obtenerTramiteRevisor = async (req, res) => {
 
     const archivos = await TramiteArchivo.findAll({
       where: { tramite_id: id },
+      attributes: ["id", "tipo", "original_name"],
     });
 
-    res.json({ tramite, archivos });
+    const destinarios = await TramiteDestinatario.findAll({
+      where: { tramite_id: id },
+      attributes: ["id"],
+      include: [
+        {
+          model: Empleado,
+          as: "destinatario",
+          attributes: ["nombres", "apellidos"],
+        },
+        {
+          model: Departamento,
+          as: "departamentoDestinatario",
+          attributes: ["nombre"],
+        },
+      ],
+    });
+
+    res.json({ tramite, archivos, destinarios });
   } catch (error) {
     console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
     return res.status(500).json({

@@ -62,10 +62,16 @@ export const TramiteDestinatario = sequelize.define(
 // });
 
 // 1 departamento destino puede tener muchos tramitesDestinarios
+TramiteDestinatario.belongsTo(Departamento, {
+  foreignKey: "departamento_destinatario", // campo en la tabla Tramite que contiene el ID del departamento
+  targetKey: "id", // campo en la tabla Departamento que se enlaza
+  as: "departamentoDestinatario", // Alias para esta relación
+});
+
 Departamento.hasMany(TramiteDestinatario, {
   foreignKey: "departamento_destinatario",
   sourceKey: "id",
-  as: "tramitesRecibidos", // Alias para la relación inversa (destinatario)
+  as: "tramitesDestinatarios", // Alias para la relación inversa (destinatario)
 });
 
 // Relación entre Tramite y Empleado como destinatario
@@ -75,14 +81,8 @@ TramiteDestinatario.belongsTo(Empleado, {
   as: "destinatario", // Alias para el destinatario en las consultas
 });
 
-TramiteDestinatario.belongsTo(Departamento, {
-  foreignKey: "departamento_destinatario", // campo en la tabla Tramite que contiene el ID del departamento
-  targetKey: "id", // campo en la tabla Departamento que se enlaza
-  as: "departamentoDestinatario", // Alias para esta relación
-});
-
-Empleado.hasMany(TramiteDestinatario, {
-  foreignKey: "destinatario_id", // Este es el campo que almacena el id del destinatario
-  sourceKey: "id",
-  as: "tramiteDestinatario",
-});
+// Empleado.hasMany(TramiteDestinatario, {
+//   foreignKey: "destinatario_id", // Este es el campo que almacena el id del destinatario
+//   sourceKey: "id",
+//   as: "tramiteDestinatario",
+// });

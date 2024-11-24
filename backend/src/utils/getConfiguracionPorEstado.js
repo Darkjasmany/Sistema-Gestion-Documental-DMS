@@ -85,7 +85,7 @@ const POR_REVISAR = {
     ...PENDIENTE.include,
     {
       model: Departamento,
-      as: "departamentoDestinatario",
+      as: "departamentoDestinatario", // Alias definido en el modelo
       attributes: ["nombre"],
     },
     {
@@ -96,7 +96,7 @@ const POR_REVISAR = {
           Sequelize.literal(
             'CONCAT("remitente"."apellidos", \' \', "remitente"."nombres")'
           ),
-          "nombreRemitente",
+          "nombreDestinatario",
         ],
       ],
     },
