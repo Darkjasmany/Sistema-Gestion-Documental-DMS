@@ -52,7 +52,6 @@ export const obtenerTramiteRevisor = async (req, res) => {
     const { id } = req.params;
     const { estado } = req.query;
 
-    console.log(estado);
     if (!estado)
       return res.status(400).json({ message: "El estado es requerido" });
 
@@ -92,7 +91,13 @@ export const obtenerTramiteRevisor = async (req, res) => {
       ],
     });
 
-    res.json({ tramite, archivos, destinarios });
+    const respuesta = { tramite, archivos };
+
+    if (estado === "POR_REVISAR") {
+      respuesta.destinarios = destinarios; // Se agrega una nueva propiedad `destinarios` al objeto con el valor de la variable `destinarios`.
+    }
+
+    res.json(respuesta);
   } catch (error) {
     console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
@@ -222,11 +227,11 @@ export const completarTramiteRevisor = async (req, res) => {
 
 export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
-
   const { destinatarios, referenciaTramite, fechaDespacho, observacion } =
     req.body;
 
   if (
+    // Array.isArray(destinatarios) ||
     !destinatarios ||
     destinatarios.length === 0 ||
     !observacion ||
@@ -236,6 +241,8 @@ export const actualizarTramiteRevisor = async (req, res) => {
       message: "Todos los campos obligatorios",
     });
   }
+
+  const transaction = await sequelize.transaction();
 
   try {
     const tramite = await Tramite.findOne({
@@ -263,13 +270,14 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
     //* Lógica para obtener destinatios ingresados en la BD y los que se envian por el formulario, para despues comparar e indentificar cual se inhabilita y cual se ingresa
 
-    // Obtener los destinatarios registrados en la BD
+    // Obtener destinatarios actuales
     const destinatariosTramite = await TramiteDestinatario.findAll({
       where: {
         tramite_id: id,
         activo: true,
       },
     });
+
     const destinatariosActuales = destinatariosTramite.map(
       (destinatarioActual) => parseInt(destinatarioActual.destinatario_id)
     );
@@ -289,11 +297,6 @@ export const actualizarTramiteRevisor = async (req, res) => {
       destinatariosActuales,
       destinatariosIngresados
     );
-
-    // console.log(destinatariosActuales); // Arreglo de los destinatarios BD
-    // console.log(destinatariosIngresados); // Arreglo de los destinatarios Formulario
-    // console.log(destinatariosEliminar);
-    // console.log(destinatariosIngresar);
 
     // Inhabilitar los destinatarios eliminados
     for (const eliminar of destinatariosEliminar) {
@@ -315,25 +318,26 @@ export const actualizarTramiteRevisor = async (req, res) => {
       });
 
       if (departamentoDestinatario) {
-        await TramiteDestinatario.create({
-          tramite_id: id,
-          departamento_destinatario: parseInt(
-            departamentoDestinatario.departamento_id
-          ),
-          destinatario_id: destinatario,
-          activo: true,
-          usuario_creacion: req.usuario.id,
-        });
+        await TramiteDestinatario.create(
+          {
+            tramite_id: id,
+            departamento_destinatario: parseInt(
+              departamentoDestinatario.departamento_id
+            ),
+            destinatario_id: destinatario,
+            activo: true,
+            usuario_creacion: req.usuario.id,
+          },
+          { transaction }
+        );
       }
     }
 
-    // Actualizar información del Tramite
-
+    // Actualizar trámite y observación
     tramite.referencia_tramite =
       referenciaTramite || tramite.referencia_tramite;
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
-
-    await tramite.save();
+    await tramite.save({ transaction });
 
     // Actualizar observacion del tramite
     const tramiteObservacion = await TramiteObservacion.findOne({
@@ -341,11 +345,13 @@ export const actualizarTramiteRevisor = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
-    tramiteObservacion.observacion =
-      observacion || tramiteObservacion.observacion;
+    if (tramiteObservacion) {
+      tramiteObservacion.observacion =
+        observacion || tramiteObservacion.observacion;
+      await tramiteObservacion.save({ transaction });
+    }
 
-    await tramiteObservacion.save();
-
+    await transaction.commit();
     return res.json({ message: "Trámite Actualizado Correctamente" });
   } catch (error) {
     console.error(
