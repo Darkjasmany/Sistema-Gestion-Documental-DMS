@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize";
 import { Departamento } from "../models/Departamento.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Usuario } from "../models/Usuario.model.js";
+import { sequelize } from "../config/db.config.js";
 
 // Definir los objetos de estado
 const INGRESADO = {
@@ -80,27 +81,36 @@ const PENDIENTE = {
 };
 const POR_REVISAR = {
   ...PENDIENTE,
-  attributes: [...PENDIENTE.attributes, "fecha_despacho", "numero_oficio"],
-  include: [
-    ...PENDIENTE.include,
-    {
-      model: Departamento,
-      as: "departamentoDestinatario", // Alias definido en el modelo
-      attributes: ["nombre"],
-    },
-    {
-      model: Empleado,
-      as: "destinatario",
-      attributes: [
-        [
-          Sequelize.literal(
-            'CONCAT("remitente"."apellidos", \' \', "remitente"."nombres")'
-          ),
-          "nombreDestinatario",
-        ],
-      ],
-    },
+  attributes: [
+    ...PENDIENTE.attributes,
+    "fecha_despacho",
+    "numero_oficio",
+    [
+      // Concatenar nombres de departamentos destinatarios
+      Sequelize.literal(`
+        (
+          SELECT STRING_AGG(d."nombre", ', ')
+          FROM tramite_destinatario td
+          INNER JOIN departamento d ON d.id = td.departamento_destinatario
+          WHERE td.tramite_id = tramite.id
+        )
+      `),
+      "departamentosDestinatarios",
+    ],
   ],
+  include: [...PENDIENTE.include],
+  /* attributes: [
+    // Concatenar nombres de departamentos destinatarios
+    Sequelize.literal(`
+        (
+          SELECT STRING_AGG(d."nombre", ', ')
+          FROM tramite_destinatario td
+          INNER JOIN departamento d ON d.id = td.departamento_destinatario
+          WHERE td.tramite_id = tramite.id
+        )
+      `),
+    "departamentosDestinatarios",
+  ],*/
 };
 const COMPLETADO = {};
 const CORRECCION_PENDIENTE = {};
