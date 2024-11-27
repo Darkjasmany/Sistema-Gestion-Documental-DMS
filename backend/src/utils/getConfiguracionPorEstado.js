@@ -89,28 +89,20 @@ const POR_REVISAR = {
       // Concatenar nombres de departamentos destinatarios
       Sequelize.literal(`
         (
-          SELECT STRING_AGG(d."nombre", ', ')
-          FROM tramite_destinatario td
-          INNER JOIN departamento d ON d.id = td.departamento_destinatario
-          WHERE td.tramite_id = tramite.id
+         SELECT STRING_AGG(
+            CONCAT(e.nombres, ' ', e.apellidos , ', ', d."nombre"), 
+            ' - '
+        ) 
+        FROM tramite_destinatario td
+        INNER JOIN empleado e ON e.id = td.destinatario_id
+        INNER JOIN departamento d ON d.id = td.departamento_destinatario
+        WHERE td.tramite_id = tramite.id
         )
       `),
       "departamentosDestinatarios",
     ],
   ],
   include: [...PENDIENTE.include],
-  /* attributes: [
-    // Concatenar nombres de departamentos destinatarios
-    Sequelize.literal(`
-        (
-          SELECT STRING_AGG(d."nombre", ', ')
-          FROM tramite_destinatario td
-          INNER JOIN departamento d ON d.id = td.departamento_destinatario
-          WHERE td.tramite_id = tramite.id
-        )
-      `),
-    "departamentosDestinatarios",
-  ],*/
 };
 const COMPLETADO = {};
 const CORRECCION_PENDIENTE = {};
