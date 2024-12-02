@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Alerta } from "../components/Alerta.components";
+import Alerta from "../components/Alerta.components";
+import axios from "axios";
 
 const Registrar = () => {
   const [nombres, setNombres] = useState("");
@@ -11,7 +12,7 @@ const Registrar = () => {
 
   const [alerta, setAlerta] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if ([nombres, apellidos, email, password, repetirPassword].includes("")) {
@@ -34,7 +35,26 @@ const Registrar = () => {
       });
       return;
     }
+
+    setAlerta({});
+
+    // ** Crear el usuario con la API
+    try {
+      const url = "http://localhost:3000/api/usuarios";
+      const respuesta = await axios.post(url, {
+        nombres,
+        apellidos,
+        email,
+        password,
+      });
+      console.log(respuesta);
+    } catch (error) {
+      console.error(error.message);
+    }
   };
+
+  // Para eliminar la alerta
+  const { message } = alerta;
 
   return (
     <>
@@ -45,7 +65,8 @@ const Registrar = () => {
         </h1>
       </div>
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-        <Alerta alerta={alerta} />
+        {/* De forma condicional si el message hay algo muestra la alerta */}
+        {message && <Alerta alerta={alerta} />}
 
         <form action="" onSubmit={handleSubmit}>
           <div className="my-5">

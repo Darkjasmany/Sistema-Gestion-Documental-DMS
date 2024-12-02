@@ -1,8 +1,5 @@
 import express from "express";
-// import {
-//   notFound,
-//   errorHandler,
-// } from "./middlewares/errorHandler.middleware.js";
+import cors from "cors"; // Proteger una API para evitar que los datos no se consuman de alguien que no sabemos
 
 // Import routes
 import usuarioRoutes from "./routes/usuario.routes.js";
@@ -13,7 +10,22 @@ import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
+const dominiosPermitidos = [process.env.FRONTEND_URL];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    //origin : URL de la peticion que esta realizando a la API, -1 no lo encontro
+    if (dominiosPermitidos.indexOf(origin) !== -1) {
+      // El Origen del Request esta permitido
+      callback(null, true);
+    } else {
+      callback(new Error("No permitido por CORS"));
+    }
+  },
+};
+
 // Middleware
+app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 app.use(express.json());
 
 // Routes
