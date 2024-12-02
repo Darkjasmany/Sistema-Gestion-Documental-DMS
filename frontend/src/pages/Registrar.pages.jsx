@@ -40,16 +40,23 @@ const Registrar = () => {
 
     // ** Crear el usuario con la API
     try {
+      // const url = `${process.env.REACT_APP_BACKEND_URL}/usuarios`; // Ejemplo: http://localhost:3000/api/usuarios
+
       const url = "http://localhost:3000/api/usuarios";
-      const respuesta = await axios.post(url, {
+
+      await axios.post(url, {
         nombres,
         apellidos,
         email,
         password,
       });
-      console.log(respuesta);
+
+      setAlerta({ message: "Creado Correctamente ", error: false });
     } catch (error) {
-      console.error(error.message);
+      setAlerta({
+        message: error.response.data.message, // Acceder a los datos del Backend para los errores
+        error: true,
+      });
     }
   };
 
