@@ -51,7 +51,10 @@ const Registrar = () => {
         password,
       });
 
-      setAlerta({ message: "Creado Correctamente ", error: false });
+      setAlerta({
+        message: "Creado Correctamente, revisa tu email",
+        error: false,
+      });
     } catch (error) {
       setAlerta({
         message: error.response.data.message, // Acceder a los datos del Backend para los errores
@@ -67,8 +70,8 @@ const Registrar = () => {
     <>
       <div>
         <h1 className="text-indigo-600 font-black text-6xl">
-          Crea tu Cuenta y Administra tus{" "}
-          <span className="text-black"> Documentos</span>
+          Crea tu Cuenta y Administra{" "}
+          <span className="text-black">tus Documentos</span>
         </h1>
       </div>
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">

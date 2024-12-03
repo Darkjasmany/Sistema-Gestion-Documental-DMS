@@ -13,7 +13,7 @@ function App() {
           {/* prom index indica que es el primer componente, osea que el la pagina principal y se la define como index */}
           <Route index element={<Login />} />
           {/* Para crear mas rutas hay que definir un path y no necesitas definir el / porque ya esta en la principal */}
-          <Route path="confirmar/:id" element={<ConfirmarCuenta />} />
+          <Route path="confirmar/:token" element={<ConfirmarCuenta />} />
           <Route path="registrar" element={<Registrar />} />
           <Route path="olvide-password" element={<OlvidePassword />} />
         </Route>
