@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Alerta from "../components/Alerta.components";
-import axios from "axios";
+import clienteAxios from "../config/axios.config";
 
 const Registrar = () => {
   const [nombres, setNombres] = useState("");
@@ -40,11 +40,7 @@ const Registrar = () => {
 
     // ** Crear el usuario con la API
     try {
-      // const url = `${process.env.REACT_APP_BACKEND_URL}/usuarios`; // Ejemplo: http://localhost:3000/api/usuarios
-
-      const url = "http://localhost:3000/api/usuarios";
-
-      await axios.post(url, {
+      await clienteAxios.post("/usuarios", {
         nombres,
         apellidos,
         email,

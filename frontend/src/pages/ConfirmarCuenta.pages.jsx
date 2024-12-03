@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"; // Para que ejecute un codigo una vez que el componente este listo
-import { useParams } from "react-router-dom"; //hook para leer los parametros de la URL
-import axios from "axios"; // Importamos axios porque vamos hacer la peticion al Backend
+import { useEffect, useState } from "react"; // useEffect -> para manejar la llamada a la API una vez que el componente se monta. useState -> para manejar el estado de cuentaConfirma, cargando, y alerta.
+import { useParams, Link } from "react-router-dom"; // hook para leer los parámetros de la URL
+import clienteAxios from "../config/axios.config"; // Importamos axios porque vamos a hacer la petición al Backend
 import Alerta from "../components/Alerta.components";
 
 const ConfirmarCuenta = () => {
@@ -9,30 +9,32 @@ const ConfirmarCuenta = () => {
   const [alerta, setAlerta] = useState({});
 
   const params = useParams();
-  const { token } = params; // extraigo el valor
+  const { token } = params; // Extraer el valor del token desde la URL
 
-  // Ejecutar este codigo cuando este listo el componente
-  useEffect(() => {
-    const confirmarCuenta = async () => {
-      try {
-        const url = `http://localhost:3000/api/usuarios/confirmar/${token}`;
-        const { data } = await axios(url); // data Siempre es la respuesta que nos va a dar Axios axios.get(url) es por defecto
-        setCuentaConfirmada(true);
-        setAlerta({
-          message: data.message, // Acceder a los datos del Backend para los errores
-        });
-      } catch (error) {
-        setAlerta({
-          message: error.response.data.message, // Acceder a los datos del Backend para los errores
-          error: true,
-        });
-      }
+  // Función para confirmar la cuenta a través de la API
+  const confirmarCuenta = async () => {
+    try {
+      const url = `/usuarios/confirmar/${token}`;
 
+      const { data } = await clienteAxios.get(url); // Llamada GET para confirmar cuenta
+
+      setCuentaConfirmada(true);
+
+      setAlerta({ message: data.message });
+    } catch (error) {
+      setAlerta({
+        message: error.response.data.message || "Error en el servidor",
+        error: true,
+      });
+    } finally {
       setCargando(false);
-    };
+    }
+  };
 
+  // Ejecutar la confirmación cuando el componente esté listo
+  useEffect(() => {
     confirmarCuenta();
-  }, []);
+  }, [token]);
 
   return (
     <>
@@ -44,6 +46,11 @@ const ConfirmarCuenta = () => {
       </div>
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
         {!cargando && <Alerta alerta={alerta} />}
+        {cuentaConfirma && (
+          <Link to="/" className="block text-center my-5 text-gray-500">
+            Iniciar Sesión
+          </Link>
+        )}
       </div>
     </>
   );
