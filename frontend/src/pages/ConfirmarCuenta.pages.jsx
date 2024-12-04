@@ -13,13 +13,16 @@ const ConfirmarCuenta = () => {
 
   // Función para confirmar la cuenta a través de la API
   const confirmarCuenta = async () => {
+    if (!token) {
+      setAlerta({ message: "Token inválido o inexistente", error: true });
+      setCargando(false);
+      return;
+    }
+
     try {
       const url = `/usuarios/confirmar/${token}`;
-
       const { data } = await clienteAxios.get(url); // Llamada GET para confirmar cuenta
-
       setCuentaConfirmada(true);
-
       setAlerta({ message: data.message });
     } catch (error) {
       setAlerta({

@@ -166,6 +166,7 @@ export const olvidePassword = async (req, res) => {
   const { email } = req.body;
 
   if (!email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+    // if (!email || email.length < 6) {
     return res.status(400).json({ message: "Formato de email no válido" });
   }
 
