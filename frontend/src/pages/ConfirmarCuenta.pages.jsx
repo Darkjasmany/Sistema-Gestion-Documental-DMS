@@ -37,7 +37,7 @@ const ConfirmarCuenta = () => {
   // Ejecutar la confirmación cuando el componente esté listo
   useEffect(() => {
     confirmarCuenta();
-  }, [token]);
+  }, []);
 
   return (
     <>
