@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Alerta from "../components/Alerta.components";
 import clienteAxios from "../config/axios.config";
 
@@ -9,8 +9,11 @@ const Registrar = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repetirPassword, setRepetirPassword] = useState("");
+  const [enviado, setEnviado] = useState(false);
 
   const [alerta, setAlerta] = useState({});
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,12 +54,19 @@ const Registrar = () => {
         message: "Creado Correctamente, revisa tu email",
         error: false,
       });
+
+      setEnviado(true);
     } catch (error) {
       setAlerta({
         message: error.response.data.message, // Acceder a los datos del Backend para los errores
         error: true,
       });
     }
+
+    setTimeout(() => {
+      setEnviado(false);
+      navigate("/");
+    }, 2000);
   };
 
   // Para eliminar la alerta
@@ -73,117 +83,119 @@ const Registrar = () => {
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
         {/* De forma condicional si el message hay algo muestra la alerta */}
         {message && <Alerta alerta={alerta} />}
+        {!enviado && (
+          <>
+            <form action="" onSubmit={handleSubmit}>
+              <div className="my-5">
+                <label
+                  htmlFor="text"
+                  className="uppercase font-bold text-xl text-gray-600"
+                >
+                  Nombres
+                </label>
+                <input
+                  type="text"
+                  id="nombres"
+                  value={nombres}
+                  // Guardar lo que el usuario Escribe
+                  onChange={(e) => setNombres(e.target.value)}
+                  className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
+                  placeholder="Tu Nombre"
+                  required
+                />
+              </div>
 
-        <form action="" onSubmit={handleSubmit}>
-          <div className="my-5">
-            <label
-              htmlFor="text"
-              className="uppercase font-bold text-xl text-gray-600"
-            >
-              Nombres
-            </label>
-            <input
-              type="text"
-              id="nombres"
-              value={nombres}
-              // Guardar lo que el usuario Escribe
-              onChange={(e) => setNombres(e.target.value)}
-              className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
-              placeholder="Tu Nombre"
-              required
-            />
-          </div>
+              <div className="my-5">
+                <label
+                  htmlFor="text"
+                  className="uppercase font-bold text-xl text-gray-600"
+                >
+                  Apellidos
+                </label>
+                <input
+                  type="text"
+                  id="apellidos"
+                  value={apellidos}
+                  onChange={(e) => setApellidos(e.target.value)}
+                  className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
+                  placeholder="Tu Apellido"
+                  required
+                />
+              </div>
 
-          <div className="my-5">
-            <label
-              htmlFor="text"
-              className="uppercase font-bold text-xl text-gray-600"
-            >
-              Apellidos
-            </label>
-            <input
-              type="text"
-              id="apellidos"
-              value={apellidos}
-              onChange={(e) => setApellidos(e.target.value)}
-              className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
-              placeholder="Tu Apellido"
-              required
-            />
-          </div>
+              <div className="my-5">
+                <label
+                  htmlFor="email"
+                  className="uppercase font-bold text-xl text-gray-600"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
+                  placeholder="name@naranjal.gob.ec"
+                  required
+                />
+              </div>
 
-          <div className="my-5">
-            <label
-              htmlFor="email"
-              className="uppercase font-bold text-xl text-gray-600"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
-              placeholder="name@naranjal.gob.ec"
-              required
-            />
-          </div>
+              <div className="my-5">
+                <label
+                  htmlFor="password"
+                  className="uppercase font-bold text-xl text-gray-600"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
+                  placeholder="Tu Password"
+                  required
+                />
+              </div>
 
-          <div className="my-5">
-            <label
-              htmlFor="password"
-              className="uppercase font-bold text-xl text-gray-600"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
-              placeholder="Tu Password"
-              required
-            />
-          </div>
+              <div className="my-5">
+                <label
+                  htmlFor="password2"
+                  className="uppercase font-bold text-xl text-gray-600"
+                >
+                  Repitir Password
+                </label>
+                <input
+                  type="password"
+                  id="password2"
+                  value={repetirPassword}
+                  onChange={(e) => setRepetirPassword(e.target.value)}
+                  className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
+                  placeholder="Repite tu Password"
+                  required
+                />
+              </div>
 
-          <div className="my-5">
-            <label
-              htmlFor="password2"
-              className="uppercase font-bold text-xl text-gray-600"
-            >
-              Repitir Password
-            </label>
-            <input
-              type="password"
-              id="password2"
-              value={repetirPassword}
-              onChange={(e) => setRepetirPassword(e.target.value)}
-              className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
-              placeholder="Repite tu Password"
-              required
-            />
-          </div>
-
-          <input
-            type="submit"
-            value={"Crear Cuenta"}
-            className="bg-indigo-700 w-full md:w-auto py-3 px-10 rounded-xl text-white uppercase font-bold mt-5 hover:cursor-pointer hover:bg-indigo-800"
-          />
-        </form>
-
-        <nav className="mt-10 lg:flex lg:justify-between">
-          <Link to="/" className="block text-center my-5 text-gray-500">
-            ¿Ya tienes una cuenta? Inicia Sesión
-          </Link>
-          <Link
-            to="/olvide-password"
-            className="block text-center my-5 text-gray-500"
-          >
-            Olvide mi password
-          </Link>
-        </nav>
+              <input
+                type="submit"
+                value={"Crear Cuenta"}
+                className="bg-indigo-700 w-full md:w-auto py-3 px-10 rounded-xl text-white uppercase font-bold mt-5 hover:cursor-pointer hover:bg-indigo-800"
+              />
+            </form>
+            <nav className="mt-10 lg:flex lg:justify-between">
+              <Link to="/" className="block text-center my-5 text-gray-500">
+                ¿Ya tienes una cuenta? Inicia Sesión
+              </Link>
+              <Link
+                to="/olvide-password"
+                className="block text-center my-5 text-gray-500"
+              >
+                Olvide mi password
+              </Link>
+            </nav>
+          </>
+        )}
       </div>
     </>
   );

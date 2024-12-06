@@ -171,7 +171,10 @@ export const olvidePassword = async (req, res) => {
   }
 
   try {
-    const usuario = await Usuario.findOne({ where: { email } }, transaction);
+    const usuario = await Usuario.findOne(
+      { where: { email, confirmado: true, estado: true } },
+      transaction
+    );
     if (!usuario) {
       await transaction.rollback();
       return res.status(404).json({ message: "Usuario no existe" });
@@ -224,7 +227,10 @@ export const nuevoPassword = async (req, res) => {
   const transaction = await Usuario.sequelize.transaction();
 
   try {
-    const usuario = await Usuario.findOne({ where: { token } }, transaction);
+    const usuario = await Usuario.findOne(
+      { where: { token, confirmado: true, estado: true } },
+      transaction
+    );
     if (!usuario) {
       await transaction.rollback();
       return res.status(400).json({ message: "Token no válido o expirado" });
