@@ -1,58 +1,74 @@
 import { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Alerta from "../components/Alerta.components";
 import clienteAxios from "../config/axios.config";
-import { useParams } from "react-router-dom";
 
 const NuevoPassword = () => {
   const [password, setPassword] = useState("");
   const [repetirPassword, setRepetirPassword] = useState("");
   const [alerta, setAlerta] = useState({});
   const [tokenValido, setTokenValido] = useState(false);
+  const [passwordModificado, setPasswordModificado] = useState(false);
 
   const params = useParams();
   const { token } = params;
+  const navigate = useNavigate();
 
   const validarToken = async () => {
     if (!token) {
+      setTokenValido(false);
       setAlerta({ message: "Token inválido o inexistente", error: true });
       return;
     }
     try {
       await clienteAxios(`/usuarios/olvide-password/${token}`);
-      setAlerta({ message: "Coloca tu nuevo Password" });
       setTokenValido(true);
+      setAlerta({ message: "Coloca tu nuevo Password" });
     } catch (error) {
-      setAlerta({ message: error.response.data.message, error: true });
+      const message =
+        error.response?.data?.message || "Error al validar el token.";
+      setAlerta({ message, error: true });
+      setTokenValido(false);
     }
   };
 
-  // Va a ejecutarse cuando el componente cargue y decimos que se ejecute 1 sola vez []
+  // Ejecuta solo una vez cuando carga el componente o cambia el token.
   useEffect(() => {
     validarToken();
-  }, []);
+  }, [token]);
+
+  // Si el token no es valido, redirige
+  useEffect(() => {
+    if (!tokenValido) {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [tokenValido, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if ([password, repetirPassword].includes("")) {
-      setAlerta({ message: "Todos los campos son obligatorios", error: true });
-      return;
+      return setAlerta({
+        message: "Todos los campos son obligatorios",
+        error: true,
+      });
     }
 
     if (password.length < 6) {
-      setAlerta({
+      return setAlerta({
         message: "El Password debe tener al menos 6 caracteres",
         error: true,
       });
-      return;
     }
 
     if (password !== repetirPassword) {
-      setAlerta({
+      return setAlerta({
         message: "Los Password deben ser iguales",
         error: true,
       });
-      return;
     }
 
     setAlerta({});
@@ -61,8 +77,18 @@ const NuevoPassword = () => {
       const url = `/usuarios/olvide-password/${token}`;
       const { data } = await clienteAxios.post(url, { password });
       setAlerta({ message: data.message });
+      setPasswordModificado(true);
+
+      setPassword("");
+      setRepetirPassword("");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
-      setAlerta({ message: error.response.data.message, error: true });
+      const message =
+        error.response?.data?.message || "Error al cambiar el password.";
+      setAlerta({ message, error: true });
     }
   };
 
@@ -79,8 +105,8 @@ const NuevoPassword = () => {
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
         {message && <Alerta alerta={alerta} />}
 
-        {/* //**Si el token es valido muestra el formulario */}
-        {tokenValido && (
+        {/* //**Si el token es valido && no ha sido modificado el Password muestra el formulario */}
+        {tokenValido && !passwordModificado ? (
           <form action="" onSubmit={handleSubmit}>
             <div className="my-5">
               <label
@@ -124,6 +150,12 @@ const NuevoPassword = () => {
               className="bg-indigo-700 w-full md:w-auto py-3 px-10 rounded-xl text-white uppercase font-bold mt-5 hover:cursor-pointer hover:bg-indigo-800"
             />
           </form>
+        ) : (
+          passwordModificado && (
+            <p className="text-center text-green-600 font-bold">
+              Password cambiado correctamente. Redirigiendo...
+            </p>
+          )
         )}
       </div>
     </>
