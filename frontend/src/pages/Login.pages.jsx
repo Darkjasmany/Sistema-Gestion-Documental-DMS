@@ -1,7 +1,45 @@
 // Para manejar enlaces
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import useAuth from "../hooks/useAuth.hook";
+import Alerta from "../components/Alerta.components";
+import clienteAxios from "../config/axios.config";
 
 const Login = () => {
+  const [email, sethEmail] = useState("");
+  const [password, sethPassword] = useState("");
+
+  const [alerta, setAlerta] = useState({});
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if ([email, password].includes("")) {
+      return setAlerta({
+        message: "Todos los campos son obligatorios",
+        error: true,
+      });
+    }
+
+    setAlerta({});
+
+    // ** Comunicarme con la API
+    try {
+      const url = "usuarios/login";
+      const { data } = await clienteAxios.post(url, { email, password });
+
+      // ** Almacenar el Token en LocalStorage
+      localStorage.setItem("token", data.token);
+      console.log(data);
+      return data;
+    } catch (error) {
+      const message = error.response?.data?.message;
+      setAlerta({ message, error: true });
+    }
+  };
+
+  const { message } = alerta;
+
   return (
     <>
       <div>
@@ -11,7 +49,9 @@ const Login = () => {
         </h1>
       </div>
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-        <form action="">
+        {message && <Alerta alerta={alerta} />}
+
+        <form action="" onSubmit={handleSubmit}>
           <div className="my-5">
             <label
               htmlFor="email"
@@ -22,9 +62,13 @@ const Login = () => {
             <input
               type="email"
               id="email"
+              value={email}
+              onChange={(e) => {
+                sethEmail(e.target.value);
+              }}
               className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
               placeholder="name@naranjal.gob.ec"
-              required
+              // required
             />
           </div>
 
@@ -38,9 +82,13 @@ const Login = () => {
             <input
               type="password"
               id="password"
+              value={password}
+              onChange={(e) => {
+                sethPassword(e.target.value);
+              }}
               className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
               placeholder="Tu Password"
-              required
+              // required
             />
           </div>
           <div className="flex items-start mb-5">
