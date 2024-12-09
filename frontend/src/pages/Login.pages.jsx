@@ -1,5 +1,5 @@
 // Para manejar enlaces
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useAuth from "../hooks/useAuth.hook";
 import Alerta from "../components/Alerta.components";
@@ -10,6 +10,8 @@ const Login = () => {
   const [password, sethPassword] = useState("");
 
   const [alerta, setAlerta] = useState({});
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,13 +27,16 @@ const Login = () => {
 
     // ** Comunicarme con la API
     try {
-      const url = "usuarios/login";
-      const { data } = await clienteAxios.post(url, { email, password });
+      const { data } = await clienteAxios.post("usuarios/login", {
+        email,
+        password,
+      });
 
       // ** Almacenar el Token en LocalStorage
-      localStorage.setItem("token", data.token);
-      console.log(data);
-      return data;
+      localStorage.setItem("dms_token", data.token);
+
+      // Redireccionar al usuario
+      navigate("/admin");
     } catch (error) {
       const message = error.response?.data?.message;
       setAlerta({ message, error: true });

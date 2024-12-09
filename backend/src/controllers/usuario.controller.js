@@ -64,7 +64,7 @@ export const registrarUsuario = async (req, res) => {
 
 export const perfilUsuario = (req, res) => {
   const { usuario } = req;
-  res.status(200).json({ usuario });
+  res.status(200).json(usuario);
 };
 
 export const confirmarCuenta = async (req, res) => {
