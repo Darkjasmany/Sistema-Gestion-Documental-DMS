@@ -8,7 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [alerta, setAlerta] = useState({});
-  const [remember, setRemember] = useState("");
+  const [remember, setRemember] = useState(false);
   const navigate = useNavigate();
 
   //verifica si el token está en el localStorage y redirige automáticamente si ya inició sesión:
