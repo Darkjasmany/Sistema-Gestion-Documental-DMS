@@ -1,17 +1,24 @@
 // Para manejar enlaces
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import useAuth from "../hooks/useAuth.hook";
+import { useState, useEffect } from "react";
 import Alerta from "../components/Alerta.components";
 import clienteAxios from "../config/axios.config";
 
 const Login = () => {
-  const [email, sethEmail] = useState("");
-  const [password, sethPassword] = useState("");
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [alerta, setAlerta] = useState({});
-
+  const [remember, setRemember] = useState("");
   const navigate = useNavigate();
+
+  //verifica si el token está en el localStorage y redirige automáticamente si ya inició sesión:
+  useEffect(() => {
+    const token =
+      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+    if (token) {
+      navigate("/admin");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +30,11 @@ const Login = () => {
       });
     }
 
+    const isEmailValid = (email) => /\S+@\S+\.\S+/.test(email);
+    if (!isEmailValid(email)) {
+      return setAlerta({ message: "Correo no válido", error: true });
+    }
+
     setAlerta({});
 
     // ** Comunicarme con la API
@@ -32,8 +44,12 @@ const Login = () => {
         password,
       });
 
-      // ** Almacenar el Token en LocalStorage
-      localStorage.setItem("dms_token", data.token);
+      // ** Guardar token según el estado del checkbox "Recuérdame"
+      if (remember) {
+        localStorage.setItem("dms_token", data.token);
+      } else {
+        sessionStorage.setItem("dms_token", data.token);
+      }
 
       // Redireccionar al usuario
       navigate("/admin");
@@ -69,7 +85,7 @@ const Login = () => {
               id="email"
               value={email}
               onChange={(e) => {
-                sethEmail(e.target.value);
+                setEmail(e.target.value);
               }}
               className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
               placeholder="name@naranjal.gob.ec"
@@ -89,28 +105,30 @@ const Login = () => {
               id="password"
               value={password}
               onChange={(e) => {
-                sethPassword(e.target.value);
+                setPassword(e.target.value);
               }}
               className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
               placeholder="Tu Password"
               // required
             />
           </div>
+
           <div className="flex items-start mb-5">
             <div className="flex items-center h-5">
               <input
                 id="remember"
                 type="checkbox"
-                value={""}
-                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+                checked={remember}
+                onChange={() => setRemember(!remember)}
+                className="w-4 h-4 border border-gray-300 rounded bg-gray-50"
+                aria-label="Recuérdame"
               />
             </div>
-
             <label
               htmlFor="remember"
-              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+              className="ms-2 text-sm font-medium text-gray-900"
             >
-              Recuerdame
+              Recuérdame
             </label>
           </div>
 

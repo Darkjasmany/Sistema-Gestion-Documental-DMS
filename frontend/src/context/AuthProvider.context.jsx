@@ -9,8 +9,9 @@ const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
 
   const autenticarUsuario = async () => {
-    //verificar el token
-    const token = localStorage.getItem("dms_token");
+    //** Verificar el token
+    const token =
+      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
     if (!token) return; // si no hay nada detiene el codigo
 
     // ** Header de Configuración
