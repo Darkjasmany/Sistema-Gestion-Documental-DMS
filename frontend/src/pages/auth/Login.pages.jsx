@@ -1,14 +1,14 @@
 // Para manejar enlaces
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Alerta from "../components/Alerta.components";
-import clienteAxios from "../config/axios.config";
+import Alerta from "../../components/Alerta.components";
+import clienteAxios from "../../config/axios.config";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [alerta, setAlerta] = useState({});
   const [remember, setRemember] = useState(false);
+  const [alerta, setAlerta] = useState({});
   const navigate = useNavigate();
 
   //verifica si el token está en el localStorage y redirige automáticamente si ya inició sesión:

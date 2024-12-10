@@ -1,17 +1,23 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AuthLayout from "./layout/Auth.layout";
-import Login from "./pages/Login.pages";
-import ConfirmarCuenta from "./pages/ConfirmarCuenta.pages";
-import Registrar from "./pages/Registrar.pages";
-import OlvidePassword from "./pages/OlvidePassword.pages";
-import NuevoPassword from "./pages/NuevoPassword.pages";
+
 import { AuthProvider } from "./context/AuthProvider.context";
+
+import AuthLayout from "./layout/Auth.layout";
+import RutaProtegida from "./layout/RutaProtegida.layout";
+
+import Login from "./pages/auth/Login.pages";
+import ConfirmarCuenta from "./pages/auth/ConfirmarCuenta.pages";
+import Registrar from "./pages/auth/Registrar.pages";
+import OlvidePassword from "./pages/auth/OlvidePassword.pages";
+import NuevoPassword from "./pages/auth/NuevoPassword.pages";
+import AdministrarPacientes from "./pages/admin/AdministrarPacientes.pages";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Ruta Pública */}
           <Route path="/" element={<AuthLayout />}>
             {/* prom index indica que es el primer componente, osea que el la pagina principal y se la define como index */}
             <Route index element={<Login />} />
@@ -20,6 +26,10 @@ function App() {
             <Route path="confirmar/:token" element={<ConfirmarCuenta />} />
             <Route path="olvide-password" element={<OlvidePassword />} />
             <Route path="olvide-password/:token" element={<NuevoPassword />} />
+          </Route>
+          {/* Ruta Privada */}
+          <Route path="/admin" element={<RutaProtegida />}>
+            <Route index element={<AdministrarPacientes />} />
           </Route>
         </Routes>
       </AuthProvider>

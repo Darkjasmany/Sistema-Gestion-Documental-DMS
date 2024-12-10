@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"; // useEffect -> para manejar la llamada a la API una vez que el componente se monta. useState -> para manejar el estado de cuentaConfirma, cargando, y alerta.
 import { useParams, Link } from "react-router-dom"; // hook para leer los parámetros de la URL
-import clienteAxios from "../config/axios.config"; // Importamos axios porque vamos a hacer la petición al Backend
-import Alerta from "../components/Alerta.components";
+import clienteAxios from "../../config/axios.config"; // Importamos axios porque vamos a hacer la petición al Backend
+import Alerta from "../../components/Alerta.components";
 
 const ConfirmarCuenta = () => {
   const [cuentaConfirma, setCuentaConfirmada] = useState(false);

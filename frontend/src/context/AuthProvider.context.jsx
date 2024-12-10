@@ -7,12 +7,16 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   // Definiendo un State
   const [auth, setAuth] = useState({});
+  const [cargando, setCargando] = useState(true);
 
   const autenticarUsuario = async () => {
     //** Verificar el token
     const token =
       localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
-    if (!token) return; // si no hay nada detiene el codigo
+    if (!token) {
+      setCargando(false);
+      return; // si no hay nada detiene el codigo
+    }
 
     // ** Header de Configuración
     const config = {
@@ -29,6 +33,8 @@ const AuthProvider = ({ children }) => {
       console.log(error.response?.data?.message);
       setAuth({});
     }
+
+    setCargando(false);
   };
 
   // Cuando cargue la APP verifica si el usuario esta autenticado o no
@@ -36,9 +42,17 @@ const AuthProvider = ({ children }) => {
     autenticarUsuario();
   }, []);
 
+  const cerrarSesion = () => {
+    localStorage.removeItem("dms_token");
+    setAuth({});
+  };
+
   return (
     // Con el value tu decides que se pone a dispocion en el provider para que se pueda acceder en los diferentes componentes
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    // Hacer disponible en los otros componentes
+    <AuthContext.Provider
+      value={{ auth, setAuth, cargando, setCargando, cerrarSesion }}
+    >
       {children}
     </AuthContext.Provider>
   );
