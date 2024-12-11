@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Alerta from "../../components/Alerta.components";
 import clienteAxios from "../../config/axios.config";
+import useAuth from "../../hooks/useAuth.hook";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,10 @@ const Login = () => {
   const [alerta, setAlerta] = useState({});
   const navigate = useNavigate();
 
+  const { auth, setAuth, cargando } = useAuth();
+
   //verifica si el token está en el localStorage y redirige automáticamente si ya inició sesión:
+  /*
   useEffect(() => {
     const token =
       localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
@@ -19,6 +23,13 @@ const Login = () => {
       navigate("/admin");
     }
   }, []);
+*/
+
+  useEffect(() => {
+    if (!cargando && auth?.id) {
+      navigate("/admin");
+    }
+  }, [auth, cargando, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,6 +61,9 @@ const Login = () => {
       } else {
         sessionStorage.setItem("dms_token", data.token);
       }
+
+      // Actualizar el contexto de autenticación
+      setAuth(data.usuario); // Usa el dato adecuado según la estructura de tu API
 
       // Redireccionar al usuario
       navigate("/admin");

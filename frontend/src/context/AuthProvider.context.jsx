@@ -9,12 +9,19 @@ const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
   const [cargando, setCargando] = useState(true);
 
+  console.log(auth);
+
   const autenticarUsuario = async () => {
+    console.log(auth);
+
     //** Verificar el token
     const token =
       localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+
+    console.log(token || auth?.id);
     if (!token) {
       setCargando(false);
+      setAuth({});
       return; // si no hay nada detiene el codigo
     }
 
@@ -44,6 +51,7 @@ const AuthProvider = ({ children }) => {
 
   const cerrarSesion = () => {
     localStorage.removeItem("dms_token");
+    sessionStorage.removeItem("dms_token");
     setAuth({});
   };
 
