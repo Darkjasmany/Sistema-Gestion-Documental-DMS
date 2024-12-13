@@ -88,7 +88,7 @@ const Registrar = () => {
             <form action="" onSubmit={handleSubmit}>
               <div className="my-5">
                 <label
-                  htmlFor="text"
+                  htmlFor="nombres"
                   className="uppercase font-bold text-xl text-gray-600"
                 >
                   Nombres
@@ -107,7 +107,7 @@ const Registrar = () => {
 
               <div className="my-5">
                 <label
-                  htmlFor="text"
+                  htmlFor="apellidos"
                   className="uppercase font-bold text-xl text-gray-600"
                 >
                   Apellidos

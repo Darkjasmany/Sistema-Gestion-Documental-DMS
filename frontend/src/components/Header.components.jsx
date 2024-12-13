@@ -19,7 +19,7 @@ const Header = () => {
             Tramites
           </Link>
           <Link
-            to={"/admin"}
+            to={"/perfil"}
             className="text-white text-sm uppercase font-bold"
           >
             Perfil

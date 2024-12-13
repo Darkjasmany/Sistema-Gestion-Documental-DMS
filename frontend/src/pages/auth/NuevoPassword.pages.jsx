@@ -110,7 +110,7 @@ const NuevoPassword = () => {
           <form action="" onSubmit={handleSubmit}>
             <div className="my-5">
               <label
-                htmlFor="text"
+                htmlFor="password"
                 className="uppercase font-bold text-xl text-gray-600"
               >
                 Ingresa tu nuevo Password
