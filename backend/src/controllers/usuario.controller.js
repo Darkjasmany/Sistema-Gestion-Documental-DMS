@@ -121,10 +121,14 @@ export const autenticarUsuario = async (req, res) => {
       return res.status(404).json({ message: "Usuario no existe" });
     }
 
-    if (!usuario.confirmado || !usuario.estado) {
+    if (!usuario.confirmado) {
       return res
         .status(403)
         .json({ message: "Usuario no confirmado o suspendido" });
+    }
+
+    if (!usuario.estado === 0 || !usuario.estado) {
+      return res.status(403).json({ message: "Usuario suspendido" });
     }
 
     if (usuario.departamento_id === null)

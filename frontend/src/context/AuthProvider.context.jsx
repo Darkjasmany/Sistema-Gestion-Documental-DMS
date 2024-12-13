@@ -9,16 +9,14 @@ const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
   const [cargando, setCargando] = useState(true);
 
-  console.log(auth);
+  // console.log(auth);
 
   const autenticarUsuario = async () => {
-    console.log(auth);
-
     //** Verificar el token
     const token =
       localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
-    console.log(token || auth?.id);
+    // console.log(token || auth?.id);
     if (!token) {
       setCargando(false);
       setAuth({});

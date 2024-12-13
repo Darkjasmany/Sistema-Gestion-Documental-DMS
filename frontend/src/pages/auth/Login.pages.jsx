@@ -11,25 +11,18 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
   const [alerta, setAlerta] = useState({});
   const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
 
-  const { auth, setAuth, cargando } = useAuth();
+  const token =
+    localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
-  //verifica si el token está en el localStorage y redirige automáticamente si ya inició sesión:
-  /*
+  // ** Redirección automatica
+  // Si el usuario esta autenticado y en mi Provider se almaceno la sesión del usuario en auth y si el token está en el localStorage y redirige automáticamente si ya inició sesión:
   useEffect(() => {
-    const token =
-      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
-    if (token) {
+    if (auth?.id && token) {
       navigate("/admin");
     }
-  }, []);
-*/
-
-  useEffect(() => {
-    if (!cargando && auth?.id) {
-      navigate("/admin");
-    }
-  }, [auth, cargando, navigate]);
+  }, [auth, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,11 +39,9 @@ const Login = () => {
       return setAlerta({ message: "Correo no válido", error: true });
     }
 
-    setAlerta({});
-
     // ** Comunicarme con la API
     try {
-      const { data } = await clienteAxios.post("usuarios/login", {
+      const { data } = await clienteAxios.post("/usuarios/login", {
         email,
         password,
       });
@@ -63,7 +54,7 @@ const Login = () => {
       }
 
       // Actualizar el contexto de autenticación
-      setAuth(data.usuario); // Usa el dato adecuado según la estructura de tu API
+      setAuth(data);
 
       // Redireccionar al usuario
       navigate("/admin");
