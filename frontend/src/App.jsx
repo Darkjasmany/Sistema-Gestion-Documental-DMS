@@ -10,7 +10,7 @@ import ConfirmarCuenta from "./pages/auth/ConfirmarCuenta.pages";
 import Registrar from "./pages/auth/Registrar.pages";
 import OlvidePassword from "./pages/auth/OlvidePassword.pages";
 import NuevoPassword from "./pages/auth/NuevoPassword.pages";
-import AdministrarPacientes from "./pages/admin/AdministrarPacientes.pages";
+import AdministrarTramites from "./pages/admin/AdministrarTramites.pages";
 
 function App() {
   return (
@@ -29,7 +29,7 @@ function App() {
           </Route>
           {/* Ruta Privada */}
           <Route path="/admin" element={<RutaProtegida />}>
-            <Route index element={<AdministrarPacientes />} />
+            <Route index element={<AdministrarTramites />} />
           </Route>
         </Routes>
       </AuthProvider>

@@ -10,12 +10,16 @@ import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
-const dominiosPermitidos = [process.env.FRONTEND_URL];
+const dominiosPermitidos = [process.env.FRONTEND_URL, "http://localhost:3000"];
 
 const corsOptions = {
   origin: function (origin, callback) {
     //origin : URL de la peticion que esta realizando a la API, -1 no lo encontro
-    if (dominiosPermitidos.indexOf(origin) !== -1) {
+
+    // Permitir solicitudes sin origen (por ejemplo, Postman) o si el origen está en la lista de permitidos
+    if (!origin || dominiosPermitidos.indexOf(origin) !== -1) {
+      //Esta es para que solo permita 1 dominio
+      // if (dominiosPermitidos.indexOf(origin) !== -1) {
       // El Origen del Request esta permitido
       callback(null, true);
     } else {
