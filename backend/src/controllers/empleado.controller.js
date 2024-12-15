@@ -88,6 +88,34 @@ export const obtenerEmpleado = async (req, res) => {
   }
 };
 
+export const obtenerEmpleadoPorDepartamento = async (req, res) => {
+  try {
+    const { departamentoId } = req.params;
+
+    const empleados = await Empleado.findAll({
+      where: {
+        departamento_id: departamentoId,
+      },
+      attributes: ["id", "cedula", "nombres", "apellidos", "email"],
+    });
+
+    if (empleados.length === 0)
+      return res.status(404).json({
+        message:
+          "No se encontraron empleados para el departamento seleccionado",
+      });
+
+    return res.json(empleados);
+  } catch (error) {
+    console.error(
+      `Error al cargar los empleados del departamento seleccionado: ${error.message}`
+    );
+    return res.status(500).json({
+      message: "Error al cargar los empleados del departamento seleccionado",
+    });
+  }
+};
+
 export const actualizarEmpleado = async (req, res) => {
   try {
     const { id } = req.params;

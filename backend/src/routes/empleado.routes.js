@@ -3,6 +3,7 @@ import {
   agregarEmpleado,
   cargarEmpleados,
   obtenerEmpleado,
+  obtenerEmpleadoPorDepartamento,
   actualizarEmpleado,
   eliminarEmpleado,
 } from "../controllers/empleado.controller.js";
@@ -16,5 +17,7 @@ router
   .get(obtenerEmpleado)
   .put(actualizarEmpleado)
   .delete(eliminarEmpleado);
+
+router.get("/por-departamento/:departamentoId", obtenerEmpleadoPorDepartamento);
 
 export default router;

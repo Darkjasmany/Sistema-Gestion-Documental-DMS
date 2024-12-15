@@ -8,6 +8,25 @@ const Formulario = () => {
 
   const [alerta, setAlerta] = useState({});
 
+  const handleDepartamentoChange = async (e) => {
+    const departamentoId = e.target.value;
+
+    if (!departamentoId) {
+      return setRemitentes([]); // Limpia la lista si no hay un departamento seleccionado
+    }
+
+    try {
+      const { data } = await clienteAxios(
+        `/empleados/por-departamento/${departamentoId}`
+      );
+
+      setRemitentes(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+      setRemitentes([]); // Limpia la lista en caso de error
+    }
+  };
+
   useEffect(() => {
     const fetchDepartamentos = async () => {
       try {
@@ -17,16 +36,8 @@ const Formulario = () => {
         console.lo(error.response?.data?.message);
       }
     };
-    const fecthEmpleados = async () => {
-      try {
-        const { data } = await clienteAxios("/empleados");
-        setRemitentes(data);
-      } catch (error) {
-        console.lo(error.response?.data?.message);
-      }
-    };
+
     fetchDepartamentos();
-    fecthEmpleados();
   }, []);
 
   const { message } = alerta;
@@ -97,6 +108,7 @@ const Formulario = () => {
             name="departamentoRemitenteId"
             id="departamentoRemitenteId"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            onChange={handleDepartamentoChange}
           >
             <option value="">Seleccione un departamento</option>
             {departamentos.map((departamento) => (
