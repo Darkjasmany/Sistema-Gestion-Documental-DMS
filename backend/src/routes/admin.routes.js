@@ -30,7 +30,7 @@ router.post(
 router
   .route("/parametros")
   .post(checkAuth, adminController.agregarParametros)
-  .get(checkAuth, adminController.listarParametros);
+  .get(adminController.listarParametros);
 
 router
   .route("/parametros/:id")

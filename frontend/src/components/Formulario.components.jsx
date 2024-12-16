@@ -5,9 +5,36 @@ import Alerta from "../components/Alerta.components";
 const Formulario = () => {
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
+  const [parametros, setParametros] = useState([]);
+  const [archivos, setArchivos] = useState([]);
+  const [errorArchivos, setErrorArchivos] = useState("");
 
   const [alerta, setAlerta] = useState({});
 
+  useEffect(() => {
+    const fetchDepartamentos = async () => {
+      try {
+        const { data } = await clienteAxios("/departamentos");
+        setDepartamentos(data);
+      } catch (error) {
+        console.lo(error.response?.data?.message);
+      }
+    };
+
+    const fecthParametros = async () => {
+      try {
+        const { data } = await clienteAxios("/admin/parametros");
+        setParametros(data);
+      } catch (error) {
+        console.error(error.response?.data?.message);
+      }
+    };
+
+    fetchDepartamentos();
+    fecthParametros();
+  }, []);
+
+  // Mostrar empleados de acuerdo al departamento seleccionado
   const handleDepartamentoChange = async (e) => {
     const departamentoId = e.target.value;
 
@@ -27,18 +54,15 @@ const Formulario = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchDepartamentos = async () => {
-      try {
-        const { data } = await clienteAxios("/departamentos");
-        setDepartamentos(data);
-      } catch (error) {
-        console.lo(error.response?.data?.message);
-      }
-    };
-
-    fetchDepartamentos();
-  }, []);
+  console.log(parametros);
+  const CANTIDAD_ARCHIVOS = parametros.find(
+    (obj) => obj.clave === "MAX_UPLOAD_FILES"
+  );
+  console.log(CANTIDAD_ARCHIVOS.valor);
+  // Manejar validación en los arhivos a mostrar
+  const manejarArchivos = (e) => {
+    const archivosSeleccionados = Array.from(e.target.files); // Convertimos FileList a un array
+  };
 
   const { message } = alerta;
   return (
@@ -192,6 +216,7 @@ const Formulario = () => {
             accept=".jpg,.png,.zip,.rar"
             multiple
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            onChange={manejarArchivos}
           />
         </div>
 
