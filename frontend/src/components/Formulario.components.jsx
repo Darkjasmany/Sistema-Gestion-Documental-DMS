@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import clienteAxios from "../config/axios.config";
 import Alerta from "../components/Alerta.components";
 
@@ -7,9 +7,10 @@ const Formulario = () => {
   const [remitentes, setRemitentes] = useState([]);
   const [parametros, setParametros] = useState([]);
   const [archivos, setArchivos] = useState([]);
-  const [errorArchivos, setErrorArchivos] = useState("");
-
+  const [maxUploadFiles, setMaxUploadFiles] = useState(null);
   const [alerta, setAlerta] = useState({});
+
+  const fileInputArchivos = useRef(null); // Referencia al input file
 
   useEffect(() => {
     const fetchDepartamentos = async () => {
@@ -25,8 +26,27 @@ const Formulario = () => {
       try {
         const { data } = await clienteAxios("/admin/parametros");
         setParametros(data);
+
+        // Buscar el valor MAX-UPLOAD_FILES
+        const parametroMaxUploadFiles = data.find(
+          (parametro) => parametro.clave === "MAX_UPLOAD_FILES"
+        );
+
+        if (parametroMaxUploadFiles) {
+          setMaxUploadFiles(Number(parametroMaxUploadFiles));
+        } else {
+          setAlerta({
+            message: "No se encontro el parametro MAX_UPLOAD_FILES",
+          });
+        }
       } catch (error) {
-        console.error(error.response?.data?.message);
+        console.error(
+          "Error al cargar parámetros:",
+          error.response?.data?.message
+        );
+        setAlerta({
+          message: "Error al obtener los parámetros. Intenta nuevamente.",
+        });
       }
     };
 
@@ -54,25 +74,49 @@ const Formulario = () => {
     }
   };
 
-  console.log(parametros);
-  const CANTIDAD_ARCHIVOS = parametros.find(
-    (obj) => obj.clave === "MAX_UPLOAD_FILES"
-  );
-  console.log(CANTIDAD_ARCHIVOS.valor);
-  // Manejar validación en los arhivos a mostrar
-  const manejarArchivos = (e) => {
+  const handleArchivosSeleccionados = (e) => {
     const archivosSeleccionados = Array.from(e.target.files); // Convertimos FileList a un array
+
+    // Verificamos si los archivos seleccionados y los ya cargados exceden el máximo
+    if (archivosSeleccionados.length + archivos.length > maxUploadFiles) {
+      e.target.value = ""; // Limpiar el input de archivos
+
+      setAlerta({
+        message: `Solo puedes subir hasta ${maxUploadFiles} archivo(s).`,
+      });
+
+      return;
+    }
+
+    setAlerta({});
+    setArchivos([...archivos, ...archivosSeleccionados]); // Agregar los nuevos archivos al estado
+  };
+
+  // Funcion para eliminar archivo
+  const eliminarArchivo = (index) => {
+    const nuevosArchivos = archivos.filter((_, i) => i !== index);
+    setArchivos(nuevosArchivos);
+
+    // Reiniciar el input file si no quedan archivos
+    if (nuevosArchivos.length === 0) {
+      fileInputArchivos.current.value = ""; // Reinicia el input file
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
   };
 
   const { message } = alerta;
   return (
     <>
-      <p className="text-lg text-center mb-10">
+      <p className="text-lg text-center mb-10 select-none ">
         Añade tus trámites y{" "}
         <span className="text-indigo-600 font-bold">Administralos</span>
       </p>
       <form
         action=""
+        onSubmit={handleSubmit}
         className="bg-white py-10 px-5 mb-10 lg:mb-0 shadow-md rounded-md"
       >
         {message && <Alerta alerta={alerta} />}
@@ -215,8 +259,9 @@ const Formulario = () => {
             id="archivo"
             accept=".jpg,.png,.zip,.rar"
             multiple
+            ref={fileInputArchivos} // Referencia al input
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
-            onChange={manejarArchivos}
+            onChange={handleArchivosSeleccionados}
           />
         </div>
 
@@ -244,6 +289,29 @@ const Formulario = () => {
           className="bg-indigo-600 text-white w-full p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
         />
       </form>
+
+      {/* Mostrar archivos seleccionados */}
+      {archivos.length > 0 && (
+        <div className="mt-5">
+          <h3 className="text-lg font-bold mb-3">Archivos seleccionados:</h3>
+          <ul>
+            {archivos.map((archivo, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2"
+              >
+                {archivo.name}
+                <button
+                  onClick={() => eliminarArchivo(index)}
+                  className="text-red-600 hover:text-red-800 font-bold"
+                >
+                  x
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </>
   );
 };

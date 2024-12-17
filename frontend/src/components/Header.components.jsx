@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <header className="py-10 bg-indigo-600">
       <div className="container mx-auto flex flex-col lg:flex-row justify-between items-center">
-        <h1 className="font-bold text-2xl text-indigo-200 text-center ">
+        <h1 className="font-bold text-2xl text-indigo-200 text-center select-none ">
           Administrador de Documentos en {""}{" "}
           <span className="text-white font-black">DMS</span>
         </h1>
