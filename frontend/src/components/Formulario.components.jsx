@@ -298,7 +298,7 @@ const Formulario = () => {
             {archivos.map((archivo, index) => (
               <li
                 key={index}
-                className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2"
+                className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2 select-none"
               >
                 {archivo.name}
                 <button
