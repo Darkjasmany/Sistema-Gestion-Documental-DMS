@@ -3,6 +3,14 @@ import clienteAxios from "../config/axios.config";
 import Alerta from "../components/Alerta.components";
 
 const Formulario = () => {
+  const [asunto, setAsunto] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [departamentoRemitenteId, setDepartamentoRemitenteId] = useState("");
+  const [remitenteId, setRemitenteId] = useState("");
+  const [prioridad, setPrioridad] = useState("");
+  const [fechaDocumento, setFechaDocumento] = useState("");
+  const [referenciaTramite, setReferenciaTramite] = useState("");
+  const [tramiteExterno, setTramiteExterno] = useState(false);
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
   const [parametros, setParametros] = useState([]);
@@ -37,6 +45,7 @@ const Formulario = () => {
         } else {
           setAlerta({
             message: "No se encontro el parametro MAX_UPLOAD_FILES",
+            error: true,
           });
         }
       } catch (error) {
@@ -46,6 +55,7 @@ const Formulario = () => {
         );
         setAlerta({
           message: "Error al obtener los parámetros. Intenta nuevamente.",
+          error: true,
         });
       }
     };
@@ -83,6 +93,7 @@ const Formulario = () => {
 
       setAlerta({
         message: `Solo puedes subir hasta ${maxUploadFiles} archivo(s).`,
+        error: true,
       });
 
       return;
@@ -128,6 +139,10 @@ const Formulario = () => {
           <input
             type="text"
             id="asunto"
+            value={asunto}
+            onChange={(e) => {
+              setAsunto(e.target.value);
+            }}
             placeholder="Ingresa el asunto del Trámite"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           />
@@ -144,6 +159,10 @@ const Formulario = () => {
           <input
             type="text"
             id="referenciaTramite"
+            value={referenciaTramite}
+            onChange={(e) => {
+              setReferenciaTramite(e.target.value);
+            }}
             placeholder="Ingresa la referencia del Trámite"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           />
@@ -160,6 +179,10 @@ const Formulario = () => {
           <input
             type="date"
             id="fechaDocumento"
+            value={fechaDocumento}
+            onChange={(e) => {
+              setFechaDocumento(e.target.value);
+            }}
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           />
         </div>
@@ -178,7 +201,14 @@ const Formulario = () => {
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
             onChange={handleDepartamentoChange}
           >
-            <option value="">Seleccione un departamento</option>
+            <option
+              value={departamentoRemitenteId}
+              onChange={(e) => {
+                setDepartamentoRemitenteId(e.target.value);
+              }}
+            >
+              Seleccione un departamento
+            </option>
             {departamentos.map((departamento) => (
               <option value={departamento.id} key={departamento.id}>
                 {departamento.nombre}
@@ -200,7 +230,14 @@ const Formulario = () => {
             id="remitenteId"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           >
-            <option value="">Seleccione un remitente</option>
+            <option
+              value={remitenteId}
+              onChange={(e) => {
+                setRemitenteId(e.target.value);
+              }}
+            >
+              Seleccione un remitente
+            </option>
 
             {remitentes.map((remitente) => (
               <option value={remitente.id} key={remitente.id}>
@@ -213,14 +250,14 @@ const Formulario = () => {
         {/* Campo para seleccionar Prioridad */}
         <div className="mb-5">
           <label
-            htmlFor="remitenteId"
+            htmlFor="prioridad"
             className="text-gray-700 uppercase font-bold"
           >
             Prioridad
           </label>
           <select
-            name="remitenteId"
-            id="remitenteId"
+            name="prioridad"
+            id="prioridad"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           >
             <option value="NORMAL" defaultChecked>
