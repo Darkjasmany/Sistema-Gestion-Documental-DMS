@@ -1,24 +1,29 @@
 import { useState, useEffect, useRef } from "react";
 import clienteAxios from "../config/axios.config";
 import Alerta from "../components/Alerta.components";
+import useTramites from "../hooks/useTramites.hook";
 
 const Formulario = () => {
   const [asunto, setAsunto] = useState("");
-  const [descripcion, setDescripcion] = useState("");
+  const [referenciaTramite, setReferenciaTramite] = useState("");
+  const [fechaDocumento, setFechaDocumento] = useState("");
   const [departamentoRemitenteId, setDepartamentoRemitenteId] = useState("");
   const [remitenteId, setRemitenteId] = useState("");
-  const [prioridad, setPrioridad] = useState("");
-  const [fechaDocumento, setFechaDocumento] = useState("");
-  const [referenciaTramite, setReferenciaTramite] = useState("");
+  const [prioridad, setPrioridad] = useState("NORMAL");
+  const [descripcion, setDescripcion] = useState("");
+  const [archivos, setArchivos] = useState([]);
   const [tramiteExterno, setTramiteExterno] = useState(false);
+
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
   const [parametros, setParametros] = useState([]);
-  const [archivos, setArchivos] = useState([]);
   const [maxUploadFiles, setMaxUploadFiles] = useState(null);
+
   const [alerta, setAlerta] = useState({});
 
   const fileInputArchivos = useRef(null); // Referencia al input file
+
+  const { guardarTramite } = useTramites(); // Extraemos lo que tenemos en el TramiteProvider
 
   useEffect(() => {
     const fetchDepartamentos = async () => {
@@ -67,9 +72,12 @@ const Formulario = () => {
   // Mostrar empleados de acuerdo al departamento seleccionado
   const handleDepartamentoChange = async (e) => {
     const departamentoId = e.target.value;
+    setDepartamentoRemitenteId(departamentoId);
 
     if (!departamentoId) {
-      return setRemitentes([]); // Limpia la lista si no hay un departamento seleccionado
+      setRemitentes([]); // Limpia la lista si no hay un departamento seleccionado
+      setDepartamentoRemitenteId([]);
+      return;
     }
 
     try {
@@ -116,6 +124,42 @@ const Formulario = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (
+      [
+        asunto,
+        descripcion,
+        departamentoRemitenteId,
+        remitenteId,
+        fechaDocumento,
+      ].includes("")
+    ) {
+      return setAlerta({
+        message: "Todos los campos son obligatorios",
+        error: true,
+      });
+    }
+
+    if (archivos.length === 0) {
+      return setAlerta({
+        message: "Debes seleccionar al menos un archivo",
+        error: true,
+      });
+    }
+
+    setAlerta({});
+
+    // Llamamos a la function guardarTramite del useTramites
+    guardarTramite({
+      asunto,
+      referenciaTramite,
+      fechaDocumento,
+      departamentoRemitenteId,
+      remitenteId,
+      prioridad,
+      descripcion,
+      tramiteExterno,
+      archivos,
+    });
   };
 
   const { message } = alerta;
@@ -199,16 +243,10 @@ const Formulario = () => {
             name="departamentoRemitenteId"
             id="departamentoRemitenteId"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            value={departamentoRemitenteId}
             onChange={handleDepartamentoChange}
           >
-            <option
-              value={departamentoRemitenteId}
-              onChange={(e) => {
-                setDepartamentoRemitenteId(e.target.value);
-              }}
-            >
-              Seleccione un departamento
-            </option>
+            <option value={""}>Seleccione un departamento</option>
             {departamentos.map((departamento) => (
               <option value={departamento.id} key={departamento.id}>
                 {departamento.nombre}
@@ -228,10 +266,13 @@ const Formulario = () => {
           <select
             name="remitenteId"
             id="remitenteId"
+            value={remitenteId}
+            onChange={(e) => {
+              setRemitenteId(e.target.value);
+            }}
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           >
             <option
-              value={remitenteId}
               onChange={(e) => {
                 setRemitenteId(e.target.value);
               }}
@@ -258,11 +299,13 @@ const Formulario = () => {
           <select
             name="prioridad"
             id="prioridad"
+            value={prioridad}
+            onChange={(e) => {
+              setPrioridad(e.target.value);
+            }}
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           >
-            <option value="NORMAL" defaultChecked>
-              NORMAL
-            </option>
+            <option value="NORMAL">NORMAL</option>
             <option value="MEDIA">MEDIA</option>
             <option value="ALTA">ALTA</option>
           </select>
@@ -278,6 +321,10 @@ const Formulario = () => {
           </label>
           <textarea
             id="descripcion"
+            value={descripcion}
+            onChange={(e) => {
+              setDescripcion(e.target.value);
+            }}
             placeholder="Ingresa la descripción del Trámite"
             className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
           />
@@ -303,18 +350,22 @@ const Formulario = () => {
         </div>
 
         {/* Checkbox para Trámite Externo */}
-        <div className="flex items-start mb-5">
+        <div className="flex items-start mb-5 select-none">
           <div className="flex items-center h-5">
             <input
               id="tramiteExterno"
               type="checkbox"
-              className="w-4 h-4 border border-gray-300 rounded bg-gray-50"
+              value={tramiteExterno}
+              onChange={(e) => {
+                setTramiteExterno(e.target.checked);
+              }}
+              className="w-4 h-4 border border-gray-300 rounded bg-gray-50 "
               aria-label="Trámite Externo"
             />
           </div>
           <label
             htmlFor="tramiteExterno"
-            className="ms-2 text-sm font-medium text-gray-900"
+            className="ms-2 text-sm font-medium text-gray-900 select-none"
           >
             Trámite Externo
           </label>

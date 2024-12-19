@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthProvider.context";
+import { TramitesProvider } from "./context/TramitesProvider.context";
 
 import AuthLayout from "./layout/Auth.layout";
 import RutaProtegida from "./layout/RutaProtegida.layout";
@@ -16,22 +17,27 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Ruta Pública */}
-          <Route path="/" element={<AuthLayout />}>
-            {/* prom index indica que es el primer componente, osea que el la pagina principal y se la define como index */}
-            <Route index element={<Login />} />
-            {/* Para crear mas rutas hay que definir un path y no necesitas definir el / porque ya esta en la principal */}
-            <Route path="registrar" element={<Registrar />} />
-            <Route path="confirmar/:token" element={<ConfirmarCuenta />} />
-            <Route path="olvide-password" element={<OlvidePassword />} />
-            <Route path="olvide-password/:token" element={<NuevoPassword />} />
-          </Route>
-          {/* Ruta Privada */}
-          <Route path="/admin" element={<RutaProtegida />}>
-            <Route index element={<AdministrarTramites />} />
-          </Route>
-        </Routes>
+        <TramitesProvider>
+          <Routes>
+            {/* Ruta Pública */}
+            <Route path="/" element={<AuthLayout />}>
+              {/* prom index indica que es el primer componente, osea que el la pagina principal y se la define como index */}
+              <Route index element={<Login />} />
+              {/* Para crear mas rutas hay que definir un path y no necesitas definir el / porque ya esta en la principal */}
+              <Route path="registrar" element={<Registrar />} />
+              <Route path="confirmar/:token" element={<ConfirmarCuenta />} />
+              <Route path="olvide-password" element={<OlvidePassword />} />
+              <Route
+                path="olvide-password/:token"
+                element={<NuevoPassword />}
+              />
+            </Route>
+            {/* Ruta Privada */}
+            <Route path="/admin" element={<RutaProtegida />}>
+              <Route index element={<AdministrarTramites />} />
+            </Route>
+          </Routes>
+        </TramitesProvider>
       </AuthProvider>
     </BrowserRouter>
   );
