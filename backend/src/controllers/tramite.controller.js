@@ -16,7 +16,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const agregarTramite = async (req, res) => {
-  console.log(req.usuario);
+  console.log(req.body); // Verifica los datos del formulario
+  console.log(req.files); // Verifica los archivos recibidos
+
   const {
     asunto,
     descripcion,

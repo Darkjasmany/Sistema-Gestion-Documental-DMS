@@ -17,7 +17,7 @@ router
   // upload.array('archivo', cantidadMáxima):'archivo' es el campo esperado y 5 es el máximo de archivos permitidos
   .post(
     checkAuth,
-    upload.array("archivo", config.MAX_UPLOAD_FILES), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
+    upload.array("archivos", config.MAX_UPLOAD_FILES), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
     tramiteController.agregarTramite
   )
   .get(checkAuth, tramiteController.listarTramitesUsuario);

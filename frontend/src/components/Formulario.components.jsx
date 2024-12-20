@@ -6,7 +6,9 @@ import useTramites from "../hooks/useTramites.hook";
 const Formulario = () => {
   const [asunto, setAsunto] = useState("");
   const [referenciaTramite, setReferenciaTramite] = useState("");
-  const [fechaDocumento, setFechaDocumento] = useState("");
+  const [fechaDocumento, setFechaDocumento] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [departamentoRemitenteId, setDepartamentoRemitenteId] = useState("");
   const [remitenteId, setRemitenteId] = useState("");
   const [prioridad, setPrioridad] = useState("NORMAL");
@@ -145,6 +147,8 @@ const Formulario = () => {
         error: true,
       });
     }
+
+    console.log(archivos);
 
     setAlerta({});
 
