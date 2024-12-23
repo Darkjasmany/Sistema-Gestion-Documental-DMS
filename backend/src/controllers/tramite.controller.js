@@ -132,6 +132,7 @@ export const listarTramitesUsuario = async (req, res) => {
         activo: true,
       },
       attributes: [
+        "id",
         "numero_tramite",
         "asunto",
         "descripcion",

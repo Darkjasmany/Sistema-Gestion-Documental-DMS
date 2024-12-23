@@ -7,6 +7,32 @@ const TramitesContext = createContext();
 export const TramitesProvider = ({ children }) => {
   const [tramites, setTramites] = useState([]);
 
+  useEffect(() => {
+    const obtenerTramites = async () => {
+      try {
+        const token =
+          localStorage.getItem("dms_token") ||
+          sessionStorage.getItem("dms_token");
+        if (!token) return;
+
+        const config = {
+          headers: {
+            // "Content-Type": "application/json", // Para indicar que el body es un JSON
+            "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const { data } = await clienteAxios("/tramites", config);
+
+        setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
+      } catch (error) {
+        console.error(error.response?.data?.mensaje);
+      }
+    };
+    obtenerTramites();
+  }, []);
+
   const guardarTramite = async (tramite) => {
     console.log(tramite);
     try {
@@ -49,7 +75,6 @@ export const TramitesProvider = ({ children }) => {
       const {
         activo,
         createdAt,
-        id,
         usuario_actualizacion,
         usuario_creacion,
         ...tramiteAlmacenado
