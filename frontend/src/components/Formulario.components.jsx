@@ -169,10 +169,15 @@ const Formulario = () => {
   const { message } = alerta;
   return (
     <>
-      <p className="text-lg text-center mb-10 select-none ">
+      <h2 className="font-black text-3xl text-center">
+        Administrador de Trámites
+      </h2>
+
+      <p className="text-xl mt-5 mb-10 text-center">
         Añade tus trámites y{" "}
-        <span className="text-indigo-600 font-bold">Administralos</span>
+        <span className="text-indigo-600 font-bold">Administralos</span>{" "}
       </p>
+
       <form
         action=""
         onSubmit={handleSubmit}

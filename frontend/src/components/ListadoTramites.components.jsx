@@ -16,8 +16,9 @@ const ListadoTramites = () => {
             </span>{" "}
           </p>
           {/* Vamos a iterar sobre los tramites del context, pero necesitamos definir una key para cada tramite, por lo que vamos a utilizar el id de cada tramite. Para ello, vamos a utilizar el método map de los arrays, que nos permite recorrer cada elemento de un array y devolver un nuevo array con los elementos transformados. En este caso, vamos a devolver un componente Tramite por cada tramite, y le vamos a pasar el tramite como prop. Para que React pueda identificar cada componente, le vamos a pasar el id del tramite como key. Finalmente, vamos a cerrar el fragment y el operador ternario. */}
+
           {tramites.map((tramite) => {
-            <Tramite key={tramite.id} tramite={tramite} />;
+            return <Tramite key={tramite.id} tramite={tramite} />;
           })}
         </>
       ) : (
