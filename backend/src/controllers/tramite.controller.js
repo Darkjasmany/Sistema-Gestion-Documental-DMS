@@ -63,6 +63,9 @@ export const agregarTramite = async (req, res) => {
       message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
     });
 
+  // const extensionesPermitidas = config.EXTENSIONES_PERMITIDAS.split(",");
+  // console.log(extensionesPermitidas);
+
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
   );

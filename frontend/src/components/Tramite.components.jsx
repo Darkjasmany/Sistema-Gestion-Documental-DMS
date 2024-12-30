@@ -2,6 +2,8 @@
 const Tramite = ({ tramite }) => {
   console.log(tramite);
 
+  // Para propiedades anidadas como departamentoRemitente.nombre y remitente.nombreCompleto, se usa destructuring adicional en la misma declaración, y se renombran las variables con : nombreDepartamento y : nombreRemitente.
+
   const {
     id,
     asunto,
@@ -11,8 +13,8 @@ const Tramite = ({ tramite }) => {
     numero_tramite,
     prioridad,
     referencia_tramite,
-    departamentoRemitente,
-    remitente,
+    departamentoRemitente: { nombre: nombreDepartamento }, // Destructuramos el departamentoRemitente y accedemos al nombre
+    remitente: { nombreCompleto: nombreRemitente }, // Destructuramos el remitente y accedemos al nombreCompleto
   } = tramite;
 
   // Formatear fechas
@@ -23,11 +25,6 @@ const Tramite = ({ tramite }) => {
       nuevaFecha
     );
   };
-
-  const formattedCreatedAt = new Date(createdAt).toLocaleDateString();
-  const formattedFechaDocumento = new Date(
-    fecha_documento
-  ).toLocaleDateString();
 
   return (
     <>
@@ -56,11 +53,15 @@ const Tramite = ({ tramite }) => {
         </p>
         <p className="font-bold uppercase text-indigo-700 my-2">
           Departamento Remitente:{" "}
-          <span className="font-normal normal-case text-black">{}</span>
+          <span className="font-normal normal-case text-black">
+            {nombreDepartamento}
+          </span>
         </p>
         <p className="font-bold uppercase text-indigo-700 my-2">
           Remitente:{" "}
-          <span className="font-normal normal-case text-black">{}</span>
+          <span className="font-normal normal-case text-black">
+            {nombreRemitente}
+          </span>
         </p>
         <p className="font-bold uppercase text-indigo-700 my-2">
           Prioridad:{" "}
