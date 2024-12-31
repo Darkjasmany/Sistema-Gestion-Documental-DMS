@@ -6,6 +6,7 @@ const TramitesContext = createContext();
 // De donde vienen los datos
 export const TramitesProvider = ({ children }) => {
   const [tramites, setTramites] = useState([]);
+  const [tramite, setTramite] = useState({});
 
   useEffect(() => {
     const obtenerTramites = async () => {
@@ -35,6 +36,11 @@ export const TramitesProvider = ({ children }) => {
 
   const guardarTramite = async (tramite) => {
     console.log(tramite);
+
+    // if (tramite.id) {
+    //   console.log("Actualizando tramite");
+    // }
+
     try {
       // ** Cuando es una petición POST, que requiere autenticación se debe enviar el token en la configuracion en el header
       const token =
@@ -69,7 +75,7 @@ export const TramitesProvider = ({ children }) => {
       });
 
       const { data } = await clienteAxios.post("/tramites", formData, config);
-      console.log(data);
+      // console.log(data);
 
       // Va a crear un nuevo objeto con lo que no necesitamos
       const {
@@ -80,7 +86,7 @@ export const TramitesProvider = ({ children }) => {
         ...tramiteAlmacenado
       } = data;
 
-      console.log(tramiteAlmacenado);
+      // console.log(tramiteAlmacenado);
 
       // Actualizar el state tomando lo que hay en tramites y agregando el nuevo tramite almacenado
       setTramites([tramiteAlmacenado, ...tramites]);
@@ -89,9 +95,16 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
+  const setEdicion = (tramite) => {
+    console.log(tramite);
+    setTramite(tramite);
+  };
+
   return (
     // Value: indicamos que va a ser un objeto que sera disponible y le pasamos el estado tramites
-    <TramitesContext.Provider value={{ tramites, guardarTramite }}>
+    <TramitesContext.Provider
+      value={{ tramites, guardarTramite, setEdicion, tramite }}
+    >
       {children}
     </TramitesContext.Provider>
   );

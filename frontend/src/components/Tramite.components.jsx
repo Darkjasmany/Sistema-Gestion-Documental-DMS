@@ -1,6 +1,10 @@
+import useTramites from "../hooks/useTramites.hook";
+
 // Destructuramos el tramite que nos llega como prop siendo un objeto
 const Tramite = ({ tramite }) => {
-  console.log(tramite);
+  const { setEdicion } = useTramites();
+
+  // console.log(tramite);
 
   // Para propiedades anidadas como departamentoRemitente.nombre y remitente.nombreCompleto, se usa destructuring adicional en la misma declaración, y se renombran las variables con : nombreDepartamento y : nombreRemitente.
 
@@ -20,8 +24,8 @@ const Tramite = ({ tramite }) => {
   // Formatear fechas
   // Aqui usamos una api de JS para formatear la fecha sin modificar el formato de la fecha en la base de datos
   const formatearFecha = (fecha) => {
-    const nuevaFecha = new Date(fecha);
-    return new Intl.DateTimeFormat("es-ES", { dateStyle: "long" }).format(
+    const nuevaFecha = new Date(`${fecha}T00:00`); // Convierte la fecha a un objeto Date Sin la "Z" (evitamos UTC)
+    return new Intl.DateTimeFormat("es-EC", { dateStyle: "long" }).format(
       nuevaFecha
     );
   };
@@ -86,6 +90,9 @@ const Tramite = ({ tramite }) => {
           <button
             type="button"
             className="py-2 px-10 bg-indigo-600 hover:bg-indigo-700 text-white uppercase font-bold rounded-lg"
+            onClick={() => {
+              setEdicion(tramite);
+            }}
           >
             Editar
           </button>

@@ -143,6 +143,7 @@ export const listarTramitesUsuario = async (req, res) => {
         "fecha_documento",
         "referencia_tramite",
         "createdAt",
+        "externo",
         [
           // Conteo de archivos de cada trámite
           Sequelize.literal(

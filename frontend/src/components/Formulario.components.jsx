@@ -21,11 +21,28 @@ const Formulario = () => {
   const [parametros, setParametros] = useState([]);
   const [maxUploadFiles, setMaxUploadFiles] = useState(null);
 
+  const [id, setId] = useState(null);
+
   const [alerta, setAlerta] = useState({});
 
   const fileInputArchivos = useRef(null); // Referencia al input file
 
-  const { guardarTramite } = useTramites(); // Extraemos lo que tenemos en el TramiteProvider
+  const { guardarTramite, tramite } = useTramites(); // Extraemos lo que tenemos en el TramiteProvider
+
+  useEffect(() => {
+    if (tramite?.asunto) {
+      setAsunto(tramite.asunto);
+      setReferenciaTramite(tramite.referencia_tramite);
+      setFechaDocumento(tramite.fecha_documento);
+      setDepartamentoRemitenteId(tramite.departamentoRemitente);
+      setRemitenteId(tramite.remitente);
+      setPrioridad(tramite.prioridad);
+      setDescripcion(tramite.descripcion);
+      setTramiteExterno(tramite.externo);
+      // setArchivos(tramite.archivos);
+      setId(tramite.id);
+    }
+  }, [tramite]);
 
   useEffect(() => {
     const fetchDepartamentos = async () => {
@@ -163,6 +180,7 @@ const Formulario = () => {
       descripcion,
       tramiteExterno,
       archivos,
+      id,
     });
   };
 
@@ -382,7 +400,7 @@ const Formulario = () => {
 
         <input
           type="submit"
-          value={"Agregar Trámite"}
+          value={id ? "Guardar Cambios" : "Crear Trámite"}
           className="bg-indigo-600 text-white w-full p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
         />
       </form>
