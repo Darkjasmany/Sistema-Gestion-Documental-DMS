@@ -13,6 +13,7 @@ const Tramite = ({ tramite }) => {
     asunto,
     createdAt,
     descripcion,
+    externo,
     fecha_documento,
     numero_tramite,
     prioridad,

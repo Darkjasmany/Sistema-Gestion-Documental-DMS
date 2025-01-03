@@ -34,12 +34,21 @@ const Formulario = () => {
       setAsunto(tramite.asunto);
       setReferenciaTramite(tramite.referencia_tramite);
       setFechaDocumento(tramite.fecha_documento);
-      setDepartamentoRemitenteId(tramite.departamentoRemitente);
-      setRemitenteId(tramite.remitente);
+      setDepartamentoRemitenteId(tramite.departamentoRemitente?.id || "");
+      setRemitenteId(tramite.remitente?.id || "");
       setPrioridad(tramite.prioridad);
       setDescripcion(tramite.descripcion);
       setTramiteExterno(tramite.externo);
-      // setArchivos(tramite.archivos);
+      /*
+      // Generar URLs completas para los archivos existentes
+      if (tramite.tramiteArchivos?.length > 0) {
+        const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
+          nombre: archivo.original_name,
+          url: `${process.env.VITE_BACKEND_URL}/${archivo.ruta}`,
+        }));
+        setArchivos(rutasArchivos);
+      }
+*/
       setId(tramite.id);
     }
   }, [tramite]);
@@ -408,7 +417,9 @@ const Formulario = () => {
       {/* Mostrar archivos seleccionados */}
       {archivos.length > 0 && (
         <div className="mt-5">
-          <h3 className="text-lg font-bold mb-3">Archivos seleccionados:</h3>
+          <h3 className="text-lg font-bold mb-3">
+            {id ? "Archivos cargados" : "Archivos seleccionados"}
+          </h3>
           <ul>
             {archivos.map((archivo, index) => (
               <li

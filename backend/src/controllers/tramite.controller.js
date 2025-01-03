@@ -144,13 +144,13 @@ export const listarTramitesUsuario = async (req, res) => {
         "referencia_tramite",
         "createdAt",
         "externo",
-        [
-          // Conteo de archivos de cada trámite
-          Sequelize.literal(
-            `(SELECT COUNT(*) FROM "tramite_archivo" WHERE "tramite_archivo"."tramite_id" = "tramite"."id")`
-          ),
-          "totalArchivosCargados",
-        ],
+        // [
+        //   // Conteo de archivos de cada trámite
+        //   Sequelize.literal(
+        //     `(SELECT COUNT(*) FROM "tramite_archivo" WHERE "tramite_archivo"."tramite_id" = "tramite"."id")`
+        //   ),
+        //   "totalArchivosCargados",
+        // ],
       ],
       include: [
         {
@@ -169,7 +169,13 @@ export const listarTramitesUsuario = async (req, res) => {
             // "cedula",
           ],
         },
+        {
+          model: TramiteArchivo,
+          as: "tramiteArchivos",
+          attributes: ["original_name", "ruta"],
+        },
       ],
+
       order: [["numero_tramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
     });
 
