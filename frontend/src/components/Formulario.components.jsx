@@ -39,16 +39,16 @@ const Formulario = () => {
       setPrioridad(tramite.prioridad);
       setDescripcion(tramite.descripcion);
       setTramiteExterno(tramite.externo);
-      /*
+
       // Generar URLs completas para los archivos existentes
       if (tramite.tramiteArchivos?.length > 0) {
         const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
-          nombre: archivo.original_name,
-          url: `${process.env.VITE_BACKEND_URL}/${archivo.ruta}`,
+          name: archivo.original_name,
+          url: `${import.meta.env.VITE_BACKEND_URL}/${archivo.ruta}`,
         }));
         setArchivos(rutasArchivos);
       }
-*/
+
       setId(tramite.id);
     }
   }, [tramite]);
@@ -426,7 +426,7 @@ const Formulario = () => {
                 key={index}
                 className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2 select-none"
               >
-                {archivo.name}
+                {archivo.name ? archivo.name : archivo.url.split("/").pop()}
                 <button
                   onClick={() => eliminarArchivo(index)}
                   className="text-red-600 hover:text-red-800 font-bold"

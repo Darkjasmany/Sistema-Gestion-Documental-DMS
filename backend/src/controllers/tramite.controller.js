@@ -176,10 +176,23 @@ export const listarTramitesUsuario = async (req, res) => {
         },
       ],
 
-      order: [["numero_tramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
+      order: [["numero_tramite", "ASC"]],
     });
 
-    res.json(tramites);
+    // Modificar la ruta antes de enviarla al frontend
+    const tramitesConRutas = tramites.map((tramite) => {
+      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+        ...archivo.toJSON(),
+        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+      }));
+
+      return {
+        ...tramite.toJSON(),
+        tramiteArchivos: archivosConRutas,
+      };
+    });
+
+    res.json(tramitesConRutas);
   } catch (error) {
     console.error(
       `Error al obtener las trámites del usuario : ${error.message}`
