@@ -30,30 +30,6 @@ const Formulario = () => {
   const { guardarTramite, tramite } = useTramites(); // Extraemos lo que tenemos en el TramiteProvider
 
   useEffect(() => {
-    if (tramite?.asunto) {
-      setAsunto(tramite.asunto);
-      setReferenciaTramite(tramite.referencia_tramite);
-      setFechaDocumento(tramite.fecha_documento);
-      setDepartamentoRemitenteId(tramite.departamentoRemitente?.id || "");
-      setRemitenteId(tramite.remitente?.id || "");
-      setPrioridad(tramite.prioridad);
-      setDescripcion(tramite.descripcion);
-      setTramiteExterno(tramite.externo);
-
-      // Generar URLs completas para los archivos existentes
-      if (tramite.tramiteArchivos?.length > 0) {
-        const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
-          name: archivo.original_name,
-          url: `${import.meta.env.VITE_BACKEND_URL}/${archivo.ruta}`,
-        }));
-        setArchivos(rutasArchivos);
-      }
-
-      setId(tramite.id);
-    }
-  }, [tramite]);
-
-  useEffect(() => {
     const fetchDepartamentos = async () => {
       try {
         const { data } = await clienteAxios("/departamentos");
@@ -96,6 +72,55 @@ const Formulario = () => {
     fetchDepartamentos();
     fecthParametros();
   }, []);
+
+  useEffect(() => {
+    if (tramite?.asunto) {
+      setAsunto(tramite.asunto);
+      setReferenciaTramite(tramite.referencia_tramite);
+      setFechaDocumento(tramite.fecha_documento);
+      setDepartamentoRemitenteId(tramite.departamentoRemitente?.id || "");
+      // setRemitenteId(tramite.remitente?.id || "");
+
+      ///
+
+      const cargarRemitentes = async () => {
+        if (tramite.departamentoRemitente?.id) {
+          try {
+            const { data } = await clienteAxios(
+              `/empleados/por-departamento/${tramite.departamentoRemitente?.id}`
+            );
+
+            setRemitentes(data);
+          } catch (error) {
+            console.error(error.response?.data?.message);
+            setRemitentes([]); // Limpia la lista en caso de error
+          }
+        }
+      };
+
+      cargarRemitentes().then(() => {
+        // Después de cargar los remitentes, asignar el remitenteId
+        setRemitenteId(tramite.remitente?.id || "");
+      });
+
+      ///
+
+      setPrioridad(tramite.prioridad);
+      setDescripcion(tramite.descripcion);
+      setTramiteExterno(tramite.externo);
+
+      // Generar URLs completas para los archivos existentes
+      if (tramite.tramiteArchivos?.length > 0) {
+        const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
+          name: archivo.original_name,
+          url: `${import.meta.env.VITE_BACKEND_URL}/${archivo.ruta}`,
+        }));
+        setArchivos(rutasArchivos);
+      }
+
+      setId(tramite.id);
+    }
+  }, [tramite]);
 
   // Mostrar empleados de acuerdo al departamento seleccionado
   const handleDepartamentoChange = async (e) => {
