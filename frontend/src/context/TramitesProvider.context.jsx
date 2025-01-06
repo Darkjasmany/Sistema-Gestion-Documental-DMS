@@ -27,10 +27,7 @@ export const TramitesProvider = ({ children }) => {
 
   useEffect(() => {
     const obtenerTramites = async () => {
-      if (!token) {
-        console.log("No hay token disponible, no se pueden obtener trámites.");
-        return;
-      }
+      if (!token) return; // Si no hay token, no se hace la petición
 
       try {
         const { data } = await clienteAxios("/tramites", getAxiosConfig());
