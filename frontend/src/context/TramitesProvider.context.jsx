@@ -23,9 +23,10 @@ export const TramitesProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         };
-
+        console.log(token);
         const { data } = await clienteAxios("/tramites", config);
 
+        console.log(data);
         setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
       } catch (error) {
         console.error(error.response?.data?.mensaje);

@@ -26,7 +26,8 @@ const AuthProvider = ({ children }) => {
     // ** Header de Configuración
     const config = {
       headers: {
-        "Context-Type": "application/json",
+        // "Content-Type": "application/json", // Para indicar que el body es un JSON
+        "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
         Authorization: `Bearer ${token}`,
       },
     };
