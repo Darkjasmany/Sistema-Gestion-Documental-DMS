@@ -9,53 +9,46 @@ export const TramitesProvider = ({ children }) => {
   const [tramite, setTramite] = useState({});
   const { auth } = useAuth();
 
-  console.log(auth);
+  // Obtener el token
+  const token =
+    localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+
+  // Configuración de Axios centralizada
+  const getAxiosConfig = () => {
+    // ** Cuando es una petición POST, que requiere autenticación se debe enviar el token en la configuracion en el header
+    return {
+      headers: {
+        // "Content-Type": "application/json", // Para indicar que el body es un JSON
+        "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  };
 
   useEffect(() => {
     const obtenerTramites = async () => {
+      if (!token) {
+        console.log("No hay token disponible, no se pueden obtener trámites.");
+        return;
+      }
+
       try {
-        const token = auth?.token;
-        if (!token) return;
-
-        const config = {
-          headers: {
-            // "Content-Type": "application/json", // Para indicar que el body es un JSON
-            "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
-        const { data } = await clienteAxios("/tramites", config);
-
+        const { data } = await clienteAxios("/tramites", getAxiosConfig());
         setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
       } catch (error) {
         console.error(error.response?.data?.mensaje);
       }
     };
     obtenerTramites();
-  }, [auth?.token]); // Escucha cambios en el token
+  }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
 
   const guardarTramite = async (tramite) => {
-    console.log(tramite);
-
-    // if (tramite.id) {
-    //   console.log("Actualizando tramite");
-    // }
+    if (!token) {
+      console.log("No hay token disponible, no se puede guardar el trámite.");
+      return;
+    }
 
     try {
-      // ** Cuando es una petición POST, que requiere autenticación se debe enviar el token en la configuracion en el header
-      const token =
-        localStorage.getItem("dms_token") ||
-        sessionStorage.getItem("dms_token");
-
-      const config = {
-        headers: {
-          // "Content-Type": "application/json", // Para indicar que el body es un JSON
-          "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
       // Como el backend recibe archivos, se debe enviar un FormData
       const formData = new FormData();
       formData.append("asunto", tramite.asunto);
@@ -75,7 +68,11 @@ export const TramitesProvider = ({ children }) => {
         formData.append("archivos", archivo);
       });
 
-      const { data } = await clienteAxios.post("/tramites", formData, config);
+      const { data } = await clienteAxios.post(
+        "/tramites",
+        formData,
+        getAxiosConfig()
+      );
       // console.log(data);
 
       // Va a crear un nuevo objeto con lo que no necesitamos
@@ -97,7 +94,7 @@ export const TramitesProvider = ({ children }) => {
   };
 
   const setEdicion = (tramite) => {
-    console.log(tramite);
+    // console.log(tramite);
     setTramite(tramite);
   };
 
