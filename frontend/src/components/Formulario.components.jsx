@@ -451,13 +451,23 @@ const Formulario = () => {
                 key={index}
                 className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2 select-none"
               >
-                {archivo.name ? archivo.name : archivo.url.split("/").pop()}
+                {/* {archivo.name ? archivo.name : archivo.url.split("/").pop()}
                 <button
                   onClick={() => eliminarArchivo(index)}
                   className="text-red-600 hover:text-red-800 font-bold"
                 >
                   x
-                </button>
+                </button> */}
+
+                <a href={archivo.url} target="_blank" rel="noopener noreferrer">
+                  {archivo.name ? archivo.name : archivo.url.split("/").pop()}
+                  <button
+                    onClick={() => eliminarArchivo(index)}
+                    className="text-red-600 hover:text-red-800 font-bold"
+                  >
+                    x
+                  </button>
+                </a>
               </li>
             ))}
           </ul>
