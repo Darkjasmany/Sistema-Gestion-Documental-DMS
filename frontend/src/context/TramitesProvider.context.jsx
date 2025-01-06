@@ -1,19 +1,20 @@
 import { createContext, useEffect, useState } from "react";
 import clienteAxios from "../config/axios.config";
-
+import useAuth from "../hooks/useAuth.hook";
 const TramitesContext = createContext();
 
 // De donde vienen los datos
 export const TramitesProvider = ({ children }) => {
   const [tramites, setTramites] = useState([]);
   const [tramite, setTramite] = useState({});
+  const { auth } = useAuth();
+
+  console.log(auth);
 
   useEffect(() => {
     const obtenerTramites = async () => {
       try {
-        const token =
-          localStorage.getItem("dms_token") ||
-          sessionStorage.getItem("dms_token");
+        const token = auth?.token;
         if (!token) return;
 
         const config = {
@@ -23,17 +24,16 @@ export const TramitesProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         };
-        console.log(token);
+
         const { data } = await clienteAxios("/tramites", config);
 
-        console.log(data);
         setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
       } catch (error) {
         console.error(error.response?.data?.mensaje);
       }
     };
     obtenerTramites();
-  }, []);
+  }, [auth?.token]); // Escucha cambios en el token
 
   const guardarTramite = async (tramite) => {
     console.log(tramite);
