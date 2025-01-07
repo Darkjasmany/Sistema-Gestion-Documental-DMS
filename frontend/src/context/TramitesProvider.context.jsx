@@ -30,14 +30,16 @@ export const TramitesProvider = ({ children }) => {
       if (!token) return; // Si no hay token, no se hace la petición
 
       try {
-        const { data } = await clienteAxios("/tramites", getAxiosConfig());
+        const { data } = await clienteAxios.get("/tramites", getAxiosConfig());
+
+        console.log(data);
         setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
       } catch (error) {
         console.error(error.response?.data?.mensaje);
       }
     };
     obtenerTramites();
-  }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
+  }, [auth, token, tramite]); // Escucha cambios dependiendo de la autenticacion, y del token
 
   const guardarTramite = async (tramite) => {
     if (!token) {

@@ -198,9 +198,9 @@ Tramite.addHook("beforeUpdate", async (tramite) => {
 // ** Relaciones
 // 1 tramite pertenece a 1 departamento remitente
 Tramite.belongsTo(Departamento, {
+  as: "departamentoRemitente", // Alias para esta relación
   foreignKey: "departamento_remitente", // campo en la tabla Tramite que contiene el ID del departamento
   targetKey: "id", // campo en la tabla Departamento que se enlaza
-  as: "departamentoRemitente", // Alias para esta relación
 });
 
 Tramite.hasMany(TramiteArchivo, {
@@ -245,15 +245,17 @@ TramiteAsignacion.belongsTo(Tramite, {
 // 1 departamento remitente puede tener muchos tramites
 Departamento.hasMany(Tramite, {
   foreignKey: "departamento_remitente",
-  sourceKey: "id",
-  as: "tramitesRemitidos", // Alias para la relación inversa (remitente)
+  // sourceKey: "id",
+  // as: "tramitesRemitidos", // Alias para la relación inversa (remitente)
 });
+
+Empleado.hasMany(Tramite, { foreignKey: "remitente_id" });
 
 // Relación entre Tramite y Empleado como remitente
 Tramite.belongsTo(Empleado, {
+  as: "remitente", // Alias que usarás en las consultas
   foreignKey: "remitente_id", // Este es el campo que almacena el id del remitente
   targetKey: "id",
-  as: "remitente", // Alias que usarás en las consultas
 });
 /*
 // Relación entre Tramite y Empleado como destinatario

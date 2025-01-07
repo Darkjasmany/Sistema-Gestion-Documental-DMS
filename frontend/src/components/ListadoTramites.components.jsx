@@ -4,6 +4,8 @@ import Tramite from "./Tramite.components";
 const ListadoTramites = () => {
   const { tramites } = useTramites();
 
+  // console.log(tramites);
+
   return (
     <>
       {tramites.length ? (
