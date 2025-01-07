@@ -74,14 +74,12 @@ const Formulario = () => {
   }, []);
 
   useEffect(() => {
+    //** CARGAR DATOS PARA ACTUALIZAR TRÁMITE */
     if (tramite?.asunto) {
       setAsunto(tramite.asunto);
       setReferenciaTramite(tramite.referencia_tramite);
       setFechaDocumento(tramite.fecha_documento);
       setDepartamentoRemitenteId(tramite.departamentoRemitente?.id || "");
-      // setRemitenteId(tramite.remitente?.id || "");
-
-      ///
 
       const cargarRemitentes = async () => {
         if (tramite.departamentoRemitente?.id) {
@@ -103,8 +101,6 @@ const Formulario = () => {
         setRemitenteId(tramite.remitente?.id || "");
       });
 
-      ///
-
       setPrioridad(tramite.prioridad);
       setDescripcion(tramite.descripcion);
       setTramiteExterno(tramite.externo);
@@ -112,6 +108,7 @@ const Formulario = () => {
       // Generar URLs completas para los archivos existentes
       if (tramite.tramiteArchivos?.length > 0) {
         const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
+          id: archivo.id,
           name: archivo.original_name,
           url: `${import.meta.env.VITE_BACKEND_URL}/${archivo.ruta}`,
         }));

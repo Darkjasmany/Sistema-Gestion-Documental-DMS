@@ -173,7 +173,7 @@ export const listarTramitesUsuario = async (req, res) => {
         {
           model: TramiteArchivo,
           as: "tramiteArchivos",
-          attributes: ["original_name", "ruta"],
+          attributes: ["id", "original_name", "ruta"],
         },
       ],
 

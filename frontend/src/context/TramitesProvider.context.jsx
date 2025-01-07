@@ -45,48 +45,56 @@ export const TramitesProvider = ({ children }) => {
       return;
     }
 
-    try {
-      // Como el backend recibe archivos, se debe enviar un FormData
-      const formData = new FormData();
-      formData.append("asunto", tramite.asunto);
-      formData.append("descripcion", tramite.descripcion);
-      formData.append(
-        "departamentoRemitenteId",
-        tramite.departamentoRemitenteId
-      );
-      formData.append("remitenteId", tramite.remitenteId);
-      formData.append("prioridad", tramite.prioridad);
-      formData.append("fechaDocumento", tramite.fechaDocumento);
-      formData.append("referenciaTramite", tramite.referenciaTramite);
-      formData.append("tramiteExterno", tramite.tramiteExterno);
+    //** Actualización o Crear 1 Trámite */
+    // Si el tramite tiene un id, es porque se va a editar
+    if (tramite.id) {
+      console.log("Editando tramite...");
+      console.log(tramite);
+    } else {
+      // Si no tiene id, es porque es un nuevo tramite
+      try {
+        // Como el backend recibe archivos, se debe enviar un FormData
+        const formData = new FormData();
+        formData.append("asunto", tramite.asunto);
+        formData.append("descripcion", tramite.descripcion);
+        formData.append(
+          "departamentoRemitenteId",
+          tramite.departamentoRemitenteId
+        );
+        formData.append("remitenteId", tramite.remitenteId);
+        formData.append("prioridad", tramite.prioridad);
+        formData.append("fechaDocumento", tramite.fechaDocumento);
+        formData.append("referenciaTramite", tramite.referenciaTramite);
+        formData.append("tramiteExterno", tramite.tramiteExterno);
 
-      // Adjuntar archivos al FormData
-      tramite.archivos.forEach((archivo) => {
-        formData.append("archivos", archivo);
-      });
+        // Adjuntar archivos al FormData
+        tramite.archivos.forEach((archivo) => {
+          formData.append("archivos", archivo);
+        });
 
-      const { data } = await clienteAxios.post(
-        "/tramites",
-        formData,
-        getAxiosConfig()
-      );
-      // console.log(data);
+        const { data } = await clienteAxios.post(
+          "/tramites",
+          formData,
+          getAxiosConfig()
+        );
+        // console.log(data);
 
-      // Va a crear un nuevo objeto con lo que no necesitamos
-      const {
-        activo,
-        createdAt,
-        usuario_actualizacion,
-        usuario_creacion,
-        ...tramiteAlmacenado
-      } = data;
+        // Va a crear un nuevo objeto con lo que no necesitamos
+        const {
+          activo,
+          createdAt,
+          usuario_actualizacion,
+          usuario_creacion,
+          ...tramiteAlmacenado
+        } = data;
 
-      // console.log(tramiteAlmacenado);
+        // console.log(tramiteAlmacenado);
 
-      // Actualizar el state tomando lo que hay en tramites y agregando el nuevo tramite almacenado
-      setTramites([tramiteAlmacenado, ...tramites]);
-    } catch (error) {
-      console.error(error.response?.data?.mensaje);
+        // Actualizar el state tomando lo que hay en tramites y agregando el nuevo tramite almacenado
+        setTramites([tramiteAlmacenado, ...tramites]);
+      } catch (error) {
+        console.error(error.response?.data?.mensaje);
+      }
     }
   };
 
