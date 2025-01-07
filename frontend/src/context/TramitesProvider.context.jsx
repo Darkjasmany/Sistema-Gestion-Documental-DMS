@@ -46,12 +46,43 @@ export const TramitesProvider = ({ children }) => {
     }
 
     //** Actualización o Crear 1 Trámite */
-    // Si el tramite tiene un id, es porque se va a editar
     if (tramite.id) {
+      //** Si el tramite tiene un id, es porque se va a editar
       console.log("Editando tramite...");
       console.log(tramite);
+
+      try {
+        // Como el backend recibe archivos, se debe enviar un formData
+        const formData = new FormData();
+        formData.append("asunto", tramite.asunto);
+        formData.append("descripcion", tramite.descripcion);
+        formData.append(
+          "departamentoRemitenteId",
+          tramite.departamentoRemitenteId
+        );
+        formData.append("remitenteId", tramite.remitenteId);
+        formData.append("prioridad", tramite.prioridad);
+        formData.append("fechaDocumento", tramite.fechaDocumento);
+        formData.append("referenciaTramite", tramite.referenciaTramite);
+        formData.append("tramiteExterno", tramite.tramiteExterno);
+
+        // Adjuntar archivos al FormData
+        tramite.archivos.forEach((archivo) => {
+          formData.append("archivos", archivo);
+        });
+
+        const { data } = await clienteAxios.post(
+          `/tramites/${tramite.id}`,
+          formData,
+          getAxiosConfig()
+        );
+
+        console.log(data);
+      } catch (error) {
+        console.error(error.response?.data?.mensaje);
+      }
     } else {
-      // Si no tiene id, es porque es un nuevo tramite
+      // **Si no tiene id, es porque es un nuevo tramite
       try {
         // Como el backend recibe archivos, se debe enviar un FormData
         const formData = new FormData();
