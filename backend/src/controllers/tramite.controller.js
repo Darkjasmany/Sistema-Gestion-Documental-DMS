@@ -241,85 +241,113 @@ export const obtenerTramite = async (req, res) => {
 };
 
 export const actualizarTramite = async (req, res) => {
+  // console.log(req.body);
+  // console.log(req.files);
+
   // Inicia la transacción
   const transaction = await Tramite.sequelize.transaction();
 
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const {
-      asunto,
-      descripcion,
-      departamentoRemitenteId,
-      remitenteId,
-      prioridad,
-      fechaDocumento,
-      referenciaTramite,
-      tramiteExterno,
-    } = req.body;
+  const {
+    asunto,
+    descripcion,
+    departamentoRemitenteId,
+    remitenteId,
+    prioridad,
+    fechaDocumento,
+    referenciaTramite,
+    tramiteExterno,
+  } = req.body;
 
-    if (
-      !asunto ||
-      asunto.trim() === "" ||
-      !descripcion ||
-      descripcion.trim() === "" ||
-      !departamentoRemitenteId ||
-      !remitenteId ||
-      !fechaDocumento
-    ) {
-      await transaction.rollback();
-      return res.status(400).json({
-        message:
-          "Campos obligatorios : Asunto | Descripción | Remitente y su departamento | Fecha del documento",
-      });
-    }
-
-    const tramiteActualizado = await Tramite.findOne(
-      {
-        where: { id, estado: "INGRESADO", activo: true },
-      },
-      transaction
-    );
-    if (!tramiteActualizado) {
-      await transaction.rollback();
-      return res.status(404).json({ message: "Trámite no encontrado" });
-    }
-
-    if (
-      tramiteActualizado.usuario_creacion.toString() !==
-        req.usuario.id.toString() ||
-      tramiteActualizado.departamento_tramite.toString() !==
-        req.usuario.departamento_id.toString()
-    ) {
-      await transaction.rollback();
-      return res.status(403).json({ message: "Acción no válida" });
-    }
-
-    const departamentoExiste = await Departamento.findByPk(
-      departamentoRemitenteId
-    );
-    if (!departamentoExiste) {
-      await transaction.rollback();
-      return res
-        .status(400)
-        .json({ message: "Departamento del remitente no encontrado" });
-    }
-
-    const remitenteExiste = await Empleado.findOne({
-      where: {
-        id: remitenteId,
-        departamento_id: departamentoRemitenteId,
-      },
+  if (
+    !asunto ||
+    asunto.trim() === "" ||
+    !descripcion ||
+    descripcion.trim() === "" ||
+    !departamentoRemitenteId ||
+    !remitenteId ||
+    !fechaDocumento ||
+    fechaDocumento.trim() === "" ||
+    !req.files ||
+    req.files.length === 0
+  ) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message:
+        "Todos los campos son obligatorios y se debe mantener al menos un archivo",
     });
-    if (!remitenteExiste) {
-      await transaction.rollback();
-      return res.status(400).json({
-        message: "No existe ese empleado o no está asignado a ese departamento",
-      });
-    }
+  }
 
-    const externo = tramiteExterno !== undefined ? true : false;
+  const tramiteActualizado = await Tramite.findOne(
+    {
+      where: { id, estado: "INGRESADO", activo: true },
+    },
+    transaction
+  );
+  if (!tramiteActualizado) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
 
+  if (
+    tramiteActualizado.usuario_creacion.toString() !==
+      req.usuario.id.toString() ||
+    tramiteActualizado.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
+  ) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(403).json({ message: "Acción no válida" });
+  }
+
+  const departamentoExiste = await Departamento.findByPk(
+    departamentoRemitenteId
+  );
+  if (!departamentoExiste) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res
+      .status(400)
+      .json({ message: "Departamento del remitente no encontrado" });
+  }
+
+  const remitenteExiste = await Empleado.findOne({
+    where: {
+      id: remitenteId,
+      departamento_id: departamentoRemitenteId,
+    },
+  });
+  if (!remitenteExiste) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: "No existe ese empleado o no está asignado a ese departamento",
+    });
+  }
+
+  const externo = tramiteExterno !== undefined ? true : false;
+
+  // Procesar los archivos subidos
+  const archivosExistentes = await TramiteArchivo.findAll({
+    where: {
+      tramite_id: id,
+    },
+  });
+
+  const archivosNuevos = req.files ? req.files.length : 0;
+
+  if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
+    });
+  }
+
+  try {
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
     tramiteActualizado.descripcion = descripcion;
@@ -335,6 +363,23 @@ export const actualizarTramite = async (req, res) => {
 
     // Guardar cambios
     await tramiteActualizado.save({ transaction });
+
+    // Subir archivos si hay archivos en la solicitud
+    if (req.files && req.files.length > 0) {
+      await Promise.all(
+        req.files.map(async (file) => {
+          await TramiteArchivo.create({
+            file_name: file.filename,
+            original_name: file.originalname,
+            ruta: file.path,
+            tipo: file.mimetype.split("/")[1],
+            size: file.size,
+            tramite_id: tramiteActualizado.id,
+            usuario_creacion: req.usuario.id,
+          });
+        })
+      );
+    }
 
     // Confirmar la transacción
     await transaction.commit();

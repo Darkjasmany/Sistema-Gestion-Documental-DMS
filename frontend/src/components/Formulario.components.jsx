@@ -196,7 +196,7 @@ const Formulario = () => {
       });
     }
 
-    console.log(archivos);
+    // console.log(archivos);
 
     setAlerta({});
 

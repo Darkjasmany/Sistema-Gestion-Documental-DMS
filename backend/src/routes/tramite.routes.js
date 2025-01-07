@@ -25,7 +25,13 @@ router
 router
   .route("/:id")
   .get(checkAuth, tramiteController.obtenerTramite)
-  .put(checkAuth, tramiteController.actualizarTramite)
+  // .put(checkAuth, tramiteController.actualizarTramite)
+  .put(
+    checkAuth,
+    validarCantidadArchivos,
+    upload.array("archivo", config.MAX_UPLOAD_FILES),
+    tramiteController.actualizarTramite
+  )
   .delete(
     checkAuth,
     checkRole("COORDINADOR"),
