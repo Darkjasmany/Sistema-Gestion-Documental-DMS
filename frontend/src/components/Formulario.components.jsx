@@ -458,13 +458,13 @@ const Formulario = () => {
 
                 <a href={archivo.url} target="_blank" rel="noopener noreferrer">
                   {archivo.name ? archivo.name : archivo.url.split("/").pop()}
-                  <button
-                    onClick={() => eliminarArchivo(index)}
-                    className="text-red-600 hover:text-red-800 font-bold"
-                  >
-                    x
-                  </button>
                 </a>
+                <button
+                  onClick={() => eliminarArchivo(index)}
+                  className="text-red-600 hover:text-red-800 font-extrabold"
+                >
+                  X
+                </button>
               </li>
             ))}
           </ul>
