@@ -90,7 +90,7 @@ export const agregarTramite = async (req, res) => {
   }
 
   // validación para considerar si un tramite es interno o no, si no es undefined asigna false, si lo es true
-  const externo = tramiteExterno !== undefined ? true : false;
+  // const externo = tramiteExterno !== undefined ? true : false;
 
   try {
     const tramiteGuardado = await Tramite.create({
@@ -103,7 +103,7 @@ export const agregarTramite = async (req, res) => {
       referencia_tramite: referenciaTramite,
       usuario_creacion: req.usuario.id,
       departamento_tramite: req.usuario.departamento_id,
-      externo,
+      externo: tramiteExterno,
     });
 
     await Promise.all(

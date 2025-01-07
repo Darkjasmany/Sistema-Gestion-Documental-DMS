@@ -213,6 +213,18 @@ const Formulario = () => {
       archivos,
       id,
     });
+
+    // Limpiar el formulario después de enviar
+    setAsunto("");
+    setReferenciaTramite("");
+    setFechaDocumento(new Date().toISOString().split("T")[0]);
+    setDepartamentoRemitenteId("");
+    setRemitenteId("");
+    setPrioridad("NORMAL");
+    setDescripcion("");
+    setArchivos([]);
+    setTramiteExterno(false);
+    fileInputArchivos.current.value = ""; // Limpiar el input de archivos
   };
 
   const { message } = alerta;
@@ -413,7 +425,8 @@ const Formulario = () => {
             <input
               id="tramiteExterno"
               type="checkbox"
-              value={tramiteExterno}
+              // value={tramiteExterno}
+              checked={tramiteExterno} // Sincroniza el estado con el valor del checkbox
               onChange={(e) => {
                 setTramiteExterno(e.target.checked);
               }}
