@@ -9,6 +9,8 @@ export const TramitesProvider = ({ children }) => {
   const [tramite, setTramite] = useState({});
   const { auth } = useAuth();
 
+  // const [actualizar, setActualizar] = useState(false);
+
   // Obtener el token
   const token =
     localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
@@ -26,20 +28,22 @@ export const TramitesProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const obtenerTramites = async () => {
-      if (!token) return; // Si no hay token, no se hace la petición
-
-      try {
-        const { data } = await clienteAxios.get("/tramites", getAxiosConfig());
-
-        console.log(data);
-        setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
-      } catch (error) {
-        console.error(error.response?.data?.mensaje);
-      }
-    };
     obtenerTramites();
-  }, [auth, token, tramite]); // Escucha cambios dependiendo de la autenticacion, y del token
+  }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
+  // }, [auth, token, actualizar]); // Escucha cambios dependiendo de la autenticacion, y del token
+
+  const obtenerTramites = async () => {
+    if (!token) return; // Si no hay token, no se hace la petición
+
+    try {
+      const { data } = await clienteAxios.get("/tramites", getAxiosConfig());
+
+      // console.log(data);
+      setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
+    } catch (error) {
+      console.error(error.response?.data?.mensaje);
+    }
+  };
 
   const guardarTramite = async (tramite) => {
     if (!token) {
@@ -125,6 +129,10 @@ export const TramitesProvider = ({ children }) => {
 
         // Actualizar el state tomando lo que hay en tramites y agregando el nuevo tramite almacenado
         setTramites([tramiteAlmacenado, ...tramites]);
+
+        // Recargar los tramites
+        obtenerTramites();
+        // handleRefrescar();
       } catch (error) {
         console.error(error.response?.data?.mensaje);
       }
@@ -135,6 +143,11 @@ export const TramitesProvider = ({ children }) => {
     // console.log(tramite);
     setTramite(tramite);
   };
+  /*
+  const handleRefrescar = () => {
+    setActualizar(!actualizar);
+  };
+*/
 
   return (
     // Value: indicamos que va a ser un objeto que sera disponible y le pasamos el estado tramites

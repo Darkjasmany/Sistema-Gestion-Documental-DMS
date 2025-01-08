@@ -193,7 +193,7 @@ export const listarTramitesUsuario = async (req, res) => {
       };
     });
 
-    console.log(tramitesConRutas);
+    // console.log(tramitesConRutas);
     res.json(tramitesConRutas);
   } catch (error) {
     console.error(

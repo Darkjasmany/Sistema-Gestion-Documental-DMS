@@ -81,12 +81,14 @@ const Tramite = ({ tramite }) => {
             {descripcion}
           </span>
         </p>
-        <p className="font-bold uppercase text-indigo-700 my-2">
-          Número de Trámite:{" "}
-          <span className="font-normal normal-case text-black">
-            {numero_tramite}
-          </span>
-        </p>
+        {externo ? (
+          <p className="font-bold uppercase text-indigo-700 my-2">
+            Trámite Externo:{" "}
+            <span className="font-normal uppercase text-black ">
+              {externo ? "Si" : "N0"}
+            </span>
+          </p>
+        ) : null}
 
         <div className="flex justify-between my-5">
           <button
