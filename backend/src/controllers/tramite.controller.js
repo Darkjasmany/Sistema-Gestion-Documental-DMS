@@ -242,9 +242,10 @@ export const obtenerTramite = async (req, res) => {
 };
 
 export const actualizarTramite = async (req, res) => {
-  // console.log(req.body);
-  // console.log(req.files);
+  console.log(req.body);
+  console.log(req.files);
 
+  return res.json({ body: req.body, files: req.files });
   // Inicia la transacción
   const transaction = await Tramite.sequelize.transaction();
 
