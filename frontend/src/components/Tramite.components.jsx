@@ -84,9 +84,7 @@ const Tramite = ({ tramite }) => {
         {externo ? (
           <p className="font-bold uppercase text-indigo-700 my-2">
             Trámite Externo:{" "}
-            <span className="font-normal uppercase text-black ">
-              {externo ? "Si" : "N0"}
-            </span>
+            <span className="font-normal uppercase text-black ">Si</span>
           </p>
         ) : null}
 

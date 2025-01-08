@@ -198,8 +198,6 @@ const Formulario = () => {
 
     // console.log(archivos);
 
-    setAlerta({});
-
     // Llamamos a la function guardarTramite del useTramites
     guardarTramite({
       asunto,
@@ -213,6 +211,8 @@ const Formulario = () => {
       archivos,
       id,
     });
+
+    setAlerta({ message: "Guardado Correctamente" });
 
     // Limpiar el formulario después de enviar
     setAsunto("");
@@ -228,6 +228,7 @@ const Formulario = () => {
   };
 
   const { message } = alerta;
+
   return (
     <>
       <h2 className="font-black text-3xl text-center">

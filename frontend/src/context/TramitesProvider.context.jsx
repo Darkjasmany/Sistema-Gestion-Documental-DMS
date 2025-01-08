@@ -54,11 +54,11 @@ export const TramitesProvider = ({ children }) => {
     //** Actualización o Crear 1 Trámite */
     if (tramite.id) {
       //** Si el tramite tiene un id, es porque se va a editar
-      console.log("Editando tramite...");
       console.log(tramite);
       // const listadoArchivos = [];
 
       try {
+        /*
         // Como el backend recibe archivos, se debe enviar un formData
         const formData = new FormData();
         formData.append("asunto", tramite.asunto);
@@ -77,14 +77,21 @@ export const TramitesProvider = ({ children }) => {
         tramite.archivos.forEach((archivo) => {
           formData.append("archivos", archivo);
         });
+*/
 
         const { data } = await clienteAxios.put(
           `/tramites/${tramite.id}`,
-          formData,
+          tramite,
           getAxiosConfig()
         );
 
         console.log(data);
+
+        const tramitesActualizado = tramites.map((tramiteState) =>
+          tramiteState.id === data.id ? data : tramiteState
+        );
+
+        setTramites(tramitesActualizado);
       } catch (error) {
         console.error(error.response?.data?.mensaje);
       }
