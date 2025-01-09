@@ -41,7 +41,9 @@ app.use("/api/tramites", tramiteRoutes);
 app.use("/api/empleados", empleadoRoutes);
 app.use("/api/departamentos", departamentoRoutes);
 app.use("/api/admin", adminRoutes);
+
 /*
+
 // Middleware para manejo de errores
 app.use(notFound); // Manejar rutas no encontradas
 app.use(errorHandler); // Manejar errores de la aplicación

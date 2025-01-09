@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import clienteAxios from "../config/axios.config";
 import useAuth from "../hooks/useAuth.hook";
+
 const TramitesContext = createContext();
 
 // De donde vienen los datos
@@ -8,8 +9,6 @@ export const TramitesProvider = ({ children }) => {
   const [tramites, setTramites] = useState([]);
   const [tramite, setTramite] = useState({});
   const { auth } = useAuth();
-
-  // const [actualizar, setActualizar] = useState(false);
 
   // Obtener el token
   const token =
@@ -29,8 +28,8 @@ export const TramitesProvider = ({ children }) => {
 
   useEffect(() => {
     obtenerTramites();
-  }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
-  // }, [auth, token, actualizar]); // Escucha cambios dependiendo de la autenticacion, y del token
+  }, [auth]); // Escucha cambios dependiendo de la autenticacion, y del token
+  // }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
 
   const obtenerTramites = async () => {
     if (!token) return; // Si no hay token, no se hace la petición
@@ -54,11 +53,9 @@ export const TramitesProvider = ({ children }) => {
     //** Actualización o Crear 1 Trámite */
     if (tramite.id) {
       //** Si el tramite tiene un id, es porque se va a editar
-      console.log(tramite);
       // const listadoArchivos = [];
 
       try {
-        /*
         // Como el backend recibe archivos, se debe enviar un formData
         const formData = new FormData();
         formData.append("asunto", tramite.asunto);
@@ -77,16 +74,19 @@ export const TramitesProvider = ({ children }) => {
         tramite.archivos.forEach((archivo) => {
           formData.append("archivos", archivo);
         });
-*/
+
+        console.log(tramite);
+        // console.log(formData);
 
         const { data } = await clienteAxios.put(
           `/tramites/${tramite.id}`,
-          tramite,
+          formData,
+          // tramite,
           getAxiosConfig()
         );
 
         console.log(data);
-
+        return;
         const tramitesActualizado = tramites.map((tramiteState) =>
           tramiteState.id === data.id ? data : tramiteState
         );

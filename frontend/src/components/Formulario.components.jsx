@@ -198,7 +198,7 @@ const Formulario = () => {
 
     // console.log(archivos);
 
-    // Llamamos a la function guardarTramite del useTramites
+    // ** Llamamos a la function guardarTramite del useTramites
     guardarTramite({
       asunto,
       referenciaTramite,
@@ -214,7 +214,7 @@ const Formulario = () => {
 
     setAlerta({ message: "Guardado Correctamente" });
 
-    // Limpiar el formulario después de enviar
+    // ** Limpiar el formulario después de enviar
     setAsunto("");
     setReferenciaTramite("");
     setFechaDocumento(new Date().toISOString().split("T")[0]);

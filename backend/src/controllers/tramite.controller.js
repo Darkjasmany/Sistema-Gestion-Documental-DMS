@@ -242,11 +242,12 @@ export const obtenerTramite = async (req, res) => {
 };
 
 export const actualizarTramite = async (req, res) => {
-  console.log(req.body);
-  console.log(req.files);
-
   // return res.json({ body: req.body, files: req.files });
+  console.log("Body:", req.body);
+  console.log("Files:", req.files);
+
   // Inicia la transacción
+
   const transaction = await Tramite.sequelize.transaction();
 
   const { id } = req.params;
@@ -270,9 +271,9 @@ export const actualizarTramite = async (req, res) => {
     !departamentoRemitenteId ||
     !remitenteId ||
     !fechaDocumento ||
-    fechaDocumento.trim() === "" ||
-    !req.files ||
-    req.files.length === 0
+    fechaDocumento.trim() === ""
+    //|| !req.files ||
+    // req.files.length === 0
   ) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
@@ -330,7 +331,7 @@ export const actualizarTramite = async (req, res) => {
     });
   }
 
-  const externo = tramiteExterno !== undefined ? true : false;
+  // const externo = tramiteExterno !== undefined ? true : false;
 
   // Procesar los archivos subidos
   const archivosExistentes = await TramiteArchivo.findAll({
@@ -348,6 +349,9 @@ export const actualizarTramite = async (req, res) => {
       message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
     });
   }
+
+  console.log("entro aqui");
+  return;
 
   try {
     // Actualización de los campos del trámite
@@ -387,6 +391,7 @@ export const actualizarTramite = async (req, res) => {
     await transaction.commit();
 
     res.status(200).json({ message: "Trámite actualizado" });
+    // return;
   } catch (error) {
     await transaction.rollback(); // Deshacer transacción en caso de error
     console.error(`Error al actualizar el trámite: ${error.message}`);
