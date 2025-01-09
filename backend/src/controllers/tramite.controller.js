@@ -350,8 +350,8 @@ export const actualizarTramite = async (req, res) => {
     });
   }
 
-  console.log("entro aqui");
-  return;
+  // console.log("entro aqui");
+  // return;
 
   try {
     // Actualización de los campos del trámite
@@ -365,7 +365,7 @@ export const actualizarTramite = async (req, res) => {
     tramiteActualizado.referencia_tramite =
       referenciaTramite || tramiteActualizado.referencia_tramite;
     tramiteActualizado.usuario_actualizacion = req.usuario.id;
-    tramiteActualizado.externo = externo || tramiteActualizado.externo;
+    tramiteActualizado.externo = tramiteExterno || tramiteActualizado.externo;
 
     // Guardar cambios
     await tramiteActualizado.save({ transaction });

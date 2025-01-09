@@ -85,13 +85,15 @@ export const TramitesProvider = ({ children }) => {
           getAxiosConfig()
         );
 
-        console.log(data);
-        return;
+        // console.log(data);
+        // return;
         const tramitesActualizado = tramites.map((tramiteState) =>
           tramiteState.id === data.id ? data : tramiteState
         );
 
         setTramites(tramitesActualizado);
+
+        obtenerTramites();
       } catch (error) {
         console.error(error.response?.data?.mensaje);
       }
