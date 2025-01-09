@@ -121,6 +121,8 @@ export const agregarTramite = async (req, res) => {
     );
 
     res.json(tramiteGuardado);
+    // res.json({ tramiteGuardado, message: "Creado Correctamente" });
+    // res.status(200).json({ message: "Creado Correctamente" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

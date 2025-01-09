@@ -119,6 +119,14 @@ const Formulario = () => {
     }
   }, [tramite]);
 
+  // ** UseEffect para Alerta
+  useEffect(() => {
+    if (alerta.message) {
+      const timer = setTimeout(() => setAlerta({}), 3000); // Limpia la alerta después de 3s
+      return () => clearTimeout(timer);
+    }
+  }, [alerta]);
+
   // Mostrar empleados de acuerdo al departamento seleccionado
   const handleDepartamentoChange = async (e) => {
     const departamentoId = e.target.value;
@@ -172,7 +180,7 @@ const Formulario = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       [
@@ -198,7 +206,46 @@ const Formulario = () => {
 
     // console.log(archivos);
 
-    // ** Llamamos a la function guardarTramite del useTramites
+    // ** Llamamos  a la function guardarTramite del useTramites
+    // puse el trycatch por temas de los mensajes del backend
+    /* try {
+      // guardarTramite({
+      const message = await guardarTramite({
+        asunto,
+        referenciaTramite,
+        fechaDocumento,
+        departamentoRemitenteId,
+        remitenteId,
+        prioridad,
+        descripcion,
+        tramiteExterno,
+        archivos,
+        id,
+      });
+
+      // setAlerta({ message: "Guardado Correctamente" });
+      setAlerta({ message, error: false });
+
+      // ** Limpiar el formulario después de enviar
+      setAsunto("");
+      setReferenciaTramite("");
+      setFechaDocumento(new Date().toISOString().split("T")[0]);
+      setDepartamentoRemitenteId("");
+      setRemitenteId("");
+      setPrioridad("NORMAL");
+      setDescripcion("");
+      setArchivos([]);
+      setTramiteExterno(false);
+      fileInputArchivos.current.value = ""; // Limpiar el input de archivos
+    } catch (error) {
+      setAlerta({
+        message: error,
+        error: true,
+      });
+    }
+
+*/
+
     guardarTramite({
       asunto,
       referenciaTramite,
@@ -213,6 +260,7 @@ const Formulario = () => {
     });
 
     setAlerta({ message: "Guardado Correctamente" });
+    //setAlerta({ message, error: false });
 
     // ** Limpiar el formulario después de enviar
     setAsunto("");
@@ -246,6 +294,7 @@ const Formulario = () => {
         className="bg-white py-10 px-5 mb-10 lg:mb-0 shadow-md rounded-md"
       >
         {message && <Alerta alerta={alerta} />}
+
         {/* Campo para el Asunto */}
         <div className="mb-5">
           <label htmlFor="asunto" className="text-gray-700 uppercase font-bold">

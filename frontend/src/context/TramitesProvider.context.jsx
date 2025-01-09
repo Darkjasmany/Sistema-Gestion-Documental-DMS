@@ -94,8 +94,10 @@ export const TramitesProvider = ({ children }) => {
         setTramites(tramitesActualizado);
 
         obtenerTramites();
+
+        // return data.message;
       } catch (error) {
-        console.error(error.response?.data?.mensaje);
+        console.error(error.response?.data?.message);
       }
     } else {
       // **Si no tiene id, es porque es un nuevo tramite
@@ -125,7 +127,7 @@ export const TramitesProvider = ({ children }) => {
           formData,
           getAxiosConfig()
         );
-        // console.log(data);
+        console.log(data);
 
         // Va a crear un nuevo objeto con lo que no necesitamos
         const {
@@ -144,8 +146,10 @@ export const TramitesProvider = ({ children }) => {
         // Recargar los tramites
         obtenerTramites();
         // handleRefrescar();
+
+        return data.message;
       } catch (error) {
-        console.error(error.response?.data?.mensaje);
+        console.error(error.response?.data?.message);
       }
     }
   };
