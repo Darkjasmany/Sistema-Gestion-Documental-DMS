@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="200px" height="200px">
+    <!-- Carpeta -->
+    <path d="M10 30 h40 l10 -10 h50 a8 8 0 0 1 8 8 v40 a8 8 0 0 1 -8 8 h-100 a8 8 0 0 1 -8 -8 v-30 a8 8 0 0 1 8 -8 z"
+        fill="#5a4dcf" />
+
+    <!-- Fondo interior -->
+    <rect x="10" y="40" width="100" height="40" fill="#dcdcdc" rx="5" />
+
+    <!-- Texto central DMS -->
+    <text x="60" y="70" text-anchor="middle" fill="#5a4dcf" font-size="24" font-family="Arial, sans-serif"
+        font-weight="bold">DMS</text>
+</svg>
