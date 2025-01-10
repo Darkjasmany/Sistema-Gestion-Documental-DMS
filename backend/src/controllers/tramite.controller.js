@@ -260,6 +260,7 @@ export const actualizarTramite = async (req, res) => {
     referenciaTramite,
     tramiteExterno,
     archivos,
+    archivosEliminar,
   } = req.body;
 
   if (
@@ -386,14 +387,15 @@ export const actualizarTramite = async (req, res) => {
     //   arrayArchivosExistentes.push(archivolocal.id);
     // });
 
-    console.log(arrayArchivosExistentes);
+    console.log("Archivos Existente BD", arrayArchivosExistentes);
 
     // los archivos que se mantien
-    console.log(archivos);
+    console.log("archivos que se mantienen", archivos);
     // archivos.forEach((archivo) => {
     //   console.log(archivo);
     // });
 
+    console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
     return;
 
     // si hay nuevos archivos y no superta el liminte se suben

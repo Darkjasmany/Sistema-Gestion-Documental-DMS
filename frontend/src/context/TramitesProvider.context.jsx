@@ -75,6 +75,11 @@ export const TramitesProvider = ({ children }) => {
           formData.append("archivos", archivo.id);
         });
 
+        formData.append(
+          "archivosEliminar",
+          JSON.stringify(tramite.archivosEliminar)
+        );
+
         console.log(tramite);
         // console.log(formData);
 

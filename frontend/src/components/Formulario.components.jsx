@@ -13,8 +13,9 @@ const Formulario = () => {
   const [remitenteId, setRemitenteId] = useState("");
   const [prioridad, setPrioridad] = useState("NORMAL");
   const [descripcion, setDescripcion] = useState("");
-  const [archivos, setArchivos] = useState([]);
   const [tramiteExterno, setTramiteExterno] = useState(false);
+  const [archivos, setArchivos] = useState([]);
+  const [archivosEliminar, setArchivosEliminar] = useState([]);
 
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
@@ -115,6 +116,7 @@ const Formulario = () => {
         setArchivos(rutasArchivos);
       }
 
+      console.log(tramite.tramiteArchivos);
       setId(tramite.id);
     }
   }, [tramite]);
@@ -173,6 +175,7 @@ const Formulario = () => {
   const eliminarArchivo = (index) => {
     const nuevosArchivos = archivos.filter((_, i) => i !== index);
     setArchivos(nuevosArchivos);
+    setArchivosEliminar([...archivosEliminar, archivos[index].id]);
 
     // Reiniciar el input file si no quedan archivos
     if (nuevosArchivos.length === 0) {
@@ -256,6 +259,7 @@ const Formulario = () => {
       descripcion,
       tramiteExterno,
       archivos,
+      archivosEliminar,
       id,
     });
 
