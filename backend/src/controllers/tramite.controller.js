@@ -340,7 +340,8 @@ export const actualizarTramite = async (req, res) => {
     },
   });
 
-  const archivosNuevos = req.files ? req.files.length : 0;
+  const archivosNuevos = req.files;
+  //  req.files ? req.files.length : 0;
 
   if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
     await transaction.rollback();
@@ -391,6 +392,7 @@ export const actualizarTramite = async (req, res) => {
 
     // los archivos que se mantien
     console.log("archivos que se mantienen", archivos);
+    console.log("archivos nuevos", archivosNuevos);
     // archivos.forEach((archivo) => {
     //   console.log(archivo);
     // });

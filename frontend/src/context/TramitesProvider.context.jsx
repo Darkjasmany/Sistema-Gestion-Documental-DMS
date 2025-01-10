@@ -127,6 +127,12 @@ export const TramitesProvider = ({ children }) => {
           formData.append("archivos", archivo);
         });
 
+        if (tramite.archivosNuevos && archivosNuevos.length > 0) {
+          tramite.archivosNuevos.forEach((archivo) => {
+            formData.append("archivosNuevos", archivo);
+          });
+        }
+
         const { data } = await clienteAxios.post(
           "/tramites",
           formData,
