@@ -244,10 +244,6 @@ export const obtenerTramite = async (req, res) => {
 };
 
 export const actualizarTramite = async (req, res) => {
-  // return res.json({ body: req.body, files: req.files });
-  console.log("Body:", req.body);
-  console.log("Files:", req.files);
-
   // Inicia la transacción
 
   const transaction = await Tramite.sequelize.transaction();
@@ -263,6 +259,7 @@ export const actualizarTramite = async (req, res) => {
     fechaDocumento,
     referenciaTramite,
     tramiteExterno,
+    archivos,
   } = req.body;
 
   if (
@@ -352,8 +349,11 @@ export const actualizarTramite = async (req, res) => {
     });
   }
 
-  // console.log("entro aqui");
-  // return;
+  if (archivosExistentes.length + archivosNuevos === 0) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({ error: "No se subieron archivos" });
+  }
 
   try {
     // Actualización de los campos del trámite
@@ -372,22 +372,58 @@ export const actualizarTramite = async (req, res) => {
     // Guardar cambios
     await tramiteActualizado.save({ transaction });
 
-    // Subir archivos si hay archivos en la solicitud
-    if (req.files && req.files.length > 0) {
-      await Promise.all(
-        req.files.map(async (file) => {
-          await TramiteArchivo.create({
-            file_name: file.filename,
-            original_name: file.originalname,
-            ruta: file.path,
-            tipo: file.mimetype.split("/")[1],
-            size: file.size,
-            tramite_id: tramiteActualizado.id,
-            usuario_creacion: req.usuario.id,
-          });
-        })
-      );
+    // !Validar archivos
+
+    // console.log("Body:", req.body);
+    // console.log("Files:", req.files);
+
+    // console.log(archivosExistentes);
+    let arrayArchivosExistentes = archivosExistentes.map(
+      (archivolocal) => archivolocal.id
+    );
+
+    // archivosExistentes.forEach((archivolocal) => {
+    //   arrayArchivosExistentes.push(archivolocal.id);
+    // });
+
+    console.log(arrayArchivosExistentes);
+
+    // los archivos que se mantien
+    console.log(archivos);
+    // archivos.forEach((archivo) => {
+    //   console.log(archivo);
+    // });
+
+    return;
+
+    // si hay nuevos archivos y no superta el liminte se suben
+    if (archivosNuevos > 0) {
+      console.log("si hay nuevos", archivosNuevos);
+      return;
+
+      // Subir archivos si hay archivos en la solicitud
+      if (req.files && req.files.length > 0) {
+        await Promise.all(
+          req.files.map(async (file) => {
+            await TramiteArchivo.create({
+              file_name: file.filename,
+              original_name: file.originalname,
+              ruta: file.path,
+              tipo: file.mimetype.split("/")[1],
+              size: file.size,
+              tramite_id: tramiteActualizado.id,
+              usuario_creacion: req.usuario.id,
+            });
+          })
+        );
+      }
+    } else {
+      console.log("no hay nuevos", archivosExistentes.length);
     }
+
+    // si no hay nuevos archivos no hace nada
+
+    return;
 
     // Confirmar la transacción
     await transaction.commit();

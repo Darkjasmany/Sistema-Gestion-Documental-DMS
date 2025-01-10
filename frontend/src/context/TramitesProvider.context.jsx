@@ -72,7 +72,7 @@ export const TramitesProvider = ({ children }) => {
 
         // Adjuntar archivos al FormData
         tramite.archivos.forEach((archivo) => {
-          formData.append("archivos", archivo);
+          formData.append("archivos", archivo.id);
         });
 
         console.log(tramite);
