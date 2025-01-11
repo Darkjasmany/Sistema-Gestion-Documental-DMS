@@ -29,7 +29,7 @@ const Formulario = () => {
 
   const fileInputArchivos = useRef(null); // Referencia al input file
 
-  const { guardarTramite, tramite } = useTramites(); // Extraemos lo que tenemos en el TramiteProvider
+  const { guardarTramite, tramite } = useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
 
   useEffect(() => {
     const fetchDepartamentos = async () => {
@@ -81,7 +81,7 @@ const Formulario = () => {
       setAsunto(tramite.asunto);
       setReferenciaTramite(tramite.referencia_tramite);
       setFechaDocumento(tramite.fecha_documento);
-      setDepartamentoRemitenteId(tramite.departamentoRemitente?.id || "");
+      setDepartamentoRemitenteId(tramite.departamentoRemitente?.id);
 
       const cargarRemitentes = async () => {
         if (tramite.departamentoRemitente?.id) {
@@ -117,8 +117,6 @@ const Formulario = () => {
         setArchivos(rutasArchivos);
       }
 
-      console.log(tramite.tramiteArchivos);
-      console.log(tramite);
       setId(tramite.id);
     }
   }, [tramite]);
@@ -188,7 +186,6 @@ const Formulario = () => {
   };
 
   const handleSubmit = async (e) => {
-    console.log(archivosNuevos);
     e.preventDefault();
     if (
       [
@@ -212,47 +209,11 @@ const Formulario = () => {
       });
     }
 
-    // console.log(archivos);
-
     // ** Llamamos  a la function guardarTramite del useTramites
-    // puse el trycatch por temas de los mensajes del backend
-    /* try {
-      // guardarTramite({
-      const message = await guardarTramite({
-        asunto,
-        referenciaTramite,
-        fechaDocumento,
-        departamentoRemitenteId,
-        remitenteId,
-        prioridad,
-        descripcion,
-        tramiteExterno,
-        archivos,
-        id,
-      });
 
-      // setAlerta({ message: "Guardado Correctamente" });
-      setAlerta({ message, error: false });
-
-      // ** Limpiar el formulario después de enviar
-      setAsunto("");
-      setReferenciaTramite("");
-      setFechaDocumento(new Date().toISOString().split("T")[0]);
-      setDepartamentoRemitenteId("");
-      setRemitenteId("");
-      setPrioridad("NORMAL");
-      setDescripcion("");
-      setArchivos([]);
-      setTramiteExterno(false);
-      fileInputArchivos.current.value = ""; // Limpiar el input de archivos
-    } catch (error) {
-      setAlerta({
-        message: error,
-        error: true,
-      });
-    }
-
-*/
+    // console.log(tramite.tramiteArchivos);
+    // console.log(archivosNuevos);
+    // console.log(tramite);
 
     guardarTramite({
       asunto,

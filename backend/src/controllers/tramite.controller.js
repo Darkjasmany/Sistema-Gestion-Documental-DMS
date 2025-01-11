@@ -246,6 +246,13 @@ export const obtenerTramite = async (req, res) => {
 export const actualizarTramite = async (req, res) => {
   // Inicia la transacción
 
+  console.log("Body:", req.body);
+  console.log("Files:", req.files);
+  const archivosNuevos1 = req.files ? req.files.length : 0;
+  console.log(archivosNuevos1);
+
+  return;
+
   const transaction = await Tramite.sequelize.transaction();
 
   const { id } = req.params;
@@ -357,6 +364,32 @@ export const actualizarTramite = async (req, res) => {
     return res.status(400).json({ error: "No se subieron archivos" });
   }
 
+  // !Validar archivos
+
+  // console.log("Body:", req.body);
+  // console.log("Files:", req.files);
+
+  // console.log(archivosExistentes);
+  let arrayArchivosExistentes = archivosExistentes.map(
+    (archivolocal) => archivolocal.id
+  );
+
+  // archivosExistentes.forEach((archivolocal) => {
+  //   arrayArchivosExistentes.push(archivolocal.id);
+  // });
+
+  console.log("Archivos Existente BD", arrayArchivosExistentes);
+
+  // los archivos que se mantien
+  console.log("archivos que se mantienen", archivos);
+  console.log("archivos nuevos", archivosNuevos);
+  // archivos.forEach((archivo) => {
+  //   console.log(archivo);
+  // });
+
+  console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
+  return;
+
   try {
     // Actualización de los campos del trámite
     tramiteActualizado.asunto = asunto;
@@ -374,37 +407,8 @@ export const actualizarTramite = async (req, res) => {
     // Guardar cambios
     await tramiteActualizado.save({ transaction });
 
-    // !Validar archivos
-
-    // console.log("Body:", req.body);
-    // console.log("Files:", req.files);
-
-    // console.log(archivosExistentes);
-    let arrayArchivosExistentes = archivosExistentes.map(
-      (archivolocal) => archivolocal.id
-    );
-
-    // archivosExistentes.forEach((archivolocal) => {
-    //   arrayArchivosExistentes.push(archivolocal.id);
-    // });
-
-    console.log("Archivos Existente BD", arrayArchivosExistentes);
-
-    // los archivos que se mantien
-    console.log("archivos que se mantienen", archivos);
-    console.log("archivos nuevos", archivosNuevos);
-    // archivos.forEach((archivo) => {
-    //   console.log(archivo);
-    // });
-
-    console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
-    return;
-
     // si hay nuevos archivos y no superta el liminte se suben
     if (archivosNuevos > 0) {
-      console.log("si hay nuevos", archivosNuevos);
-      return;
-
       // Subir archivos si hay archivos en la solicitud
       if (req.files && req.files.length > 0) {
         await Promise.all(
