@@ -29,6 +29,7 @@ router
   .put(
     checkAuth,
     validarCantidadArchivos,
+    // upload.array("archivos", config.MAX_UPLOAD_FILES),
     upload.array("archivosNuevos", config.MAX_UPLOAD_FILES),
     tramiteController.actualizarTramite
   )

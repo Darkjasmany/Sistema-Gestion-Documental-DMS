@@ -246,13 +246,6 @@ export const obtenerTramite = async (req, res) => {
 export const actualizarTramite = async (req, res) => {
   // Inicia la transacción
 
-  console.log("Body:", req.body);
-  console.log("Files:", req.files);
-  const archivosNuevos1 = req.files ? req.files.length : 0;
-  console.log(archivosNuevos1);
-
-  return;
-
   const transaction = await Tramite.sequelize.transaction();
 
   const { id } = req.params;
@@ -290,22 +283,21 @@ export const actualizarTramite = async (req, res) => {
     });
   }
 
-  const tramiteActualizado = await Tramite.findOne(
+  const tramite = await Tramite.findOne(
     {
       where: { id, estado: "INGRESADO", activo: true },
     },
     transaction
   );
-  if (!tramiteActualizado) {
+  if (!tramite) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(404).json({ message: "Trámite no encontrado" });
   }
 
   if (
-    tramiteActualizado.usuario_creacion.toString() !==
-      req.usuario.id.toString() ||
-    tramiteActualizado.departamento_tramite.toString() !==
+    tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
       req.usuario.departamento_id.toString()
   ) {
     await transaction.rollback();
@@ -347,10 +339,13 @@ export const actualizarTramite = async (req, res) => {
     },
   });
 
-  const archivosNuevos = req.files;
-  //  req.files ? req.files.length : 0;
+  const archivosNuevos = req.files ? req.files.length : 0;
 
-  if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
+  if (
+    archivos.length > config.MAX_UPLOAD_FILES ||
+    (archivosNuevos && archivosNuevos > config.MAX_UPLOAD_FILES)
+  ) {
+    // if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
@@ -381,52 +376,81 @@ export const actualizarTramite = async (req, res) => {
   console.log("Archivos Existente BD", arrayArchivosExistentes);
 
   // los archivos que se mantien
-  console.log("archivos que se mantienen", archivos);
+  console.log(
+    "archivos totales en el state nuevos + existentes",
+    archivos.length
+  );
   console.log("archivos nuevos", archivosNuevos);
   // archivos.forEach((archivo) => {
   //   console.log(archivo);
   // });
+  if (JSON.parse(archivosEliminar)) {
+    console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
+  }
+  // console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
 
-  console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
+  // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
+  const nuevoArrayEliminar = JSON.parse(archivosEliminar)
+    .filter((id) => id != null) // Filtrar valores no nulos
+    .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
+    .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+
+  if (nuevoArrayEliminar.length === 0)
+    return res
+      .status(400)
+      .json({ message: "Los archivos enviados no son válidos" });
+
+  // Buscar los archivos a eliminar en la base de datos
+  const archivosAEliminar = await TramiteArchivo.findAll({
+    where: { tramite_id: id, id: nuevoArrayEliminar },
+  });
+  if (archivosAEliminar.length === 0)
+    return res.status(400).json({ message: "Archivos no encontrados" });
+
   return;
-
   try {
     // Actualización de los campos del trámite
-    tramiteActualizado.asunto = asunto;
-    tramiteActualizado.descripcion = descripcion;
-    tramiteActualizado.departamento_remitente = departamentoRemitenteId;
-    tramiteActualizado.remitente_id = remitenteId;
-    tramiteActualizado.prioridad = prioridad || tramiteActualizado.prioridad;
-    tramiteActualizado.fecha_documento =
-      fechaDocumento || tramiteActualizado.fecha_documento;
-    tramiteActualizado.referencia_tramite =
-      referenciaTramite || tramiteActualizado.referencia_tramite;
-    tramiteActualizado.usuario_actualizacion = req.usuario.id;
-    tramiteActualizado.externo = tramiteExterno || tramiteActualizado.externo;
+    tramite.asunto = asunto;
+    tramite.descripcion = descripcion;
+    tramite.departamento_remitente = departamentoRemitenteId;
+    tramite.remitente_id = remitenteId;
+    tramite.prioridad = prioridad || tramite.prioridad;
+    tramite.fecha_documento = fechaDocumento || tramite.fecha_documento;
+    tramite.referencia_tramite =
+      referenciaTramite || tramite.referencia_tramite;
+    tramite.usuario_actualizacion = req.usuario.id;
+    tramite.externo = tramiteExterno || tramite.externo;
 
     // Guardar cambios
-    await tramiteActualizado.save({ transaction });
+    await tramite.save({ transaction });
 
     // si hay nuevos archivos y no superta el liminte se suben
-    if (archivosNuevos > 0) {
-      // Subir archivos si hay archivos en la solicitud
-      if (req.files && req.files.length > 0) {
-        await Promise.all(
-          req.files.map(async (file) => {
-            await TramiteArchivo.create({
-              file_name: file.filename,
-              original_name: file.originalname,
-              ruta: file.path,
-              tipo: file.mimetype.split("/")[1],
-              size: file.size,
-              tramite_id: tramiteActualizado.id,
-              usuario_creacion: req.usuario.id,
-            });
-          })
-        );
-      }
-    } else {
-      console.log("no hay nuevos", archivosExistentes.length);
+
+    // SI hay archivos para eliminar
+    if (archivosEliminar) {
+      // **Eliminar los archivos
+      // Eliminar registros de la base de datos
+      await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
+      // Eliminar físicamente los archivos del sistema de archivos
+      borrarArchivos(archivosAEliminar);
+    }
+
+    // Subir archivos si hay archivos en la solicitud
+    if (req.files && req.files.length > 0) {
+      // Cargar archivos nuevos
+      await Promise.all(
+        req.files.map(async (file) => {
+          await TramiteArchivo.create({
+            file_name: file.filename,
+            original_name: file.originalname,
+            ruta: file.path,
+            tipo: file.mimetype.split("/")[1],
+            size: file.size,
+            tramite_id: tramite.id,
+            usuario_creacion: req.usuario.id,
+          });
+        })
+      );
     }
 
     // si no hay nuevos archivos no hace nada
