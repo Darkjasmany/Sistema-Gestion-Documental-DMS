@@ -50,15 +50,10 @@ export const TramitesProvider = ({ children }) => {
       return;
     }
 
-    //** Actualización o Crear 1 Trámite */
+    //** CREATE - UPDATE
     if (tramite.id) {
-      //** Si el tramite tiene un id, es porque se va a editar
-      // const listadoArchivos = [];
-
-      console.log(tramite);
-
+      // Actualizar un trámite existente
       try {
-        // Como el backend recibe archivos, se debe enviar un formData
         const formData = new FormData();
         formData.append("asunto", tramite.asunto);
         formData.append("descripcion", tramite.descripcion);
@@ -77,26 +72,37 @@ export const TramitesProvider = ({ children }) => {
           formData.append("archivos", archivo.id);
         });
 
+        /*
+        // Adjuntar archivos solo si existen
+        if (tramite.archivos && tramite.archivos.length > 0) {
+          tramite.archivos.forEach((archivo) => {
+            formData.append("archivos", archivo.id);
+          });
+        }*/
+
         if (tramite.archivosNuevos && tramite.archivosNuevos.length > 0) {
           tramite.archivosNuevos.forEach((archivoNuevo) => {
             formData.append("archivosNuevos", archivoNuevo);
           });
         }
 
-        formData.append(
-          "archivosEliminar",
-          JSON.stringify(tramite.archivosEliminar)
-        );
+        // formData.append(
+        //   "archivosEliminar",
+        //   JSON.stringify(tramite.archivosEliminar)
+        // );
+        if (tramite.archivosEliminar && tramite.archivosEliminar.length > 0) {
+          formData.append(
+            "archivosEliminar",
+            JSON.stringify(tramite.archivosEliminar)
+          );
+        }
 
         const { data } = await clienteAxios.put(
           `/tramites/${tramite.id}`,
           formData,
-          // tramite,
           getAxiosConfig()
         );
 
-        // console.log(data);
-        // return;
         const tramitesActualizado = tramites.map((tramiteState) =>
           tramiteState.id === data.id ? data : tramiteState
         );
@@ -104,8 +110,6 @@ export const TramitesProvider = ({ children }) => {
         setTramites(tramitesActualizado);
 
         obtenerTramites();
-
-        // return data.message;
       } catch (error) {
         console.error(error.response?.data?.message);
       }

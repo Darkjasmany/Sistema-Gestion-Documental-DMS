@@ -245,11 +245,9 @@ export const obtenerTramite = async (req, res) => {
 
 export const actualizarTramite = async (req, res) => {
   // Inicia la transacción
-
   const transaction = await Tramite.sequelize.transaction();
 
   const { id } = req.params;
-
   const {
     asunto,
     descripcion,
@@ -330,9 +328,6 @@ export const actualizarTramite = async (req, res) => {
     });
   }
 
-  // const externo = tramiteExterno !== undefined ? true : false;
-
-  // Procesar los archivos subidos
   const archivosExistentes = await TramiteArchivo.findAll({
     where: {
       tramite_id: id,
@@ -341,59 +336,20 @@ export const actualizarTramite = async (req, res) => {
 
   const archivosNuevos = req.files ? req.files.length : 0;
 
-  if (
-    archivos.length > config.MAX_UPLOAD_FILES ||
-    (archivosNuevos && archivosNuevos > config.MAX_UPLOAD_FILES)
-  ) {
-    // if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
-    await transaction.rollback();
-    borrarArchivosTemporales(req.files);
-    return res.status(400).json({
-      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
-    });
-  }
-
   if (archivosExistentes.length + archivosNuevos === 0) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(400).json({ error: "No se subieron archivos" });
   }
 
-  // !Validar archivos
-
-  // console.log("Body:", req.body);
-  // console.log("Files:", req.files);
-
-  // console.log(archivosExistentes);
-  let arrayArchivosExistentes = archivosExistentes.map(
-    (archivolocal) => archivolocal.id
-  );
-
-  // archivosExistentes.forEach((archivolocal) => {
-  //   arrayArchivosExistentes.push(archivolocal.id);
-  // });
-
-  console.log("Archivos Existente BD", arrayArchivosExistentes);
-
-  // los archivos que se mantien
-  console.log(
-    "archivos totales en el state nuevos + existentes",
-    archivos.length
-  );
-  console.log("archivos nuevos", archivosNuevos);
-  // archivos.forEach((archivo) => {
-  //   console.log(archivo);
-  // });
-  if (JSON.parse(archivosEliminar)) {
-    console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
-  }
-  // console.log("id archivos a eliminar", JSON.parse(archivosEliminar));
-
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
-  const nuevoArrayEliminar = JSON.parse(archivosEliminar)
-    .filter((id) => id != null) // Filtrar valores no nulos
-    .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
-    .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+  let nuevoArrayEliminar = [];
+  if (archivosEliminar) {
+    nuevoArrayEliminar = JSON.parse(archivosEliminar)
+      .filter((id) => id != null) // Filtrar valores no nulos
+      .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
+      .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+  }
 
   if (nuevoArrayEliminar.length === 0)
     return res
@@ -407,7 +363,19 @@ export const actualizarTramite = async (req, res) => {
   if (archivosAEliminar.length === 0)
     return res.status(400).json({ message: "Archivos no encontrados" });
 
-  return;
+  // ** Validar si la cantidad de archivos supera el límite permitido
+  const totalArchivos =
+    archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
+
+  console.log(totalArchivos);
+  if (totalArchivos > config.MAX_UPLOAD_FILES) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivos`,
+    });
+  }
+
   try {
     // Actualización de los campos del trámite
     tramite.asunto = asunto;
@@ -424,14 +392,9 @@ export const actualizarTramite = async (req, res) => {
     // Guardar cambios
     await tramite.save({ transaction });
 
-    // si hay nuevos archivos y no superta el liminte se suben
-
-    // SI hay archivos para eliminar
+    // Si hay archivos para eliminar
     if (archivosEliminar) {
-      // **Eliminar los archivos
-      // Eliminar registros de la base de datos
       await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
-      // Eliminar físicamente los archivos del sistema de archivos
       borrarArchivos(archivosAEliminar);
     }
 
@@ -453,15 +416,10 @@ export const actualizarTramite = async (req, res) => {
       );
     }
 
-    // si no hay nuevos archivos no hace nada
-
-    return;
-
     // Confirmar la transacción
     await transaction.commit();
 
     res.status(200).json({ message: "Trámite actualizado" });
-    // return;
   } catch (error) {
     await transaction.rollback(); // Deshacer transacción en caso de error
     console.error(`Error al actualizar el trámite: ${error.message}`);
