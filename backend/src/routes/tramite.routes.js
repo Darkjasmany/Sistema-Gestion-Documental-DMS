@@ -35,7 +35,7 @@ router
   )
   .delete(
     checkAuth,
-    checkRole("COORDINADOR"),
+    // checkRole("COORDINADOR"),
     tramiteController.eliminarTramite
   );
 

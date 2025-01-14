@@ -173,6 +173,29 @@ export const TramitesProvider = ({ children }) => {
     // console.log(tramite);
     setTramite(tramite);
   };
+
+  const eliminarTramite = async (id) => {
+    const confirmar = confirm("¿Confirmas que deseas eliminar?");
+    console.log(confirmar);
+    if (confirmar) {
+      try {
+        const { data } = await clienteAxios.delete(
+          `/tramites/${id}`,
+          getAxiosConfig()
+        );
+
+        console.log(data);
+
+        const tramitesActualizado = tramites.filter(
+          (tramitesState) => tramitesState.id !== id
+        );
+
+        setTramites(tramitesActualizado);
+      } catch (error) {
+        console.log(error.response?.data?.menssage);
+      }
+    }
+  };
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);
@@ -182,7 +205,7 @@ export const TramitesProvider = ({ children }) => {
   return (
     // Value: indicamos que va a ser un objeto que sera disponible y le pasamos el estado tramites
     <TramitesContext.Provider
-      value={{ tramites, guardarTramite, setEdicion, tramite }}
+      value={{ tramites, guardarTramite, setEdicion, tramite, eliminarTramite }}
     >
       {children}
     </TramitesContext.Provider>
