@@ -351,17 +351,10 @@ export const actualizarTramite = async (req, res) => {
       .filter((id) => !isNaN(id)); // Filtrar los valores NaN
   }
 
-  if (nuevoArrayEliminar.length === 0)
-    return res
-      .status(400)
-      .json({ message: "Los archivos enviados no son válidos" });
-
   // Buscar los archivos a eliminar en la base de datos
   const archivosAEliminar = await TramiteArchivo.findAll({
     where: { tramite_id: id, id: nuevoArrayEliminar },
   });
-  if (archivosAEliminar.length === 0)
-    return res.status(400).json({ message: "Archivos no encontrados" });
 
   // ** Validar si la cantidad de archivos supera el límite permitido
   const totalArchivos =
