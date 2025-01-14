@@ -16,7 +16,7 @@ const Formulario = () => {
   const [tramiteExterno, setTramiteExterno] = useState(false);
   const [archivos, setArchivos] = useState([]);
   const [archivosEliminar, setArchivosEliminar] = useState([]);
-  const [archivosNuevos, setArchivosNuevos] = useState([]);
+  // const [archivosNuevos, setArchivosNuevos] = useState([]);
 
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
@@ -170,7 +170,7 @@ const Formulario = () => {
     setAlerta({});
     setArchivos([...archivos, ...archivosSeleccionados]); // Agregar los nuevos archivos al estado
     // setArchivos([...archivos]); // Agregar los nuevos archivos al estado
-    setArchivosNuevos([...archivosSeleccionados]); // Agregar los nuevos archivos al estado
+    // setArchivosNuevos([...archivosSeleccionados]); // Agregar los nuevos archivos al estado
   };
 
   // Funcion para eliminar archivo
@@ -225,7 +225,7 @@ const Formulario = () => {
       descripcion,
       tramiteExterno,
       archivos,
-      archivosNuevos,
+      // archivosNuevos,
       archivosEliminar,
       id,
     });

@@ -281,6 +281,10 @@ export const actualizarTramite = async (req, res) => {
     });
   }
 
+  if (!req.files) {
+    borrarArchivosTemporales(req.files);
+  }
+
   const tramite = await Tramite.findOne(
     {
       where: { id, estado: "INGRESADO", activo: true },
@@ -340,6 +344,13 @@ export const actualizarTramite = async (req, res) => {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(400).json({ error: "No se subieron archivos" });
+  }
+
+  if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      error: "Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivos ctm",
+    });
   }
 
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)

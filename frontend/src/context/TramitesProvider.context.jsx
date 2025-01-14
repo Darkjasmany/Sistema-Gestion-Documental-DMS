@@ -54,6 +54,8 @@ export const TramitesProvider = ({ children }) => {
     if (tramite.id) {
       // Actualizar un trámite existente
       try {
+        console.log(tramite);
+        // return;
         const formData = new FormData();
         formData.append("asunto", tramite.asunto);
         formData.append("descripcion", tramite.descripcion);
@@ -68,24 +70,26 @@ export const TramitesProvider = ({ children }) => {
         formData.append("tramiteExterno", tramite.tramiteExterno);
 
         // Adjuntar archivos al FormData
-        tramite.archivos.forEach((archivo) => {
-          formData.append("archivos", archivo.id);
-        });
-
+        if (tramite.archivos && tramite.archivos.length > 0) {
+          tramite.archivos.forEach((archivo) => {
+            formData.append("archivos", archivo);
+          });
+        }
         /*
         // Adjuntar archivos solo si existen
         if (tramite.archivos && tramite.archivos.length > 0) {
           tramite.archivos.forEach((archivo) => {
             formData.append("archivos", archivo.id);
           });
-        }*/
-
+        }
+*/
+        /*
         if (tramite.archivosNuevos && tramite.archivosNuevos.length > 0) {
           tramite.archivosNuevos.forEach((archivoNuevo) => {
             formData.append("archivosNuevos", archivoNuevo);
           });
         }
-
+*/
         // formData.append(
         //   "archivosEliminar",
         //   JSON.stringify(tramite.archivosEliminar)
