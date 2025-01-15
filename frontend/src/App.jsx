@@ -12,6 +12,8 @@ import Registrar from "./pages/auth/Registrar.pages";
 import OlvidePassword from "./pages/auth/OlvidePassword.pages";
 import NuevoPassword from "./pages/auth/NuevoPassword.pages";
 import AdministrarTramites from "./pages/admin/AdministrarTramites.pages";
+import EditarPerfil from "./pages/admin/EditarPerfil.pages";
+import CambiarPassword from "./pages/admin/CambiarPassword.pages";
 
 function App() {
   return (
@@ -32,9 +34,12 @@ function App() {
                 element={<NuevoPassword />}
               />
             </Route>
+
             {/* Ruta Privada */}
             <Route path="/admin" element={<RutaProtegida />}>
               <Route index element={<AdministrarTramites />} />
+              <Route path="perfil" element={<EditarPerfil />} />
+              <Route path="cambiar-password" element={<CambiarPassword />} />
             </Route>
           </Routes>
         </TramitesProvider>

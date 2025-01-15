@@ -54,11 +54,22 @@ const AuthProvider = ({ children }) => {
     setAuth({});
   };
 
+  const actualizarPerfil = (datos) => {
+    console.log(datos);
+  };
+
   return (
     // Con el value tu decides que se pone a dispocion en el provider para que se pueda acceder en los diferentes componentes
     // Hacer disponible en los otros componentes
     <AuthContext.Provider
-      value={{ auth, setAuth, cargando, setCargando, cerrarSesion }}
+      value={{
+        auth,
+        setAuth,
+        cargando,
+        setCargando,
+        cerrarSesion,
+        actualizarPerfil,
+      }}
     >
       {children}
     </AuthContext.Provider>
