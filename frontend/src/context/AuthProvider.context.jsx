@@ -9,8 +9,6 @@ const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
   const [cargando, setCargando] = useState(true);
 
-  // console.log(auth);
-
   const autenticarUsuario = async () => {
     //** Verificar el token
     const token =
@@ -26,8 +24,8 @@ const AuthProvider = ({ children }) => {
     // ** Header de Configuración
     const config = {
       headers: {
-        // "Content-Type": "application/json", // Para indicar que el body es un JSON
-        "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
+        "Content-Type": "application/json", // Para indicar que el body es un JSON
+        //"Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
         Authorization: `Bearer ${token}`,
       },
     };
@@ -54,8 +52,71 @@ const AuthProvider = ({ children }) => {
     setAuth({});
   };
 
-  const actualizarPerfil = (datos) => {
-    console.log(datos);
+  const actualizarPerfil = async (datos) => {
+    //** Verificar el token
+    const token =
+      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+
+    // ** Header de Configuración
+    const config = {
+      headers: {
+        "Content-Type": "application/json", // Para indicar que el body es un JSON
+        //"Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const url = `/usuarios/perfil/${datos.id}`;
+      const { data } = await clienteAxios.put(url, datos, config);
+      console.log(data);
+
+      return {
+        message: "Datos Actualizados Correctamente",
+      };
+    } catch (error) {
+      console.log(error.response?.data?.message);
+      return {
+        message: error.response?.data?.message,
+        error: true,
+      };
+    }
+  };
+
+  const guardarPassword = async (datos) => {
+    //** Verificar el token
+    const token =
+      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+
+    if (!token) {
+      setCargando(false);
+      setAuth({});
+      return; // si no hay nada detiene el codigo
+    }
+
+    // ** Header de Configuración
+    const config = {
+      headers: {
+        "Content-Type": "application/json", // Para indicar que el body es un JSON
+        //"Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const url = "/usuarios/actualizar-password";
+      const { data } = await clienteAxios.put(url, datos, config);
+      // console.log(data);
+
+      return {
+        message: data?.message,
+      };
+    } catch (error) {
+      return {
+        message: error.response?.data?.message,
+        error: true,
+      };
+    }
   };
 
   return (
@@ -69,6 +130,7 @@ const AuthProvider = ({ children }) => {
         setCargando,
         cerrarSesion,
         actualizarPerfil,
+        guardarPassword,
       }}
     >
       {children}

@@ -21,8 +21,9 @@ const EditarPerfil = () => {
     }
   }, [alerta]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(perfil);
 
     const { nombres, apellidos, email } = perfil;
 
@@ -34,7 +35,9 @@ const EditarPerfil = () => {
       return;
     }
 
-    actualizarPerfil(perfil);
+    const resultado = await actualizarPerfil(perfil);
+
+    setAlerta(resultado);
   };
 
   const { message } = alerta;
@@ -127,7 +130,9 @@ const EditarPerfil = () => {
             <input
               type="submit"
               value={"Guardar Cambios"}
-              className="bg-indigo-700 px-10 py-3 mt-5 font-bold text-white rounded-lg uppercase w-full"
+              className="bg-indigo-600 px-10 py-3 mt-5 font-bold text-white rounded-lg uppercase w-full hover:bg-indigo-800
+              cursor-pointer
+              transition-colors"
             />
           </form>
         </div>
