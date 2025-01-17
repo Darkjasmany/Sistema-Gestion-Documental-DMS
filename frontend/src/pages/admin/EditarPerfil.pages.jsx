@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth.hook";
 import Alerta from "../../components/Alerta.components";
 
 const EditarPerfil = () => {
-  const { auth, setAuth, actualizarPerfil } = useAuth();
+  const { auth, actualizarPerfil } = useAuth();
 
   const [perfil, setPerfil] = useState({});
   const [alerta, setAlerta] = useState({});
@@ -41,6 +41,7 @@ const EditarPerfil = () => {
   };
 
   const { message } = alerta;
+
   return (
     <>
       <AdminNav />

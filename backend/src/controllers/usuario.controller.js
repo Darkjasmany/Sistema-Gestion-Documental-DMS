@@ -306,35 +306,39 @@ export const actualizarPerfil = async (req, res) => {
 };
 
 export const actualizarPassword = async (req, res) => {
-  // console.log(req.veterinario);
+  // console.log(req.usuario);
   // console.log(req.body);
+  const transaction = await Usuario.sequelize.transaction();
 
   // Leer los datos
   const { id } = req.usuario;
   const { pwd_actual, pwd_nuevo } = req.body;
 
-  console.log(req.usuario);
-  console.log(req.body);
+  // Comprobar que el usuario existe
+  const usuario = await Usuario.findOne({
+    where: { id, confirmado: true, estado: true },
+  });
 
-  return;
-
-  // Comprobar que el veterinario existe
-  const usuario = await Usuario.findById(id);
   if (!usuario) {
-    const error = new Error("Hubo un error");
-    return res.status(400).json({ message: error.message });
+    await transaction.rollback();
+    return res.status(400).json({ message: "Hubo un error" });
   }
 
   // Comprobar su password con el que esta en la BD
-  if (await usuario.comprobarPassword(pwd_actual)) {
-    // CORRECTO
-    // Almacenar el nuevo password
-    usuario.password = pwd_nuevo;
-    await usuario.save();
-    res.json({ message: "Password Almacenado Correctamente" });
-  } else {
-    //INCORRECTO
-    const error = new Error("El Password Actual es Incorrecto");
-    return res.status(400).json({ message: error.message });
+  const esCorrecto = await usuario.comprobarPassword(pwd_actual);
+
+  if (!esCorrecto) {
+    return res
+      .status(401)
+      .json({ mensaje: "EL password actual es incorrecto" });
   }
+
+  // Almacenar el nuevo password
+  usuario.password = pwd_nuevo;
+
+  await usuario.save({ transaction });
+
+  await transaction.commit();
+
+  res.json({ message: "Password almacenado correctamente" });
 };

@@ -84,15 +84,10 @@ const AuthProvider = ({ children }) => {
   };
 
   const guardarPassword = async (datos) => {
+    // console.log(datos);
     //** Verificar el token
     const token =
       localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
-
-    if (!token) {
-      setCargando(false);
-      setAuth({});
-      return; // si no hay nada detiene el codigo
-    }
 
     // ** Header de Configuración
     const config = {
@@ -106,7 +101,7 @@ const AuthProvider = ({ children }) => {
     try {
       const url = "/usuarios/actualizar-password";
       const { data } = await clienteAxios.put(url, datos, config);
-      // console.log(data);
+      console.log(data);
 
       return {
         message: data?.message,

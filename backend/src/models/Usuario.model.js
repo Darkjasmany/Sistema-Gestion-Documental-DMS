@@ -8,6 +8,7 @@ import { passwordHash } from "../utils/passwordHash.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteArchivo } from "./TramiteArchivo.model.js";
 import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
+import bcrypt from "bcrypt";
 
 export const Usuario = sequelize.define(
   "usuario",
@@ -87,6 +88,11 @@ export const Usuario = sequelize.define(
     },
   }
 );
+
+// Método personalizado para comprobar el password
+Usuario.prototype.comprobarPassword = async function (passwordFormulario) {
+  return await bcrypt.compare(passwordFormulario, this.password);
+};
 
 // * Relaciones
 
