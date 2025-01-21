@@ -13,10 +13,9 @@ export const Tramite = sequelize.define(
   "tramite",
   {
     numero_tramite: {
-      // type: DataTypes.STRING(50),
       type: DataTypes.INTEGER,
-      allowNull: true,
-      // unique: true,
+      allowNull: false,
+      unique: true,
     },
     asunto: {
       type: DataTypes.STRING,
@@ -178,37 +177,15 @@ export const Tramite = sequelize.define(
 // ** AGREGAR EL HOOK
 //beforeValidate para el campo numeroTramite, garantizas que numeroTramite se establezca antes de que se valide el objeto, evitando que se produzca la violación de la restricción de no nulo.
 Tramite.addHook("beforeValidate", async (tramite) => {
-  console.log(tramite);
-  if (tramite.referencia_tramite) {
-    // Validar si existe un trámite con la referencia proporcionada
-    const referencia = parseInt(tramite.referencia_tramite);
-    const tramiteExistente = await Tramite.findOne({
-      // where: { referencia_tramite: tramite.referencia_tramite },
-      where: { referencia_tramite: referencia },
-    });
+  const lastTramite = await Tramite.findOne({
+    order: [["numero_tramite", "DESC"]],
+  });
 
-    console.log(tramiteExistente);
-    if (tramiteExistente) {
-      // Si existe, asignar el mismo número de trámite
-      tramite.numero_tramite = tramiteExistente.numero_tramite;
-    } else {
-      throw new Error(
-        "La referencia proporcionada no corresponde a un trámite existente."
-      );
-    }
-  } else {
-    // Si no hay referencia, asignar un número de trámite
-
-    const lastTramite = await Tramite.findOne({
-      order: [["numero_tramite", "DESC"]],
-    });
-
-    tramite.numero_tramite = lastTramite
-      ? lastTramite.numero_tramite + 1
-      : config.TRAMITE;
-    // : process.env.TRAMITE;
-    // :1; // Iniciar en 1 si no hay registros
-  }
+  tramite.numero_tramite = lastTramite
+    ? lastTramite.numero_tramite + 1
+    : config.TRAMITE;
+  // : process.env.TRAMITE;
+  // :1; // Iniciar en 1 si no hay registros
 });
 
 // beforeUpdate para verificar si el estado cambia a RECHAZADO y automáticamente ajuste el campo activo:

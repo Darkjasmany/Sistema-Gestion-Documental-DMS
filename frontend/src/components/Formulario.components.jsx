@@ -289,7 +289,7 @@ const Formulario = () => {
             htmlFor="referenciaTramite"
             className="text-gray-700 uppercase font-bold"
           >
-            Referencia
+            Referencia Trámite
           </label>
           <input
             type="text"

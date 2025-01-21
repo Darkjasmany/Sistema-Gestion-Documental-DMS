@@ -16,8 +16,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const agregarTramite = async (req, res) => {
-  // console.log(req.body); // Verifica los datos del formulario
-  // console.log(req.files); // Verifica los archivos recibidos
+  console.log(req.body); // Verifica los datos del formulario
+  console.log(req.files); // Verifica los archivos recibidos
 
   const {
     asunto,
@@ -30,17 +30,6 @@ export const agregarTramite = async (req, res) => {
     tramiteExterno,
   } = req.body;
 
-  // CONFIG es un objeto con los parámetros del sistema. '!'config verifica que config no sea null o undefined, Object.keys(config).length === 0 verifica que el objeto config tenga al menos una propiedad. Si el objeto está vacío, esta condición devolverá true.
-  if (!config || Object.keys(config).length === 0) {
-    borrarArchivosTemporales(req.files);
-    return res.status(400).json({
-      message: "Parámetros del sistema no cargados, comunícate con Sistemas",
-    });
-  }
-  // const extensionesPermitidas = config.EXTENSIONES_PERMITIDAS.split(",");
-  // console.log(extensionesPermitidas);
-
-  // Validar campos requeridos
   if (
     !asunto ||
     asunto.trim() === "" ||
@@ -60,29 +49,23 @@ export const agregarTramite = async (req, res) => {
     });
   }
 
+  // CONFIG es un objeto con los parámetros del sistema. '!'config verifica que config no sea null o undefined, Object.keys(config).length === 0 verifica que el objeto config tenga al menos una propiedad. Si el objeto está vacío, esta condición devolverá true.
+  if (!config || Object.keys(config).length === 0) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: "Parámetros del sistema no cargados, comunícate con Sistemas",
+    });
+  }
+
   const archivosNuevos = req.files ? req.files.length : 0;
   if (archivosNuevos > config.MAX_UPLOAD_FILES)
     return res.status(400).json({
       message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
     });
 
-  /*
-  //Validar que el numero de refencia existe
-  if (referenciaTramite) {
-    const tramiteExistente = await Tramite.findOne({
-      where: { referencia_tramite: referenciaTramite },
-    });
+  // const extensionesPermitidas = config.EXTENSIONES_PERMITIDAS.split(",");
+  // console.log(extensionesPermitidas);
 
-    if (!tramiteExistente) {
-      borrarArchivosTemporales(req.files);
-      return res.status(400).json({
-        message:
-          "La referencia proporcionada no existe, por favor ingrese una nueva referencia.",
-      });
-    }
-  }*/
-
-  // Validar si el departamento remitente y el empleado remitente existen
   const departamentoExiste = await Departamento.findByPk(
     departamentoRemitenteId
   );
@@ -110,34 +93,6 @@ export const agregarTramite = async (req, res) => {
   // const externo = tramiteExterno !== undefined ? true : false;
 
   try {
-    /*  let numeroTramite;
-
-    if (referenciaTramite) {
-      const tramiteExistente = await Tramite.findOne({
-        where: { referencia_tramite: referenciaTramite },
-      });
-
-      if (tramiteExistente) {
-        numeroTramite = tramiteExistente.numero_tramite;
-      } else {
-        borrarArchivosTemporales(req.files);
-        return res.status(404).json({
-          message:
-            "La referencia proporcionada no corresponde a un trámite existente.",
-        });
-      }
-    } else {
-      // Generar un nuevo número de trámite
-      const lastTramite = await Tramite.findOne({
-        order: [["numero_tramite", "DESC"]],
-      });
-
-      numeroTramite = lastTramite
-        ? lastTramite.numero_tramite + 1
-        : config.TRAMITE;
-    }
-*/
-    // Crear el nuevo trámite
     const tramiteGuardado = await Tramite.create({
       asunto,
       descripcion,
@@ -145,7 +100,7 @@ export const agregarTramite = async (req, res) => {
       remitente_id: remitenteId,
       prioridad: prioridad || undefined,
       fecha_documento: fechaDocumento,
-      referencia_tramite: referenciaTramite || null,
+      referencia_tramite: referenciaTramite,
       usuario_creacion: req.usuario.id,
       departamento_tramite: req.usuario.departamento_id,
       externo: tramiteExterno,
