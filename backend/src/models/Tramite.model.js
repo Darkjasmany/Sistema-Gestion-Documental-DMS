@@ -15,7 +15,7 @@ export const Tramite = sequelize.define(
     numero_tramite: {
       // type: DataTypes.STRING(50),
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       // unique: true,
     },
     asunto: {
@@ -178,13 +178,13 @@ export const Tramite = sequelize.define(
 // ** AGREGAR EL HOOK
 //beforeValidate para el campo numeroTramite, garantizas que numeroTramite se establezca antes de que se valide el objeto, evitando que se produzca la violación de la restricción de no nulo.
 Tramite.addHook("beforeValidate", async (tramite) => {
-  console.log(tramite);
+  // console.log(tramite);
   if (tramite.referencia_tramite) {
     // Validar si existe un trámite con la referencia proporcionada
-    const referencia = parseInt(tramite.referencia_tramite);
+    const referencia = tramite.referencia_tramite.toString();
+
     const tramiteExistente = await Tramite.findOne({
-      // where: { referencia_tramite: tramite.referencia_tramite },
-      where: { referencia_tramite: referencia },
+      where: { numero_tramite: referencia }, // La comparación será string = string
     });
 
     console.log(tramiteExistente);
