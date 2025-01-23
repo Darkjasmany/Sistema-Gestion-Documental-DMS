@@ -18,6 +18,8 @@ const Formulario = () => {
   const [archivosEliminar, setArchivosEliminar] = useState([]);
   // const [archivosNuevos, setArchivosNuevos] = useState([]);
 
+  const [tramiteReferencia, setTramiteReferencia] = useState(false);
+
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
   const [parametros, setParametros] = useState([]);
@@ -235,6 +237,7 @@ const Formulario = () => {
 
     // ** Limpiar el formulario después de enviar
     setAsunto("");
+    setReferenciaTramite(false);
     setReferenciaTramite("");
     setFechaDocumento(new Date().toISOString().split("T")[0]);
     setDepartamentoRemitenteId("");
@@ -283,8 +286,31 @@ const Formulario = () => {
           />
         </div>
 
+        {/* Checkbox para Referencia Trámite */}
+        <div className="flex items-start mb-5 select-none">
+          <div className="flex items-center h-5">
+            <input
+              id="tramiteReferencia"
+              type="checkbox"
+              // value={tramiteExterno}
+              checked={tramiteReferencia} // Sincroniza el estado con el valor del checkbox
+              onChange={(e) => {
+                setTramiteReferencia(e.target.checked);
+              }}
+              className="w-4 h-4 border border-gray-300 rounded bg-gray-50 "
+              aria-label="Trámite Externo"
+            />
+          </div>
+          <label
+            htmlFor="tramiteReferencia"
+            className="ms-2 text-sm font-medium text-gray-900 select-none"
+          >
+            Referencia Trámite
+          </label>
+        </div>
+
         {/* Campo para la Referencia */}
-        <div className="mb-5">
+        <div className="mb-5" hidden={!tramiteReferencia}>
           <label
             htmlFor="referenciaTramite"
             className="text-gray-700 uppercase font-bold"

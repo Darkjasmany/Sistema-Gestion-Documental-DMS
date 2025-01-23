@@ -45,12 +45,16 @@ const Tramite = ({ tramite }) => {
           Asunto:{" "}
           <span className="font-normal normal-case text-black">{asunto}</span>
         </p>
-        <p className="font-bold uppercase text-indigo-700 my-2">
-          Referencia:{" "}
-          <span className="font-normal normal-case text-black">
-            {referencia_tramite}
-          </span>
-        </p>
+
+        {referencia_tramite ? (
+          <p className="font-bold uppercase text-indigo-700 my-2">
+            Referencia:{" "}
+            <span className="font-normal normal-case text-black">
+              {referencia_tramite}
+            </span>
+          </p>
+        ) : null}
+
         <p className="font-bold uppercase text-indigo-700 my-2">
           Fecha del Trámite:{" "}
           <span className="font-normal normal-case text-black">
