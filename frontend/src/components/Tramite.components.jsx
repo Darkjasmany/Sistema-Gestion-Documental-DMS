@@ -2,13 +2,14 @@ import useTramites from "../hooks/useTramites.hook";
 
 // Destructuramos el tramite que nos llega como prop siendo un objeto
 const Tramite = ({ tramite }) => {
-  // console.log(tramite);
+  console.log(tramite);
 
   const { setEdicion, eliminarTramite } = useTramites();
 
   const {
     id,
     asunto,
+    numero_oficio_remitente,
     createdAt,
     descripcion,
     externo,
@@ -41,6 +42,14 @@ const Tramite = ({ tramite }) => {
             {numero_tramite}
           </span>
         </p>
+
+        <p className="font-bold uppercase text-indigo-700 my-2">
+          Número Oficio|Memo:{" "}
+          <span className="font-normal normal-case text-black">
+            {numero_oficio_remitente}
+          </span>
+        </p>
+
         <p className="font-bold uppercase text-indigo-700 my-2">
           Asunto:{" "}
           <span className="font-normal normal-case text-black">{asunto}</span>

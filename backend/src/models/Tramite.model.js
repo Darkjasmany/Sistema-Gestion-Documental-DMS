@@ -42,6 +42,11 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
+    numero_oficio_remitente: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
     usuario_creacion: {
       type: DataTypes.BIGINT,
       allowNull: false,
@@ -163,6 +168,8 @@ export const Tramite = sequelize.define(
       beforeSave: (tramite) => {
         tramite.asunto = tramite.asunto.trim();
         tramite.descripcion = tramite.descripcion.trim();
+        tramite.numero_oficio_remitente =
+          tramite.numero_oficio_remitente.trim();
         if (tramite.numero_oficio) {
           tramite.numero_oficio = tramite.numero_oficio.trim();
         }

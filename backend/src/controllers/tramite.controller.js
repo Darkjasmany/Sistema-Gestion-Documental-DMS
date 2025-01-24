@@ -1,7 +1,7 @@
 import { Tramite } from "../models/Tramite.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
-import { Sequelize } from "sequelize";
+import { Sequelize, Op } from "sequelize";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import path from "path"; // módulo path es parte de la API estándar de Node.js y se utiliza para manejar y transformar rutas de archivos y directorios.
 import { fileURLToPath } from "url";
@@ -21,6 +21,7 @@ export const agregarTramite = async (req, res) => {
 
   const {
     asunto,
+    oficioRemitente,
     descripcion,
     departamentoRemitenteId,
     remitenteId,
@@ -44,6 +45,8 @@ export const agregarTramite = async (req, res) => {
   if (
     !asunto ||
     asunto.trim() === "" ||
+    !oficioRemitente ||
+    oficioRemitente.trim() === "" ||
     !descripcion ||
     descripcion.trim() === "" ||
     !departamentoRemitenteId ||
@@ -106,6 +109,21 @@ export const agregarTramite = async (req, res) => {
     });
   }
 
+  const oficioRemitenteExiste = await Tramite.findOne({
+    where: {
+      numero_oficio_remitente: {
+        [Op.iLike]: `%${oficioRemitente}%`,
+        // Buscar oficio que contenga el número proporcionado
+      },
+    },
+  });
+  if (oficioRemitenteExiste) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: "El número de Memo|Oficio ya se encuentra registrado",
+    });
+  }
+
   // validación para considerar si un tramite es interno o no, si no es undefined asigna false, si lo es true
   // const externo = tramiteExterno !== undefined ? true : false;
 
@@ -141,6 +159,7 @@ export const agregarTramite = async (req, res) => {
     const tramiteGuardado = await Tramite.create({
       asunto,
       descripcion,
+      numero_oficio_remitente: oficioRemitente,
       departamento_remitente: departamentoRemitenteId,
       remitente_id: remitenteId,
       prioridad: prioridad || undefined,
@@ -185,6 +204,7 @@ export const listarTramitesUsuario = async (req, res) => {
         "id",
         "numero_tramite",
         "asunto",
+        "numero_oficio_remitente",
         "descripcion",
         "prioridad",
         "fecha_documento",

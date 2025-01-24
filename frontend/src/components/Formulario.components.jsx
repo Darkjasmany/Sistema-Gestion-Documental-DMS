@@ -6,6 +6,7 @@ import useTramites from "../hooks/useTramites.hook";
 const Formulario = () => {
   const [asunto, setAsunto] = useState("");
   const [referenciaTramite, setReferenciaTramite] = useState("");
+  const [oficioRemitente, setOficioRemitente] = useState("");
   const [fechaDocumento, setFechaDocumento] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -193,6 +194,7 @@ const Formulario = () => {
       [
         asunto,
         descripcion,
+        oficioRemitente,
         departamentoRemitenteId,
         remitenteId,
         fechaDocumento,
@@ -220,6 +222,7 @@ const Formulario = () => {
     guardarTramite({
       asunto,
       referenciaTramite,
+      oficioRemitente,
       fechaDocumento,
       departamentoRemitenteId,
       remitenteId,
@@ -237,7 +240,8 @@ const Formulario = () => {
 
     // ** Limpiar el formulario después de enviar
     setAsunto("");
-    setReferenciaTramite(false);
+    setOficioRemitente("");
+    setTramiteReferencia(false);
     setReferenciaTramite("");
     setFechaDocumento(new Date().toISOString().split("T")[0]);
     setDepartamentoRemitenteId("");
@@ -268,6 +272,26 @@ const Formulario = () => {
         className="bg-white py-10 px-5 mb-10 lg:mb-0 shadow-md rounded-md"
       >
         {message && <Alerta alerta={alerta} />}
+
+        {/* Campo para el OficioRemitente */}
+        <div className="mb-5">
+          <label
+            htmlFor="oficioRemitente"
+            className="text-gray-700 uppercase font-bold"
+          >
+            Número Oficio|Memo
+          </label>
+          <input
+            type="text"
+            id="oficioRemitente"
+            value={oficioRemitente}
+            onChange={(e) => {
+              setOficioRemitente(e.target.value);
+            }}
+            placeholder="Ingresa el número de oficio del Trámite"
+            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+          />
+        </div>
 
         {/* Campo para el Asunto */}
         <div className="mb-5">

@@ -129,6 +129,7 @@ export const TramitesProvider = ({ children }) => {
           "departamentoRemitenteId",
           tramite.departamentoRemitenteId
         );
+        formData.append("oficioRemitente", tramite.oficioRemitente);
         formData.append("remitenteId", tramite.remitenteId);
         formData.append("prioridad", tramite.prioridad);
         formData.append("fechaDocumento", tramite.fechaDocumento);
