@@ -219,51 +219,38 @@ const Formulario = () => {
     // console.log(archivosNuevos);
     // console.log(tramite);
 
-    try {
-      const response = await guardarTramite({
-        oficioRemitente,
-        asunto,
-        referenciaTramite,
-        fechaDocumento,
-        departamentoRemitenteId,
-        remitenteId,
-        prioridad,
-        descripcion,
-        tramiteExterno,
-        archivos,
-        // archivosNuevos,
-        archivosEliminar,
-        id, // El id se pasa para la edición
-      });
+    guardarTramite({
+      oficioRemitente,
+      asunto,
+      referenciaTramite,
+      fechaDocumento,
+      departamentoRemitenteId,
+      remitenteId,
+      prioridad,
+      descripcion,
+      tramiteExterno,
+      archivos,
+      // archivosNuevos,
+      archivosEliminar,
+      id,
+    });
 
-      // console.log(response);
+    setAlerta({ message: "Guardado Correctamente" });
+    //setAlerta({ message, error: false });
 
-      if (response.error) {
-        setAlerta({ message: response.message, error: true });
-      } else {
-        setAlerta({ message: response.message, error: false });
-
-        // Limpiar el formulario SOLO si la creación fue exitosa
-        if (!id) {
-          setOficioRemitente("");
-          setAsunto("");
-          setTramiteReferencia(false);
-          setReferenciaTramite("");
-          setFechaDocumento(new Date().toISOString().split("T")[0]);
-          setDepartamentoRemitenteId("");
-          setRemitenteId("");
-          setPrioridad("NORMAL");
-          setDescripcion("");
-          setArchivos([]);
-          setTramiteExterno(false);
-          fileInputArchivos.current.value = ""; // Limpiar el input de archivos
-        }
-      }
-    } catch (error) {
-      // Mostrar el error sin borrar el formulario
-      setAlerta({ message: error, error: true });
-      console.error(error.message); // Mostrar el error en la consola también
-    }
+    // ** Limpiar el formulario después de enviar
+    setAsunto("");
+    setOficioRemitente("");
+    setTramiteReferencia(false);
+    setReferenciaTramite("");
+    setFechaDocumento(new Date().toISOString().split("T")[0]);
+    setDepartamentoRemitenteId("");
+    setRemitenteId("");
+    setPrioridad("NORMAL");
+    setDescripcion("");
+    setArchivos([]);
+    setTramiteExterno(false);
+    fileInputArchivos.current.value = ""; // Limpiar el input de archivos
   };
 
   const { message } = alerta;

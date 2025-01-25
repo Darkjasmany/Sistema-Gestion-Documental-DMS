@@ -2,7 +2,7 @@ import useTramites from "../hooks/useTramites.hook";
 
 // Destructuramos el tramite que nos llega como prop siendo un objeto
 const Tramite = ({ tramite }) => {
-  console.log(tramite);
+  // console.log(tramite);
   const { setEdicion, eliminarTramite } = useTramites();
 
   const {

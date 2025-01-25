@@ -82,12 +82,14 @@ export const TramitesProvider = ({ children }) => {
       if (tramite.id) {
         console.log("Editar");
       } else {
-        console.log("NUevo");
         const { data } = await clienteAxios.post(
           "/tramites",
           formData,
           getAxiosConfig()
         );
+
+        console.log(data);
+
         // Va a crear un nuevo objeto con lo que no necesitamos
         const {
           activo,
@@ -95,18 +97,22 @@ export const TramitesProvider = ({ children }) => {
           usuario_actualizacion,
           usuario_creacion,
           ...tramiteAlmacenado
-        } = data;
+        } = data.data;
 
-        // console.log(tramiteGuardado);
+        // Actualizar el state tomando lo que hay en tramites y agregando el nuevo objecto de tramite almacenado
+        setTramites([tramiteAlmacenado, ...tramites]);
 
-        // Actualizar el state tomando lo que hay en tramites y agregando el nuevo tramite almacenado
-        setTramites([...tramiteAlmacenado, ...tramites]);
+        // Retornar el mensaje de respuesta
+        return { message: data.message, error: false };
       }
 
-      // Recargar los tramites
-      // obtenerTramites();
+      // Opcional por la referencia de tramites en departamento o
+      obtenerTramites();
     } catch (error) {
-      console.error(error.response?.data?.message);
+      const errorMessage =
+        error.response?.data?.message || "Ocurrió un error inesperado";
+      console.error(errorMessage);
+      return { message: errorMessage, error: true };
     }
     /*
     //** CREATE - UPDATE

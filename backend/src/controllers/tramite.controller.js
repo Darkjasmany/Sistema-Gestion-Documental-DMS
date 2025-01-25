@@ -60,6 +60,7 @@ export const agregarTramite = async (req, res) => {
     return res.status(400).json({
       message:
         "Todos los campos son obligatorios y debes subir al menos un archivo",
+      // error: true,
     });
   }
 
@@ -67,13 +68,13 @@ export const agregarTramite = async (req, res) => {
   if (archivosNuevos > config.MAX_UPLOAD_FILES)
     return res.status(400).json({
       message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
+      // error: true,
     });
 
-  /*
   //Validar que el numero de refencia existe
   if (referenciaTramite) {
     const tramiteExistente = await Tramite.findOne({
-      where: { referencia_tramite: referenciaTramite },
+      where: { numero_tramite: referenciaTramite },
     });
 
     if (!tramiteExistente) {
@@ -83,7 +84,7 @@ export const agregarTramite = async (req, res) => {
           "La referencia proporcionada no existe, por favor ingrese una nueva referencia.",
       });
     }
-  }*/
+  }
 
   // Validar si el departamento remitente y el empleado remitente existen
   const departamentoExiste = await Departamento.findByPk(
@@ -91,9 +92,10 @@ export const agregarTramite = async (req, res) => {
   );
   if (!departamentoExiste) {
     borrarArchivosTemporales(req.files);
-    return res
-      .status(400)
-      .json({ message: "Departamento del remitente no encontrado" });
+    return res.status(400).json({
+      message: "Departamento del remitente no encontrado",
+      // error: true,
+    });
   }
 
   const empleadoExiste = await Empleado.findOne({
@@ -106,6 +108,7 @@ export const agregarTramite = async (req, res) => {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
       message: "No existe ese empleado o no está asignado a ese departamento",
+      // error: true,
     });
   }
 
@@ -121,6 +124,7 @@ export const agregarTramite = async (req, res) => {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
       message: "El número de Memo|Oficio ya se encuentra registrado",
+      // error: true,
     });
   }
 
@@ -184,7 +188,14 @@ export const agregarTramite = async (req, res) => {
       })
     );
 
-    res.json(tramiteGuardado);
+    // res.json(tramiteGuardado);
+
+    res.status(201).json({
+      error: false,
+      message: "Trámite creado correctamente",
+      data: tramiteGuardado,
+    });
+
     // res.json({ tramiteGuardado, message: "Creado Correctamente" });
     // res.status(200).json({ message: "Creado Correctamente" });
   } catch (error) {
