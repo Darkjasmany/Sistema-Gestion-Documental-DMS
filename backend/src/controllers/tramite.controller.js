@@ -20,14 +20,14 @@ export const agregarTramite = async (req, res) => {
   // console.log(req.files); // Verifica los archivos recibidos
 
   const {
-    asunto,
     oficioRemitente,
-    descripcion,
+    asunto,
+    referenciaTramite,
+    fechaDocumento,
     departamentoRemitenteId,
     remitenteId,
     prioridad,
-    fechaDocumento,
-    referenciaTramite,
+    descripcion,
     tramiteExterno,
   } = req.body;
 
@@ -203,14 +203,14 @@ export const listarTramitesUsuario = async (req, res) => {
       attributes: [
         "id",
         "numero_tramite",
-        "asunto",
         "numero_oficio_remitente",
-        "descripcion",
-        "prioridad",
-        "fecha_documento",
+        "asunto",
         "referencia_tramite",
-        "createdAt",
+        "fecha_documento",
+        "prioridad",
+        "descripcion",
         "externo",
+        "createdAt",
         // [
         //   // Conteo de archivos de cada trámite
         //   Sequelize.literal(
@@ -244,7 +244,7 @@ export const listarTramitesUsuario = async (req, res) => {
         },
       ],
 
-      order: [["numero_tramite", "ASC"]],
+      order: [["numero_tramite", "DESC"]],
     });
 
     // Modificar la ruta antes de enviarla al frontend

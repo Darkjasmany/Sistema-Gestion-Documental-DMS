@@ -220,9 +220,9 @@ const Formulario = () => {
     // console.log(tramite);
 
     guardarTramite({
+      oficioRemitente,
       asunto,
       referenciaTramite,
-      oficioRemitente,
       fechaDocumento,
       departamentoRemitenteId,
       remitenteId,

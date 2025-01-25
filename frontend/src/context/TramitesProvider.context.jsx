@@ -50,23 +50,87 @@ export const TramitesProvider = ({ children }) => {
       return;
     }
 
+    try {
+      const formData = new FormData();
+      formData.append("oficioRemitente", tramite.oficioRemitente);
+      formData.append("asunto", tramite.asunto);
+      formData.append("referenciaTramite", tramite.referenciaTramite);
+      formData.append("fechaDocumento", tramite.fechaDocumento);
+      formData.append(
+        "departamentoRemitenteId",
+        tramite.departamentoRemitenteId
+      );
+      formData.append("remitenteId", tramite.remitenteId);
+      formData.append("prioridad", tramite.prioridad);
+      formData.append("descripcion", tramite.descripcion);
+      formData.append("tramiteExterno", tramite.tramiteExterno);
+
+      // Adjuntar archivos al FormData
+      if (tramite.archivos && tramite.archivos.length > 0) {
+        tramite.archivos.forEach((archivo) => {
+          formData.append("archivos", archivo);
+        });
+      }
+
+      if (tramite.archivosEliminar && tramite.archivosEliminar.length > 0) {
+        formData.append(
+          "archivosEliminar",
+          JSON.stringify(tramite.archivosEliminar)
+        );
+      }
+
+      if (tramite.id) {
+        console.log("Editar");
+      } else {
+        console.log("NUevo");
+        const { data } = await clienteAxios.post(
+          "/tramites",
+          formData,
+          getAxiosConfig()
+        );
+        // Va a crear un nuevo objeto con lo que no necesitamos
+        const {
+          activo,
+          createdAt,
+          usuario_actualizacion,
+          usuario_creacion,
+          ...tramiteAlmacenado
+        } = data;
+
+        // console.log(tramiteGuardado);
+
+        // Actualizar el state tomando lo que hay en tramites y agregando el nuevo tramite almacenado
+        setTramites([...tramiteAlmacenado, ...tramites]);
+      }
+
+      // Recargar los tramites
+      // obtenerTramites();
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+    /*
     //** CREATE - UPDATE
     if (tramite.id) {
       // Actualizar un trámite existente
       try {
+
+
         console.log(tramite);
         // return;
+
+
         const formData = new FormData();
+        formData.append("oficioRemitente", tramite.oficioRemitente);
         formData.append("asunto", tramite.asunto);
-        formData.append("descripcion", tramite.descripcion);
+        formData.append("referenciaTramite", tramite.referenciaTramite);
+        formData.append("fechaDocumento", tramite.fechaDocumento);
         formData.append(
           "departamentoRemitenteId",
           tramite.departamentoRemitenteId
         );
         formData.append("remitenteId", tramite.remitenteId);
         formData.append("prioridad", tramite.prioridad);
-        formData.append("fechaDocumento", tramite.fechaDocumento);
-        formData.append("referenciaTramite", tramite.referenciaTramite);
+        formData.append("descripcion", tramite.descripcion);
         formData.append("tramiteExterno", tramite.tramiteExterno);
 
         // Adjuntar archivos al FormData
@@ -75,25 +139,7 @@ export const TramitesProvider = ({ children }) => {
             formData.append("archivos", archivo);
           });
         }
-        /*
-        // Adjuntar archivos solo si existen
-        if (tramite.archivos && tramite.archivos.length > 0) {
-          tramite.archivos.forEach((archivo) => {
-            formData.append("archivos", archivo.id);
-          });
-        }
-*/
-        /*
-        if (tramite.archivosNuevos && tramite.archivosNuevos.length > 0) {
-          tramite.archivosNuevos.forEach((archivoNuevo) => {
-            formData.append("archivosNuevos", archivoNuevo);
-          });
-        }
-*/
-        // formData.append(
-        //   "archivosEliminar",
-        //   JSON.stringify(tramite.archivosEliminar)
-        // );
+
         if (tramite.archivosEliminar && tramite.archivosEliminar.length > 0) {
           formData.append(
             "archivosEliminar",
@@ -167,7 +213,7 @@ export const TramitesProvider = ({ children }) => {
       } catch (error) {
         console.error(error.response?.data?.message);
       }
-    }
+    }*/
   };
 
   const setEdicion = (tramite) => {
