@@ -65,11 +65,13 @@ export const agregarTramite = async (req, res) => {
   }
 
   const archivosNuevos = req.files ? req.files.length : 0;
-  if (archivosNuevos > config.MAX_UPLOAD_FILES)
+  if (archivosNuevos > config.MAX_UPLOAD_FILES) {
+    borrarArchivosTemporales(req.files);
     return res.status(400).json({
       message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
       // error: true,
     });
+  }
 
   //Validar que el numero de refencia existe
   if (referenciaTramite) {
@@ -128,37 +130,7 @@ export const agregarTramite = async (req, res) => {
     });
   }
 
-  // validación para considerar si un tramite es interno o no, si no es undefined asigna false, si lo es true
-  // const externo = tramiteExterno !== undefined ? true : false;
-
   try {
-    /*  let numeroTramite;
-
-    if (referenciaTramite) {
-      const tramiteExistente = await Tramite.findOne({
-        where: { referencia_tramite: referenciaTramite },
-      });
-
-      if (tramiteExistente) {
-        numeroTramite = tramiteExistente.numero_tramite;
-      } else {
-        borrarArchivosTemporales(req.files);
-        return res.status(404).json({
-          message:
-            "La referencia proporcionada no corresponde a un trámite existente.",
-        });
-      }
-    } else {
-      // Generar un nuevo número de trámite
-      const lastTramite = await Tramite.findOne({
-        order: [["numero_tramite", "DESC"]],
-      });
-
-      numeroTramite = lastTramite
-        ? lastTramite.numero_tramite + 1
-        : config.TRAMITE;
-    }
-*/
     // Crear el nuevo trámite
     const tramiteGuardado = await Tramite.create({
       asunto,
@@ -195,9 +167,6 @@ export const agregarTramite = async (req, res) => {
       message: "Trámite creado correctamente",
       data: tramiteGuardado,
     });
-
-    // res.json({ tramiteGuardado, message: "Creado Correctamente" });
-    // res.status(200).json({ message: "Creado Correctamente" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -429,7 +398,7 @@ export const actualizarTramite = async (req, res) => {
   if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
-      error: "Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivos ctm",
+      error: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivos`,
     });
   }
 
