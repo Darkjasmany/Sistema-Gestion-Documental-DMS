@@ -81,8 +81,18 @@ const Formulario = () => {
   useEffect(() => {
     //** CARGAR DATOS PARA ACTUALIZAR TRÁMITE */
     if (tramite?.asunto) {
+      // console.log(tramite);
+      setOficioRemitente(tramite.numero_oficio_remitente);
       setAsunto(tramite.asunto);
-      setReferenciaTramite(tramite.referencia_tramite);
+
+      if (tramite.referencia_tramite) {
+        setReferenciaTramite(tramite.referencia_tramite);
+        setTramiteReferencia(true);
+      } else {
+        setReferenciaTramite("");
+        setTramiteReferencia(false);
+      }
+
       setFechaDocumento(tramite.fecha_documento);
       setDepartamentoRemitenteId(tramite.departamentoRemitente?.id);
 
@@ -192,12 +202,12 @@ const Formulario = () => {
     e.preventDefault();
     if (
       [
-        asunto,
-        descripcion,
         oficioRemitente,
+        asunto,
+        fechaDocumento,
         departamentoRemitenteId,
         remitenteId,
-        fechaDocumento,
+        descripcion,
       ].includes("")
     ) {
       return setAlerta({
@@ -242,9 +252,10 @@ const Formulario = () => {
         setAlerta({ message: response.message, error: true });
       } else {
         setAlerta({ message: response.message, error: false });
+        console.log("Valor de id antes del if (!id):", id);
 
-        // Limpiar el formulario SOLO si la creación fue exitosa
-        if (!id) {
+        // Limpiar el formulario SOLO si la creación o actualización fue exitosa
+        if (!id || response.tramiteId) {
           setOficioRemitente("");
           setAsunto("");
           setTramiteReferencia(false);

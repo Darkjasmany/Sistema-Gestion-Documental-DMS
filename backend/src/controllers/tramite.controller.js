@@ -255,7 +255,8 @@ export const listarTramitesUsuario = async (req, res) => {
         },
       ],
 
-      order: [["numero_tramite", "DESC"]],
+      // order: [["numero_tramite", "DESC"]],
+      order: [["id", "DESC"]],
     });
 
     // Modificar la ruta antes de enviarla al frontend
@@ -325,6 +326,7 @@ export const actualizarTramite = async (req, res) => {
 
   const { id } = req.params;
   const {
+    oficioRemitente,
     asunto,
     descripcion,
     departamentoRemitenteId,
@@ -338,6 +340,8 @@ export const actualizarTramite = async (req, res) => {
   } = req.body;
 
   if (
+    !oficioRemitente ||
+    oficioRemitente.trim() === "" ||
     !asunto ||
     asunto.trim() === "" ||
     !descripcion ||
@@ -456,8 +460,42 @@ export const actualizarTramite = async (req, res) => {
     });
   }
 
+  const oficioRemitenteExiste = await Tramite.findOne({
+    where: {
+      numero_oficio_remitente: {
+        [Op.iLike]: `%${oficioRemitente}%`, // Buscar oficio que contenga el número proporcionado
+      },
+      id: {
+        [Op.not]: id, // Excluir el ID del trámite que estás editando
+      },
+    },
+  });
+  if (oficioRemitenteExiste) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: "El número de Memo|Oficio ya se encuentra registrado",
+      // error: true,
+    });
+  }
+
+  //Validar que el numero de refencia existe
+  if (referenciaTramite) {
+    const tramiteExistente = await Tramite.findOne({
+      where: { numero_tramite: referenciaTramite },
+    });
+
+    if (!tramiteExistente) {
+      borrarArchivosTemporales(req.files);
+      return res.status(400).json({
+        message:
+          "La referencia proporcionada no existe, por favor ingrese una nueva referencia.",
+      });
+    }
+  }
+
   try {
     // Actualización de los campos del trámite
+    tramite.numero_oficio_remitente = oficioRemitente;
     tramite.asunto = asunto;
     tramite.descripcion = descripcion;
     tramite.departamento_remitente = departamentoRemitenteId;
@@ -499,7 +537,11 @@ export const actualizarTramite = async (req, res) => {
     // Confirmar la transacción
     await transaction.commit();
 
-    res.status(200).json({ message: "Trámite actualizado" });
+    res.status(201).json({
+      //  error: false,
+      message: "Trámite Actualizado",
+      data: tramite,
+    });
   } catch (error) {
     await transaction.rollback(); // Deshacer transacción en caso de error
     console.error(`Error al actualizar el trámite: ${error.message}`);

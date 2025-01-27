@@ -47,7 +47,7 @@ export const TramitesProvider = ({ children }) => {
   const guardarTramite = async (tramite) => {
     if (!token) {
       console.log("No hay token disponible, no se puede guardar el trámite.");
-      return;
+      return { message: "No hay token disponible", error: true };
     }
 
     try {
@@ -79,16 +79,30 @@ export const TramitesProvider = ({ children }) => {
         );
       }
 
+      // Si el tramite tiene un id, entonces es una edición
       if (tramite.id) {
-        console.log("Editar");
+        const { data } = await clienteAxios.put(
+          `/tramites/${tramite.id}`,
+          formData,
+          getAxiosConfig()
+        );
+
+        const tramitesActualizado = tramites.map((tramiteState) =>
+          tramiteState.id === data.id ? data : tramiteState
+        );
+
+        setTramites(tramitesActualizado);
+
+        // Opcional por la referencia de tramites en departamento o
+        obtenerTramites();
+
+        return { message: data.message, error: false, tramiteId: data.data.id };
       } else {
         const { data } = await clienteAxios.post(
           "/tramites",
           formData,
           getAxiosConfig()
         );
-
-        console.log(data);
 
         // Va a crear un nuevo objeto con lo que no necesitamos
         const {
@@ -105,121 +119,12 @@ export const TramitesProvider = ({ children }) => {
         // Retornar el mensaje de respuesta
         return { message: data.message, error: false };
       }
-
-      // Opcional por la referencia de tramites en departamento o
-      obtenerTramites();
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Ocurrió un error inesperado";
       console.error(errorMessage);
       return { message: errorMessage, error: true };
     }
-    /*
-    //** CREATE - UPDATE
-    if (tramite.id) {
-      // Actualizar un trámite existente
-      try {
-
-
-        console.log(tramite);
-        // return;
-
-
-        const formData = new FormData();
-        formData.append("oficioRemitente", tramite.oficioRemitente);
-        formData.append("asunto", tramite.asunto);
-        formData.append("referenciaTramite", tramite.referenciaTramite);
-        formData.append("fechaDocumento", tramite.fechaDocumento);
-        formData.append(
-          "departamentoRemitenteId",
-          tramite.departamentoRemitenteId
-        );
-        formData.append("remitenteId", tramite.remitenteId);
-        formData.append("prioridad", tramite.prioridad);
-        formData.append("descripcion", tramite.descripcion);
-        formData.append("tramiteExterno", tramite.tramiteExterno);
-
-        // Adjuntar archivos al FormData
-        if (tramite.archivos && tramite.archivos.length > 0) {
-          tramite.archivos.forEach((archivo) => {
-            formData.append("archivos", archivo);
-          });
-        }
-
-        if (tramite.archivosEliminar && tramite.archivosEliminar.length > 0) {
-          formData.append(
-            "archivosEliminar",
-            JSON.stringify(tramite.archivosEliminar)
-          );
-        }
-
-        const { data } = await clienteAxios.put(
-          `/tramites/${tramite.id}`,
-          formData,
-          getAxiosConfig()
-        );
-
-        const tramitesActualizado = tramites.map((tramiteState) =>
-          tramiteState.id === data.id ? data : tramiteState
-        );
-
-        setTramites(tramitesActualizado);
-
-        obtenerTramites();
-      } catch (error) {
-        console.error(error.response?.data?.message);
-      }
-    } else {
-      // **Si no tiene id, es porque es un nuevo tramite
-      try {
-        // console.log(tramite);
-        // Como el backend recibe archivos, se debe enviar un FormData
-        const formData = new FormData();
-        formData.append("asunto", tramite.asunto);
-        formData.append("descripcion", tramite.descripcion);
-        formData.append(
-          "departamentoRemitenteId",
-          tramite.departamentoRemitenteId
-        );
-        formData.append("oficioRemitente", tramite.oficioRemitente);
-        formData.append("remitenteId", tramite.remitenteId);
-        formData.append("prioridad", tramite.prioridad);
-        formData.append("fechaDocumento", tramite.fechaDocumento);
-        formData.append("referenciaTramite", tramite.referenciaTramite);
-        formData.append("tramiteExterno", tramite.tramiteExterno);
-
-        // Adjuntar archivos al FormData
-        tramite.archivos.forEach((archivo) => {
-          formData.append("archivos", archivo);
-        });
-
-        const { data } = await clienteAxios.post(
-          "/tramites",
-          formData,
-          getAxiosConfig()
-        );
-        // console.log(data);
-
-        // Va a crear un nuevo objeto con lo que no necesitamos
-        const {
-          activo,
-          createdAt,
-          usuario_actualizacion,
-          usuario_creacion,
-          ...tramiteAlmacenado
-        } = data;
-
-        // console.log(tramiteAlmacenado);
-
-        // Actualizar el state tomando lo que hay en tramites y agregando el nuevo tramite almacenado
-        setTramites([tramiteAlmacenado, ...tramites]);
-
-        // Recargar los tramites
-        obtenerTramites();
-      } catch (error) {
-        console.error(error.response?.data?.message);
-      }
-    }*/
   };
 
   const setEdicion = (tramite) => {
