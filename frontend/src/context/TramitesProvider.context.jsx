@@ -72,7 +72,7 @@ export const TramitesProvider = ({ children }) => {
         });
       }
 
-      if (tramite.archivosEliminar && tramite.archivosEliminar.length > 0) {
+      if (tramite.archivosEliminar) {
         formData.append(
           "archivosEliminar",
           JSON.stringify(tramite.archivosEliminar)
@@ -86,6 +86,8 @@ export const TramitesProvider = ({ children }) => {
           formData,
           getAxiosConfig()
         );
+
+        console.log(data);
 
         const tramitesActualizado = tramites.map((tramiteState) =>
           tramiteState.id === data.id ? data : tramiteState

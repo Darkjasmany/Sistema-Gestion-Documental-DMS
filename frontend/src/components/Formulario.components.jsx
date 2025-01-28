@@ -35,48 +35,37 @@ const Formulario = () => {
   const { guardarTramite, tramite } = useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
 
   useEffect(() => {
-    const fetchDepartamentos = async () => {
+    // ** Cargar Departamentos y Parámetros
+    const fecthData = async () => {
       try {
-        const { data } = await clienteAxios("/departamentos");
-        setDepartamentos(data);
-      } catch (error) {
-        console.lo(error.response?.data?.message);
-      }
-    };
+        const [departamentos, parametros] = await Promise.all([
+          clienteAxios("/departamentos"),
+          clienteAxios("/admin/parametros"),
+        ]);
 
-    const fecthParametros = async () => {
-      try {
-        const { data } = await clienteAxios("/admin/parametros");
-        setParametros(data);
+        setDepartamentos(departamentos.data);
+        setParametros(parametros.data);
 
-        // Buscar el valor MAX-UPLOAD_FILES
-        const parametroMaxUploadFiles = data.find(
+        const maxFiles = parametros.data.find(
           (parametro) => parametro.clave === "MAX_UPLOAD_FILES"
         );
 
-        if (parametroMaxUploadFiles) {
-          setMaxUploadFiles(Number(parametroMaxUploadFiles));
-        } else {
-          setAlerta({
-            message: "No se encontro el parametro MAX_UPLOAD_FILES",
-            error: true,
-          });
-        }
+        setMaxUploadFiles(Number(maxFiles?.valor || 0));
       } catch (error) {
-        console.error(
-          "Error al cargar parámetros:",
-          error.response?.data?.message
-        );
-        setAlerta({
-          message: "Error al obtener los parámetros. Intenta nuevamente.",
-          error: true,
-        });
+        console.error("Error al cargar los datos", error);
       }
     };
 
-    fetchDepartamentos();
-    fecthParametros();
+    fecthData();
   }, []);
+
+  // ** UseEffect para Alerta
+  useEffect(() => {
+    if (alerta.message) {
+      const timer = setTimeout(() => setAlerta({}), 3000); // Limpia la alerta después de 3s
+      return () => clearTimeout(timer);
+    }
+  }, [alerta]);
 
   useEffect(() => {
     //** CARGAR DATOS PARA ACTUALIZAR TRÁMITE */
@@ -134,14 +123,6 @@ const Formulario = () => {
     }
   }, [tramite]);
 
-  // ** UseEffect para Alerta
-  useEffect(() => {
-    if (alerta.message) {
-      const timer = setTimeout(() => setAlerta({}), 3000); // Limpia la alerta después de 3s
-      return () => clearTimeout(timer);
-    }
-  }, [alerta]);
-
   // Mostrar empleados de acuerdo al departamento seleccionado
   const handleDepartamentoChange = async (e) => {
     const departamentoId = e.target.value;
@@ -171,12 +152,10 @@ const Formulario = () => {
     // Verificamos si los archivos seleccionados y los ya cargados exceden el máximo
     if (archivosSeleccionados.length + archivos.length > maxUploadFiles) {
       e.target.value = ""; // Limpiar el input de archivos
-
       setAlerta({
         message: `Solo puedes subir hasta ${maxUploadFiles} archivo(s).`,
         error: true,
       });
-
       return;
     }
 
@@ -225,10 +204,6 @@ const Formulario = () => {
 
     // ** Llamamos  a la function guardarTramite del useTramites
 
-    // console.log(tramite.tramiteArchivos);
-    // console.log(archivosNuevos);
-    // console.log(tramite);
-
     try {
       const response = await guardarTramite({
         oficioRemitente,
@@ -246,14 +221,13 @@ const Formulario = () => {
         id, // El id se pasa para la edición
       });
 
-      // console.log(response);
-
       if (response.error) {
         setAlerta({ message: response.message, error: true });
       } else {
         setAlerta({ message: response.message, error: false });
-        console.log("Valor de id antes del if (!id):", id);
+        // console.log("Valor de id antes del if (!id):", id);
 
+        // Crea ID is null
         // Limpiar el formulario SOLO si la creación o actualización fue exitosa
         if (!id || response.tramiteId) {
           setOficioRemitente("");
