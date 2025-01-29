@@ -737,7 +737,7 @@ export const buscarTramites = async (req, res) => {
     numeroTramite,
     oficioRemitente,
     asunto,
-    referenciaTramite,
+    // referenciaTramite,
     fechaDocumento,
     departamentoRemitenteId,
     remitenteId,
@@ -764,8 +764,8 @@ export const buscarTramites = async (req, res) => {
   if (oficioRemitente)
     where.numero_tramite = { [Op.iLike]: `%${oficioRemitente}%` };
   if (asunto) where.asunto = { [Op.iLike]: `%${asunto}%` };
-  if (referenciaTramite)
-    where.referencia_tramite = { [Op.iLike]: `%${referenciaTramite}%` };
+  // if (referenciaTramite)
+  //   where.referencia_tramite = { [Op.iLike]: `%${referenciaTramite}%` };
   if (fechaDocumento) where.fecha_documento = fechaDocumento;
   if (departamentoRemitenteId)
     where.departamentoRemitente = departamentoRemitenteId;

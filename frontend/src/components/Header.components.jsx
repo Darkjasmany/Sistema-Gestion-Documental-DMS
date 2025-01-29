@@ -28,6 +28,12 @@ const Header = () => {
                 Ingresar Trámites
               </Link>
               <Link
+                to={"/admin/asignar-reasignar"}
+                className="block px-4 py-2 hover:bg-indigo-700"
+              >
+                Asignar/Reasignar Trámites
+              </Link>
+              <Link
                 to={"/admin/asignados"}
                 className="block px-4 py-2 hover:bg-indigo-700"
               >
@@ -37,7 +43,7 @@ const Header = () => {
                 to={"/admin/consultar-tramite"}
                 className="block px-4 py-2 hover:bg-indigo-700"
               >
-                Historial Trámites
+                Consultas Trámites
               </Link>
             </div>
           </nav>
