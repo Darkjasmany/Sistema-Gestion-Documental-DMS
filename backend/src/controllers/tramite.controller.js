@@ -731,3 +731,53 @@ export const eliminadoLogicoTramite = async (req, res) => {
     });
   }
 };
+
+export const buscarTramites = async (req, res) => {
+  const {
+    numeroTramite,
+    oficioRemitente,
+    asunto,
+    referenciaTramite,
+    fechaDocumento,
+    departamentoRemitenteId,
+    remitenteId,
+    prioridad,
+    descripcion,
+    tramiteExterno,
+  } = req.query;
+
+  const where = {};
+
+  // if (numeroTramite) where.numero_tramite = numeroTramite;
+
+  // Si numeroTramite es un número, hacer búsqueda exacta, si es texto, convertirlo
+  if (numeroTramite) {
+    if (!isNaN(numeroTramite)) {
+      where.numero_tramite = numeroTramite; // Comparación exacta si es número
+    } else {
+      where[Sequelize.literal('CAST("numero_tramite" AS TEXT)')] = {
+        [Op.iLike]: `%${numeroTramite}%`,
+      };
+    }
+  }
+
+  if (oficioRemitente)
+    where.numero_tramite = { [Op.iLike]: `%${oficioRemitente}%` };
+  if (asunto) where.asunto = { [Op.iLike]: `%${asunto}%` };
+  if (referenciaTramite)
+    where.referencia_tramite = { [Op.iLike]: `%${referenciaTramite}%` };
+  if (fechaDocumento) where.fecha_documento = fechaDocumento;
+  if (departamentoRemitenteId)
+    where.departamentoRemitente = departamentoRemitenteId;
+  if (remitenteId) where.remitente = remitenteId;
+  if (prioridad) where.prioridad = prioridad;
+  if (descripcion) where.descripcion = { [Op.iLike]: `%${descripcion}%` };
+  if (tramiteExterno) where.externo = tramiteExterno;
+
+  try {
+    const tramites = await Tramite.findAll({ where });
+    res.json(tramites);
+  } catch (error) {
+    console.error(`Error al buscar los trámites: ${error.message}`);
+  }
+};

@@ -10,7 +10,11 @@ import { config } from "../config/parametros.config.js";
 
 const router = Router();
 
+// ** Express las rutas son evaluadas en el orden en que están definidas
+
 // *Rutas para usuarios normales
+router.get("/buscar", checkAuth, tramiteController.buscarTramites);
+
 router
   .route("/")
   // .post(checkAuth, upload.single("archivo"), tramiteController.agregarTramite) // Cargar 1 archivo
