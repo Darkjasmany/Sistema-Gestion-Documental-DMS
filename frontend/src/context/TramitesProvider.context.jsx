@@ -156,6 +156,10 @@ export const TramitesProvider = ({ children }) => {
       }
     }
   };
+
+  const buscarTramites = async () => {
+    console.log("Buscando tramites");
+  };
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);
@@ -165,7 +169,14 @@ export const TramitesProvider = ({ children }) => {
   return (
     // Value: indicamos que va a ser un objeto que sera disponible y le pasamos el estado tramites
     <TramitesContext.Provider
-      value={{ tramites, guardarTramite, setEdicion, tramite, eliminarTramite }}
+      value={{
+        tramites,
+        guardarTramite,
+        setEdicion,
+        tramite,
+        eliminarTramite,
+        buscarTramites,
+      }}
     >
       {children}
     </TramitesContext.Provider>

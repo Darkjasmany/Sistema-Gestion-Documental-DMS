@@ -1,4 +1,58 @@
+import { useState, useEffect } from "react";
+import clienteAxios from "../config/axios.config";
+// import useTramites from "../hooks/useTramites.hook";
+
 const HeaderBusqueda = () => {
+  const [numeroTramite, setNumeroTramite] = useState("");
+  const [oficioRemitente, setOficioRemitente] = useState("");
+  const [asunto, setAsunto] = useState("");
+  const [fechaDocumento, setFechaDocumento] = useState("");
+  const [departamentoRemitenteId, setDepartamentoRemitenteId] = useState("");
+  const [remitenteId, setRemitenteId] = useState("");
+  const [prioridad, setPrioridad] = useState("NORMAL");
+  const [tramiteExterno, setTramiteExterno] = useState("");
+
+  const [departamentos, setDepartamentos] = useState([]);
+  const [remitentes, setRemitentes] = useState([]);
+
+  // const [buscarTramites] = useTramites();
+  useEffect(() => {
+    const fecthData = async () => {
+      try {
+        const { data } = await clienteAxios("/departamentos");
+        setDepartamentos(data);
+        console.log(departamentos);
+      } catch (error) {
+        console.error("Error al cargar los datos", error);
+      }
+    };
+
+    fecthData();
+  }, []);
+
+  // Mostrar empleados de acuerdo al departamento seleccionado
+  const handleDepartamentoChange = async (e) => {
+    const departamentoId = e.target.value;
+    setDepartamentoRemitenteId(departamentoId);
+
+    if (!departamentoId) {
+      setRemitentes([]); // Limpia la lista si no hay un departamento seleccionado
+      setDepartamentoRemitenteId([]);
+      return;
+    }
+
+    try {
+      const { data } = await clienteAxios(
+        `/empleados/por-departamento/${departamentoId}`
+      );
+
+      setRemitentes(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+      setRemitentes([]); // Limpia la lista en caso de error
+    }
+  };
+
   return (
     <>
       <h2 className="font-black text-3xl text-center mt-10">
@@ -10,8 +64,8 @@ const HeaderBusqueda = () => {
         <span className="text-indigo-600 font-bold">Trámites</span>
       </p>
 
-      <div className="max-w-8xl mx-auto">
-        {/* <div> */}
+      {/* <div className="max-w-8xl mx-auto"> */}
+      <div>
         <form
           action=""
           className="bg-white shadow-lg rounded-lg py-8 px-6 space-y-6"
@@ -28,7 +82,10 @@ const HeaderBusqueda = () => {
               <input
                 type="number"
                 id="numeroTramite"
-                name="numeroTramite"
+                value={numeroTramite}
+                onChange={(e) => {
+                  setNumeroTramite(e.target.value);
+                }}
                 placeholder="Número de Trámite"
                 className="w-full border-gray-300 rounded-md h-10 px-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
@@ -45,7 +102,10 @@ const HeaderBusqueda = () => {
               <input
                 type="text"
                 id="oficioRemitente"
-                name="oficioRemitente"
+                value={oficioRemitente}
+                onChange={(e) => {
+                  setOficioRemitente(e.target.value);
+                }}
                 placeholder="Número Oficio/Memo"
                 className="w-full border-gray-300 rounded-md h-10 px-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
@@ -62,7 +122,10 @@ const HeaderBusqueda = () => {
               <input
                 type="text"
                 id="asunto"
-                name="asunto"
+                value={asunto}
+                onChange={(e) => {
+                  setAsunto(e.target.value);
+                }}
                 placeholder="Asunto"
                 className="w-full border-gray-300 rounded-md h-10 px-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
@@ -79,7 +142,10 @@ const HeaderBusqueda = () => {
               <input
                 type="date"
                 id="fechaDocumento"
-                name="fechaDocumento"
+                value={fechaDocumento}
+                onChange={(e) => {
+                  setFechaDocumento(e.target.value);
+                }}
                 className="w-full border-gray-300 rounded-md h-10 px-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -96,9 +162,15 @@ const HeaderBusqueda = () => {
                 name="departamentoRemitenteId"
                 id="departamentoRemitenteId"
                 className="w-full border-gray-300 rounded-md h-10 px-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                value={departamentoRemitenteId}
+                onChange={handleDepartamentoChange}
               >
                 <option value="">Seleccione un departamento</option>
-                <option value="1">Sistemas</option>
+                {departamentos.map((departamento) => (
+                  <option value={departamento.id} key={departamento.id}>
+                    {departamento.nombre}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -131,6 +203,10 @@ const HeaderBusqueda = () => {
               <select
                 name="prioridad"
                 id="prioridad"
+                value={prioridad}
+                onChange={(e) => {
+                  setPrioridad(e.target.value);
+                }}
                 className="w-full border-gray-300 rounded-md h-10 px-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="NORMAL">NORMAL</option>
@@ -167,11 +243,15 @@ const HeaderBusqueda = () => {
               <select
                 name="tramiteExterno"
                 id="tramiteExterno"
+                value={tramiteExterno} // Sincroniza el estado con el valor del checkbox
+                onChange={(e) => {
+                  setTramiteExterno(e.target.value);
+                }}
                 className="w-full border-gray-300 rounded-md h-10 px-3 text-sm focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Seleccione tipo</option>
-                <option value="NORMAL">INTERNO</option>
-                <option value="MEDIA">EXTERNO</option>
+                <option value={false}>INTERNO</option>
+                <option value={true}>EXTERNO</option>
               </select>
             </div>
           </div>
