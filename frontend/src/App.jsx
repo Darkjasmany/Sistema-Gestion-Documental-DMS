@@ -12,6 +12,8 @@ import Registrar from "./pages/auth/Registrar.pages";
 import OlvidePassword from "./pages/auth/OlvidePassword.pages";
 import NuevoPassword from "./pages/auth/NuevoPassword.pages";
 import AdministrarTramites from "./pages/admin/AdministrarTramites.pages";
+import TramitesAsignados from "./pages/admin/TramitesAsignados.pages";
+import ConsultarTramites from "./pages/admin/ConsultarTramites.pages";
 import EditarPerfil from "./pages/admin/EditarPerfil.pages";
 import CambiarPassword from "./pages/admin/CambiarPassword.pages";
 
@@ -38,6 +40,8 @@ function App() {
             {/* Ruta Privada */}
             <Route path="/admin" element={<RutaProtegida />}>
               <Route index element={<AdministrarTramites />} />
+              <Route path="asignados" element={<TramitesAsignados />} />
+              <Route path="consultar-tramite" element={<ConsultarTramites />} />
               <Route path="perfil" element={<EditarPerfil />} />
               <Route path="cambiar-password" element={<CambiarPassword />} />
             </Route>

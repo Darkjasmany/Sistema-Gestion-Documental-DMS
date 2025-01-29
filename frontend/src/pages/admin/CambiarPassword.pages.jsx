@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AdminNav from "../../components/AdminNav.components";
+// import AdminNav from "../../components/AdminNav.components";
 import Alerta from "../../components/Alerta.components";
 import useAuth from "../../hooks/useAuth.hook";
 const CambiarPassword = () => {
@@ -74,7 +74,8 @@ const CambiarPassword = () => {
 
   return (
     <>
-      <AdminNav />
+      {/* Quito la barra de navegación de la página de cambio de password */}
+      {/* <AdminNav /> */}
       <h2 className="font-black text-3xl text-center mt-10">
         Cambiar Password
       </h2>

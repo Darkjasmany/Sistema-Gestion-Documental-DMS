@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AdminNav from "../../components/AdminNav.components";
+// import AdminNav from "../../components/AdminNav.components";
 import useAuth from "../../hooks/useAuth.hook";
 import Alerta from "../../components/Alerta.components";
 
@@ -44,7 +44,8 @@ const EditarPerfil = () => {
 
   return (
     <>
-      <AdminNav />
+      {/* Quito la barra de navegación de la página de edición de perfil */}
+      {/* <AdminNav /> */}
       <h2 className="font-black text-3xl text-center mt-10">Editar Perfil</h2>
       <p className="text-xl mt-5 mb-10 text-center">
         Modifica tu{" "}
