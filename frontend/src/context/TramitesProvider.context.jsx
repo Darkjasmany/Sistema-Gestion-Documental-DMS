@@ -26,6 +26,17 @@ export const TramitesProvider = ({ children }) => {
     };
   };
 
+  const getAxiosConfigJSON = () => {
+    // ** Cuando es una petición POST, que requiere autenticación se debe enviar el token en la configuracion en el header
+    return {
+      headers: {
+        "Content-Type": "application/json", // Para indicar que el body es un JSON
+        // "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  };
+
   useEffect(() => {
     obtenerTramites();
   }, [auth]); // Escucha cambios dependiendo de la autenticacion, y del token
@@ -157,9 +168,22 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const buscarTramites = async () => {
-    console.log("Buscando tramites");
+  const buscarTramites = async (filtros) => {
+    try {
+      const { data } = clienteAxios.get(
+        "/tramites/buscar",
+        { params: filtros },
+        getAxiosConfig()
+      );
+
+      console.log(data);
+      return;
+      setTramites(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
   };
+
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);

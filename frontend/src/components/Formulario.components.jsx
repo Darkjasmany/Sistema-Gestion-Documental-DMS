@@ -275,9 +275,9 @@ const Formulario = () => {
         <div className="mb-5">
           <label
             htmlFor="oficioRemitente"
-            className="text-gray-700 uppercase font-bold"
+            className="text-gray-700 font-medium"
           >
-            Número Oficio|Memo
+            Número Oficio|Memo:
           </label>
           <input
             type="text"
@@ -287,14 +287,14 @@ const Formulario = () => {
               setOficioRemitente(e.target.value);
             }}
             placeholder="Ingresa el número de oficio del Trámite"
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
         {/* Campo para el Asunto */}
         <div className="mb-5">
-          <label htmlFor="asunto" className="text-gray-700 uppercase font-bold">
-            Asunto
+          <label htmlFor="asunto" className="text-gray-700 font-medium">
+            Asunto del Trámite:
           </label>
           <input
             type="text"
@@ -304,7 +304,7 @@ const Formulario = () => {
               setAsunto(e.target.value);
             }}
             placeholder="Ingresa el asunto del Trámite"
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
@@ -314,13 +314,12 @@ const Formulario = () => {
             <input
               id="tramiteReferencia"
               type="checkbox"
-              // value={tramiteExterno}
               checked={tramiteReferencia} // Sincroniza el estado con el valor del checkbox
               onChange={(e) => {
                 setTramiteReferencia(e.target.checked);
               }}
               className="w-4 h-4 border border-gray-300 rounded bg-gray-50 "
-              aria-label="Trámite Externo"
+              aria-label="Trámite Referencia"
             />
           </div>
           <label
@@ -335,9 +334,9 @@ const Formulario = () => {
         <div className="mb-5" hidden={!tramiteReferencia}>
           <label
             htmlFor="referenciaTramite"
-            className="text-gray-700 uppercase font-bold"
+            className="text-gray-700 font-medium"
           >
-            Referencia Trámite
+            Referencia Trámite:
           </label>
           <input
             type="text"
@@ -347,17 +346,14 @@ const Formulario = () => {
               setReferenciaTramite(e.target.value);
             }}
             placeholder="Ingresa la referencia del Trámite"
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
         {/* Campo para la Fecha */}
         <div className="mb-5">
-          <label
-            htmlFor="fechaDocumento"
-            className="text-gray-700 uppercase font-bold"
-          >
-            Fecha del Trámite
+          <label htmlFor="fechaDocumento" className="text-gray-700 font-medium">
+            Fecha del Trámite:
           </label>
           <input
             type="date"
@@ -366,7 +362,7 @@ const Formulario = () => {
             onChange={(e) => {
               setFechaDocumento(e.target.value);
             }}
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
@@ -374,14 +370,14 @@ const Formulario = () => {
         <div className="mb-5">
           <label
             htmlFor="departamentoRemitenteId"
-            className="text-gray-700 uppercase font-bold"
+            className="text-gray-700 font-medium"
           >
-            Departamento Remitente
+            Departamento Remitente:
           </label>
           <select
             name="departamentoRemitenteId"
             id="departamentoRemitenteId"
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             value={departamentoRemitenteId}
             onChange={handleDepartamentoChange}
           >
@@ -396,11 +392,8 @@ const Formulario = () => {
 
         {/* Campo para seleccionar Remitente */}
         <div className="mb-5">
-          <label
-            htmlFor="remitenteId"
-            className="text-gray-700 uppercase font-bold"
-          >
-            Remitente
+          <label htmlFor="remitenteId" className="text-gray-700 font-medium">
+            Remitente:
           </label>
           <select
             name="remitenteId"
@@ -409,7 +402,7 @@ const Formulario = () => {
             onChange={(e) => {
               setRemitenteId(e.target.value);
             }}
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option
               onChange={(e) => {
@@ -429,11 +422,8 @@ const Formulario = () => {
 
         {/* Campo para seleccionar Prioridad */}
         <div className="mb-5">
-          <label
-            htmlFor="prioridad"
-            className="text-gray-700 uppercase font-bold"
-          >
-            Prioridad
+          <label htmlFor="prioridad" className="text-gray-700 font-medium">
+            Prioridad:
           </label>
           <select
             name="prioridad"
@@ -442,7 +432,7 @@ const Formulario = () => {
             onChange={(e) => {
               setPrioridad(e.target.value);
             }}
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="NORMAL">NORMAL</option>
             <option value="MEDIA">MEDIA</option>
@@ -452,11 +442,8 @@ const Formulario = () => {
 
         {/* Campo para la Descripción */}
         <div className="mb-5">
-          <label
-            htmlFor="descripcion"
-            className="text-gray-700 uppercase font-bold"
-          >
-            Descripción
+          <label htmlFor="descripcion" className="text-gray-700 font-medium">
+            Descripción:
           </label>
           <textarea
             id="descripcion"
@@ -465,17 +452,14 @@ const Formulario = () => {
               setDescripcion(e.target.value);
             }}
             placeholder="Ingresa la descripción del Trámite"
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
         {/* Campo para cargar Archivos */}
         <div className="mb-5">
-          <label
-            htmlFor="archivo"
-            className="text-gray-700 uppercase font-bold"
-          >
-            Cargar Archivos
+          <label htmlFor="archivo" className="text-gray-700 font-medium">
+            Cargar Archivos:
           </label>
           <input
             type="file"
@@ -483,7 +467,7 @@ const Formulario = () => {
             accept=".jpg,.png,.zip,.rar,.pdf"
             multiple
             ref={fileInputArchivos} // Referencia al input
-            className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             onChange={handleArchivosSeleccionados}
           />
         </div>
