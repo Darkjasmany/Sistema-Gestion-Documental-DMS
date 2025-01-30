@@ -175,7 +175,7 @@ export const TramitesProvider = ({ children }) => {
         // ** El operador ...config descompone el objeto config y lo combina con los otros parámetros (params: filtros).
       );
 
-      console.log(data);
+      // console.log(data);
       setTramitesRespuesta(data);
     } catch (error) {
       console.error(

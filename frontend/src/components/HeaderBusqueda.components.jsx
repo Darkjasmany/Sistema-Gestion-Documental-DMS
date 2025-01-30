@@ -270,9 +270,10 @@ const HeaderBusqueda = () => {
               onChange={handleInputChange}
               className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
             >
+              <option value="">Seleccione una Prioridad</option>
+              <option value="BAJA">BAJA</option>
               <option value="NORMAL">NORMAL</option>
               <option value="ALTA">ALTA</option>
-              <option value="BAJA">BAJA</option>
             </select>
           </div>
         </div>

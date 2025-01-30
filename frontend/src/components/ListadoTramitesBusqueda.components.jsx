@@ -1,9 +1,9 @@
 import useTramites from "../hooks/useTramites.hook";
 
 const ListadoTramitesBusqueda = () => {
-  const { tramites } = useTramites();
+  const { tramitesRespuesta } = useTramites();
 
-  console.log(tramites);
+  console.log(tramitesRespuesta);
   return <div>ListadoTramitesBusqueda</div>;
 };
 
