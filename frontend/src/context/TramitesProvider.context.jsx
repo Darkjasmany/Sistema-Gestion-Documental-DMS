@@ -200,6 +200,7 @@ export const TramitesProvider = ({ children }) => {
         tramite,
         eliminarTramite,
         buscarTramites,
+        tramitesRespuesta,
       }}
     >
       {children}

@@ -8,7 +8,9 @@ const HeaderBusqueda = () => {
     numeroTramite: "",
     oficioRemitente: "",
     asunto: "",
-    fechaDocumento: "",
+    // fechaDocumento: "",
+    fechaInicio: "",
+    fechaFin: "",
     departamentoRemitenteId: "",
     remitenteId: "",
     prioridad: "",
@@ -17,6 +19,7 @@ const HeaderBusqueda = () => {
 
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
+
   const { buscarTramites } = useTramites();
 
   const [alerta, setAlerta] = useState({});
@@ -73,8 +76,9 @@ const HeaderBusqueda = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // el formData es un objecto por lo que convierto los valores del objeto a un array y aplico .every para  Retorna true si todos los valores son falsy ("", undefined, null, 0, false). Si al menos uno tiene un valor válido, devuelve false y permite continuar.
+    // ** El formData es un objecto por lo que convierto los valores del objeto a un array y aplico .every para  Retorna true si todos los valores son falsy ("", undefined, null, 0, false). Si al menos uno tiene un valor válido, devuelve false y permite continuar.
 
+    // Validar que al menos un campo de búsqueda tenga valor
     if (Object.values(formData).every((valor) => !valor)) {
       setAlerta({
         message: "Al menos debes enviar un parametro de busqueda",
@@ -83,7 +87,15 @@ const HeaderBusqueda = () => {
       return;
     }
 
-    buscarTramites(formData);
+    // Construir objeto de búsqueda dinámicamente
+
+    const filtros = { ...formData };
+
+    // Si solo ponen una fecha, enviar como filtro único
+    if (!formData.fechaInicio) delete filtros.fechaInicio;
+    if (!formData.fechaFin) delete filtros.fechaFin;
+
+    buscarTramites(filtros);
   };
 
   const { message } = alerta;
@@ -159,19 +171,37 @@ const HeaderBusqueda = () => {
             />
           </div>
 
-          {/* Fecha Documento */}
+          {/* Fecha Documento Inicio*/}
           <div>
             <label
-              htmlFor="fechaDocumento"
+              htmlFor="fechaInicio"
               className="block text-gray-700 font-medium mb-1"
             >
-              Fecha del Documento:
+              Fecha Inicio:
             </label>
             <input
               type="date"
-              id="fechaDocumento"
-              name="fechaDocumento"
-              value={formData.fechaDocumento}
+              id="fechaInicio"
+              name="fechaInicio"
+              value={formData.fechaInicio}
+              onChange={handleInputChange}
+              className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          {/* Fecha Documento Fin*/}
+          <div>
+            <label
+              htmlFor="fechaFin"
+              className="block text-gray-700 font-medium mb-1"
+            >
+              Fecha Fin:
+            </label>
+            <input
+              type="date"
+              id="fechaFin"
+              name="fechaFin"
+              value={formData.fechaFin}
               onChange={handleInputChange}
               className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
             />

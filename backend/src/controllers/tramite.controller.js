@@ -738,7 +738,8 @@ export const buscarTramites = async (req, res) => {
     numeroTramite,
     oficioRemitente,
     asunto,
-    fechaDocumento,
+    fechaInicio,
+    fechaFin,
     departamentoRemitenteId,
     remitenteId,
     prioridad,
@@ -751,13 +752,14 @@ export const buscarTramites = async (req, res) => {
       numeroTramite,
       oficioRemitente,
       asunto,
-      fechaDocumento,
+      fechaInicio,
+      fechaFin,
       departamentoRemitenteId,
       remitenteId,
       prioridad,
       descripcion,
       tramiteExterno,
-    ].every((valor) => !valor) // Verifica si todos son false
+    ].every((valor) => !valor) // Verifica si todos son falsi
   ) {
     return res.status(400).json({
       message: "Al memos debes enviar un parametro de busqueda",
@@ -779,14 +781,29 @@ export const buscarTramites = async (req, res) => {
 
   if (oficioRemitente)
     where.numero_oficio_remitente = { [Op.iLike]: `%${oficioRemitente}%` };
+
   if (asunto) where.asunto = { [Op.iLike]: `%${asunto}%` };
-  if (fechaDocumento) where.fecha_documento = fechaDocumento;
+
   if (departamentoRemitenteId)
     where.departamento_remitente = departamentoRemitenteId;
+
   if (remitenteId) where.remitente_id = remitenteId;
+
   if (prioridad) where.prioridad = prioridad;
+
   if (descripcion) where.descripcion = { [Op.iLike]: `%${descripcion}%` };
+
   if (tramiteExterno) where.externo = tramiteExterno;
+
+  if (fechaInicio && fechaFin) {
+    where.fecha_documento = {
+      [Op.between]: [fechaInicio, fechaFin],
+    };
+  } else if (fechaInicio) {
+    where.fecha_documento = { [Op.gte]: fechaInicio }; // >=
+  } else if (fechaFin) {
+    where.fecha_documento = { [Op.lte]: fechaFin }; //<=
+  }
 
   try {
     const tramites = await Tramite.findAll({
