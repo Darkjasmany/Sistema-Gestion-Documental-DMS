@@ -10,6 +10,7 @@ import { borrarArchivos } from "../utils/borrarArchivos.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
 import { config } from "../config/parametros.config.js";
+import { Usuario } from "../models/Usuario.model.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -745,6 +746,25 @@ export const buscarTramites = async (req, res) => {
     tramiteExterno,
   } = req.query;
 
+  if (
+    [
+      numeroTramite,
+      oficioRemitente,
+      asunto,
+      fechaDocumento,
+      departamentoRemitenteId,
+      remitenteId,
+      prioridad,
+      descripcion,
+      tramiteExterno,
+    ].every((valor) => !valor) // Verifica si todos son false
+  ) {
+    return res.status(400).json({
+      message: "Al memos debes enviar un parametro de busqueda",
+      // error: true,
+    });
+  }
+
   const where = {};
 
   if (numeroTramite) {
@@ -769,7 +789,79 @@ export const buscarTramites = async (req, res) => {
   if (tramiteExterno) where.externo = tramiteExterno;
 
   try {
-    const tramites = await Tramite.findAll({ where });
+    const tramites = await Tramite.findAll({
+      where,
+      attributes: [
+        "id",
+        "numero_tramite",
+        "numero_oficio_remitente",
+        "asunto",
+        "referencia_tramite",
+        "fecha_documento",
+        "prioridad",
+        "descripcion",
+        "externo",
+        "createdAt",
+        "fecha_contestacion",
+        "fecha_despacho",
+        "numero_oficio",
+
+        [
+          // Concatenar nombres de departamentos destinatarios
+          Sequelize.literal(`
+        (
+         SELECT STRING_AGG(
+            CONCAT(e.nombres, ' ', e.apellidos , ', ', d."nombre"), 
+            ' - '
+        ) 
+        FROM tramite_destinatario td
+        INNER JOIN empleado e ON e.id = td.destinatario_id
+        INNER JOIN departamento d ON d.id = td.departamento_destinatario
+        WHERE td.tramite_id = tramite.id
+        )
+      `),
+          "departamentosDestinatarios",
+        ],
+      ],
+      include: [
+        {
+          model: Departamento,
+          as: "departamentoRemitente", // Alias
+          attributes: ["id", "nombre"], // Atributos del departamento remitente
+        },
+        {
+          model: Empleado,
+          as: "remitente", // Alias
+          attributes: [
+            "id",
+            [
+              Sequelize.literal(
+                '"remitente"."nombres" || \' \' || "remitente"."apellidos"'
+              ),
+              "nombreCompleto",
+            ],
+            // "cedula",
+          ],
+        },
+        {
+          model: TramiteArchivo,
+          as: "tramiteArchivos",
+          attributes: ["id", "original_name", "ruta"],
+        },
+        {
+          model: Usuario,
+          as: "usuarioRevisor",
+          attributes: [
+            [
+              Sequelize.literal(
+                '"usuarioRevisor"."nombres" || \' \' || "usuarioRevisor"."apellidos"'
+              ),
+              "UsuarioRevisor",
+            ],
+          ],
+        },
+      ],
+    });
     res.json(tramites);
   } catch (error) {
     console.error(`Error al buscar los trámites: ${error.message}`);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import clienteAxios from "../config/axios.config";
 import useTramites from "../hooks/useTramites.hook";
+import Alerta from "../components/Alerta.components";
 
 const HeaderBusqueda = () => {
   const [formData, setFormData] = useState({
@@ -10,13 +11,15 @@ const HeaderBusqueda = () => {
     fechaDocumento: "",
     departamentoRemitenteId: "",
     remitenteId: "",
-    prioridad: "NORMAL",
+    prioridad: "",
     tramiteExterno: "",
   });
 
   const [departamentos, setDepartamentos] = useState([]);
   const [remitentes, setRemitentes] = useState([]);
   const { buscarTramites } = useTramites();
+
+  const [alerta, setAlerta] = useState({});
 
   // Cargar departamentos al montar el componente
   useEffect(() => {
@@ -31,6 +34,13 @@ const HeaderBusqueda = () => {
 
     fetchDepartamentos();
   }, []);
+
+  useEffect(() => {
+    if (alerta.message) {
+      const timer = setTimeout(() => setAlerta({}), 3000); // Limpia la alerta después de 3s
+      return () => clearTimeout(timer);
+    }
+  }, [alerta]);
 
   // Manejar cambio de inputs
   const handleInputChange = (e) => {
@@ -62,20 +72,35 @@ const HeaderBusqueda = () => {
   // Enviar formulario
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // el formData es un objecto por lo que convierto los valores del objeto a un array y aplico .every para  Retorna true si todos los valores son falsy ("", undefined, null, 0, false). Si al menos uno tiene un valor válido, devuelve false y permite continuar.
+
+    if (Object.values(formData).every((valor) => !valor)) {
+      setAlerta({
+        message: "Al menos debes enviar un parametro de busqueda",
+        error: true,
+      });
+      return;
+    }
+
     buscarTramites(formData);
   };
+
+  const { message } = alerta;
 
   return (
     <>
       <h2 className="font-black text-3xl text-center mt-10">
         Consultas de Trámites
       </h2>
-      <p className="text-xl mt-5 mb-10 text-center">
+      <p className="text-xl mt-5 mb-4 text-center">
         Búsqueda Avanzada de{" "}
         <span className="text-indigo-600 font-bold">Trámites</span>
       </p>
 
       <form onSubmit={handleSubmit} className="py-8 px-6 space-y-6">
+        {message && <Alerta alerta={alerta} />}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {/* Número de Trámite */}
           <div>
