@@ -7,6 +7,7 @@ const TramitesContext = createContext();
 // De donde vienen los datos
 export const TramitesProvider = ({ children }) => {
   const [tramites, setTramites] = useState([]);
+  const [tramitesRespuesta, setTramitesRespuesta] = useState([]);
   const [tramite, setTramite] = useState({});
   const { auth } = useAuth();
 
@@ -14,12 +15,11 @@ export const TramitesProvider = ({ children }) => {
   const token =
     localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
+  // ** Cuando es una petición POST, PUT, DELETE, que requiere autenticación se debe enviar el token en la configuracion en el header ya que mi middleware checkAuth valida que el token sea valido y sea un usuario existente
   // Configuración de Axios centralizada
   const getAxiosConfig = () => {
-    // ** Cuando es una petición POST, que requiere autenticación se debe enviar el token en la configuracion en el header
     return {
       headers: {
-        // "Content-Type": "application/json", // Para indicar que el body es un JSON
         "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
         Authorization: `Bearer ${token}`,
       },
@@ -27,11 +27,9 @@ export const TramitesProvider = ({ children }) => {
   };
 
   const getAxiosConfigJSON = () => {
-    // ** Cuando es una petición POST, que requiere autenticación se debe enviar el token en la configuracion en el header
     return {
       headers: {
         "Content-Type": "application/json", // Para indicar que el body es un JSON
-        // "Content-Type": "multipart/form-data", // Para indicar que el body es un formulario
         Authorization: `Bearer ${token}`,
       },
     };
@@ -170,17 +168,19 @@ export const TramitesProvider = ({ children }) => {
 
   const buscarTramites = async (filtros) => {
     try {
-      const { data } = clienteAxios.get(
+      const config = getAxiosConfigJSON();
+      const { data } = await clienteAxios.get(
         "/tramites/buscar",
-        { params: filtros },
-        getAxiosConfig()
+        { params: filtros, ...config } // params debe estar en un objeto separado, y se envia la configuracion como una llamada
+        // ** El operador ...config descompone el objeto config y lo combina con los otros parámetros (params: filtros).
       );
 
       console.log(data);
-      return;
-      setTramites(data);
+      setTramitesRespuesta(data);
     } catch (error) {
-      console.error(error.response?.data?.message);
+      console.error(
+        error.response?.data?.message || "Error al buscar trámites"
+      );
     }
   };
 

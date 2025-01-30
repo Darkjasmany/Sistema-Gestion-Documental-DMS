@@ -10,8 +10,9 @@ export const checkAuth = async (req, res, next) => {
     return res.status(403).json({ msg: "Token no Válido o Inexistente" });
   }
 
+  const token = authorization.split(" ")[1]; // Separar el token cuando haya 1 espacio y devuelve un arreglo BEarer [0]: Token [1], aparece el token sin el Bearer
+
   try {
-    const token = authorization.split(" ")[1]; // Separar el token cuando haya 1 espacio y devuelve un arreglo BEarer [0]: Token [1], aparece el token sin el Bearer
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // recibe el token, y la palabra reservada
 
     // * Almacenar al objeto req la propiedad del usuario almacenado en la BD

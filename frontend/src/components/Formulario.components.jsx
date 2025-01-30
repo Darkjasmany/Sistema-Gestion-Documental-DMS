@@ -452,7 +452,7 @@ const Formulario = () => {
               setDescripcion(e.target.value);
             }}
             placeholder="Ingresa la descripción del Trámite"
-            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="border-2 w-full p-2 mt-2 h-11 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 

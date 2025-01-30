@@ -13,7 +13,8 @@ const router = Router();
 // ** Express las rutas son evaluadas en el orden en que están definidas
 
 // *Rutas para usuarios normales
-router.get("/buscar", checkAuth, tramiteController.buscarTramites);
+router.get("/buscar", tramiteController.buscarTramites);
+// router.get("/buscar", checkAuth, tramiteController.buscarTramites);
 
 router
   .route("/")
