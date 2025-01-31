@@ -32,7 +32,7 @@ const Formulario = () => {
 
   const fileInputArchivos = useRef(null); // Referencia al input file
 
-  const { guardarTramite, tramite } = useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
+  const { guardarTramite, tramite, setTramitesRespuesta } = useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
 
   useEffect(() => {
     // ** Cargar Departamentos y Parámetros
@@ -57,6 +57,8 @@ const Formulario = () => {
     };
 
     fecthData();
+
+    setTramitesRespuesta([]); // Limpiar el estado de los trámites de la consulta
   }, []);
 
   // ** UseEffect para Alerta

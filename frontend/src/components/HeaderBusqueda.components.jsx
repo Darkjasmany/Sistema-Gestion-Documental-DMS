@@ -8,7 +8,6 @@ const HeaderBusqueda = () => {
     numeroTramite: "",
     oficioRemitente: "",
     asunto: "",
-    // fechaDocumento: "",
     fechaInicio: "",
     fechaFin: "",
     departamentoRemitenteId: "",
@@ -271,8 +270,8 @@ const HeaderBusqueda = () => {
               className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Seleccione una Prioridad</option>
-              <option value="BAJA">BAJA</option>
               <option value="NORMAL">NORMAL</option>
+              <option value="MEDIA">MEDIA</option>
               <option value="ALTA">ALTA</option>
             </select>
           </div>

@@ -878,8 +878,26 @@ export const buscarTramites = async (req, res) => {
           ],
         },
       ],
+      order: [["id", "ASC"]],
     });
-    res.json(tramites);
+
+    // Modificar la ruta antes de enviarla al frontend
+    const tramitesConRutas = tramites.map((tramite) => {
+      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+        ...archivo.toJSON(),
+        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+      }));
+
+      return {
+        ...tramite.toJSON(),
+        tramiteArchivos: archivosConRutas,
+      };
+    });
+
+    // console.log(tramitesConRutas);
+    res.json(tramitesConRutas);
+
+    // res.json(tramites);
   } catch (error) {
     console.error(`Error al buscar los trámites: ${error.message}`);
     res.status(500).json({ message: "Error al buscar los trámites" });

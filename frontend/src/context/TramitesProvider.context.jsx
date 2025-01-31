@@ -168,6 +168,7 @@ export const TramitesProvider = ({ children }) => {
 
   const buscarTramites = async (filtros) => {
     try {
+      setTramitesRespuesta([]); // Limpiar el estado de los trámites antes de la consulta
       const config = getAxiosConfigJSON();
       const { data } = await clienteAxios.get(
         "/tramites/buscar",
@@ -177,7 +178,7 @@ export const TramitesProvider = ({ children }) => {
 
       // console.log(data);
       setTramitesRespuesta(data);
-      console.log("🚀 tramitesRespuesta actualizado:", tramitesRespuesta);
+      // console.log("🚀 tramitesRespuesta actualizado:", tramitesRespuesta);
     } catch (error) {
       console.error(
         error.response?.data?.message || "Error al buscar trámites"

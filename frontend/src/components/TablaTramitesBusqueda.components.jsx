@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,9 +16,22 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
     setTramiteExpandido(tramiteExpandido === id ? null : id);
   };
 
+  const formatearFecha = (fecha) => {
+    if (!fecha) return "Sin fecha"; // Si es null o undefined, devuelve un texto por defecto
+    const nuevaFecha = new Date(fecha);
+    if (isNaN(nuevaFecha)) return "Fecha Invalida"; // Si la fecha no es válida, evita errores
+    return new Intl.DateTimeFormat("es-EC", { dateStyle: "long" }).format(
+      nuevaFecha
+    );
+  };
+
   const columns = useMemo(
     () => [
-      { header: "Número de Trámite", accessorKey: "numero_tramite" },
+      {
+        header: "N°",
+        accessorFn: (_, index) => index + 1, // Índice secuencial
+      },
+      { header: "Trámite", accessorKey: "numero_tramite" },
       {
         header: "Oficio Remitente",
         accessorKey: "numero_oficio_remitente",
@@ -29,11 +43,6 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
       {
         header: "Fecha Documento",
         accessorKey: "fecha_documento",
-      },
-
-      {
-        header: "Descripción",
-        accessorKey: "descripcion",
       },
       {
         header: "Departamento Remitente",
@@ -63,11 +72,18 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
     [tramiteExpandido]
   );
 
+  // Configuración de react-table por defecto para que funcione
   const table = useReactTable({
     data: tramiteBusqueda,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    // Hasta aqui configuracion por defecto para que funciones, seguido para la paginación
+    initialState: {
+      pagination: {
+        pageSize: 15, // Cambia este valor al número de registros que deseas mostrar por página
+      },
+    },
   });
 
   return (
@@ -89,13 +105,57 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-100">
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border p-3">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
+            <React.Fragment key={row.id}>
+              <tr className="hover:bg-gray-100">
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="border p-3">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+              {tramiteExpandido === row.original.id && (
+                <tr className="bg-gray-100">
+                  <td colSpan={columns.length} className="p-4">
+                    <div>
+                      <p>
+                        <strong>Descripción:</strong> {row.original.descripcion}
+                      </p>
+                      <p>
+                        <strong>Fecha de Creación:</strong>{" "}
+                        {/* {row.original.createdAt} */}
+                        {formatearFecha(row.original.createdAt)}
+                      </p>
+                      <p>
+                        <strong>Remitente:</strong>{" "}
+                        {row.original.remitente?.nombreCompleto}
+                      </p>
+                      <p>
+                        <strong>Archivos:</strong>
+                      </p>
+                      <ul className="list-disc pl-5">
+                        {console.log(row.original)}
+                        {row.original.tramiteArchivos.map((archivo) => (
+                          <li key={archivo.id}>
+                            <a
+                              href={
+                                import.meta.env.VITE_BACKEND_URL +
+                                "/" +
+                                archivo.ruta
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline"
+                            >
+                              {archivo.original_name}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

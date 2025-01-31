@@ -9,9 +9,9 @@ const ListadoTramitesBusqueda = () => {
     <>
       {tramitesRespuesta.length ? (
         <>
-          <h2 className="font-black text-3xl text-center">
+          {/* <h2 className="font-black text-3xl text-center">
             Movimiento de Trámites
-          </h2>
+          </h2> */}
 
           <TablaTramitesBusqueda tramiteBusqueda={tramitesRespuesta} />
         </>
