@@ -822,7 +822,7 @@ export const buscarTramites = async (req, res) => {
         "fecha_contestacion",
         "fecha_despacho",
         "numero_oficio",
-
+        "estado",
         [
           // Concatenar nombres de departamentos destinatarios
           Sequelize.literal(`
