@@ -25,10 +25,9 @@ const ConsultarTramites = () => {
         >
           <HeaderBusqueda />
         </div>
-
-        <div className="md:w-1/2 lg:w-3/5">
-          <ListadoTramitesBusqueda />
-        </div>
+      </div>
+      <div className=" flex flex-col items-center">
+        <ListadoTramitesBusqueda />
       </div>
     </>
   );

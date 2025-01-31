@@ -1,19 +1,36 @@
+import { useEffect, useState } from "react";
 import useTramites from "../hooks/useTramites.hook";
 import TablaTramitesBusqueda from "./TablaTramitesBusqueda.components";
 
 const ListadoTramitesBusqueda = () => {
   const { tramitesRespuesta } = useTramites();
+  const [dataLista, setDataLista] = useState([]);
 
-  console.log(tramitesRespuesta);
+  useEffect(() => {
+    if (Array.isArray(tramitesRespuesta) && tramitesRespuesta.length > 0) {
+      setDataLista(tramitesRespuesta);
+    }
+  }, [tramitesRespuesta]);
+
+  console.log("📌 Trámites en estado:", dataLista);
   return (
     <>
-      {tramitesRespuesta.length ? (
+      {/* {tramitesRespuesta.length ? ( */}
+      {/* {Array.isArray(tramitesRespuesta) && tramitesRespuesta.length > 0 ? (
         <>
           <h2 className="font-black text-3xl text-center">
             Movimiento de Trámites
           </h2>
 
-          <TablaTramitesBusqueda tramiteBusqueda={tramitesRespuesta} />
+          <TablaTramitesBusqueda tramiteBusqueda={tramitesRespuesta ?? []} /> 
+        </>*/}
+      {dataLista.length > 0 ? (
+        <>
+          <h2 className="font-black text-3xl text-center">
+            Movimiento de Trámites
+          </h2>
+
+          <TablaTramitesBusqueda tramiteBusqueda={dataLista} />
         </>
       ) : (
         <>
