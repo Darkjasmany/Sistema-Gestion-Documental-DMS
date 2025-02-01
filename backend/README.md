@@ -1,3 +1,45 @@
+
+### **README para la carpeta `backend`**
+
+```markdown
+# Backend - Gestión Documental
+
+Este es el backend de la aplicación de **Gestión Documental**, desarrollado con **Node.js** y **Sequelize**.
+
+## Tecnologías utilizadas
+
+- **Node.js**: Entorno de ejecución para la aplicación backend.
+- **Express**: Framework para crear el servidor web.
+- **Sequelize**: ORM para interactuar con la base de datos.
+- **bcrypt**: Para el hasheo de contraseñas.
+- **jsonwebtoken**: Para la autenticación con tokens JWT.
+- **multer**: Para la gestión de archivos (subida de documentos).
+
+## Instalación
+
+1. Clona este repositorio.
+   ```bash
+   git clone https://github.com/Darkjasmany/Sistema-Gestion-Documental-DMS
+
+2. Navega a la carpeta del backend.
+   ```bash
+   cd backend
+
+3. Instala las dependencias.
+   ```bash
+   npm install
+
+4. Configura las variables de entorno en el archivo .env.
+
+4. Ejecuta en modo desarrollo:
+   ```bash
+   npm run dev
+5. Para producción, usa:
+   ```bash
+   npm start
+
+La aplicación estará disponible en http://localhost:3000
+
 # Explicacion de las carpetas y archivos 
 /my-project
 │
@@ -43,6 +85,19 @@
 ├── README.md                      # Descripción del proyecto
 └── index.js                       # Punto de entrada principal (conexión a la BD y arranque del servidor)
 
+# Funcionalidades principales
+
+    Autenticación y autorización: Los usuarios pueden registrarse, iniciar sesión y acceder a las rutas protegidas mediante JWT.
+    Gestión de trámites: El backend maneja la creación, actualización, eliminación y visualización de trámites.
+    Subida de archivos: Utiliza Multer para manejar la subida de documentos en los trámites.
+    Historial de cambios: Se gestiona un historial de estados de los trámites.
+
+Comandos útiles
+
+    npm run dev: Inicia el servidor en modo de desarrollo con recarga automática.
+    npm run start: Inicia el servidor en modo producción.
+    npm run lint: Ejecuta el linter para revisar el código.
+    npm run test: Ejecuta las pruebas unitarias.
 
 # Sincronización del modelo
 User.sync()- Esto crea la tabla si no existe (y no hace nada si ya existe)
