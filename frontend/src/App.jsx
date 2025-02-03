@@ -13,6 +13,7 @@ import OlvidePassword from "./pages/auth/OlvidePassword.pages";
 import NuevoPassword from "./pages/auth/NuevoPassword.pages";
 import AdministrarTramites from "./pages/admin/AdministrarTramites.pages";
 import TramitesAsignados from "./pages/admin/TramitesAsignados.pages";
+import TramitesAsignarReasignar from "./pages/admin/TramitesAsignarReasignar.pages";
 import ConsultarTramites from "./pages/admin/ConsultarTramites.pages";
 import EditarPerfil from "./pages/admin/EditarPerfil.pages";
 import CambiarPassword from "./pages/admin/CambiarPassword.pages";
@@ -42,6 +43,10 @@ function App() {
               <Route index element={<AdministrarTramites />} />
               <Route path="asignados" element={<TramitesAsignados />} />
               <Route path="consultar-tramite" element={<ConsultarTramites />} />
+              <Route
+                path="asignar-reasignar"
+                element={<TramitesAsignarReasignar />}
+              />
               <Route path="perfil" element={<EditarPerfil />} />
               <Route path="cambiar-password" element={<CambiarPassword />} />
             </Route>

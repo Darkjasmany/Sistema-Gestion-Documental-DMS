@@ -4,7 +4,7 @@ import TablaTramitesBusqueda from "./TablaTramitesBusqueda.components";
 const ListadoTramitesBusqueda = () => {
   const { tramitesRespuesta } = useTramites();
 
-  console.log(tramitesRespuesta);
+  // console.log(tramitesRespuesta);
   return (
     <>
       {tramitesRespuesta.length ? (

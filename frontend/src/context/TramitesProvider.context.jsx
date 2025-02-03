@@ -186,6 +186,17 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
+  const asignarOReasignarRevisor = async () => {
+    try {
+      console.log("asign");
+    } catch (error) {
+      console.error(
+        error.response?.data?.message ||
+          "Error al asignar/reasignar el trámite, intente nuevamente más tarde "
+      );
+    }
+  };
+
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);
@@ -204,6 +215,7 @@ export const TramitesProvider = ({ children }) => {
         buscarTramites,
         tramitesRespuesta,
         setTramitesRespuesta,
+        asignarOReasignarRevisor,
       }}
     >
       {children}
