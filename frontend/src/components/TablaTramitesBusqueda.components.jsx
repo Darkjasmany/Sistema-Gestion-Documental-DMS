@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { formatearFecha } from "../helpers/formatearFecha.helpers";
 
 import {
   useReactTable,
@@ -6,27 +8,46 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
+import clienteAxios from "../config/axios.config";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
-  console.log(tramiteBusqueda);
+  // console.log(tramiteBusqueda);
+
+  const location = useLocation();
+  const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
 
   const [tramiteExpandido, setTramiteExpandido] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTramite, setSelectedTramite] = useState(null);
 
   const toggleExpandir = (id) => {
     setTramiteExpandido(tramiteExpandido === id ? null : id);
   };
 
-  const formatearFecha = (fecha) => {
-    if (!fecha) return "Sin fecha"; // Si es null o undefined, devuelve un texto por defecto
-    const nuevaFecha = new Date(fecha);
-    if (isNaN(nuevaFecha)) return "Fecha Invalida"; // Si la fecha no es válida, evita errores
-    return new Intl.DateTimeFormat("es-EC", { dateStyle: "long" }).format(
-      nuevaFecha
-    );
+  const openModal = (tramite) => {
+    setSelectedTramite(tramite);
+    setIsModalOpen(true);
   };
 
-  const columns = useMemo(
-    () => [
+  const closeModal = () => {
+    setSelectedTramite(null);
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    const fecthRevisores = async () => {
+      try {
+        // const {data} = await clienteAxios.get()
+      } catch (error) {
+        console.error("Error al cargar los datos", error);
+      }
+    };
+
+    fecthRevisores;
+  }, [isAsignarReasignar]);
+
+  const columns = useMemo(() => {
+    const baseColumns = [
       {
         header: "N°",
         accessorFn: (_, index) => index + 1, // Índice secuencial
@@ -68,9 +89,24 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
           </button>
         ),
       },
-    ],
-    [tramiteExpandido]
-  );
+    ];
+
+    if (isAsignarReasignar) {
+      baseColumns.push({
+        header: "Asigna | Reasigna",
+        cell: ({ row }) => (
+          <button
+            className="bg-blue-500 text-white px-3 py-1 rounded"
+            onClick={() => openModal(row.original)}
+          >
+            Asignar
+          </button>
+        ),
+      });
+    }
+
+    return baseColumns;
+  }, [tramiteExpandido, isAsignarReasignar]);
 
   // Configuración de react-table por defecto para que funcione
   const table = useReactTable({
@@ -177,6 +213,19 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
           Siguiente
         </button>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black opacity-50 flex justify-center items-center">
+          <div className="bg-white p-5 rounded-lg w-3/4">
+            <h2 className="text-center font-bold">
+              {" "}
+              Asignar|Reasignar Revisor para Trámite #
+              {selectedTramite.numero_tramite}
+            </h2>
+            <ul></ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

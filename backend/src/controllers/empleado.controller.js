@@ -71,6 +71,7 @@ export const cargarEmpleados = async (req, res) => {
     });
   }
 };
+
 export const obtenerEmpleado = async (req, res) => {
   try {
     const { id } = req.params;

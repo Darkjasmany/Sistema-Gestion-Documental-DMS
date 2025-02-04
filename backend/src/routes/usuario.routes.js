@@ -9,6 +9,7 @@ import {
   nuevoPassword,
   actualizarPerfil,
   actualizarPassword,
+  obtenerRevisorPorDepartamento,
 } from "../controllers/usuario.controller.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 
@@ -20,6 +21,11 @@ router.get("/confirmar/:token", confirmarCuenta);
 router.post("/login", autenticarUsuario);
 router.post("/olvide-password", olvidePassword);
 router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
+
+router.get(
+  "/revisor-departamento/:departamentoId",
+  obtenerRevisorPorDepartamento
+);
 
 // Rutas Privadas
 router.get("/perfil", checkAuth, perfilUsuario);

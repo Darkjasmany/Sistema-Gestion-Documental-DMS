@@ -342,3 +342,34 @@ export const actualizarPassword = async (req, res) => {
 
   res.json({ message: "Password almacenado correctamente" });
 };
+
+export const obtenerRevisorPorDepartamento = async (req, res) => {
+  try {
+    const { departamentoId } = req.params;
+
+    const usuariosRevisores = await Usuario.findAll({
+      where: {
+        departamento_id: parseInt(departamentoId),
+        rol: "REVISOR",
+        estado: true,
+        confirmado: true,
+      },
+      attributes: ["id", "nombres", "apellidos"],
+    });
+
+    if (usuariosRevisores.length === 0) {
+      return res.status(404).json({
+        message: "No se encontraron empleados revisores para tu departamento",
+      });
+    }
+
+    return res.json(usuariosRevisores);
+  } catch (error) {
+    console.error(
+      `Error al cargar los revisores de tu departamento: ${error.message}`
+    );
+    return res.status(500).json({
+      message: "Error al cargar los revisores de tu departamento",
+    });
+  }
+};
