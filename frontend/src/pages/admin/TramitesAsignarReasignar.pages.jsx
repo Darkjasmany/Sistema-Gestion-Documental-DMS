@@ -1,9 +1,11 @@
 import { useState } from "react";
 import TablaTramitesBusqueda from "../../components/TablaTramitesBusqueda.components";
 import useTramites from "../../hooks/useTramites.hook";
+import NavTramites from "../../components/NavTramites.components";
 
 const TramitesAsignarReasignar = () => {
   const { tramitesRespuesta } = useTramites();
+  const { filtro, setFiltro } = useState("INGRESADO");
 
   return (
     <>
@@ -15,7 +17,8 @@ const TramitesAsignarReasignar = () => {
         <span className="text-indigo-600 font-bold">Trámites</span>
       </p>
 
-      <div className=" flex flex-col items-center">
+      <div className=" flex flex-col gap-5">
+        <NavTramites setFiltro={filtro} />
         <TablaTramitesBusqueda tramiteBusqueda={tramitesRespuesta} />
       </div>
     </>

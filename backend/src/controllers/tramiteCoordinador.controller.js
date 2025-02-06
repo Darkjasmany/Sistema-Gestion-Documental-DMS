@@ -15,7 +15,7 @@ import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
-  const { estado } = req.query; // envio como parametro adicional en la URL
+  const { estado } = req.params; // envio como parametro adicional en la URL
   // const { estado, limit = 10, offset = 0 } = req.query; // Limitar resultados y offset para paginación
   if (!estado)
     return res.status(400).json({ message: "El estado es requerido" });
@@ -35,15 +35,31 @@ export const obtenerTramitesPorEstado = async (req, res) => {
       },
       attributes: config.attributes,
       include: config.include,
-      order: [
-        ["prioridad", "ASC"],
-        ["createdAt", "ASC"],
-      ],
+      // order: [
+      //   ["prioridad", "ASC"],
+      //   ["createdAt", "ASC"],
+      // ],
+      order: [["id", "DESC"]],
       // limit: parseInt(limit, 10),
       // offset: parseInt(offset, 10),
     });
 
-    res.json(tramites);
+    // res.json(tramites);
+    // Modificar la ruta antes de enviarla al frontend
+    const tramitesConRutas = tramites.map((tramite) => {
+      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+        ...archivo.toJSON(),
+        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+      }));
+
+      return {
+        ...tramite.toJSON(),
+        tramiteArchivos: archivosConRutas,
+      };
+    });
+
+    // console.log(tramitesConRutas);
+    res.json(tramitesConRutas);
   } catch (error) {
     console.error(
       `Error al obtener los trámites con estado: ${estado}: ${error.message}`

@@ -140,78 +140,88 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
-        <thead className="bg-gray-200">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} className="border p-3">
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <React.Fragment key={row.id}>
-              <tr className="hover:bg-gray-100">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="border p-3">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+      {tramiteBusqueda.length === 0 ? (
+        <p className="text-center text-gray-500"> No hay támites dispobibles</p>
+      ) : (
+        <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
+          <thead className="bg-gray-200">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id} className="border p-3">
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </th>
                 ))}
               </tr>
-              {tramiteExpandido === row.original.id && (
-                <tr className="bg-gray-100">
-                  <td colSpan={columns.length} className="p-4">
-                    <div>
-                      <p>
-                        <strong>Descripción:</strong> {row.original.descripcion}
-                      </p>
-                      <p>
-                        <strong>Fecha de Creación:</strong>{" "}
-                        {/* {row.original.createdAt} */}
-                        {formatearFecha(row.original.createdAt)}
-                      </p>
-                      <p>
-                        <strong>Remitente:</strong>{" "}
-                        {row.original.remitente?.nombreCompleto}
-                      </p>
-                      <p>
-                        <strong>Archivos:</strong>
-                      </p>
-                      <ul className="list-disc pl-5">
-                        {console.log(row.original)}
-                        {row.original.tramiteArchivos.map((archivo) => (
-                          <li key={archivo.id}>
-                            <a
-                              href={
-                                import.meta.env.VITE_BACKEND_URL +
-                                "/" +
-                                archivo.ruta
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline"
-                            >
-                              {archivo.original_name}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </td>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <React.Fragment key={row.id}>
+                <tr className="hover:bg-gray-100">
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="border p-3">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
                 </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
-
+                {tramiteExpandido === row.original.id && (
+                  <tr className="bg-gray-100">
+                    <td colSpan={columns.length} className="p-4">
+                      <div>
+                        <p>
+                          <strong>Descripción:</strong>{" "}
+                          {row.original.descripcion}
+                        </p>
+                        <p>
+                          <strong>Fecha de Creación:</strong>{" "}
+                          {/* {row.original.createdAt} */}
+                          {formatearFecha(row.original.createdAt)}
+                        </p>
+                        <p>
+                          <strong>Remitente:</strong>{" "}
+                          {row.original.remitente?.nombreCompleto}
+                        </p>
+                        <p>
+                          <strong>Archivos:</strong>
+                        </p>
+                        <ul className="list-disc pl-5">
+                          {row.original.tramiteArchivos?.length > 0 ? (
+                            row.original.tramiteArchivos.map((archivo) => (
+                              <li key={archivo.id}>
+                                <a
+                                  href={
+                                    import.meta.env.VITE_BACKEND_URL +
+                                    "/" +
+                                    archivo.ruta
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 underline"
+                                >
+                                  {archivo.original_name}
+                                </a>
+                              </li>
+                            ))
+                          ) : (
+                            <li>No hay archivos adjuntos</li>
+                          )}
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      )}
       {/* Controles de paginación */}
       <div className="flex justify-between p-2">
         <button
@@ -245,7 +255,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                     <span>{revisor.nombres}</span>
                     <button
                       className="bg-blue-500 text-white px-3 py-1 rounded"
-                      onClick={asignarOReasignarRevisor(revisor.id)}
+                      onClick={() => asignarOReasignarRevisor(revisor.id)}
                     >
                       {" "}
                       Asignar

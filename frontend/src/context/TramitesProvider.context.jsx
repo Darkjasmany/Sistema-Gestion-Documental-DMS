@@ -219,6 +219,7 @@ export const TramitesProvider = ({ children }) => {
         buscarTramites,
         tramitesRespuesta,
         setTramitesRespuesta,
+        obtenerTramitesCoordinador,
         tramitesAsignarReasignar,
         setTramitesAsignarReasignar,
       }}

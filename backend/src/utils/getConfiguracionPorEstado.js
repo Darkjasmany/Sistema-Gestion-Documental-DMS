@@ -2,44 +2,54 @@ import { Sequelize } from "sequelize";
 import { Departamento } from "../models/Departamento.model.js";
 import { Empleado } from "../models/Empleado.model.js";
 import { Usuario } from "../models/Usuario.model.js";
+import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { sequelize } from "../config/db.config.js";
 
 // Definir los objetos de estado
 const INGRESADO = {
   attributes: [
+    "id",
     "numero_tramite",
+    "numero_oficio_remitente",
     "asunto",
-    "descripcion",
-    "prioridad",
-    "fecha_documento",
     "referencia_tramite",
-    "estado",
+    "fecha_documento",
+    "prioridad",
+    "descripcion",
+    "externo",
     "createdAt",
-    [
-      // Conteo de archivos de cada trámite
-      Sequelize.literal(
-        `(SELECT COUNT(*) FROM "tramite_archivo" WHERE "tramite_archivo"."tramite_id" = "tramite"."id")`
-      ),
-      "totalArchivosCargados",
-    ],
+    // [
+    //   // Conteo de archivos de cada trámite
+    //   Sequelize.literal(
+    //     `(SELECT COUNT(*) FROM "tramite_archivo" WHERE "tramite_archivo"."tramite_id" = "tramite"."id")`
+    //   ),
+    //   "totalArchivosCargados",
+    // ],
   ],
   include: [
     {
       model: Departamento,
       as: "departamentoRemitente", // Alias
-      attributes: ["nombre"], // Atributos del departamento remitente
+      attributes: ["id", "nombre"], // Atributos del departamento remitente
     },
     {
       model: Empleado,
       as: "remitente", // Alias
       attributes: [
+        "id",
         [
           Sequelize.literal(
-            'CONCAT("remitente"."apellidos", \' \', "remitente"."nombres")'
+            "CONCAT(remitente.nombres, ' ',  remitente.apellidos)"
           ),
-          "nombreRemitente",
+          "nombreCompleto",
         ],
+        // "cedula",
       ],
+    },
+    {
+      model: TramiteArchivo,
+      as: "tramiteArchivos",
+      attributes: ["id", "original_name", "ruta"],
     },
     {
       model: Usuario,
@@ -54,7 +64,7 @@ const INGRESADO = {
       ],
     },
   ],
-  order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
+  // order: [["numeroTramite", "ASC"]], // Cambia 'numeroTramite' por el campo que desees
 };
 
 const PENDIENTE = {

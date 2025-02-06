@@ -21,7 +21,7 @@ export const listarTramitesRevisor = async (req, res) => {
         message: `No se encontró una configuración válida para el estado: ${estado}`,
       });
 
-    const tramite = await Tramite.findAll({
+    const tramites = await Tramite.findAll({
       where: {
         departamento_tramite: req.usuario.departamento_id,
         usuario_revisor: req.usuario.id,
@@ -30,13 +30,29 @@ export const listarTramitesRevisor = async (req, res) => {
       },
       attributes: config.attributes,
       include: config.include,
-      order: [
-        ["prioridad", "ASC"],
-        ["createdAt", "ASC"],
-      ],
+      // order: [
+      //   ["prioridad", "ASC"],
+      //   ["createdAt", "ASC"],
+      // ],
+      order: [["id", "DESC"]],
     });
 
-    res.json(tramite);
+    // res.json(tramites);
+    // Modificar la ruta antes de enviarla al frontend
+    const tramitesConRutas = tramites.map((tramite) => {
+      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+        ...archivo.toJSON(),
+        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+      }));
+
+      return {
+        ...tramite.toJSON(),
+        tramiteArchivos: archivosConRutas,
+      };
+    });
+
+    // console.log(tramitesConRutas);
+    res.json(tramitesConRutas);
   } catch (error) {
     console.error(
       `Error al obtener los trámites con estado: ${estado}: ${error.message}`

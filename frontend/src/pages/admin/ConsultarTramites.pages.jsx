@@ -34,7 +34,8 @@ const ConsultarTramites = () => {
           <HeaderBusqueda />
         </div>
       </div>
-      <div className=" flex flex-col items-center">
+      {/* <div className=" flex flex-col items-center"> */}
+      <div className=" flex flex-col">
         <ListadoTramitesBusqueda />
       </div>
     </>
