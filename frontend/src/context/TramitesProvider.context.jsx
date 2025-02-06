@@ -8,6 +8,7 @@ const TramitesContext = createContext();
 export const TramitesProvider = ({ children }) => {
   const [tramites, setTramites] = useState([]);
   const [tramitesRespuesta, setTramitesRespuesta] = useState([]);
+  const [tramitesAsignarReasignar, setTramitesAsignarReasignar] = useState([]);
   const [tramite, setTramite] = useState({});
   const { auth } = useAuth();
 
@@ -50,6 +51,20 @@ export const TramitesProvider = ({ children }) => {
       setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
     } catch (error) {
       console.error(error.response?.data?.mensaje);
+    }
+  };
+
+  const obtenerTramitesCoordinador = async (estado) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.get(
+        `/coordinador/tramites/${estado}`,
+        getAxiosConfigJSON
+      );
+      setTramitesAsignarReasignar(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
     }
   };
 
@@ -204,6 +219,8 @@ export const TramitesProvider = ({ children }) => {
         buscarTramites,
         tramitesRespuesta,
         setTramitesRespuesta,
+        tramitesAsignarReasignar,
+        setTramitesAsignarReasignar,
       }}
     >
       {children}

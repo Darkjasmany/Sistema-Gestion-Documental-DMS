@@ -8,10 +8,15 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
+
 import clienteAxios from "../config/axios.config";
+import useAuth from "../hooks/useAuth.hook";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   // console.log(tramiteBusqueda);
+
+  const { auth } = useAuth();
+  const [revisores, setRevisores] = useState([]);
 
   const location = useLocation();
   const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
@@ -36,15 +41,26 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
 
   useEffect(() => {
     const fecthRevisores = async () => {
-      try {
-        // const {data} = await clienteAxios.get()
-      } catch (error) {
-        console.error("Error al cargar los datos", error);
+      if (isAsignarReasignar) {
+        try {
+          const { data } = await clienteAxios.get(
+            `/usuarios/revisor-departamento/${auth.departamento_id}`
+          );
+          setRevisores(data);
+        } catch (error) {
+          console.error("Error al cargar los datos", error);
+        }
+      } else {
+        setRevisores([]);
       }
     };
 
-    fecthRevisores;
-  }, [isAsignarReasignar]);
+    fecthRevisores();
+  }, [isAsignarReasignar, auth]);
+
+  const asignarOReasignarRevisor = async (revisorId) => {
+    console.log(revisorId);
+  };
 
   const columns = useMemo(() => {
     const baseColumns = [
@@ -222,7 +238,28 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
               Asignar|Reasignar Revisor para Trámite #
               {selectedTramite.numero_tramite}
             </h2>
-            <ul></ul>
+            <ul>
+              {revisores.map((revisor) => (
+                <li key={revisor.id} className="mb-2">
+                  <div className="flex justify-between">
+                    <span>{revisor.nombres}</span>
+                    <button
+                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                      onClick={asignarOReasignarRevisor(revisor.id)}
+                    >
+                      {" "}
+                      Asignar
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
+              onClick={closeModal}
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}

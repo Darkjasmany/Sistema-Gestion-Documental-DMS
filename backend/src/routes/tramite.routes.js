@@ -68,7 +68,7 @@ router.put(
 
 // * Rutas exclusivas para el coordinador
 router
-  .route("/coordinador/tramites")
+  .route("/coordinador/tramites/:estado")
   .get(
     checkAuth,
     checkRole("COORDINADOR"),
