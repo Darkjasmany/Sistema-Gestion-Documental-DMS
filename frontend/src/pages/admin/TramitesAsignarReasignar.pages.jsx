@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TablaTramitesBusqueda from "../../components/TablaTramitesBusqueda.components";
 import useTramites from "../../hooks/useTramites.hook";
-import NavTramites from "../../components/NavTramites.components";
+// import NavTramites from "../../components/NavTramites.components";
+// import clienteAxios from "../../config/axios.config";
 
 const TramitesAsignarReasignar = () => {
-  const { tramitesRespuesta } = useTramites();
-  const { filtro, setFiltro } = useState("INGRESADO");
+  const { obtenerTramitesCoordinador, tramitesAsignarReasignar } =
+    useTramites();
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState("INGRESADO");
+
+  const handleFiltro = (estado) => {
+    setEstadoSeleccionado(estado);
+  };
+
+  useEffect(() => {
+    const datosTramites = async () => {
+      try {
+        await obtenerTramitesCoordinador(estadoSeleccionado);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    datosTramites();
+  }, [estadoSeleccionado]);
 
   return (
     <>
@@ -18,8 +36,34 @@ const TramitesAsignarReasignar = () => {
       </p>
 
       <div className=" flex flex-col gap-5">
-        <NavTramites setFiltro={filtro} />
-        <TablaTramitesBusqueda tramiteBusqueda={tramitesRespuesta} />
+        {/* <NavTramites setFiltro={filtro} /> */}
+
+        <div className="flex gap-4">
+          <button
+            className={`px-4 py-2 rounded   ${
+              estadoSeleccionado === "INGRESADO"
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleFiltro("INGRESADO")}
+          >
+            Asignar
+          </button>
+          <button
+            className={`px-4 py-2 rounded   ${
+              estadoSeleccionado === "PENDIENTE"
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleFiltro("PENDIENTE")}
+          >
+            Reasignar
+          </button>
+        </div>
+
+        {/* <TablaTramitesBusqueda tramiteBusqueda={tramitesRespuesta} /> */}
+        {/* <TablaTramitesBusqueda tramiteBusqueda={tramitesResponse} /> */}
+        <TablaTramitesBusqueda tramiteBusqueda={tramitesAsignarReasignar} />
       </div>
     </>
   );

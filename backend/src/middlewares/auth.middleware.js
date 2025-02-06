@@ -33,6 +33,7 @@ export const checkAuth = async (req, res, next) => {
       ],
     });
 
+    // console.log(req.usuario);
     return next(); // Pasamos al siguiente middleware
   } catch (error) {
     console.log(`Token no Válido: ${error.message}`);

@@ -59,9 +59,10 @@ export const TramitesProvider = ({ children }) => {
 
     try {
       const { data } = await clienteAxios.get(
-        `/coordinador/tramites/${estado}`,
-        getAxiosConfigJSON
+        `/tramites/coordinador/tramites/${estado}`,
+        getAxiosConfigJSON()
       );
+
       setTramitesAsignarReasignar(data);
     } catch (error) {
       console.error(error.response?.data?.message);

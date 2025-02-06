@@ -15,6 +15,9 @@ import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
+  // console.log(req.params);
+  // console.log(req.usuario.departamento_id);
+
   const { estado } = req.params; // envio como parametro adicional en la URL
   // const { estado, limit = 10, offset = 0 } = req.query; // Limitar resultados y offset para paginación
   if (!estado)
