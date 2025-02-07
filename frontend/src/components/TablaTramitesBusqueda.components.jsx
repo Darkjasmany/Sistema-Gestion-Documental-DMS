@@ -13,7 +13,7 @@ import clienteAxios from "../config/axios.config";
 import useAuth from "../hooks/useAuth.hook";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
-  // console.log(tramiteBusqueda);
+  console.log(tramiteBusqueda);
 
   const { auth } = useAuth();
   const [revisores, setRevisores] = useState([]);
@@ -101,7 +101,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
             className="bg-blue-500 text-white px-3 py-1 rounded"
             onClick={() => toggleExpandir(row.original.id)}
           >
-            {tramiteExpandido === row.original.id ? "Ocultar" : "Ver más"}
+            {tramiteExpandido === row.original.id ? "Ocultar" : "Más"}
           </button>
         ),
       },
@@ -115,7 +115,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
             className="bg-blue-500 text-white px-3 py-1 rounded"
             onClick={() => openModal(row.original)}
           >
-            Asignar
+            {row.original.estado === "INGRESADO" ? "Asignar" : "Reasignar"}
           </button>
         ),
       });
@@ -181,7 +181,6 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                         </p>
                         <p>
                           <strong>Fecha de Creación:</strong>{" "}
-                          {/* {row.original.createdAt} */}
                           {formatearFecha(row.original.createdAt)}
                         </p>
                         <p>

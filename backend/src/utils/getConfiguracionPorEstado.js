@@ -16,6 +16,7 @@ const INGRESADO = {
     "fecha_documento",
     "prioridad",
     "descripcion",
+    "estado",
     "externo",
     "createdAt",
     // [

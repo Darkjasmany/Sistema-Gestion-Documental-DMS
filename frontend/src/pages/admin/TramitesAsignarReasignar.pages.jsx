@@ -36,8 +36,6 @@ const TramitesAsignarReasignar = () => {
       </p>
 
       <div className=" flex flex-col gap-5">
-        {/* <NavTramites setFiltro={filtro} /> */}
-
         <div className="flex gap-4">
           <button
             className={`px-4 py-2 rounded   ${
@@ -61,8 +59,6 @@ const TramitesAsignarReasignar = () => {
           </button>
         </div>
 
-        {/* <TablaTramitesBusqueda tramiteBusqueda={tramitesRespuesta} /> */}
-        {/* <TablaTramitesBusqueda tramiteBusqueda={tramitesResponse} /> */}
         <TablaTramitesBusqueda tramiteBusqueda={tramitesAsignarReasignar} />
       </div>
     </>
