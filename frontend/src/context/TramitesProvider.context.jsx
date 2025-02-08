@@ -54,21 +54,6 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const obtenerTramitesCoordinador = async (estado) => {
-    if (!token) return;
-
-    try {
-      const { data } = await clienteAxios.get(
-        `/tramites/coordinador/tramites/${estado}`,
-        getAxiosConfigJSON()
-      );
-
-      setTramitesAsignarReasignar(data);
-    } catch (error) {
-      console.error(error.response?.data?.message);
-    }
-  };
-
   const guardarTramite = async (tramite) => {
     if (!token) {
       console.log("No hay token disponible, no se puede guardar el trámite.");
@@ -201,6 +186,24 @@ export const TramitesProvider = ({ children }) => {
       );
     }
   };
+
+  // ** COORDINADOR
+  const obtenerTramitesCoordinador = async (estado) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.get(
+        `/tramites/coordinador/tramites/${estado}`,
+        getAxiosConfigJSON()
+      );
+
+      setTramitesAsignarReasignar(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  };
+
+  const asignarOReasignarRevisor = async (tramite) => {};
 
   /*
   const handleRefrescar = () => {

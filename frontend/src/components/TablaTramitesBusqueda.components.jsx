@@ -12,6 +12,8 @@ import {
 import clienteAxios from "../config/axios.config";
 import useAuth from "../hooks/useAuth.hook";
 
+import Alerta from "../components/Alerta.components";
+
 const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   console.log(tramiteBusqueda);
 
@@ -28,9 +30,14 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   const [mostrarInputs, setMostrarInputs] = useState(false);
   const [revisorAsignado, setRevisorAsignado] = useState(null);
 
-  const [fechaContestacion, setFechaContestacion] = useState("");
+  // const [fechaContestacion, setFechaContestacion] = useState("");
+  const [fechaContestacion, setFechaContestacion] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [observacion, setObservacion] = useState("");
   const [prioridad, setPrioridad] = useState("NORMAL");
+
+  const [alerta, setAlerta] = useState({});
 
   const toggleExpandir = (id) => {
     setTramiteExpandido(tramiteExpandido === id ? null : id);
@@ -69,12 +76,39 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   const asignarOReasignarRevisor = (revisorId) => {
     setMostrarInputs(true);
     setRevisorAsignado(revisorId); // Almacena el ID del revisor asignado
+    setObservacion("");
+    // setFechaContestacion("");
+    setPrioridad("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(revisorAsignado);
+    const fechaActual = new Date().toISOString().slice(0, 10); // fecha actual en formato "yyyy-mm-dd"
+
+    if ([fechaContestacion, observacion].includes("")) {
+      setAlerta({ message: "Todos los campos son obligatorios", error: true });
+      return;
+    }
+
+    if (fechaContestacion < fechaActual) {
+      setAlerta({
+        message:
+          "La fecha de contestación no puede ser inferior a la fecha actual",
+        error: true,
+      });
+      return;
+    }
+
+    console.log(revisorAsignado, "Revisor Asignado");
+    console.log(selectedTramite.id, "idtramiteSeleccionado");
   };
+
+  useEffect(() => {
+    if (alerta.message) {
+      const timer = setTimeout(() => setAlerta({}), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [alerta]);
 
   const columns = useMemo(() => {
     const baseColumns = [
@@ -151,6 +185,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
       },
     },
   });
+
+  const { message } = alerta;
 
   return (
     <div className="overflow-x-auto">
@@ -255,7 +291,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
-          <div className="bg-white p-5 rounded-lg w-2/4">
+          <div className="bg-white p-5 rounded-lg w-2/4 lg:w-1/3">
             <h2 className="text-center font-bold mb-5">
               {" "}
               Asignar|Reasignar Revisor para Trámite #
@@ -285,6 +321,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                       className=" my-5 py-4 px-10 shadow-md rounded-md border"
                       onSubmit={handleSubmit}
                     >
+                      {message && <Alerta alerta={alerta} />}
+
                       {/* Contenedor Grid */}
                       <div className="grid grid-col-1 xl:grid-cols-2 xl:gap-5 ">
                         {/* Campo para la Fecha */}
@@ -294,7 +332,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                             className="text-gray-700 font-medium block"
                           >
                             {/* block para que el label ocupe todo el ancho */}
-                            Fecha de Contestación del Trámite:
+                            Fecha de Contestación:
                           </label>
                           <input
                             type="date"
@@ -351,11 +389,13 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                         />
                       </div>
 
-                      <input
-                        type="submit"
-                        value={"Guardar Revisor"}
-                        className="bg-indigo-600 text-white w-full p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
-                      />
+                      <div className="grid 2xl:grid-cols-3">
+                        <input
+                          type="submit"
+                          value={"Guardar Revisor"}
+                          className="bg-indigo-600 text-white w-full p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors 2xl:col-start-3"
+                        />
+                      </div>
                     </form>
                   )}
                 </li>
