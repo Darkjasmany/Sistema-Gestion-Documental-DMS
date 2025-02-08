@@ -25,6 +25,13 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTramite, setSelectedTramite] = useState(null);
 
+  const [mostrarInputs, setMostrarInputs] = useState(false);
+  const [revisorAsignado, setRevisorAsignado] = useState(null);
+
+  const [fechaContestacion, setFechaContestacion] = useState("");
+  const [observacion, setObservacion] = useState("");
+  const [prioridad, setPrioridad] = useState("NORMAL");
+
   const toggleExpandir = (id) => {
     setTramiteExpandido(tramiteExpandido === id ? null : id);
   };
@@ -37,6 +44,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   const closeModal = () => {
     setSelectedTramite(null);
     setIsModalOpen(false);
+    setRevisorAsignado([]);
   };
 
   useEffect(() => {
@@ -58,8 +66,14 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
     fecthRevisores();
   }, [isAsignarReasignar, auth]);
 
-  const asignarOReasignarRevisor = async (revisorId) => {
-    console.log(revisorId);
+  const asignarOReasignarRevisor = (revisorId) => {
+    setMostrarInputs(true);
+    setRevisorAsignado(revisorId); // Almacena el ID del revisor asignado
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(revisorAsignado);
   };
 
   const columns = useMemo(() => {
@@ -240,26 +254,110 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black opacity-50 flex justify-center items-center">
-          <div className="bg-white p-5 rounded-lg w-3/4">
-            <h2 className="text-center font-bold">
+        <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
+          <div className="bg-white p-5 rounded-lg w-2/4">
+            <h2 className="text-center font-bold mb-5">
               {" "}
               Asignar|Reasignar Revisor para Trámite #
               {selectedTramite.numero_tramite}
             </h2>
             <ul>
               {revisores.map((revisor) => (
-                <li key={revisor.id} className="mb-2">
+                // console.log(revisor)
+
+                <li key={revisor.id} className="mb-2 ">
                   <div className="flex justify-between">
-                    <span>{revisor.nombres}</span>
+                    <span>{revisor.nombres + " " + revisor.apellidos}</span>
                     <button
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                      className="bg-indigo-600 hover:bg-indigo-800 text-white px-3 py-1 rounded focus:bg-indigo-800"
                       onClick={() => asignarOReasignarRevisor(revisor.id)}
                     >
                       {" "}
                       Asignar
                     </button>
                   </div>
+
+                  {/* Mostrar el formulario para que defina si muestra lo inputs para asignar o reasignar */}
+                  {mostrarInputs && revisorAsignado === revisor.id && (
+                    // Condicional para mostrar los inputs
+                    <form
+                      action=""
+                      className=" my-5 py-4 px-10 shadow-md rounded-md border"
+                      onSubmit={handleSubmit}
+                    >
+                      {/* Contenedor Grid */}
+                      <div className="grid grid-col-1 xl:grid-cols-2 xl:gap-5 ">
+                        {/* Campo para la Fecha */}
+                        <div className="mb-5">
+                          <label
+                            htmlFor="fechaContestacion"
+                            className="text-gray-700 font-medium block"
+                          >
+                            {/* block para que el label ocupe todo el ancho */}
+                            Fecha de Contestación del Trámite:
+                          </label>
+                          <input
+                            type="date"
+                            id="fechaContestacion"
+                            value={fechaContestacion}
+                            onChange={(e) => {
+                              setFechaContestacion(e.target.value);
+                            }}
+                            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                          />
+                        </div>
+
+                        {/* Campo Prioridad */}
+                        <div className="mb-5">
+                          <label
+                            htmlFor="prioridad"
+                            className="text-gray-700 font-medium block"
+                          >
+                            Prioridad:
+                          </label>
+                          <select
+                            name="prioridad"
+                            id="prioridad"
+                            value={prioridad}
+                            onChange={(e) => {
+                              setPrioridad(e.target.value);
+                            }}
+                            className="border-2 w-full h-10 p-2 mt-2   placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                          >
+                            <option value="NORMAL">NORMAL</option>
+                            <option value="MEDIA">MEDIA</option>
+                            <option value="ALTA">ALTA</option>
+                          </select>
+                        </div>
+                        {/* Cierre del contenedor Grid */}
+                      </div>
+
+                      {/* Campo para la Observación */}
+                      <div className="mb-5">
+                        <label
+                          htmlFor="descripcion"
+                          className="text-gray-700 font-medium"
+                        >
+                          Observación:
+                        </label>
+                        <textarea
+                          id="descripcion"
+                          value={observacion}
+                          onChange={(e) => {
+                            setObservacion(e.target.value);
+                          }}
+                          placeholder="Observación para el revisor"
+                          className="border-2 w-full p-2 mt-2 h-11 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                      </div>
+
+                      <input
+                        type="submit"
+                        value={"Guardar Revisor"}
+                        className="bg-indigo-600 text-white w-full p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
+                      />
+                    </form>
+                  )}
                 </li>
               ))}
             </ul>
