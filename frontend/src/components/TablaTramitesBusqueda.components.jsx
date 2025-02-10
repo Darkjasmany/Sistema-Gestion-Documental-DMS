@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { toast } from "react-toastify"; // Importa react-toastify
 import { useLocation } from "react-router-dom";
 import { formatearFecha } from "../helpers/formatearFecha.helpers";
 
@@ -15,7 +16,7 @@ import useAuth from "../hooks/useAuth.hook";
 import Alerta from "../components/Alerta.components";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
-  console.log(tramiteBusqueda);
+  // console.log(tramiteBusqueda);
 
   const { auth } = useAuth();
   const [revisores, setRevisores] = useState([]);
@@ -81,12 +82,16 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
     setPrioridad("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const fechaActual = new Date().toISOString().slice(0, 10); // fecha actual en formato "yyyy-mm-dd"
 
     if ([fechaContestacion, observacion].includes("")) {
-      setAlerta({ message: "Todos los campos son obligatorios", error: true });
+      setAlerta({
+        message: "Todos los campos son obligatorios",
+        error: true,
+      });
       return;
     }
 
@@ -99,8 +104,37 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
       return;
     }
 
-    console.log(revisorAsignado, "Revisor Asignado");
-    console.log(selectedTramite.id, "idtramiteSeleccionado");
+    // console.log(revisorAsignado, "Revisor Asignado");
+    // console.log(selectedTramite.id, "idtramiteSeleccionado");
+    // console.log(fechaContestacion, prioridad, observacion);
+
+    const idtramiteSeleccionado = selectedTramite.id;
+    const datosRevisor = {
+      usuarioRevisorId: revisorAsignado,
+      fechaMaximaContestacion: fechaContestacion,
+      observacionRevisor: observacion,
+      prioridad: prioridad,
+    };
+
+    try {
+      const response = await asignarOReasignarRevisor(
+        idtramiteSeleccionado,
+        datosRevisor
+      );
+
+      console.log("Respuesta:", response);
+
+      // Mostrar mensaje de éxito usando react-toastify
+      toast.success(
+        response.message || "Revisor asignado/reasignado correctamente"
+      ); // Usa el mensaje del backend o uno por defecto
+
+      closeModal(); // Cerrar el modal
+      setMostrarInputs(false); // Ocultar los inputs
+      // Recargar la tabla si es necesario (ver recomendación abajo)
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   useEffect(() => {

@@ -203,7 +203,23 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const asignarOReasignarRevisor = async (tramite) => {};
+  const asignarOReasignarRevisor = async (idTramite, datosRevisor) => {
+    if (!token) return;
+
+    console.log(idTramite, datosRevisor);
+    try {
+      const { data } = await clienteAxios.put(
+        `/tramites/coordinador/tramites/${idTramite}/revisor`,
+        datosRevisor, // Datos del revisor
+        getAxiosConfigJSON() // Configuración de Autorizacion
+      );
+
+      console.log("Respuesta del backend:", data); // Maneja la respuesta (ej: mensaje de éxito)
+      return data;
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  };
 
   /*
   const handleRefrescar = () => {
@@ -226,6 +242,7 @@ export const TramitesProvider = ({ children }) => {
         obtenerTramitesCoordinador,
         tramitesAsignarReasignar,
         setTramitesAsignarReasignar,
+        asignarOReasignarRevisor,
       }}
     >
       {children}
