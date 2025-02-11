@@ -1,7 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { toast } from "react-toastify"; // Importa react-toastify
 import { useLocation } from "react-router-dom";
-import { formatearFecha } from "../helpers/formatearFecha.helpers";
 
 import {
   useReactTable,
@@ -12,8 +10,9 @@ import {
 
 import clienteAxios from "../config/axios.config";
 import useAuth from "../hooks/useAuth.hook";
-
+import useTramites from "../hooks/useTramites.hook";
 import Alerta from "../components/Alerta.components";
+import { formatearFecha } from "../helpers/formatearFecha.helpers";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   // console.log(tramiteBusqueda);
@@ -38,6 +37,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
   const [observacion, setObservacion] = useState("");
   const [prioridad, setPrioridad] = useState("NORMAL");
 
+  const { asignarOReasignarRevisorTramite } = useTramites();
   const [alerta, setAlerta] = useState({});
 
   const toggleExpandir = (id) => {
@@ -55,24 +55,24 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
     setRevisorAsignado([]);
   };
 
-  useEffect(() => {
-    const fecthRevisores = async () => {
-      if (isAsignarReasignar) {
-        try {
-          const { data } = await clienteAxios.get(
-            `/usuarios/revisor-departamento/${auth.departamento_id}`
-          );
-          setRevisores(data);
-        } catch (error) {
-          console.error("Error al cargar los datos", error);
-        }
-      } else {
-        setRevisores([]);
+  const fecthRevisores = async () => {
+    if (isAsignarReasignar) {
+      try {
+        const { data } = await clienteAxios.get(
+          `/usuarios/revisor-departamento/${auth.departamento_id}`
+        );
+        setRevisores(data);
+      } catch (error) {
+        console.error("Error al cargar los datos", error);
       }
-    };
+    } else {
+      setRevisores([]);
+    }
+  };
 
+  useEffect(() => {
     fecthRevisores();
-  }, [isAsignarReasignar, auth]);
+  }, [isAsignarReasignar, auth.departamento_id]);
 
   const asignarOReasignarRevisor = (revisorId) => {
     setMostrarInputs(true);
@@ -104,10 +104,6 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
       return;
     }
 
-    // console.log(revisorAsignado, "Revisor Asignado");
-    // console.log(selectedTramite.id, "idtramiteSeleccionado");
-    // console.log(fechaContestacion, prioridad, observacion);
-
     const idtramiteSeleccionado = selectedTramite.id;
     const datosRevisor = {
       usuarioRevisorId: revisorAsignado,
@@ -117,20 +113,17 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
     };
 
     try {
-      const response = await asignarOReasignarRevisor(
+      const response = await asignarOReasignarRevisorTramite(
         idtramiteSeleccionado,
         datosRevisor
       );
 
-      console.log("Respuesta:", response);
+      closeModal(); //Cerrar modal
 
-      // Mostrar mensaje de éxito usando react-toastify
-      toast.success(
-        response.message || "Revisor asignado/reasignado correctamente"
-      ); // Usa el mensaje del backend o uno por defecto
-
-      closeModal(); // Cerrar el modal
       setMostrarInputs(false); // Ocultar los inputs
+
+      setAlerta({ message: response.message, error: false });
+
       // Recargar la tabla si es necesario (ver recomendación abajo)
     } catch (error) {
       console.error(error.message);
@@ -139,7 +132,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
 
   useEffect(() => {
     if (alerta.message) {
-      const timer = setTimeout(() => setAlerta({}), 2000);
+      const timer = setTimeout(() => setAlerta({}), 3000);
       return () => clearTimeout(timer);
     }
   }, [alerta]);
@@ -222,8 +215,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
 
   const { message } = alerta;
 
+  console.log(tramiteBusqueda);
   return (
     <div className="overflow-x-auto">
+      {message && <Alerta alerta={alerta} />}
       {tramiteBusqueda.length === 0 ? (
         <p className="text-center text-gray-500"> No hay támites dispobibles</p>
       ) : (
@@ -267,10 +262,19 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                           <strong>Fecha de Creación:</strong>{" "}
                           {formatearFecha(row.original.createdAt)}
                         </p>
+
                         <p>
                           <strong>Remitente:</strong>{" "}
                           {row.original.remitente?.nombreCompleto}
                         </p>
+
+                        {row.original.usuarioRevisor?.UsuarioRevisor && (
+                          <p>
+                            <strong>Usuario Revisor:</strong>{" "}
+                            {row.original.usuarioRevisor.UsuarioRevisor}
+                          </p>
+                        )}
+
                         <p>
                           <strong>Archivos:</strong>
                         </p>
@@ -296,6 +300,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                             <li>No hay archivos adjuntos</li>
                           )}
                         </ul>
+
+                        <p>
+                          <strong>Usuario Creación:</strong>{" "}
+                          {row.original.usuario?.UsuarioCreacion}
+                        </p>
                       </div>
                     </td>
                   </tr>

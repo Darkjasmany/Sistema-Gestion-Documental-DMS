@@ -203,22 +203,34 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const asignarOReasignarRevisor = async (idTramite, datosRevisor) => {
+  const asignarOReasignarRevisorTramite = async (idTramite, datosRevisor) => {
     if (!token) return;
 
-    console.log(idTramite, datosRevisor);
+    console.log(idTramite);
+    console.log(datosRevisor);
+
+    console.log(tramitesAsignarReasignar);
+
     try {
       const { data } = await clienteAxios.put(
         `/tramites/coordinador/tramites/${idTramite}/revisor`,
-        datosRevisor, // Datos del revisor
-        getAxiosConfigJSON() // Configuración de Autorizacion
+        datosRevisor,
+        getAxiosConfigJSON()
       );
 
-      console.log("Respuesta del backend:", data); // Maneja la respuesta (ej: mensaje de éxito)
+      console.log(data);
+      const tramitesAsignados = tramitesAsignarReasignar.map(
+        (tramitesAsignarState) =>
+          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      );
+
+      setTramitesAsignarReasignar(tramitesAsignados);
       return data;
     } catch (error) {
-      console.error(error.response?.data?.message);
+      console.error(error);
     }
+
+    return;
   };
 
   /*
@@ -242,7 +254,7 @@ export const TramitesProvider = ({ children }) => {
         obtenerTramitesCoordinador,
         tramitesAsignarReasignar,
         setTramitesAsignarReasignar,
-        asignarOReasignarRevisor,
+        asignarOReasignarRevisorTramite,
       }}
     >
       {children}
