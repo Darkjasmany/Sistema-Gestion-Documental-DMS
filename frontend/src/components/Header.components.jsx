@@ -20,7 +20,7 @@ const Header = () => {
               Trámites
             </Link>
 
-            <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-600 p-2 shadow-lg rounded-lg">
+            <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-500 p-2 shadow-lg rounded-lg">
               <Link
                 to={"/admin"}
                 className="block px-4 py-2 hover:bg-indigo-700"
@@ -56,7 +56,7 @@ const Header = () => {
               Perfil
             </Link>
 
-            <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-600 p-2 shadow-lg rounded-lg">
+            <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-500 p-2 shadow-lg rounded-lg">
               <Link
                 to={"/admin/perfil"}
                 className="block px-4 py-2 hover:bg-indigo-700"

@@ -347,6 +347,8 @@ export const obtenerRevisorPorDepartamento = async (req, res) => {
   try {
     const { departamentoId } = req.params;
 
+    console.log(departamentoId);
+
     const usuariosRevisores = await Usuario.findAll({
       where: {
         departamento_id: parseInt(departamentoId),

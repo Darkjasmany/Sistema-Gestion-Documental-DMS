@@ -59,7 +59,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
     if (isAsignarReasignar) {
       try {
         const { data } = await clienteAxios.get(
-          `/usuarios/revisor-departamento/${auth.departamento_id}`
+          `/usuarios/revisor-departamento/${auth.departamentoId}`
         );
         setRevisores(data);
       } catch (error) {
@@ -72,7 +72,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
 
   useEffect(() => {
     fecthRevisores();
-  }, [isAsignarReasignar, auth.departamento_id]);
+  }, [isAsignarReasignar, auth.departamentoId]);
 
   const asignarOReasignarRevisor = (revisorId) => {
     setMostrarInputs(true);
