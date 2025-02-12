@@ -656,6 +656,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
     res.json({
       // message: "Revisor asignado/reasignado correctamente",
       message: `Revisor ${sms} correctamente`,
+      sms,
     });
   } catch (error) {
     await transaction.rollback();

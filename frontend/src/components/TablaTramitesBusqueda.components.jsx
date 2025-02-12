@@ -14,7 +14,7 @@ import useTramites from "../hooks/useTramites.hook";
 import Alerta from "../components/Alerta.components";
 import { formatearFecha } from "../helpers/formatearFecha.helpers";
 
-const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
+const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // console.log(tramiteBusqueda);
 
   const { auth } = useAuth();
@@ -39,6 +39,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
 
   const { asignarOReasignarRevisorTramite } = useTramites();
   const [alerta, setAlerta] = useState({});
+
+  // const [estadoSeleccionado, setEstadoSeleccionado] = useState("INGRESADO");
 
   const toggleExpandir = (id) => {
     setTramiteExpandido(tramiteExpandido === id ? null : id);
@@ -125,6 +127,13 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
       setAlerta({ message: response.message, error: false });
 
       // Recargar la tabla si es necesario (ver recomendación abajo)
+      onTramiteUpdated(); // Llama a la función de actualización para actualizar la tabla
+
+      // if (response.sms === "reasignado") {
+      //   setEstadoSeleccionado("PENDIENTE");
+      // } else if (response.sms === "asignado") {
+      //   setEstadoSeleccionado("INGRESADO");
+      // }
     } catch (error) {
       console.error(error.message);
     }
@@ -258,15 +267,6 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                           <strong>Descripción:</strong>{" "}
                           {row.original.descripcion}
                         </p>
-                        <p>
-                          <strong>Fecha de Creación:</strong>{" "}
-                          {formatearFecha(row.original.createdAt)}
-                        </p>
-
-                        <p>
-                          <strong>Remitente:</strong>{" "}
-                          {row.original.remitente?.nombreCompleto}
-                        </p>
 
                         {row.original.usuarioRevisor?.UsuarioRevisor && (
                           <p>
@@ -304,6 +304,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda }) => {
                         <p>
                           <strong>Usuario Creación:</strong>{" "}
                           {row.original.usuario?.UsuarioCreacion}
+                        </p>
+                        <p>
+                          <strong>Fecha de Creación:</strong>{" "}
+                          {formatearFecha(row.original.createdAt)}
                         </p>
                       </div>
                     </td>

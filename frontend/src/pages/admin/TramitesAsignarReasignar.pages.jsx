@@ -8,9 +8,11 @@ const TramitesAsignarReasignar = () => {
   const { obtenerTramitesCoordinador, tramitesAsignarReasignar } =
     useTramites();
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("INGRESADO");
+  const [refreshTable, setRefreshTable] = useState(false); // Estado para refrescar la tabla
 
   const handleFiltro = (estado) => {
     setEstadoSeleccionado(estado);
+    setRefreshTable(true); // Indicamos que cuando cambie el estado refresque la tabla
   };
 
   useEffect(() => {
@@ -19,11 +21,18 @@ const TramitesAsignarReasignar = () => {
         await obtenerTramitesCoordinador(estadoSeleccionado);
       } catch (error) {
         console.error(error.message);
+      } finally {
+        setRefreshTable(false); // Restablecer el estado de actualización después de obtener los datos
       }
     };
 
-    datosTramites();
-  }, [estadoSeleccionado]);
+    if (refreshTable) {
+      // Solo obtiene los datos si es necesario actualizar
+      datosTramites();
+    } else {
+      datosTramites(); // Obtiene los datos en el primer render
+    }
+  }, [estadoSeleccionado, refreshTable, obtenerTramitesCoordinador]);
 
   return (
     <>
@@ -59,7 +68,10 @@ const TramitesAsignarReasignar = () => {
           </button>
         </div>
 
-        <TablaTramitesBusqueda tramiteBusqueda={tramitesAsignarReasignar} />
+        <TablaTramitesBusqueda
+          tramiteBusqueda={tramitesAsignarReasignar}
+          onTramiteUpdate={() => setRefreshTable(true)} // Pasa la función de actualización
+        />
       </div>
     </>
   );

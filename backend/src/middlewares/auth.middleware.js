@@ -33,6 +33,12 @@ export const checkAuth = async (req, res, next) => {
       ],
     });
 
+    // ** Después de la consulta, puedes renombrar el campo, esto se debe a una convención común en JavaScript y React para nombrar variables y propiedades
+    if (req.usuario && req.usuario.Departamento) {
+      req.usuario.departamentoId = req.usuario.Departamento.departamento_id;
+      delete req.usuario.Departamento.departamento_id; // Opcional: Eliminar el campo original
+    }
+
     // console.log(req.usuario);
     return next(); // Pasamos al siguiente middleware
   } catch (error) {
