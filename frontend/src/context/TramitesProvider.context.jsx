@@ -6,11 +6,12 @@ const TramitesContext = createContext();
 
 // De donde vienen los datos
 export const TramitesProvider = ({ children }) => {
+  const { auth } = useAuth();
+  const [tramite, setTramite] = useState({});
   const [tramites, setTramites] = useState([]);
   const [tramitesRespuesta, setTramitesRespuesta] = useState([]);
   const [tramitesAsignarReasignar, setTramitesAsignarReasignar] = useState([]);
-  const [tramite, setTramite] = useState({});
-  const { auth } = useAuth();
+  const [tramitesRevisor, setTramitesRevisor] = useState({});
 
   // Obtener el token
   const token =
@@ -233,6 +234,11 @@ export const TramitesProvider = ({ children }) => {
     return;
   };
 
+  // ** REVISOR
+  const completarTramiteRevisor = () => {
+    console.log("hola");
+  };
+
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);
@@ -255,6 +261,8 @@ export const TramitesProvider = ({ children }) => {
         tramitesAsignarReasignar,
         setTramitesAsignarReasignar,
         asignarOReasignarRevisorTramite,
+        completarTramiteRevisor,
+        tramitesRevisor,
       }}
     >
       {children}

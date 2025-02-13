@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import TablaTramitesBusqueda from "../../components/TablaTramitesBusqueda.components";
 import useTramites from "../../hooks/useTramites.hook";
-// import NavTramites from "../../components/NavTramites.components";
-// import clienteAxios from "../../config/axios.config";
 
 const TramitesAsignarReasignar = () => {
   const { obtenerTramitesCoordinador, tramitesAsignarReasignar } =
