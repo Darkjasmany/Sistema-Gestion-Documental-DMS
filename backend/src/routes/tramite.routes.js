@@ -129,7 +129,7 @@ router.put(
 
 // * Rutas exclusivas para el revisor
 router
-  .route("/revisor/tramites")
+  .route("/revisor/tramites/:estado")
   .get(checkAuth, checkRole("REVISOR"), tramiteRevisor.listarTramitesRevisor);
 
 router

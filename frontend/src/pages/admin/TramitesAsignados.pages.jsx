@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useTramites from "../../hooks/useTramites.hook";
 import TablaTramitesBusqueda from "../../components/TablaTramitesBusqueda.components";
 
 const TramitesAsignados = () => {
-  const { completarTramiteRevisor, tramitesRevisor } = useTramites();
+  const { obtenerTramitesRevisorData, tramitesRevisor } = useTramites();
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("PENDIENTE");
   const [refreshTable, setRefreshTable] = useState(false);
 
@@ -11,6 +11,24 @@ const TramitesAsignados = () => {
     setEstadoSeleccionado(estado);
     setRefreshTable(true);
   };
+
+  useEffect(() => {
+    const datosTramitesRevisor = async () => {
+      try {
+        await obtenerTramitesRevisorData(estadoSeleccionado);
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        setRefreshTable(false);
+      }
+    };
+
+    if (refreshTable) {
+      datosTramitesRevisor();
+    } else {
+      datosTramitesRevisor();
+    }
+  }, [estadoSeleccionado, refreshTable, obtenerTramitesRevisorData]);
 
   return (
     <>

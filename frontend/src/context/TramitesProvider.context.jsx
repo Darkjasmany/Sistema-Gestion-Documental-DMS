@@ -235,8 +235,19 @@ export const TramitesProvider = ({ children }) => {
   };
 
   // ** REVISOR
-  const completarTramiteRevisor = () => {
-    console.log("hola");
+  const obtenerTramitesRevisorData = async (estado) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.get(
+        `/tramites/revisor/tramites/${estado}`,
+        getAxiosConfigJSON()
+      );
+
+      setTramitesRevisor(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
   };
 
   /*
@@ -261,7 +272,7 @@ export const TramitesProvider = ({ children }) => {
         tramitesAsignarReasignar,
         setTramitesAsignarReasignar,
         asignarOReasignarRevisorTramite,
-        completarTramiteRevisor,
+        obtenerTramitesRevisorData,
         tramitesRevisor,
       }}
     >

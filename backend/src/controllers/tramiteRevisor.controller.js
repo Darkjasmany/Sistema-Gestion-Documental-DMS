@@ -10,7 +10,7 @@ import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js
 import { validarFecha } from "../utils/validarFecha.js";
 
 export const listarTramitesRevisor = async (req, res) => {
-  const { estado } = req.query;
+  const { estado } = req.params;
   if (!estado)
     return res.status(400).json({ message: "El estado es requerido" });
 
