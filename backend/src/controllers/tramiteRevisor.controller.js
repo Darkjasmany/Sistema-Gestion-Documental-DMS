@@ -129,7 +129,7 @@ export const completarTramiteRevisor = async (req, res) => {
   const {
     // numeroOficioDespacho,
     destinatarios,
-    referenciaTramite,
+    // referenciaTramite,
     fechaDespacho,
     observacion,
   } = req.body;
@@ -214,8 +214,8 @@ export const completarTramiteRevisor = async (req, res) => {
       // Actualizar datos del Trámite
       tramite.numero_oficio = numeroMemo;
       tramite.fecha_despacho = fechaDespacho;
-      tramite.referencia_tramite =
-        referenciaTramite || tramite.referencia_tramite;
+      // tramite.referencia_tramite =
+      // referenciaTramite || tramite.referencia_tramite;
       tramite.estado = "POR_REVISAR";
       await tramite.save({ transaction });
 
