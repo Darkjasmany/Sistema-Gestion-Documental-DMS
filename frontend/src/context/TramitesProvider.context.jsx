@@ -250,6 +250,10 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
+  const completarTramiteRevisorAsignado = async () => {
+    console.log("completar");
+  };
+
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);
@@ -273,6 +277,7 @@ export const TramitesProvider = ({ children }) => {
         setTramitesAsignarReasignar,
         asignarOReasignarRevisorTramite,
         obtenerTramitesRevisorData,
+        completarTramiteRevisorAsignado,
         tramitesRevisor,
       }}
     >
