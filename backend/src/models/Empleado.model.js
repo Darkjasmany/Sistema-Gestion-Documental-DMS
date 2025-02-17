@@ -45,6 +45,11 @@ export const Empleado = sequelize.define(
         key: "id", // clave primaria de la tabla de referencia
       },
     },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
     tableName: "empleado",

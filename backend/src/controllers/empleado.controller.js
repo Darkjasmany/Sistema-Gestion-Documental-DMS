@@ -62,7 +62,12 @@ export const agregarEmpleado = async (req, res) => {
 
 export const cargarEmpleados = async (req, res) => {
   try {
-    const empleados = await Empleado.findAll();
+    const empleados = await Empleado.findAll({
+      where: {
+        activo: true,
+      },
+      attributes: ["id", "cedula", "nombres", "apellidos", "email"],
+    });
     res.json(empleados);
   } catch (error) {
     console.error(`Error al cargar los empleados: ${error.message}`);
@@ -96,6 +101,7 @@ export const obtenerEmpleadoPorDepartamento = async (req, res) => {
     const empleados = await Empleado.findAll({
       where: {
         departamento_id: departamentoId,
+        activo: true,
       },
       attributes: ["id", "cedula", "nombres", "apellidos", "email"],
     });

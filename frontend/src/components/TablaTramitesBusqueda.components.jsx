@@ -37,6 +37,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // Estados para el formulario completar trámite
   const [mostrarInputsCompletar, setMostrarInputsCompletar] = useState(false);
   const [destinatarios, setDestinatarios] = useState([]);
+  const [destinatariosSeleccionados, setDestinatariosSeleccionados] = useState(
+    []
+  );
+  const [empleados, setEmpleados] = useState([]);
   const [fechaDespacho, setFechaDespacho] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -145,6 +149,27 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       setAlerta({ message: error.message, error: true });
     }
   };
+
+  //Function para cargar los destinatios
+  useEffect(() => {
+    const fecthEmpleados = async () => {
+      try {
+        const { data } = await clienteAxios("/empleados");
+        // console.log(data);
+        setEmpleados(data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    if (isAsignados) {
+      fecthEmpleados();
+    }
+  }, []);
+
+  // Función para agregar o quitar destinatarios
+
+  const handleDestinatariosSeleccionado = (destinatario) => {};
 
   const handleSubmitCompletar = async (e) => {
     e.preventDefault();
