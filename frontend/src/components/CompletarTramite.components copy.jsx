@@ -31,7 +31,6 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   }, []);
 
   // Función para filtrar empleados según la búsqueda
-
   useEffect(() => {
     if (busquedaEmpleado.trim() === "") {
       setSugerenciasEmpleados([]);
