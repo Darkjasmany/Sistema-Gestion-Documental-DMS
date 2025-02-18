@@ -250,8 +250,20 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const completarTramiteRevisorAsignado = async () => {
-    console.log("completar");
+  const completarTramiteRevisorAsignado = async (idTramite, datosCompletar) => {
+    if (!token) return;
+
+    try {
+      const { data } = clienteAxios.put(
+        `/tramites/revisor/tramites/${idTramite}`,
+        datosCompletar,
+        getAxiosConfigJSON()
+      );
+
+      console.log(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
   };
 
   /*
