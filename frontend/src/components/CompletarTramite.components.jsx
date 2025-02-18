@@ -13,7 +13,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [fechaDespacho, setFechaDespacho] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [observacionCompletar, setObservacionCompletar] = useState("");
+  const [observacion, setObservacion] = useState("");
   const [prioridad, setPrioridad] = useState("NORMAL");
 
   const [alerta, setAlerta] = useState({});
@@ -55,7 +55,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
     const datosCompletar = {
       fechaDespacho,
-      observacionRevisor: observacionCompletar,
+      observacionRevisor: observacion,
       destinatarios: destinatariosSeleccionados.map((dest) => dest.id), // Envía solo los IDs
     };
 
@@ -88,7 +88,6 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         onSubmit={handleSubmitCompletar}
       >
         {message && <Alerta alerta={alerta} />}
-
         {/* Contenedor Grid */}
         <div className="grid grid-col-1 xl:grid-cols-2 xl:gap-5 ">
           {/* Campo para la Fecha */}
@@ -111,31 +110,10 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             />
           </div>
 
-          {/* Campo Prioridad */}
-          <div className="mb-5">
-            <label
-              htmlFor="prioridad"
-              className="text-gray-700 font-medium block"
-            >
-              Prioridad:
-            </label>
-            <select
-              name="prioridad"
-              id="prioridad"
-              value={prioridad}
-              onChange={(e) => {
-                setPrioridad(e.target.value);
-              }}
-              className="border-2 w-full h-10 p-2 mt-2   placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="NORMAL">NORMAL</option>
-              <option value="MEDIA">MEDIA</option>
-              <option value="ALTA">ALTA</option>
-            </select>
-          </div>
           {/* Cierre del contenedor Grid */}
         </div>
 
+        {/* Destinatarios */}
         <div className="mb-5">
           <label className="text-gray-700 font-medium block">
             Destinatarios:
@@ -168,12 +146,12 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           </label>
           <textarea
             id="observacionCompletar"
-            value={observacionCompletar}
+            value={observacion}
             onChange={(e) => {
-              setObservacionCompletar(e.target.value);
+              setObservacion(e.target.value);
             }}
             placeholder="Observación para completar el trámite"
-            className="border-2 w-full p-2 mt-2 h-11 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="border-2 w-full p-2 mt-2 h-20 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
 
