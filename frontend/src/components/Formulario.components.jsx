@@ -69,9 +69,9 @@ const Formulario = () => {
     }
   }, [alerta]);
 
+  //** CARGAR DATOS PARA ACTUALIZAR TRÁMITE */
   useEffect(() => {
-    //** CARGAR DATOS PARA ACTUALIZAR TRÁMITE */
-    if (tramite?.asunto) {
+    if (tramite?.asunto && tramite.tramiteArchivos?.length > 0) {
       // console.log(tramite);
       setOficioRemitente(tramite.numero_oficio_remitente);
       setAsunto(tramite.asunto);
@@ -112,16 +112,37 @@ const Formulario = () => {
       setTramiteExterno(tramite.externo);
 
       // Generar URLs completas para los archivos existentes
-      if (tramite.tramiteArchivos?.length > 0) {
+
+      setTimeout(() => {
         const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
           id: archivo.id,
           name: archivo.original_name,
           url: `${import.meta.env.VITE_BACKEND_URL}/${archivo.ruta}`,
         }));
         setArchivos(rutasArchivos);
-      }
+      }, 100); // Retrasar un poco la carga de archivos
 
       setId(tramite.id);
+    }
+  }, [tramite]);
+
+  // ** Restablecer el formulario al desmostar el componente
+  useEffect(() => {
+    // return () => {
+    if (!tramite?.id) {
+      setId(null);
+      setOficioRemitente("");
+      setAsunto("");
+      setTramiteReferencia(false);
+      setReferenciaTramite("");
+      setFechaDocumento(new Date().toISOString().split("T")[0]);
+      setDepartamentoRemitenteId("");
+      setRemitenteId("");
+      setPrioridad("NORMAL");
+      setDescripcion("");
+      setArchivos([]);
+      setTramiteExterno(false);
+      fileInputArchivos.current.value = ""; // Limpiar el input de archivos
     }
   }, [tramite]);
 
