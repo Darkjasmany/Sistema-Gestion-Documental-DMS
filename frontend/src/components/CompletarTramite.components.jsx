@@ -66,6 +66,17 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     );
   };
 
+  // Inicializar los estados con los datos del trámite cuando se edita
+  useEffect(() => {
+    if (tramite) {
+      setFechaDespacho(
+        tramite.fechaDespacho || new Date().toISOString().split("T")[0]
+      );
+      setObservacion(tramite.observacion || "");
+      setEmpleadosSeleccionados(tramite.destinatarios || []);
+    }
+  }, [tramite]);
+
   const handleSubmitCompletar = async (e) => {
     e.preventDefault();
 
@@ -75,11 +86,19 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       destinatarios: empleadosSeleccionados.map((empleado) => empleado.id),
     };
 
+    console.log(tramite);
+
     try {
-      const response = await completarTramiteRevisorAsignado(
-        tramite.id,
-        datosCompletar
-      );
+      let response;
+
+      if (tramite.estado === "POR_REVISAR") {
+        console.log("Actualizar");
+      } else {
+        response = await completarTramiteRevisorAsignado(
+          tramite.id,
+          datosCompletar
+        );
+      }
 
       setAlerta({ message: response.message, error: response.error });
 

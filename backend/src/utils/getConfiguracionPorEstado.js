@@ -92,27 +92,7 @@ const PENDIENTE = {
 };
 const POR_REVISAR = {
   ...PENDIENTE,
-  attributes: [
-    ...PENDIENTE.attributes,
-    "fecha_despacho",
-    "numero_oficio",
-    [
-      // Concatenar nombres de departamentos destinatarios
-      Sequelize.literal(`
-        (
-         SELECT STRING_AGG(
-            CONCAT(e.nombres, ' ', e.apellidos , ', ', d."nombre"), 
-            ' - '
-        ) 
-        FROM tramite_destinatario td
-        INNER JOIN empleado e ON e.id = td.destinatario_id
-        INNER JOIN departamento d ON d.id = td.departamento_destinatario
-        WHERE td.tramite_id = tramite.id
-        )
-      `),
-      "departamentosDestinatarios",
-    ],
-  ],
+  attributes: [...PENDIENTE.attributes, "fecha_despacho", "numero_oficio"],
   include: [...PENDIENTE.include],
 };
 const COMPLETADO = {};
