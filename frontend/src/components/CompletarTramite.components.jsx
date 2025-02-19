@@ -81,12 +81,13 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         datosCompletar
       );
 
-      if (response.error) {
-        setAlerta({ message: response.message, error: true });
-      } else {
-        setAlerta({ message: response.message, error: false });
-        closeModal();
-        onTramiteUpdated();
+      setAlerta({ message: response.message, error: response.error });
+
+      if (!response.error) {
+        setTimeout(() => {
+          closeModal();
+          onTramiteUpdated();
+        }, 2000);
       }
     } catch (error) {
       console.error(error.message);

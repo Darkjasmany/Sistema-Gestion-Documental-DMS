@@ -254,11 +254,14 @@ export const TramitesProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const { data } = clienteAxios.put(
+      const { data } = await clienteAxios.put(
         `/tramites/revisor/tramites/${idTramite}`,
         datosCompletar,
         getAxiosConfigJSON()
       );
+
+      console.log(data);
+      return { message: data.message, error: false };
     } catch (error) {
       console.error(error.response?.data?.message);
     }
