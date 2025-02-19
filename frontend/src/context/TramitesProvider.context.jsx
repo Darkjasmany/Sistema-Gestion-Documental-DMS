@@ -259,8 +259,6 @@ export const TramitesProvider = ({ children }) => {
         datosCompletar,
         getAxiosConfigJSON()
       );
-
-      console.log(data);
     } catch (error) {
       console.error(error.response?.data?.message);
     }

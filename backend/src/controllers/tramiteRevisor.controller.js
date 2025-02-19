@@ -124,6 +124,9 @@ export const obtenerTramiteRevisor = async (req, res) => {
 };
 
 export const completarTramiteRevisor = async (req, res) => {
+  // const transaction = await Tramite.sequelize.transaction();
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
   const { id } = req.params;
 
   const {
@@ -147,49 +150,56 @@ export const completarTramiteRevisor = async (req, res) => {
     });
   }
 
-  try {
-    const tramite = await Tramite.findOne({
-      where: { id, estado: "PENDIENTE", activo: true },
-    });
+  const tramite = await Tramite.findOne({
+    where: { id, estado: "PENDIENTE", activo: true },
+  });
 
-    if (!tramite) {
-      return res.status(404).json({ message: "Trámite no encontrado" });
-    }
+  if (!tramite) {
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
 
-    if (
-      tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
-      tramite.departamento_tramite.toString() !==
-        req.usuario.departamento_id.toString()
-    ) {
-      return res
-        .status(403)
-        .json({ message: "El trámite seleccionado no te pertenece" });
-    }
+  if (
+    tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
+  ) {
+    return res
+      .status(403)
+      .json({ message: "El trámite seleccionado no te pertenece" });
+  }
 
-    const { valido, mensaje } = validarFecha(fechaDespacho);
-    if (!valido) {
-      return res.status(400).json({ error: mensaje });
-    }
-    /*
+  const { valido, mensaje } = validarFecha(fechaDespacho);
+  if (!valido) {
+    return res.status(400).json({ error: mensaje });
+  }
+  /*
   const numeroOficio = await Tramite.findOne({
     where: {
       numero_oficio: numeroOficioDespacho,
-    },
-  });
-  if (numeroOficio) {
-    return res
-      .status(409)
-      .json({ message: "El numero de Memo ya esta siendo utilizado" });
-  }
-*/
-    // Generar número de Memo
-    const tipo = tramite.externo ? "Oficio" : "Memorando";
-    const multiplesDestinatarios = destinatarios.length > 1;
-    const numeroMemo = await generarMemo(multiplesDestinatarios, tipo);
+      },
+      });
+      if (numeroOficio) {
+        return res
+        .status(409)
+        .json({ message: "El numero de Memo ya esta siendo utilizado" });
+        }
+        */
 
+  // Asegurarme que voy a recibir un array de objetos
+  const destinatariosProcesados = destinatarios.map((dest) =>
+    typeof dest === "number" ? { id: dest } : dest
+  );
+
+  // Generar número de Memo
+  const tipo = tramite.externo ? "Oficio" : "Memorando";
+  const multiplesDestinatarios = destinatarios.length > 1;
+  const numeroMemo = await generarMemo(multiplesDestinatarios, tipo);
+
+  console.log(id, destinatarios, fechaDespacho, observacion);
+  try {
     // Actualizar el trámite en una transacción
     await sequelize.transaction(async (transaction) => {
-      for (const destinatario of destinatarios) {
+      for (const destinatario of destinatariosProcesados) {
         const departamentoDestinatario = await Empleado.findOne({
           where: { id: destinatario.id },
           transaction,
