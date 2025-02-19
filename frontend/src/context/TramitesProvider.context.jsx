@@ -263,7 +263,12 @@ export const TramitesProvider = ({ children }) => {
       console.log(data);
       return { message: data.message, error: false };
     } catch (error) {
-      console.error(error.response?.data?.message);
+      console.error(error.response?.data?.message || "Error desconocido");
+
+      return {
+        message: error.response?.data?.message || "Error en la solicitud",
+        error: true,
+      };
     }
   };
 

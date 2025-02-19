@@ -124,10 +124,9 @@ export const obtenerTramiteRevisor = async (req, res) => {
 };
 
 export const completarTramiteRevisor = async (req, res) => {
-  // const transaction = await Tramite.sequelize.transaction();
-  console.log("Params:", req.params);
-  console.log("Body:", req.body);
-  const { id } = req.params;
+  // console.log("Params:", req.params);
+  // console.log("Body:", req.body);
+  // const { id } = req.params;
 
   const {
     // numeroOficioDespacho,
