@@ -124,9 +124,10 @@ export const obtenerTramiteRevisor = async (req, res) => {
 };
 
 export const completarTramiteRevisor = async (req, res) => {
-  // console.log("Params:", req.params);
-  // console.log("Body:", req.body);
-  // const { id } = req.params;
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
+
+  const { id } = req.params;
 
   const {
     // numeroOficioDespacho,
@@ -194,7 +195,6 @@ export const completarTramiteRevisor = async (req, res) => {
   const multiplesDestinatarios = destinatarios.length > 1;
   const numeroMemo = await generarMemo(multiplesDestinatarios, tipo);
 
-  console.log(id, destinatarios, fechaDespacho, observacion);
   try {
     // Actualizar el trámite en una transacción
     await sequelize.transaction(async (transaction) => {

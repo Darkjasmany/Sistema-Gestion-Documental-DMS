@@ -15,7 +15,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [observacion, setObservacion] = useState("");
   const [alerta, setAlerta] = useState({});
 
-  const { completarTramiteRevisorAsignado } = useTramites();
+  const { completarTramiteRevisorAsignado, actualizarTramitecompletado } =
+    useTramites();
 
   useEffect(() => {
     const fetchEmpleados = async () => {
@@ -37,14 +38,13 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       return;
     }
 
-    const empleadoFiltrado = empleados.filter((empleado) =>
+    const filtro = empleados.filter((empleado) =>
       `${empleado.nombres} ${empleado.apellidos}`
         .toLowerCase()
         .includes(busquedaEmpleado.toLowerCase())
     );
 
-    setSugerenciasEmpleados(empleadoFiltrado);
-    console.log(sugerenciasEmpleados);
+    setSugerenciasEmpleados(filtro);
   }, [empleados, busquedaEmpleado]);
 
   //Función para seleccionar empleados
@@ -57,21 +57,21 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         // empleadosSeleccionados.filter(
         //   (seleccion) => seleccion.id !== empleado.id
         // )
-
+        // TODO Si el empleado a esta en la lista muestra la lista sin acterr el contenido
         [...empleadosSeleccionados]
       );
     } else {
       setEmpleadosSeleccionados([...empleadosSeleccionados, empleado]);
     }
 
-    setSugerenciasEmpleados([]);
     setBusquedaEmpleado("");
+    setSugerenciasEmpleados([]);
   };
 
   // Función para eliminar un empleado seleccionado
-  const handleEliminarEmpleado = (empleadoId) => {
+  const handleEliminarEmpleado = (id) => {
     setEmpleadosSeleccionados(
-      empleadosSeleccionados.filter((seleccion) => seleccion.id !== empleadoId)
+      empleadosSeleccionados.filter((empleado) => empleado.id !== id)
     );
   };
 
@@ -101,7 +101,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       let response;
 
       if (tramite.estado === "POR_REVISAR") {
-        console.log("Actualizar");
+        response = await actualizarTramitecompletado();
       } else {
         response = await completarTramiteRevisorAsignado(
           tramite.id,

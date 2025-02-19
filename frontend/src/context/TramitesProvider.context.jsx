@@ -272,6 +272,10 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
+  const actualizarTramitecompletado = () => {
+    console.log("actualizando ...");
+  };
+
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);
@@ -297,6 +301,7 @@ export const TramitesProvider = ({ children }) => {
         obtenerTramitesRevisorData,
         completarTramiteRevisorAsignado,
         tramitesRevisor,
+        actualizarTramitecompletado,
       }}
     >
       {children}
