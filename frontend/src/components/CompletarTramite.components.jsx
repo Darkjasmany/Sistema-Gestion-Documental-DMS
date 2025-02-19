@@ -31,38 +31,47 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   }, []);
 
   // Función para filtrar empleados según la búsqueda
-
   useEffect(() => {
     if (busquedaEmpleado.trim() === "") {
       setSugerenciasEmpleados([]);
       return;
     }
 
-    const filtro = empleados.filter((empleado) =>
+    const empleadoFiltrado = empleados.filter((empleado) =>
       `${empleado.nombres} ${empleado.apellidos}`
         .toLowerCase()
         .includes(busquedaEmpleado.toLowerCase())
     );
-    setSugerenciasEmpleados(filtro);
-  }, [busquedaEmpleado, empleados]);
 
-  // Función para seleccionar empleados
+    setSugerenciasEmpleados(empleadoFiltrado);
+    console.log(sugerenciasEmpleados);
+  }, [empleados, busquedaEmpleado]);
+
+  //Función para seleccionar empleados
   const handleSeleccionEmpleado = (empleado) => {
-    if (empleadosSeleccionados.some((sel) => sel.id === empleado.id)) {
+    if (
+      empleadosSeleccionados.some((seleccion) => seleccion.id === empleado.id)
+    ) {
       setEmpleadosSeleccionados(
-        empleadosSeleccionados.filter((sel) => sel.id !== empleado.id)
+        // TODO Si el empleado ya está en la lista, lo elimina
+        // empleadosSeleccionados.filter(
+        //   (seleccion) => seleccion.id !== empleado.id
+        // )
+
+        [...empleadosSeleccionados]
       );
     } else {
       setEmpleadosSeleccionados([...empleadosSeleccionados, empleado]);
     }
-    setBusquedaEmpleado("");
+
     setSugerenciasEmpleados([]);
+    setBusquedaEmpleado("");
   };
 
   // Función para eliminar un empleado seleccionado
-  const handleEliminarEmpleado = (id) => {
+  const handleEliminarEmpleado = (empleadoId) => {
     setEmpleadosSeleccionados(
-      empleadosSeleccionados.filter((empleado) => empleado.id !== id)
+      empleadosSeleccionados.filter((seleccion) => seleccion.id !== empleadoId)
     );
   };
 
@@ -191,7 +200,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
                     onClick={() => handleEliminarEmpleado(empleado.id)}
                     className="text-red-600 font-bold hover:text-red-800"
                   >
-                    ×
+                    X
                   </button>
                 </div>
               ))}
