@@ -248,7 +248,6 @@ TramiteArchivo.belongsTo(Tramite, {
 
 Tramite.hasMany(TramiteObservacion, {
   foreignKey: "tramite_id",
-  sourceKey: "id",
   as: "tramiteObservaciones",
 });
 
@@ -256,6 +255,11 @@ TramiteObservacion.belongsTo(Tramite, {
   foreignKey: "tramite_id",
   targetKey: "id",
   as: "observaciones",
+});
+
+TramiteObservacion.belongsTo(Usuario, {
+  foreignKey: "usuario_creacion",
+  as: "usuarioCreador",
 });
 
 TramiteEliminacion.belongsTo(Tramite, {

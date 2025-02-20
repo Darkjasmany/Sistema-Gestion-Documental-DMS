@@ -5,6 +5,7 @@ import { Usuario } from "../models/Usuario.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { sequelize } from "../config/db.config.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
+import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 
 // Definir los objetos de estado
 const INGRESADO = {
@@ -118,6 +119,25 @@ const POR_REVISAR = {
         },
       ],
       where: { activo: true },
+    },
+    {
+      model: TramiteObservacion,
+      as: "observaciones",
+      attributes: ["id", "observacion", "fecha_creacion"],
+      include: [
+        {
+          model: Usuario,
+          as: "usuarioCreador",
+          attributes: [
+            [
+              Sequelize.literal(
+                'CONCAT("usuarioCreador"."nombres", \' \', "usuarioCreador"."apellidos")'
+              ),
+              "UsuarioCreador",
+            ],
+          ],
+        },
+      ],
     },
   ],
 };

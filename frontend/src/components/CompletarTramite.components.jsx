@@ -77,12 +77,19 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   // Inicializar los estados con los datos del trámite cuando se edita
   useEffect(() => {
+    console.log(tramite);
     if (tramite?.numero_oficio) {
       setFechaDespacho(
         tramite.fechaDespacho || new Date().toISOString().split("T")[0]
       );
       setObservacion(tramite.observacion || "");
-      setEmpleadosSeleccionados(tramite.destinatarios || []);
+      setEmpleadosSeleccionados(
+        tramite.destinatarios.map((dest) => ({
+          id: dest.destinatario.id,
+          nombres: dest.destinatario.nombres,
+          apellidos: dest.destinatario.apellidos,
+        }))
+      );
     }
   }, [tramite]);
 
@@ -94,8 +101,6 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       observacion,
       destinatarios: empleadosSeleccionados.map((empleado) => empleado.id),
     };
-
-    console.log(tramite);
 
     try {
       let response;

@@ -137,7 +137,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
   const { message } = alerta;
 
-  console.log(tramiteBusqueda);
+  // console.log(tramiteBusqueda);
   return (
     <div className="overflow-x-auto">
       {message && <Alerta alerta={alerta} />}
