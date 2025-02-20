@@ -4,6 +4,7 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { sequelize } from "../config/db.config.js";
+import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 
 // Definir los objetos de estado
 const INGRESADO = {
@@ -93,9 +94,39 @@ const PENDIENTE = {
 const POR_REVISAR = {
   ...PENDIENTE,
   attributes: [...PENDIENTE.attributes, "fecha_despacho", "numero_oficio"],
-  include: [...PENDIENTE.include],
+  include: [
+    ...PENDIENTE.include,
+    {
+      model: TramiteDestinatario,
+      as: "destinatarios",
+      attributes: [
+        "tramite_id",
+        "departamento_destinatario",
+        "destinatario_id",
+      ],
+
+      include: [
+        {
+          model: Empleado,
+          as: "destinatario",
+          attributes: ["id", "nombres", "apellidos"],
+        },
+        {
+          model: Departamento,
+          as: "departamentoDestinatario",
+          attributes: ["id", "nombre"],
+        },
+      ],
+      where: { activo: true },
+    },
+  ],
 };
-const COMPLETADO = {};
+
+const COMPLETADO = {
+  ...POR_REVISAR,
+  attributes: [...POR_REVISAR.attributes],
+  include: [...POR_REVISAR.include],
+};
 const CORRECCION_PENDIENTE = {};
 const FINALIZADO = {};
 

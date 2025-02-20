@@ -252,8 +252,7 @@ export const completarTramiteRevisor = async (req, res) => {
 
 export const actualizarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
-  const { destinatarios, referenciaTramite, fechaDespacho, observacion } =
-    req.body;
+  const { destinatarios, fechaDespacho, observacion } = req.body;
 
   if (
     // Array.isArray(destinatarios) ||
@@ -359,8 +358,6 @@ export const actualizarTramiteRevisor = async (req, res) => {
     }
 
     // Actualizar trámite y observación
-    tramite.referencia_tramite =
-      referenciaTramite || tramite.referencia_tramite;
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     await tramite.save({ transaction });
 

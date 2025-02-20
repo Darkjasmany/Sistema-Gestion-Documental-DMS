@@ -8,6 +8,7 @@ import { TramiteArchivo } from "./TramiteArchivo.model.js";
 import { TramiteObservacion } from "./TramiteObservacion.model.js";
 import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
 import { config } from "../config/parametros.config.js";
+import { TramiteDestinatario } from "./TramiteDestinatario.model.js";
 
 export const Tramite = sequelize.define(
   "tramite",
@@ -301,4 +302,9 @@ Tramite.belongsTo(Departamento, {
   foreignKey: "departamento_tramite",
   targetKey: "id",
   as: "departamentoUsuarioCreacion",
+});
+
+Tramite.hasMany(TramiteDestinatario, {
+  foreignKey: "tramite_id",
+  as: "destinatarios",
 });

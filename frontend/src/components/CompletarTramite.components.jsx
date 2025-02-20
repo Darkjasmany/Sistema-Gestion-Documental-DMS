@@ -77,7 +77,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   // Inicializar los estados con los datos del trámite cuando se edita
   useEffect(() => {
-    if (tramite) {
+    if (tramite?.numero_oficio) {
       setFechaDespacho(
         tramite.fechaDespacho || new Date().toISOString().split("T")[0]
       );
