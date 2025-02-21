@@ -12,6 +12,9 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [fechaDespacho, setFechaDespacho] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [fechaLimite, setFechaLimite] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [observacion, setObservacion] = useState("");
   const [memo, setMemo] = useState("");
   const [alerta, setAlerta] = useState({});
@@ -79,6 +82,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   // Inicializar los estados con los datos del trámite cuando se edita
   useEffect(() => {
     console.log(tramite);
+
+    setFechaLimite(tramite.fecha_contestacion);
     if (tramite?.numero_oficio) {
       setMemo(tramite.numero_oficio);
       setFechaDespacho(
@@ -145,6 +150,36 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       >
         {alerta.message && <Alerta alerta={alerta} />}
 
+        <div className="flex justify-between gap-5">
+          {/* Campo para la Fecha Limite*/}
+
+          <div className="mb-5 w-full">
+            <label className="text-gray-700 font-medium block">
+              Fecha Limite Contestación:
+            </label>
+            <input
+              type="date"
+              value={fechaLimite}
+              onChange={(e) => setFechaLimite(e.target.value)}
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              disabled
+            />
+          </div>
+
+          {/* Campo para la Fecha */}
+          <div className="mb-5 w-full">
+            <label className="text-gray-700 font-medium block">
+              Fecha Contestación:
+            </label>
+            <input
+              type="date"
+              value={fechaDespacho}
+              onChange={(e) => setFechaDespacho(e.target.value)}
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+
         {memo && (
           <div className="mb-5">
             <label className="text-gray-700 font-medium block">
@@ -159,19 +194,6 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             />
           </div>
         )}
-
-        {/* Campo para la Fecha */}
-        <div className="mb-5">
-          <label className="text-gray-700 font-medium block">
-            Fecha Contestación:
-          </label>
-          <input
-            type="date"
-            value={fechaDespacho}
-            onChange={(e) => setFechaDespacho(e.target.value)}
-            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
 
         {/* Input de búsqueda y selección de empleados */}
         <div className="mb-5">
