@@ -185,7 +185,7 @@ Departamento.hasMany(Usuario, {
 });
 
 TramiteObservacion.belongsTo(Usuario, {
-  as: "usuarioCreador", // Alias
+  as: "usuarioCreacionObservacion", // Alias
   foreignKey: "usuario_creacion", // Clave foránea en tramite_observacion
   targetKey: "id", // Clave primaria en Usuario
 });
