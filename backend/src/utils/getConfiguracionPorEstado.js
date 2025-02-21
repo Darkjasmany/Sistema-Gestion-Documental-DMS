@@ -122,7 +122,7 @@ const POR_REVISAR = {
     },
     {
       model: TramiteObservacion,
-      as: "observaciones",
+      as: "tramiteObservaciones",
       attributes: ["id", "observacion", "fecha_creacion"],
       include: [
         {
