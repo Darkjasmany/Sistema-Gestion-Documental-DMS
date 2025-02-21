@@ -120,25 +120,25 @@ const POR_REVISAR = {
       ],
       where: { activo: true },
     },
-    {
-      model: TramiteObservacion,
-      as: "tramiteObservaciones",
-      attributes: ["id", "observacion", "fecha_creacion"],
-      include: [
-        {
-          model: Usuario,
-          as: "usuarioCreador",
-          attributes: [
-            [
-              Sequelize.literal(
-                'CONCAT("usuarioCreador"."nombres", \' \', "usuarioCreador"."apellidos")'
-              ),
-              "UsuarioCreador",
-            ],
-          ],
-        },
-      ],
-    },
+    // {
+    //   model: TramiteObservacion,
+    //   as: "tramiteObservaciones",
+    //   attributes: ["id", "observacion", "fecha_creacion"],
+    //   include: [
+    //     {
+    //       model: Usuario,
+    //       as: "usuarioCreador",
+    //       attributes: [
+    //         [
+    //           Sequelize.literal(
+    //             'CONCAT("usuarioCreador"."nombres", \' \', "usuarioCreador"."apellidos")'
+    //           ),
+    //           "UsuarioCreador1",
+    //         ],
+    //       ],
+    //     },
+    //   ],
+    // },
   ],
 };
 

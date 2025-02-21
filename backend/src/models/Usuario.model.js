@@ -8,6 +8,7 @@ import { passwordHash } from "../utils/passwordHash.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteArchivo } from "./TramiteArchivo.model.js";
 import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
+import { TramiteObservacion } from "./TramiteObservacion.model.js";
 import bcrypt from "bcrypt";
 
 export const Usuario = sequelize.define(
@@ -181,4 +182,16 @@ Usuario.belongsTo(Departamento, {
 Departamento.hasMany(Usuario, {
   foreignKey: "departamento_id", // campo en Usuario que contiene el ID del departamento
   sourceKey: "id", // clave primaria en Departamento
+});
+
+TramiteObservacion.belongsTo(Usuario, {
+  as: "usuarioCreador", // Alias
+  foreignKey: "usuario_creacion", // Clave foránea en tramite_observacion
+  targetKey: "id", // Clave primaria en Usuario
+});
+
+Usuario.hasMany(TramiteObservacion, {
+  foreignKey: "usuario_creacion", // Clave foránea en tramite_observacion
+  sourceKey: "id", // Clave primaria en Usuario
+  as: "tramiteObservaciones", // Alias (opcional)
 });

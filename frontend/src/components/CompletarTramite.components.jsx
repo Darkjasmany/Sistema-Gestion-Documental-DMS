@@ -13,6 +13,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     new Date().toISOString().split("T")[0]
   );
   const [observacion, setObservacion] = useState("");
+  const [memo, setMemo] = useState("");
   const [alerta, setAlerta] = useState({});
 
   const { completarTramiteRevisorAsignado, actualizarTramitecompletado } =
@@ -79,8 +80,9 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   useEffect(() => {
     console.log(tramite);
     if (tramite?.numero_oficio) {
+      setMemo(tramite.numero_oficio);
       setFechaDespacho(
-        tramite.fechaDespacho || new Date().toISOString().split("T")[0]
+        tramite.fecha_despacho || new Date().toISOString().split("T")[0]
       );
       setObservacion(tramite.observacion || "");
       setEmpleadosSeleccionados(
@@ -142,6 +144,21 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         onSubmit={handleSubmitCompletar}
       >
         {alerta.message && <Alerta alerta={alerta} />}
+
+        {memo && (
+          <div className="mb-5">
+            <label className="text-gray-700 font-medium block">
+              Número de Memo|Ofico:
+            </label>
+            <input
+              type="text"
+              value={memo}
+              // onChange={(e) => setMemo(e.target.value)}
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              disabled
+            />
+          </div>
+        )}
 
         {/* Campo para la Fecha */}
         <div className="mb-5">
