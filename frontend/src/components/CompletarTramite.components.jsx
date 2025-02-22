@@ -89,7 +89,19 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       setFechaDespacho(
         tramite.fecha_despacho || new Date().toISOString().split("T")[0]
       );
-      setObservacion(tramite.observacion || "");
+
+      // Obtener la observación más reciente
+      if (tramite.tramiteObservaciones.length > 0) {
+        const observacionUsuario = [...tramite.tramiteObservaciones].sort(
+          // Obtener la observación más antigua (primera en la lista ordenada)
+          // (a, b) => new Date(a.fecha_creacion) - new Date(b.fecha_creacion)
+          (a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+        )[0].observacion;
+        setObservacion(observacionUsuario);
+      } else {
+        setObservacion("");
+      }
+
       setEmpleadosSeleccionados(
         tramite.destinatarios.map((dest) => ({
           id: dest.destinatario.id,
