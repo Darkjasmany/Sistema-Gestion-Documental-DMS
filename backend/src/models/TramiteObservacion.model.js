@@ -70,3 +70,14 @@ import("./Usuario.model.js").then(({ Usuario }) => {
   });
 });
 */
+
+/*
+Usuario.belongsTo(TramiteObservacion, {
+  foreignKey: "usuario_creacion",
+  targetKey: "id",
+});
+TramiteObservacion.hasMany(Usuario, {
+  foreignKey: "usuario_creacion",
+  sourceKey: "id",
+});
+*/

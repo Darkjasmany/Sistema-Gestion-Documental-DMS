@@ -184,14 +184,16 @@ Departamento.hasMany(Usuario, {
   sourceKey: "id", // clave primaria en Departamento
 });
 
-TramiteObservacion.belongsTo(Usuario, {
-  as: "usuarioCreacionObservacion", // Alias
-  foreignKey: "usuario_creacion", // Clave foránea en tramite_observacion
-  targetKey: "id", // Clave primaria en Usuario
-});
-
+// 1 usuario puede tener muchas observaciones
 Usuario.hasMany(TramiteObservacion, {
   foreignKey: "usuario_creacion", // Clave foránea en tramite_observacion
   sourceKey: "id", // Clave primaria en Usuario
   as: "tramiteObservaciones", // Alias (opcional)
+});
+
+// 1 observacion pertenece a 1 usuario
+TramiteObservacion.belongsTo(Usuario, {
+  as: "usuarioCreacionObservacion", // Alias
+  foreignKey: "usuario_creacion", // Clave foránea en tramite_observacion
+  targetKey: "id", // Clave primaria en Usuario
 });
