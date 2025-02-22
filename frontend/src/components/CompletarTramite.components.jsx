@@ -15,6 +15,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [fechaLimite, setFechaLimite] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [observacionCoordinador, setObservacionCoordinador] = useState("");
   const [observacion, setObservacion] = useState("");
   const [memo, setMemo] = useState("");
   const [alerta, setAlerta] = useState({});
@@ -84,6 +85,19 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     console.log(tramite);
 
     setFechaLimite(tramite.fecha_contestacion);
+    //
+    // Obtener la observación más antigua (primera en la lista ordenada)
+    if (tramite?.tramiteObservaciones.length > 0) {
+      const primeraObservacion = [...tramite.tramiteObservaciones].sort(
+        (a, b) => new Date(a.fecha_creacion) - new Date(b.fecha_creacion)
+      )[0].observacion;
+
+      setObservacionCoordinador(primeraObservacion);
+    } else {
+      setObservacionCoordinador("");
+    }
+    //
+
     if (tramite?.numero_oficio) {
       setMemo(tramite.numero_oficio);
       setFechaDespacho(
@@ -190,6 +204,19 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
               className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
+        </div>
+
+        <div className="mb-5">
+          <label className="text-gray-700 font-medium block">
+            Nota Coordinador:
+          </label>
+          <input
+            type="text"
+            value={observacionCoordinador}
+            // onChange={(e) => setMemo(e.target.value)}
+            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            disabled
+          />
         </div>
 
         {memo && (
