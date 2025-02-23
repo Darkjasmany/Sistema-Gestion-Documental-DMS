@@ -20,7 +20,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [memo, setMemo] = useState("");
   const [alerta, setAlerta] = useState({});
 
-  const { completarTramiteRevisorAsignado, actualizarTramitecompletado } =
+  const { completarTramiteRevisorAsignado, actualizarTramiteCompletado } =
     useTramites();
 
   useEffect(() => {
@@ -139,7 +139,10 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       let response;
 
       if (tramite.estado === "POR_REVISAR") {
-        response = await actualizarTramitecompletado();
+        response = await actualizarTramiteCompletado(
+          tramite.id,
+          datosCompletar
+        );
       } else {
         response = await completarTramiteRevisorAsignado(
           tramite.id,

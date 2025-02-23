@@ -272,8 +272,28 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const actualizarTramitecompletado = () => {
-    console.log("actualizando ...");
+  const actualizarTramiteCompletado = async (idTramite, datosCompletar) => {
+    if (!token) return;
+
+    // console.log(idTramite);
+    // console.log(datosActualizar);
+
+    try {
+      const { data } = await clienteAxios.put(
+        `tramites/revisor/tramites/${idTramite}/actualizar`,
+        datosCompletar,
+        getAxiosConfigJSON()
+      );
+      console.log(data);
+      return { message: data.message, error: false };
+    } catch (error) {
+      console.error(error.response?.data?.message || "Error desconocido");
+
+      return {
+        message: error.response?.data?.message || "Error en la solicitud",
+        error: true,
+      };
+    }
   };
 
   /*
@@ -301,7 +321,7 @@ export const TramitesProvider = ({ children }) => {
         obtenerTramitesRevisorData,
         completarTramiteRevisorAsignado,
         tramitesRevisor,
-        actualizarTramitecompletado,
+        actualizarTramiteCompletado,
       }}
     >
       {children}

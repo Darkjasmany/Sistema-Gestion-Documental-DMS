@@ -251,6 +251,9 @@ export const completarTramiteRevisor = async (req, res) => {
 };
 
 export const actualizarTramiteRevisor = async (req, res) => {
+  // console.log("Params:", req.params);
+  // console.log("Body:", req.body);
+
   const { id } = req.params;
   const { destinatarios, fechaDespacho, observacion } = req.body;
 
@@ -268,60 +271,65 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
   const transaction = await sequelize.transaction();
 
+  const tramite = await Tramite.findOne({
+    where: { id, estado: "POR_REVISAR", activo: true },
+  });
+
+  if (!tramite) {
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
+
+  if (
+    tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
+  ) {
+    return res
+      .status(403)
+      .json({ message: "El trámite seleccionado no te pertenece" });
+  }
+
+  const { valido, mensaje } = validarFecha(fechaDespacho);
+  if (!valido) {
+    return res.status(400).json({ error: mensaje });
+  }
+
+  //* Lógica para obtener destinatios ingresados en la BD y los que se envian por el formulario, para despues comparar e indentificar cual se inhabilita y cual se ingresa
+
+  // Obtener destinatarios actuales
+  const destinatariosTramite = await TramiteDestinatario.findAll({
+    where: {
+      tramite_id: id,
+      activo: true,
+    },
+  });
+
+  const destinatariosActuales = destinatariosTramite.map((destinatarioActual) =>
+    parseInt(destinatarioActual.destinatario_id)
+  );
+
+  // Destinatarios enviados en el formulario
+  // const destinatariosIngresados = destinatarios.map((destinatario) =>
+  //   parseInt(destinatario.id)
+  // );
+  // Asegurarme que voy a recibir un array de objetos, al extraer el id de los objetos o usar directamente el número, aseguramos que destinatariosIngresados sea un array de números, permitiendo comparaciones válidas y consultas correctas a la base de datos.
+
+  const destinatariosIngresados = destinatarios.map((dest) =>
+    dest.id ? dest.id : dest
+  );
+
+  // Identificar los destinatarios que se nuevos a ingresar y los que se deben inhabilitar
+  const destinatariosEliminar = encontrarDestinariosABorrar(
+    destinatariosActuales,
+    destinatariosIngresados
+  );
+
+  const destinatariosIngresar = encontrarDestinatariosAIngresar(
+    destinatariosActuales,
+    destinatariosIngresados
+  );
+
   try {
-    const tramite = await Tramite.findOne({
-      where: { id, estado: "POR_REVISAR", activo: true },
-    });
-
-    if (!tramite) {
-      return res.status(404).json({ message: "Trámite no encontrado" });
-    }
-
-    if (
-      tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
-      tramite.departamento_tramite.toString() !==
-        req.usuario.departamento_id.toString()
-    ) {
-      return res
-        .status(403)
-        .json({ message: "El trámite seleccionado no te pertenece" });
-    }
-
-    const { valido, mensaje } = validarFecha(fechaDespacho);
-    if (!valido) {
-      return res.status(400).json({ error: mensaje });
-    }
-
-    //* Lógica para obtener destinatios ingresados en la BD y los que se envian por el formulario, para despues comparar e indentificar cual se inhabilita y cual se ingresa
-
-    // Obtener destinatarios actuales
-    const destinatariosTramite = await TramiteDestinatario.findAll({
-      where: {
-        tramite_id: id,
-        activo: true,
-      },
-    });
-
-    const destinatariosActuales = destinatariosTramite.map(
-      (destinatarioActual) => parseInt(destinatarioActual.destinatario_id)
-    );
-
-    // Destinatarios enviados en el formulario
-    const destinatariosIngresados = destinatarios.map((destinatario) =>
-      parseInt(destinatario.id)
-    );
-
-    // Identificar los destinatarios que se nuevos a ingresar y los que se deben inhabilitar
-    const destinatariosEliminar = encontrarDestinariosABorrar(
-      destinatariosActuales,
-      destinatariosIngresados
-    );
-
-    const destinatariosIngresar = encontrarDestinatariosAIngresar(
-      destinatariosActuales,
-      destinatariosIngresados
-    );
-
     // Inhabilitar los destinatarios eliminados
     for (const eliminar of destinatariosEliminar) {
       const destinatario = await TramiteDestinatario.findOne({
