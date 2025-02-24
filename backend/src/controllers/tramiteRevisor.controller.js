@@ -131,6 +131,7 @@ export const completarTramiteRevisor = async (req, res) => {
 
   const {
     // numeroOficioDespacho,
+    memo,
     destinatarios,
     // referenciaTramite,
     fechaDespacho,

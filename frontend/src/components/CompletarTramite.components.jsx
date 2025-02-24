@@ -223,20 +223,20 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           />
         </div>
 
-        {memo && (
-          <div className="mb-5">
-            <label className="text-gray-700 font-medium block">
-              Número de Memo|Ofico:
-            </label>
-            <input
-              type="text"
-              value={memo}
-              // onChange={(e) => setMemo(e.target.value)}
-              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              disabled
-            />
-          </div>
-        )}
+        {/* {memo && ( */}
+        <div className="mb-5">
+          <label className="text-gray-700 font-medium block">
+            Número de Memo|Ofico:
+          </label>
+          <input
+            type="text"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            // disabled
+          />
+        </div>
+        {/* )} */}
 
         {/* Input de búsqueda y selección de empleados */}
         <div className="mb-5">
