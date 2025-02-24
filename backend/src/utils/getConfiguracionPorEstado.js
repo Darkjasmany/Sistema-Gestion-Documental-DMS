@@ -136,22 +136,6 @@ const POR_REVISAR = {
 
       where: { activo: true },
     },
-    /*
-    {
-      model: TramiteObservacion,
-      as: "tramiteObservaciones",
-      attributes: ["id", "observacion", "fecha_creacion", "usuario_creacion"],
-      //
-      include: [
-        {
-          model: Usuario, // <-- ¡Esta línea es crucial! Indica el modelo para el alias
-          as: "usuarioCreacionObservacion",
-          attributes: ["id", "nombres", "apellidos"],
-          required: false, // Permite que se retornen trámites sin observaciones
-        },
-      ],
-      //
-    },*/
   ],
 };
 
@@ -168,6 +152,7 @@ const configuracionEstados = {
   INGRESADO,
   PENDIENTE,
   POR_REVISAR,
+  COMPLETADO,
 };
 
 export const getConfiguracionPorEstado = (estado) => {

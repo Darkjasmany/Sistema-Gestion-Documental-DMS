@@ -14,9 +14,11 @@ import NuevoPassword from "./pages/auth/NuevoPassword.pages";
 import AdministrarTramites from "./pages/admin/AdministrarTramites.pages";
 import TramitesAsignados from "./pages/admin/TramitesAsignados.pages";
 import TramitesAsignarReasignar from "./pages/admin/TramitesAsignarReasignar.pages";
+import TramitesCompletados from "./pages/admin/TramitesCompletados.pages";
 import ConsultarTramites from "./pages/admin/ConsultarTramites.pages";
 import EditarPerfil from "./pages/admin/EditarPerfil.pages";
 import CambiarPassword from "./pages/admin/CambiarPassword.pages";
+import CompletarTramite from "./components/CompletarTramite.components";
 
 function App() {
   return (
@@ -46,6 +48,10 @@ function App() {
               <Route
                 path="asignar-reasignar"
                 element={<TramitesAsignarReasignar />}
+              />
+              <Route
+                path="completar-tramite"
+                element={<TramitesCompletados />}
               />
               <Route path="perfil" element={<EditarPerfil />} />
               <Route path="cambiar-password" element={<CambiarPassword />} />

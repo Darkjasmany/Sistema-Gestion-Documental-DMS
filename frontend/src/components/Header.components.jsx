@@ -34,6 +34,13 @@ const Header = () => {
                 Asignar/Reasignar Trámites
               </Link>
               <Link
+                to={"/admin/completar-tramite"}
+                className="block px-4 py-2 hover:bg-indigo-700"
+              >
+                Completar Trámites
+              </Link>
+
+              <Link
                 to={"/admin/asignados"}
                 className="block px-4 py-2 hover:bg-indigo-700"
               >
