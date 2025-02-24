@@ -18,7 +18,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [observacionCoordinador, setObservacionCoordinador] = useState("");
   const [observacion, setObservacion] = useState("");
   const [memo, setMemo] = useState("");
-  const [alcaldia, setAlcaldia] = useState(false);
+  // const [alcaldia, setAlcaldia] = useState(false);
   const [alerta, setAlerta] = useState({});
 
   const { completarTramiteRevisorAsignado, actualizarTramiteCompletado } =
@@ -132,6 +132,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
     const datosCompletar = {
       fechaDespacho,
+      memo,
       observacion,
       destinatarios: empleadosSeleccionados.map((empleado) => empleado.id),
     };
@@ -306,7 +307,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           />
         </div>
 
-        <div className="mb-5">
+        {/* check de alcaldi */}
+        {/* <div className="mb-5">
           <div className="flex items-center select-none gap-2">
             <div className="flex items-center h-5">
               <input
@@ -326,7 +328,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
               Alcaldía
             </label>
           </div>
-        </div>
+        </div> */}
 
         {/* Botón de Guardar */}
         <div className="text-right">

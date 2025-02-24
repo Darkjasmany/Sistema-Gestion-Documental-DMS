@@ -8,6 +8,7 @@ import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { generarMemo } from "../utils/generarMemo.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { validarFecha } from "../utils/validarFecha.js";
+import { Sequelize, Op } from "sequelize";
 
 export const listarTramitesRevisor = async (req, res) => {
   const { estado } = req.params;
@@ -130,7 +131,6 @@ export const completarTramiteRevisor = async (req, res) => {
   const { id } = req.params;
 
   const {
-    // numeroOficioDespacho,
     memo,
     destinatarios,
     // referenciaTramite,
@@ -139,8 +139,8 @@ export const completarTramiteRevisor = async (req, res) => {
   } = req.body;
 
   if (
-    // !numeroOficioDespacho ||
-    // numeroOficioDespacho.trim() === "" ||
+    !memo ||
+    memo.trim() === "" ||
     !destinatarios ||
     destinatarios.length === 0 ||
     !observacion ||
@@ -173,29 +173,28 @@ export const completarTramiteRevisor = async (req, res) => {
   if (!valido) {
     return res.status(400).json({ error: mensaje });
   }
-  /*
-  const numeroOficio = await Tramite.findOne({
-    where: {
-      numero_oficio: numeroOficioDespacho,
-      },
-      });
-      if (numeroOficio) {
-        return res
-        .status(409)
-        .json({ message: "El numero de Memo ya esta siendo utilizado" });
-        }
-        */
 
   // Asegurarme que voy a recibir un array de objetos
   const destinatariosProcesados = destinatarios.map((dest) =>
     typeof dest === "number" ? { id: dest } : dest
   );
 
-  // Generar número de Memo
+  // Buscar si el número de oficio que ingresa existe
+  const numeroMemo = await Tramite.findOne({
+    where: { numero_oficio: { [Op.iLike]: `%${memo}%` } },
+  });
+
+  if (numeroMemo) {
+    return res
+      .status(409)
+      .json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
+  }
+  /*
+  // Generar número de Memo Automatico
   const tipo = tramite.externo ? "Oficio" : "Memorando";
   const multiplesDestinatarios = destinatarios.length > 1;
   const numeroMemo = await generarMemo(multiplesDestinatarios, tipo);
-
+*/
   try {
     // Actualizar el trámite en una transacción
     await sequelize.transaction(async (transaction) => {
@@ -222,7 +221,7 @@ export const completarTramiteRevisor = async (req, res) => {
       }
 
       // Actualizar datos del Trámite
-      tramite.numero_oficio = numeroMemo;
+      tramite.numero_oficio = memo;
       tramite.fecha_despacho = fechaDespacho;
       // tramite.referencia_tramite =
       // referenciaTramite || tramite.referencia_tramite;
@@ -256,12 +255,13 @@ export const actualizarTramiteRevisor = async (req, res) => {
   // console.log("Body:", req.body);
 
   const { id } = req.params;
-  const { destinatarios, fechaDespacho, observacion } = req.body;
+  const { destinatarios, fechaDespacho, observacion, memo } = req.body;
 
   if (
-    // Array.isArray(destinatarios) ||
     !destinatarios ||
     destinatarios.length === 0 ||
+    !memo ||
+    memo.trim() === "" ||
     !observacion ||
     observacion.trim() === ""
   ) {
@@ -293,6 +293,17 @@ export const actualizarTramiteRevisor = async (req, res) => {
   const { valido, mensaje } = validarFecha(fechaDespacho);
   if (!valido) {
     return res.status(400).json({ error: mensaje });
+  }
+
+  // Buscar si el número de oficio que ingresa existe
+  const numeroMemo = await Tramite.findOne({
+    where: { numero_oficio: { [Op.iLike]: `%${memo}%` }, id: { [Op.not]: id } }, // Excluir el ID del trámite que estás editando
+  });
+
+  if (numeroMemo) {
+    return res
+      .status(409)
+      .json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
   }
 
   //* Lógica para obtener destinatios ingresados en la BD y los que se envian por el formulario, para despues comparar e indentificar cual se inhabilita y cual se ingresa
@@ -368,6 +379,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
     // Actualizar trámite y observación
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
+    tramite.numero_oficio = memo || tramite.numero_oficio;
     await tramite.save({ transaction });
 
     // Actualizar observacion del tramite
