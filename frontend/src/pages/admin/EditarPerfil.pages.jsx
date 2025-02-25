@@ -63,7 +63,7 @@ const EditarPerfil = () => {
               </label>
               <input
                 type="text"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border-2 border-indigo-500 bg-indigo-50 w-full p-2 mt-5 rounded-lg focus:outline-none focus:border-indigo-700"
                 name="nombres"
                 value={perfil.nombres || ""}
                 onChange={(e) =>
@@ -78,7 +78,7 @@ const EditarPerfil = () => {
               </label>
               <input
                 type="text"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border-2 border-indigo-500 bg-indigo-50 w-full p-2 mt-5 rounded-lg focus:outline-none focus:border-indigo-700"
                 name="apellidos"
                 value={perfil.apellidos || ""}
                 onChange={(e) =>
@@ -94,7 +94,7 @@ const EditarPerfil = () => {
               <input
                 disabled
                 type="email"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border bg-gray-100 w-full p-2 mt-5 rounded-lg text-gray-500 cursor-not-allowed"
                 name="email"
                 value={perfil.email || ""}
                 // onChange={(e) =>
@@ -110,7 +110,7 @@ const EditarPerfil = () => {
               <input
                 disabled
                 type="text"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border bg-gray-100 w-full p-2 mt-5 rounded-lg text-gray-500 cursor-not-allowed"
                 name="rol"
                 value={perfil.rol || ""}
               />
@@ -123,7 +123,7 @@ const EditarPerfil = () => {
               <input
                 disabled
                 type="text"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border bg-gray-100 w-full p-2 mt-5 rounded-lg text-gray-500 cursor-not-allowed"
                 name="departamento"
                 value={perfil.departamento ? perfil.departamento.nombre : ""}
               />

@@ -21,6 +21,10 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     const fecthRevisores = async () => {
       const rol = ["REVISOR"];
       try {
+        if (!auth.departamentoId) {
+          console.error("departamentoId no está definido en auth");
+          return;
+        }
         const { data } = await clienteAxios.get(
           `/usuarios/revisor-departamento/${auth.departamentoId}/${rol}`
         );

@@ -32,7 +32,13 @@ const AuthProvider = ({ children }) => {
 
     try {
       const { data } = await clienteAxios("/usuarios/perfil", config);
-      setAuth(data);
+      // setAuth(data);
+
+      // Asegúrate de que departamentoId esté presente en el estado auth
+      setAuth({
+        ...data,
+        departamentoId: data.departamentoId || data.departamento_id, // Usa departamentoId si está presente, si no, usa departamento_id
+      });
     } catch (error) {
       console.log(error.response?.data?.message);
       setAuth({});
@@ -70,6 +76,12 @@ const AuthProvider = ({ children }) => {
       const url = `/usuarios/perfil/${datos.id}`;
       const { data } = await clienteAxios.put(url, datos, config);
       console.log(data);
+
+      // Actualizar el estado auth con la información completa del usuario
+      setAuth((prevAuth) => ({
+        ...prevAuth,
+        ...data, // Esto incluye el departamento
+      }));
 
       return {
         message: "Datos Actualizados Correctamente",

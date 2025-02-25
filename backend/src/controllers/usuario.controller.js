@@ -286,11 +286,24 @@ export const actualizarPerfil = async (req, res) => {
   try {
     usuario.nombres = nombres || usuario.nombre;
     usuario.apellidos = apellidos || usuario.apellidos;
+    usuario.email = email || usuario.email;
 
-    const usuarioActualizado = await usuario.save({ transaction });
+    await usuario.save({ transaction });
+
+    // const usuarioActualizado = await usuario.save({ transaction });
+    // Obtener el usuario actualizado con la información del departamento
+    const usuarioActualizado = await Usuario.findByPk(id, {
+      include: [
+        {
+          model: Departamento,
+          attributes: ["nombre"], // Incluir solo el nombre del departamento
+        },
+      ],
+    });
 
     await transaction.commit();
 
+    // Devolver el usuario actualizado con la información del departamento
     res.json(usuarioActualizado);
 
     // return res

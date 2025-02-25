@@ -95,7 +95,7 @@ const CambiarPassword = () => {
               </label>
               <input
                 type="password"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border-2 border-indigo-500 bg-indigo-50 w-full p-2 mt-5 rounded-lg focus:outline-none focus:border-indigo-700"
                 name="pwd_actual"
                 placeholder="Escribe tu password actual"
                 value={password.pwd_actual || ""}
@@ -114,7 +114,7 @@ const CambiarPassword = () => {
               </label>
               <input
                 type="password"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border-2 border-indigo-500 bg-indigo-50 w-full p-2 mt-5 rounded-lg focus:outline-none focus:border-indigo-700"
                 name="pwd_nuevo"
                 placeholder="Ingresa tu nuevo password"
                 value={password.pwd_nuevo || ""}
@@ -133,7 +133,7 @@ const CambiarPassword = () => {
               </label>
               <input
                 type="password"
-                className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
+                className="border-2 border-indigo-500 bg-indigo-50 w-full p-2 mt-5 rounded-lg focus:outline-none focus:border-indigo-700"
                 name="pwd_repetir"
                 placeholder="Repite tu password nuevo"
                 value={password.pwd_repetir || ""}
