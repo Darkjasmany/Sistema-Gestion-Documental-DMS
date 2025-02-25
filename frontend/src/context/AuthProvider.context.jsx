@@ -58,6 +58,10 @@ const AuthProvider = ({ children }) => {
     setAuth({});
   };
 
+  useEffect(() => {
+    console.log("Estado auth actualizado:", auth);
+  }, [auth]);
+
   const actualizarPerfil = async (datos) => {
     //** Verificar el token
     const token =
@@ -79,8 +83,9 @@ const AuthProvider = ({ children }) => {
 
       // Actualizar el estado auth con la información completa del usuario
       setAuth((prevAuth) => ({
-        ...prevAuth,
-        ...data, // Esto incluye el departamento
+        ...prevAuth, // Mantén los valores anteriores
+        ...data, // Actualiza con los nuevos datos
+        departamento: data.departamento || prevAuth.departamento, // Asegúrate de que departamento esté presente
       }));
 
       return {

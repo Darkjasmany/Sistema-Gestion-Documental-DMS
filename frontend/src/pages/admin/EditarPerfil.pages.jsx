@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import AdminNav from "../../components/AdminNav.components";
 import useAuth from "../../hooks/useAuth.hook";
 import Alerta from "../../components/Alerta.components";
 
@@ -37,6 +36,9 @@ const EditarPerfil = () => {
 
     const resultado = await actualizarPerfil(perfil);
 
+    // Forzar la actualización de perfil con los nuevos valores de auth
+    setPerfil(auth);
+
     setAlerta(resultado);
   };
 
@@ -44,8 +46,6 @@ const EditarPerfil = () => {
 
   return (
     <>
-      {/* Quito la barra de navegación de la página de edición de perfil */}
-      {/* <AdminNav /> */}
       <h2 className="font-black text-3xl text-center mt-10">Editar Perfil</h2>
       <p className="text-xl mt-5 mb-10 text-center">
         Modifica tu{" "}
@@ -97,9 +97,6 @@ const EditarPerfil = () => {
                 className="border bg-gray-100 w-full p-2 mt-5 rounded-lg text-gray-500 cursor-not-allowed"
                 name="email"
                 value={perfil.email || ""}
-                // onChange={(e) =>
-                //   setPerfil({ ...perfil, [e.target.name]: e.target.value })
-                // }
               />
             </div>
 
@@ -132,9 +129,7 @@ const EditarPerfil = () => {
             <input
               type="submit"
               value={"Guardar Cambios"}
-              className="bg-indigo-600 px-10 py-3 mt-5 font-bold text-white rounded-lg uppercase w-full hover:bg-indigo-800
-              cursor-pointer
-              transition-colors"
+              className="bg-indigo-600 px-10 py-3 mt-5 font-bold text-white rounded-lg uppercase w-full hover:bg-indigo-800 cursor-pointer transition-colors"
             />
           </form>
         </div>
