@@ -19,9 +19,10 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   useEffect(() => {
     const fecthRevisores = async () => {
+      const rol = ["REVISOR"];
       try {
         const { data } = await clienteAxios.get(
-          `/usuarios/revisor-departamento/${auth.departamentoId}`
+          `/usuarios/revisor-departamento/${auth.departamentoId}/${rol}`
         );
         setRevisores(data);
       } catch (error) {

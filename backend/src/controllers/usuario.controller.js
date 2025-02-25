@@ -343,6 +343,51 @@ export const actualizarPassword = async (req, res) => {
   res.json({ message: "Password almacenado correctamente" });
 };
 
+export const obtenerUsuariosPorDepartamentoYRol = async (req, res) => {
+  try {
+    const { departamentoId, roles } = req.params;
+
+    const rolesArray = roles.split(",");
+
+    if (!rolesArray || rolesArray.length === 0) {
+      return res.status(404).json({
+        message: "Debes proporcionar al menos un rol válido",
+      });
+    }
+
+    console.log(departamentoId, rolesArray);
+
+    const usuarios = await Usuario.findAll({
+      where: {
+        departamento_id: parseInt(departamentoId),
+        // rol: "REVISOR",
+        rol: rolesArray,
+        estado: true,
+        confirmado: true,
+      },
+      attributes: ["id", "nombres", "apellidos", "rol"],
+    });
+
+    if (usuarios.length === 0) {
+      return res.status(404).json({
+        message: `No se encontraron usuarios con los roles ${rolesArray.join(
+          ", "
+        )} en tu departamento`,
+      });
+    }
+
+    return res.json(usuarios);
+  } catch (error) {
+    console.error(
+      `Error al cargar los usuarios del departamento: ${error.message}`
+    );
+    return res.status(500).json({
+      message: "Error al cargar los usuarios del departamento",
+    });
+  }
+};
+
+/*
 export const obtenerRevisorPorDepartamento = async (req, res) => {
   try {
     const { departamentoId } = req.params;
@@ -375,3 +420,4 @@ export const obtenerRevisorPorDepartamento = async (req, res) => {
     });
   }
 };
+*/
