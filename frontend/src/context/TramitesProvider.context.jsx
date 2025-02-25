@@ -229,9 +229,16 @@ export const TramitesProvider = ({ children }) => {
       );
       setTramites(tramitesActualizados);
 
-      return data;
+      // return data;
+
+      console.log(data);
+      return { message: data.message, error: false };
     } catch (error) {
       console.error(error);
+      return {
+        message: error.response?.data?.message || "Error en la solicitud",
+        error: true,
+      };
     }
 
     return;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import clienteAxios from "../config/axios.config";
 import useAuth from "../hooks/useAuth.hook";
 import useTramites from "../hooks/useTramites.hook";
+
 import Alerta from "../components/Alerta.components";
 
 const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
@@ -75,20 +76,26 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     };
 
     try {
+      // let response;
       const response = await asignarOReasignarRevisorTramite(
         tramite.id,
         datosRevisor
       );
 
-      setAlerta({ message: response?.data?.message, error: false });
-      onTramiteUpdated(); // Llama a la función de actualización para actualizar la tabla
-      closeModal(); //Cerrar modal
+      // setAlerta({ message: response?.data?.message, error: false });
+      setAlerta({ message: response.message, error: response.error });
+
+      if (!response.error) {
+        setTimeout(() => {
+          closeModal();
+          onTramiteUpdated();
+        }, 2000);
+      }
+      // onTramiteUpdated(); // Llama a la función de actualización para actualizar la tabla
+      // closeModal(); //Cerrar modal
     } catch (error) {
       console.error(error.message);
-      setAlerta({
-        message: error.response?.data?.message || error.message,
-        error: true,
-      });
+      setAlerta({ message: error.message, error: true });
     }
   };
 
