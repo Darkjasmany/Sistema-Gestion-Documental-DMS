@@ -49,7 +49,8 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     e.preventDefault();
     const fechaActual = new Date().toISOString().slice(0, 10); // fecha actual en formato "yyyy-mm-dd"
 
-    if ([fechaContestacion, observacionAsignar].includes("")) {
+    if ([fechaContestacion].includes("")) {
+      // if ([fechaContestacion, observacionAsignar].includes("")) {
       setAlerta({
         message: "Todos los campos son obligatorios",
         error: true,
@@ -79,12 +80,15 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         datosRevisor
       );
 
-      closeModal(); //Cerrar modal
+      setAlerta({ message: response?.data?.message, error: false });
       onTramiteUpdated(); // Llama a la función de actualización para actualizar la tabla
-      setAlerta({ message: response.message, error: false });
+      closeModal(); //Cerrar modal
     } catch (error) {
       console.error(error.message);
-      setAlerta({ message: error.message, error: true });
+      setAlerta({
+        message: error.response?.data?.message || error.message,
+        error: true,
+      });
     }
   };
 
@@ -173,23 +177,25 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
                 </div>
 
                 {/* Campo para la Observación */}
-                <div className="mb-5">
-                  <label
-                    htmlFor="descripcion"
-                    className="text-gray-700 font-medium"
-                  >
-                    Observación:
-                  </label>
-                  <textarea
-                    id="descripcion"
-                    value={observacionAsignar}
-                    onChange={(e) => {
-                      setObservacionAsignar(e.target.value);
-                    }}
-                    placeholder="Observación para el revisor"
-                    className="border-2 w-full p-2 mt-2 h-11 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
+                {!tramite.usuarioRevisor && (
+                  <div className="mb-5">
+                    <label
+                      htmlFor="descripcion"
+                      className="text-gray-700 font-medium"
+                    >
+                      Observación:
+                    </label>
+                    <textarea
+                      id="descripcion"
+                      value={observacionAsignar}
+                      onChange={(e) => {
+                        setObservacionAsignar(e.target.value);
+                      }}
+                      placeholder="Observación para el revisor"
+                      className="border-2 w-full p-2 mt-2 h-11 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                  </div>
+                )}
 
                 <div className="grid 2xl:grid-cols-3">
                   <input

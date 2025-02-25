@@ -522,7 +522,8 @@ export const asignarOReasignarRevisor = async (req, res) => {
       referenciaTramite,
     } = req.body;
 
-    if (!usuarioRevisorId || !fechaMaximaContestacion || !observacionRevisor) {
+    if (!usuarioRevisorId || !fechaMaximaContestacion) {
+      // if (!usuarioRevisorId || !fechaMaximaContestacion || !observacionRevisor) {
       await transaction.rollback();
       return res
         .status(400)
@@ -615,6 +616,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
         tramiteAsignar.usuario_revisor.toString() ===
         usuarioRevisorId.toString()
       ) {
+        await transaction.rollback();
         return res.status(400).json({
           message: "El usuario revisor es el mismo, no se puede reasignar.",
         });
@@ -638,15 +640,15 @@ export const asignarOReasignarRevisor = async (req, res) => {
         { transaction }
       );
 
-      await TramiteObservacion.create(
-        {
-          tramite_id: id,
-          observacion: observacionRevisor,
-          usuario_creacion: req.usuario.id,
-          fecha_creacion: new Date(),
-        },
-        { transaction }
-      );
+      // await TramiteObservacion.create(
+      //   {
+      //     tramite_id: id,
+      //     observacion: observacionRevisor,
+      //     usuario_creacion: req.usuario.id,
+      //     fecha_creacion: new Date(),
+      //   },
+      //   { transaction }
+      // );
       sms = "reasignado";
     }
 
@@ -656,7 +658,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
     res.json({
       // message: "Revisor asignado/reasignado correctamente",
       message: `Revisor ${sms} correctamente`,
-      sms,
+      // sms,
     });
   } catch (error) {
     await transaction.rollback();

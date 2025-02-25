@@ -68,7 +68,7 @@ const TramitesAsignarReasignar = () => {
 
         <TablaTramitesBusqueda
           tramiteBusqueda={tramitesAsignarReasignar}
-          onTramiteUpdate={() => setRefreshTable(true)} // Pasa la función de actualización
+          onTramiteUpdated={() => setRefreshTable(true)} // Pasa la función de actualización
         />
       </div>
     </>
