@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import useTramites from "../hooks/useTramites.hook";
 import Tramite from "./Tramite.components";
 
 const ListadoTramites = () => {
-  const { tramites } = useTramites();
+  const { tramites, obtenerTramites } = useTramites();
+
+  useEffect(() => {
+    obtenerTramites();
+  }, [tramites, obtenerTramites]);
 
   // console.log(tramites);
 

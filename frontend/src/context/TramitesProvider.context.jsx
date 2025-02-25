@@ -39,7 +39,7 @@ export const TramitesProvider = ({ children }) => {
 
   useEffect(() => {
     obtenerTramites();
-  }, [auth]); // Escucha cambios dependiendo de la autenticacion, y del token
+  }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
   // }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
 
   const obtenerTramites = async () => {
@@ -47,9 +47,7 @@ export const TramitesProvider = ({ children }) => {
 
     try {
       const { data } = await clienteAxios.get("/tramites", getAxiosConfig());
-
-      // console.log(data);
-      setTramites(data); // Actualizar el state con los tramites obtenidos, para que sea visible en la aplicación
+      setTramites(data); // Actualizar el state con los trámites obtenidos
     } catch (error) {
       console.error(error.response?.data?.mensaje);
     }
@@ -206,11 +204,9 @@ export const TramitesProvider = ({ children }) => {
 
   const asignarOReasignarRevisorTramite = async (idTramite, datosRevisor) => {
     if (!token) return;
-
-    console.log(idTramite);
-    console.log(datosRevisor);
-
-    console.log(tramitesAsignarReasignar);
+    // console.log(idTramite);
+    // console.log(datosRevisor);
+    // console.log(tramitesAsignarReasignar);
 
     try {
       const { data } = await clienteAxios.put(
@@ -219,13 +215,20 @@ export const TramitesProvider = ({ children }) => {
         getAxiosConfigJSON()
       );
 
-      console.log(data);
+      // console.log(data);
+      // 1. Actualizar lista de coordinador
       const tramitesAsignados = tramitesAsignarReasignar.map(
         (tramitesAsignarState) =>
           tramitesAsignarState.id === data.id ? data : tramitesAsignarState
       );
-
       setTramitesAsignarReasignar(tramitesAsignados);
+
+      // 2. Actualizar lista general de trámites (eliminar el trámite asignado)
+      const tramitesActualizados = tramites.filter(
+        (tramiteState) => tramiteState.id !== idTramite
+      );
+      setTramites(tramitesActualizados);
+
       return data;
     } catch (error) {
       console.error(error);
@@ -308,6 +311,7 @@ export const TramitesProvider = ({ children }) => {
       value={{
         tramites,
         guardarTramite,
+        obtenerTramites,
         setEdicion,
         tramite,
         eliminarTramite,
