@@ -221,11 +221,13 @@ export const TramitesProvider = ({ children }) => {
           tramitesAsignarState.id === data.id ? data : tramitesAsignarState
       );
       setTramitesAsignarReasignar(tramitesAsignados);
-
       // 2. Actualizar lista general de trámites (eliminar el trámite asignado)
-      const tramitesActualizados = tramites.filter(
-        (tramiteState) => tramiteState.id !== idTramite
+      const tramitesActualizados = tramites.map((tramiteState) =>
+        tramiteState.id === data.id ? data : tramiteState
       );
+      // const tramitesActualizados = tramites.filter(
+      //   (tramiteState) => tramiteState.id !== idTramite
+      // );
       setTramites(tramitesActualizados);
 
       // return data;
