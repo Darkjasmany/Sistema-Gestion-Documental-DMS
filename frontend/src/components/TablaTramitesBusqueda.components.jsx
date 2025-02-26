@@ -128,9 +128,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             className="bg-blue-500 text-white px-3 py-1 rounded"
             onClick={() => openModal(row.original)}
           >
-            {row.original.estado === "POR_REVISAR"
-              ? "Aprobar"
-              : "Por despachar"}
+            {row.original.estado === "POR_REVISAR" ? "Aprobar" : "Editar"}
           </button>
         ),
       });

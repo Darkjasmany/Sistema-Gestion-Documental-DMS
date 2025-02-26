@@ -126,6 +126,13 @@ router.put(
   checkRole("COORDINADOR"),
   tramiteCoordinador.completarTramite
 );
+
+router.put(
+  "/coordinador/tramites/:id/actualizar",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteCoordinador.actualizarCompletarTramite
+);
 router.put(
   "/coordinador/tramites/:id/rechazar",
   checkAuth,

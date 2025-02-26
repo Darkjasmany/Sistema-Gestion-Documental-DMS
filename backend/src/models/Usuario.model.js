@@ -120,6 +120,7 @@ Tramite.belongsTo(Usuario, {
 Usuario.hasHook(Tramite, {
   foreignKey: "usuario_despacho",
   sourceKey: "id",
+  as: "usuario_despacho",
 });
 
 Tramite.belongsTo(Usuario, {

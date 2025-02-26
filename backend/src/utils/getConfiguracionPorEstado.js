@@ -141,8 +141,22 @@ const POR_REVISAR = {
 
 const COMPLETADO = {
   ...POR_REVISAR,
-  attributes: [...POR_REVISAR.attributes],
-  include: [...POR_REVISAR.include],
+  attributes: [...POR_REVISAR.attributes, "usuario_despacho"],
+  include: [
+    ...POR_REVISAR.include,
+    {
+      model: Usuario,
+      as: "usuarioDespacho", // Usar el alias correcto
+      attributes: [
+        [
+          Sequelize.literal(
+            'CONCAT("usuarioDespacho"."nombres", \' \', "usuarioDespacho"."apellidos")' // Referenciar el alias
+          ),
+          "usuarioDespacho",
+        ],
+      ],
+    },
+  ],
 };
 const POR_CORREGIR = {
   ...COMPLETADO,

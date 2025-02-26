@@ -853,6 +853,8 @@ export const completarTramite = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
+    console.log(tramiteObservacion);
+
     if (tramiteObservacion) {
       tramiteObservacion.observacion =
         observacion || tramiteObservacion.observacion;
@@ -877,13 +879,218 @@ export const completarTramite = async (req, res) => {
   }
 };
 
-export const actualizarCompletarTramite = async (req, res) => {};
+export const actualizarCompletarTramite = async (req, res) => {
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
+
+  const transaction = await sequelize.transaction();
+
+  const { id } = req.params;
+
+  const {
+    memo,
+    destinatarios,
+    // referenciaTramite,
+    fechaDespacho,
+    observacion,
+    empleadoDespachadorId,
+  } = req.body;
+
+  if (
+    !memo ||
+    memo.trim() === "" ||
+    !destinatarios ||
+    destinatarios.length === 0 ||
+    !observacion ||
+    observacion.trim() === "" ||
+    !empleadoDespachadorId ||
+    empleadoDespachadorId.length === 0
+  ) {
+    return res.status(400).json({
+      message: "Todos los campos obligatorios",
+    });
+  }
+
+  const existeUsuarioDespahador = await Usuario.findOne({
+    where: {
+      id: empleadoDespachadorId,
+      // rol: "REVISOR",
+      departamento_id: req.usuario.departamento_id,
+    },
+  });
+
+  if (!existeUsuarioDespahador) {
+    await transaction.rollback();
+    return res
+      .status(404)
+      .json({ message: "Usuario Despachador no encontrado" });
+  }
+
+  const tramite = await Tramite.findOne({
+    where: { id, activo: true },
+  });
+
+  if (!tramite) {
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
+  if (
+    tramite.departamento_tramite.toString() !==
+    req.usuario.departamento_id.toString()
+  ) {
+    return res
+      .status(403)
+      .json({ message: "El trámite seleccionado no te pertenece" });
+  }
+
+  // Buscar si el número de oficio que ingresa existe
+  const numeroMemo = await Tramite.findOne({
+    where: { numero_oficio: { [Op.iLike]: `%${memo}%` }, id: { [Op.not]: id } }, // Excluir el ID del trámite que estás editando
+  });
+
+  if (numeroMemo) {
+    return res
+      .status(409)
+      .json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
+  }
+
+  try {
+    // Obtener destinatarios actuales
+    const destinatariosTramite = await TramiteDestinatario.findAll({
+      where: {
+        tramite_id: id,
+        activo: true,
+      },
+    });
+
+    const destinatariosActuales = destinatariosTramite.map(
+      (destinatarioActual) => parseInt(destinatarioActual.destinatario_id)
+    );
+
+    const destinatariosIngresados = destinatarios.map((dest) =>
+      dest.id ? dest.id : dest
+    );
+
+    // Identificar los destinatarios que se nuevos a ingresar y los que se deben inhabilitar
+    const destinatariosEliminar = encontrarDestinariosABorrar(
+      destinatariosActuales,
+      destinatariosIngresados
+    );
+
+    const destinatariosIngresar = encontrarDestinatariosAIngresar(
+      destinatariosActuales,
+      destinatariosIngresados
+    );
+
+    // Inhabilitar los destinatarios eliminados
+    for (const eliminar of destinatariosEliminar) {
+      const destinatario = await TramiteDestinatario.findOne({
+        where: {
+          destinatario_id: eliminar,
+          activo: true,
+        },
+      });
+
+      destinatario.activo = "false";
+      destinatario.save();
+    }
+
+    // Insertar nuevos destinarios
+    for (const destinatario of destinatariosIngresar) {
+      const departamentoDestinatario = await Empleado.findOne({
+        where: { id: destinatario },
+      });
+
+      if (departamentoDestinatario) {
+        await TramiteDestinatario.create(
+          {
+            tramite_id: id,
+            departamento_destinatario: parseInt(
+              departamentoDestinatario.departamento_id
+            ),
+            destinatario_id: destinatario,
+            activo: true,
+            usuario_creacion: req.usuario.id,
+          },
+          { transaction }
+        );
+      }
+    }
+
+    const estadoAnterior = tramite.estado;
+    const despachadorAnterior = tramite.usuario_despacho;
+    let sms;
+
+    // Corregir tramite si necesita, caso contrario solo asigna el despachador
+    if (tramite.estado === "POR_REVISAR" && !despachadorAnterior) {
+      tramite.usuario_despacho =
+        empleadoDespachadorId || tramite.usuario_despacho;
+      sms = "asignado";
+    } else if (tramite.estado === "COMPLETADO" && despachadorAnterior) {
+      // if (
+      //   tramite.usuario_despacho.toString() === empleadoDespachadorId.toString()
+      // ) {
+      //   await transaction.rollback();
+      //   return res.status(400).json({
+      //     message: "El usuario de despacho es el mismo, no se puede reasignar.",
+      //   });
+      // }
+      tramite.usuario_despacho =
+        empleadoDespachadorId || tramite.usuario_despacho;
+      sms = "reasignado";
+    }
+
+    await registrarHistorialEstado(
+      id,
+      estadoAnterior,
+      tramite.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    // Actualizar trámite y observación
+    tramite.estado = "COMPLETADO";
+    tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
+    tramite.numero_oficio = memo || tramite.numero_oficio;
+    await tramite.save({ transaction });
+
+    // Actualizar observacion del tramite
+    const tramiteObservacion = await TramiteObservacion.findOne({
+      where: { tramite_id: id },
+      // where: { tramite_id: id, usuario_creacion: req.usuario.id },
+      order: [["id", "DESC"]],
+    });
+
+    console.log(tramiteObservacion);
+
+    if (tramiteObservacion) {
+      tramiteObservacion.observacion =
+        observacion || tramiteObservacion.observacion;
+      await tramiteObservacion.save({ transaction });
+    }
+
+    await transaction.commit();
+
+    res.json({
+      // message: "Revisor asignado/reasignado correctamente",
+      message: `Trámite Actualizado Correctamente.`,
+      // sms,
+    });
+  } catch (error) {
+    console.error(
+      `Error al completar el trámite seleccionado: ${error.message}`
+    );
+    return res.status(500).json({
+      message:
+        "Error al completar el trámite seleccionado, intente nuevamente más tarde.",
+    });
+  }
+};
 
 export const rechazarTramite = async (req, res) => {
   const transaction = await Tramite.sequelize.transaction();
 
-  // console.log("Params", req.params.id);
-  // console.log("Body", req.body.observacion);
+  console.log("Params", req.params.id);
+  console.log("Body", req.body.observacion);
 
   const { id } = req.params;
   const { observacion } = req.body;
@@ -917,7 +1124,6 @@ export const rechazarTramite = async (req, res) => {
 
     // Actualizar el estado
     tramite.estado = "POR_CORREGIR";
-    await tramite.save({ transaction });
 
     // Registrar Historial Estado
     await registrarHistorialEstado(
@@ -928,6 +1134,19 @@ export const rechazarTramite = async (req, res) => {
       transaction
     );
 
+    // Actualizar observacion del tramite
+    const tramiteObservacion = await TramiteObservacion.findOne({
+      where: { tramite_id: id, usuario_creacion: req.usuario.id },
+      order: [["id", "DESC"]],
+    });
+
+    if (tramiteObservacion) {
+      tramiteObservacion.observacion =
+        observacion || tramiteObservacion.observacion;
+      await tramiteObservacion.save({ transaction });
+    }
+
+    await tramite.save({ transaction });
     await transaction.commit();
     res.json({ message: "Tramite Rechazado para Corrección" });
   } catch (error) {

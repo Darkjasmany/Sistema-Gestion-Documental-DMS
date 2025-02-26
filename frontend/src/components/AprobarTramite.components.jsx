@@ -151,6 +151,8 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           apellidos: dest.destinatario.apellidos,
         }))
       );
+
+      setEmpleadoDespachadorId(tramite.usuario_despacho);
     }
   }, [tramite]);
   // console.log(tramite);
