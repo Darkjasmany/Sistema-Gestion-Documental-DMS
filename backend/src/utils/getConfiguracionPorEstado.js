@@ -163,7 +163,11 @@ const POR_CORREGIR = {
   attributes: [...COMPLETADO.attributes],
   include: [...COMPLETADO.include],
 };
-const FINALIZADO = {};
+const FINALIZADO = {
+  ...POR_CORREGIR,
+  attributes: [...POR_CORREGIR.attributes],
+  include: [...POR_CORREGIR.include],
+};
 
 // Crear el objeto
 const configuracionEstados = {
@@ -172,6 +176,7 @@ const configuracionEstados = {
   POR_REVISAR,
   COMPLETADO,
   POR_CORREGIR,
+  FINALIZADO,
 };
 
 export const getConfiguracionPorEstado = (estado) => {

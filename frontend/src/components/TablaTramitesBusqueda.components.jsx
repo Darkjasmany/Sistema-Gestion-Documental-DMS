@@ -11,6 +11,7 @@ import { formatearFecha } from "../helpers/formatearFecha.helpers";
 import AsignarReasignarTramite from "./AsignarReasignarTramite.components";
 import CompletarTramite from "./CompletarTramite.components";
 import AprobarTramite from "./AprobarTramite.components";
+import DespacharTramite from "./DespacharTramite.components";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // console.log(tramiteBusqueda);
@@ -19,6 +20,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
   const isAsignados = location.pathname === "/admin/asignados";
   const isCompletados = location.pathname === "/admin/completar-tramite";
+  const isDespachar = location.pathname === "/admin/despachar-tramite";
 
   const [tramiteExpandido, setTramiteExpandido] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -129,6 +131,20 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             onClick={() => openModal(row.original)}
           >
             {row.original.estado === "POR_REVISAR" ? "Aprobar" : "Editar"}
+          </button>
+        ),
+      });
+    }
+
+    if (isDespachar) {
+      baseColumns.push({
+        header: "Acción",
+        cell: ({ row }) => (
+          <button
+            className="bg-blue-500 text-white px-3 py-1 rounded"
+            onClick={() => openModal(row.original)}
+          >
+            {row.original.estado === "COMPLETADO" ? "Entregar" : "Finalizar"}
           </button>
         ),
       });
@@ -281,6 +297,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                 ? (selectedTramite.estado === "POR_REVISAR"
                     ? "Aprobar Trámite #"
                     : "Para Despachar #") + selectedTramite.numero_tramite
+                : isDespachar
+                ? (selectedTramite.estado === "COMPLETADO"
+                    ? "Entregar Trámite #"
+                    : "Para Finalizar #") + selectedTramite.numero_tramite
                 : ""}
             </h2>
             {isAsignarReasignar && (
@@ -300,6 +320,13 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             )}
             {isCompletados && (
               <AprobarTramite
+                tramite={selectedTramite}
+                onTramiteUpdated={onTramiteUpdated}
+                closeModal={closeModal}
+              />
+            )}
+            {isDespachar && (
+              <DespacharTramite
                 tramite={selectedTramite}
                 onTramiteUpdated={onTramiteUpdated}
                 closeModal={closeModal}
