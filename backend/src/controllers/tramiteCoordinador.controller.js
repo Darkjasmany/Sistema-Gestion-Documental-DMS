@@ -670,6 +670,65 @@ export const asignarOReasignarRevisor = async (req, res) => {
   }
 };
 
-export const completarTramite = (req, res) => {
+export const completarTramite = async (req, res) => {
   res.send("Desde completar Revisor");
+};
+export const rechazarTramite = async (req, res) => {
+  const transaction = await Tramite.sequelize.transaction();
+
+  console.log("Params", req.params.id);
+  console.log("Body", req.body.observacion);
+
+  const { id } = req.params;
+  const { observacion } = req.body;
+
+  const tramite = await Tramite.findOne(
+    {
+      where: { id, activo: true },
+    },
+    transaction
+  );
+
+  if (!tramite) return res.status(400).json({ message: "Accion no valida" });
+
+  if (
+    tramite.departamento_tramite.toString() !==
+    req.usuario.departamento_id.toString()
+  )
+    return res.status(403).json({
+      message: "Acción no válida",
+    });
+
+  if (!observacion || observacion.trim() === "") {
+    await transaction.rollback();
+    return res
+      .status(400)
+      .json({ message: "Debes escribir una Razón de Eliminación" });
+  }
+
+  try {
+    const estadoAnterior = tramite.estado;
+
+    // Actualizar el estado
+    tramite.estado = "POR_CORREGIR";
+    await tramite.save({ transaction });
+
+    // Registrar Historial Estado
+    await registrarHistorialEstado(
+      id,
+      estadoAnterior,
+      tramite.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    await transaction.commit();
+    res.json({ message: "Tramite Rechazado para Corrección" });
+  } catch (error) {
+    await transaction.rollback();
+    console.error(`Error al rechazar el trámite: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al rechazar el trámite, intente nuevamente más tarde",
+    });
+  }
 };

@@ -24,8 +24,11 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [observacion, setObservacion] = useState("");
   const [memo, setMemo] = useState("");
 
-  const { completarTramiteCoordinador, actualizarCompletarTramiteCoordinador } =
-    useTramites();
+  const {
+    completarTramiteCoordinador,
+    actualizarCompletarTramiteCoordinador,
+    rechazarTramiteCoordinador,
+  } = useTramites();
   const [alerta, setAlerta] = useState({});
 
   useEffect(() => {
@@ -156,8 +159,34 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     setEmpleadoDespachadorId(empleadoId);
   };
 
-  const handleRechazar = () => {
-    console.log("rechazar");
+  const handleRechazar = async () => {
+    if (!observacion.trim()) {
+      setAlerta({
+        message: "Debes ingresar una observación para rechazar",
+        error: true,
+      });
+      return;
+    }
+
+    const observacionRechazo = { observacion };
+    try {
+      const response = await rechazarTramiteCoordinador(
+        tramite.id,
+        observacionRechazo
+      );
+
+      setAlerta({ message: response.message, error: response.error });
+
+      if (!response.error) {
+        setTimeout(() => {
+          closeModal();
+          onTramiteUpdated();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error(error.message);
+      setAlerta({ message: error.message, error: true });
+    }
   };
 
   const handleSubmitCompletar = async (e) => {

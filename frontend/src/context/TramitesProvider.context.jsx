@@ -240,6 +240,36 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
+  const rechazarTramiteCoordinador = async (idTramite, observacion) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.put(
+        `tramites/coordinador/tramites/${idTramite}/rechazar`,
+        observacion,
+        getAxiosConfigJSON()
+      );
+
+      console.log(data);
+
+      // 1. Actualizar lista de coordinador
+      const tramitesAsignados = tramitesAsignarReasignar.map(
+        (tramitesAsignarState) =>
+          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      );
+
+      setTramitesAsignarReasignar(tramitesAsignados);
+
+      return { message: data.message, error: false };
+    } catch (error) {
+      console.error(error.response?.data?.message || "Error desconocido");
+
+      return {
+        message: error.response?.data?.message || "Error en la solicitud",
+        error: true,
+      };
+    }
+  };
   const completarTramiteCoordinador = async () => {
     console.log("Desde completar Coordinador");
   };
@@ -333,6 +363,7 @@ export const TramitesProvider = ({ children }) => {
         tramitesAsignarReasignar,
         setTramitesAsignarReasignar,
         asignarOReasignarRevisorTramite,
+        rechazarTramiteCoordinador,
         completarTramiteCoordinador,
         actualizarCompletarTramiteCoordinador,
         obtenerTramitesRevisorData,

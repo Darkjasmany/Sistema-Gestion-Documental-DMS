@@ -126,6 +126,12 @@ router.put(
   checkRole("COORDINADOR"),
   tramiteCoordinador.completarTramite
 );
+router.put(
+  "/coordinador/tramites/:id/rechazar",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteCoordinador.rechazarTramite
+);
 
 // * Rutas exclusivas para el revisor
 router
