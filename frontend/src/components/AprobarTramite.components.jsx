@@ -197,6 +197,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       memo,
       observacion,
       destinatarios: empleadosSeleccionados.map((empleado) => empleado.id),
+      empleadoDespachadorId,
     };
 
     try {

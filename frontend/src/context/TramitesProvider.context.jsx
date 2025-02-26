@@ -270,8 +270,35 @@ export const TramitesProvider = ({ children }) => {
       };
     }
   };
-  const completarTramiteCoordinador = async () => {
-    console.log("Desde completar Coordinador");
+  const completarTramiteCoordinador = async (idTramite, datosRevisor) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.put(
+        `tramites/coordinador/tramites/${idTramite}/completar`,
+        datosRevisor,
+        getAxiosConfigJSON()
+      );
+
+      console.log(data);
+
+      // 1. Actualizar lista de coordinador
+      const tramitesAsignados = tramitesAsignarReasignar.map(
+        (tramitesAsignarState) =>
+          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      );
+
+      setTramitesAsignarReasignar(tramitesAsignados);
+
+      return { message: data.message, error: false };
+    } catch (error) {
+      console.error(error.response?.data?.message || "Error desconocido");
+
+      return {
+        message: error.response?.data?.message || "Error en la solicitud",
+        error: true,
+      };
+    }
   };
 
   const actualizarCompletarTramiteCoordinador = async () => {
