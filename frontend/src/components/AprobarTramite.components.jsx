@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import useAuth from "../hooks/useAuth.hook";
 import Alerta from "../components/Alerta.components";
-import useTramites from "../hooks/useTramites.hook";
 import clienteAxios from "../config/axios.config";
+import useAuth from "../hooks/useAuth.hook";
+import useTramites from "../hooks/useTramites.hook";
 
 const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const { auth } = useAuth();
@@ -24,6 +24,8 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [observacion, setObservacion] = useState("");
   const [memo, setMemo] = useState("");
 
+  const { completarTramiteCoordinador, actualizarCompletarTramiteCoordinador } =
+    useTramites();
   const [alerta, setAlerta] = useState({});
 
   useEffect(() => {
@@ -171,13 +173,13 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     try {
       let response;
 
-      if (tramite.estado === "POR_REVISAR") {
-        response = await actualizarTramiteCompletado(
+      if (tramite.estado === "COMPLETADO") {
+        response = await actualizarCompletarTramiteCoordinador(
           tramite.id,
           datosCompletar
         );
       } else {
-        response = await completarTramiteRevisorAsignado(
+        response = await completarTramiteCoordinador(
           tramite.id,
           datosCompletar
         );
@@ -360,30 +362,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           </select>
         </div>
 
-        {/* check de alcaldi */}
-        {/* <div className="mb-5">
-          <div className="flex items-center select-none gap-2">
-            <div className="flex items-center h-5">
-              <input
-                id="alcaldia"
-                type="checkbox"
-                checked={alcaldia}
-                onChange={(e) => {
-                  setAlcaldia(e.target.checked);
-                }}
-                className="w-4 h-4 border border-gray-300 rounded bg-gray-50"
-              />
-            </div>
-            <label
-              htmlFor="alcaldia"
-              className="text-gray-700 font-medium block"
-            >
-              Alcaldía
-            </label>
-          </div>
-        </div> */}
-
-        {/* Botón de Guardar */}
+        {/* Botones */}
         <div className="text-right flex gap-2 justify-end">
           <button
             type="button"

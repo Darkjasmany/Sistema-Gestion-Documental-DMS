@@ -240,6 +240,14 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
+  const completarTramiteCoordinador = async () => {
+    console.log("Desde completar Coordinador");
+  };
+
+  const actualizarCompletarTramiteCoordinador = async () => {
+    console.log("Desde completar Coordinador");
+  };
+
   // ** REVISOR
   const obtenerTramitesRevisorData = async (estado) => {
     if (!token) return;
@@ -325,6 +333,8 @@ export const TramitesProvider = ({ children }) => {
         tramitesAsignarReasignar,
         setTramitesAsignarReasignar,
         asignarOReasignarRevisorTramite,
+        completarTramiteCoordinador,
+        actualizarCompletarTramiteCoordinador,
         obtenerTramitesRevisorData,
         completarTramiteRevisorAsignado,
         tramitesRevisor,
