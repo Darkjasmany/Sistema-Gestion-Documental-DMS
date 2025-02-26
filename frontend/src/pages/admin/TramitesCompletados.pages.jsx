@@ -35,7 +35,7 @@ const TramitesCompletados = () => {
   return (
     <>
       <h2 className="font-black text-3xl text-center mt-10">
-        Asignar o Reasignar Trámites
+        Aprobar los Trámites
       </h2>
       <p className="text-xl mt-5 mb-4 text-center">
         Búsqueda Avanzada de{" "}

@@ -58,9 +58,9 @@ const AuthProvider = ({ children }) => {
     setAuth({});
   };
 
-  useEffect(() => {
-    console.log("Estado auth actualizado:", auth);
-  }, [auth]);
+  // useEffect(() => {
+  //   console.log("Estado auth actualizado:", auth);
+  // }, [auth]);
 
   const actualizarPerfil = async (datos) => {
     //** Verificar el token

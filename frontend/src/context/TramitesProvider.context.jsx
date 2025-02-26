@@ -40,7 +40,6 @@ export const TramitesProvider = ({ children }) => {
   useEffect(() => {
     obtenerTramites();
   }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
-  // }, [auth, token]); // Escucha cambios dependiendo de la autenticacion, y del token
 
   const obtenerTramites = async () => {
     if (!token) return; // Si no hay token, no se hace la petición
@@ -231,7 +230,6 @@ export const TramitesProvider = ({ children }) => {
 
       // return data;
 
-      console.log(data);
       return { message: data.message, error: false };
     } catch (error) {
       console.error(error);
@@ -240,8 +238,6 @@ export const TramitesProvider = ({ children }) => {
         error: true,
       };
     }
-
-    return;
   };
 
   // ** REVISOR
