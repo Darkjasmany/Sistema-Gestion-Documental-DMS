@@ -18,6 +18,7 @@ import TramitesCompletados from "./pages/admin/TramitesCompletados.pages";
 import ConsultarTramites from "./pages/admin/ConsultarTramites.pages";
 import EditarPerfil from "./pages/admin/EditarPerfil.pages";
 import CambiarPassword from "./pages/admin/CambiarPassword.pages";
+import TramitesPorDespachar from "./pages/admin/TramitesPorDespachar.pages";
 
 function App() {
   return (
@@ -51,6 +52,10 @@ function App() {
               <Route
                 path="completar-tramite"
                 element={<TramitesCompletados />}
+              />
+              <Route
+                path="despachar-tramite"
+                element={<TramitesPorDespachar />}
               />
               <Route path="perfil" element={<EditarPerfil />} />
               <Route path="cambiar-password" element={<CambiarPassword />} />

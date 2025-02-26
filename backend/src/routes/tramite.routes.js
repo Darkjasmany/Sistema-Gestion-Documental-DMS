@@ -66,6 +66,11 @@ router.put(
   tramiteController.eliminarArchivos
 );
 
+// * Ruta del despachador
+router
+  .route("/despachador/tramites/:estado")
+  .get(checkAuth, tramiteController.obtenerTramitesPorEstados);
+
 // * Rutas exclusivas para el coordinador
 router
   .route("/coordinador/tramites/:estado")

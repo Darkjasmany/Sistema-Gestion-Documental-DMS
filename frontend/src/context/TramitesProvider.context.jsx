@@ -12,6 +12,7 @@ export const TramitesProvider = ({ children }) => {
   const [tramitesRespuesta, setTramitesRespuesta] = useState([]);
   const [tramitesAsignarReasignar, setTramitesAsignarReasignar] = useState([]);
   const [tramitesRevisor, setTramitesRevisor] = useState({});
+  const [tramitesDespachador, setTramitesDespachador] = useState({});
 
   // Obtener el token
   const token =
@@ -399,6 +400,22 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
+  // ** DESPACHADOR
+  const obtenerTramitesDespachadorData = async (estado) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.get(
+        `tramites/despachador/tramites/${estado}`,
+        getAxiosConfigJSON()
+      );
+
+      setTramitesDespachador(data);
+    } catch (error) {
+      console.error(error.response?.data?.message);
+    }
+  };
+
   /*
   const handleRefrescar = () => {
     setActualizar(!actualizar);
@@ -429,6 +446,8 @@ export const TramitesProvider = ({ children }) => {
         completarTramiteRevisorAsignado,
         tramitesRevisor,
         actualizarTramiteCompletado,
+        obtenerTramitesDespachadorData,
+        tramitesDespachador,
       }}
     >
       {children}

@@ -9,6 +9,8 @@ import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
+import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
+
 import { config } from "../config/parametros.config.js";
 import { Usuario } from "../models/Usuario.model.js";
 
@@ -901,5 +903,65 @@ export const buscarTramites = async (req, res) => {
   } catch (error) {
     console.error(`Error al buscar los trámites: ${error.message}`);
     res.status(500).json({ message: "Error al buscar los trámites" });
+  }
+};
+
+export const obtenerTramitesPorEstados = async (req, res) => {
+  // console.log(req.params);
+  // console.log(req.usuario.departamento_id);
+
+  const { estado } = req.params; // envio como parametro adicional en la URL
+  // const { estado, limit = 10, offset = 0 } = req.query; // Limitar resultados y offset para paginación
+  if (!estado)
+    return res.status(400).json({ message: "El estado es requerido" });
+
+  try {
+    const config = getConfiguracionPorEstado(estado);
+    if (!config)
+      return res.status(400).json({
+        message: `No se encontró una configuración válida para el estado: ${estado}`,
+      });
+
+    const tramites = await Tramite.findAll({
+      where: {
+        estado,
+        departamento_tramite: req.usuario.departamento_id,
+        usuario_despacho: req.usuario.id, // para validar el despachador
+        activo: true,
+      },
+      attributes: config.attributes,
+      include: config.include,
+      // order: [
+      //   ["prioridad", "ASC"],
+      //   ["createdAt", "ASC"],
+      // ],
+      order: [["id", "DESC"]],
+      // limit: parseInt(limit, 10),
+      // offset: parseInt(offset, 10),
+    });
+
+    // res.json(tramites);
+    // Modificar la ruta antes de enviarla al frontend
+    const tramitesConRutas = tramites.map((tramite) => {
+      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+        ...archivo.toJSON(),
+        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+      }));
+
+      return {
+        ...tramite.toJSON(),
+        tramiteArchivos: archivosConRutas,
+      };
+    });
+
+    // console.log(tramitesConRutas);
+    res.json(tramitesConRutas);
+  } catch (error) {
+    console.error(
+      `Error al obtener los trámites con estado: ${estado}: ${error.message}`
+    );
+    return res.status(500).json({
+      message: `Error al obtener los trámites con estado: ${estado}, intente nuevamente más tarde.`,
+    });
   }
 };
