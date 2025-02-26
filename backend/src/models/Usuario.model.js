@@ -112,6 +112,17 @@ Usuario.hasMany(Tramite, {
 });
 
 Tramite.belongsTo(Usuario, {
+  foreignKey: "usuario_despacho",
+  targetKey: "id",
+  as: "usuarioDespacho",
+});
+
+Usuario.hasHook(Tramite, {
+  foreignKey: "usuario_despacho",
+  sourceKey: "id",
+});
+
+Tramite.belongsTo(Usuario, {
   foreignKey: "usuario_actualizacion",
   targetKey: "id",
   as: "usuarioActualizacion",

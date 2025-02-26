@@ -156,6 +156,14 @@ export const Tramite = sequelize.define(
         key: "id",
       },
     },
+    usuario_despacho: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "usuario",
+        key: "id",
+      },
+    },
     activo: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

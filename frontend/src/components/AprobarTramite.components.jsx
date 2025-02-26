@@ -7,7 +7,7 @@ import clienteAxios from "../config/axios.config";
 const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const { auth } = useAuth();
 
-  const { empleadosXRol, setEmpleadosXRol } = useState([]);
+  const [empleadosXRol, setEmpleadosXRol] = useState([]);
   const [empleadoDespachadorId, setEmpleadoDespachadorId] = useState("");
 
   const [empleados, setEmpleados] = useState([]);
@@ -27,9 +27,8 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [alerta, setAlerta] = useState({});
 
   useEffect(() => {
-    // console.log(auth);
     const fecthEmpleadosXRol = async () => {
-      const rol = ["REVISOR"];
+      const rol = ["REVISOR", "USUARIO"];
       try {
         if (!auth.departamentoId) {
           console.error("departamentoId no está definido en auth");
@@ -45,8 +44,6 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     };
 
     fecthEmpleadosXRol();
-    console.log(empleadosXRol);
-    // }, []);
   }, [auth.departamentoId]);
 
   useEffect(() => {
@@ -155,6 +152,10 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const handleEmpleadoDespachadorChange = (e) => {
     const empleadoId = e.target.value;
     setEmpleadoDespachadorId(empleadoId);
+  };
+
+  const handleRechazar = () => {
+    console.log("rechazar");
   };
 
   const handleSubmitCompletar = async (e) => {
@@ -350,13 +351,12 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             onChange={handleEmpleadoDespachadorChange}
           >
             <option value={""}>Seleccione un depachador</option>
-            {/* {console.log(empleadosXRol)} */}
-            {/* {empleadosXRol.map(
-              (emp) => console.log(emp)
-              // <option value={emp.id} key={emp.id}>
-              //   {emp.nombres}
-              // </option>
-            )} */}
+
+            {empleadosXRol.map((emp) => (
+              <option value={emp.id} key={emp.id}>
+                {emp.nombres} {emp.apellidos} - {emp.rol}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -384,7 +384,15 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         </div> */}
 
         {/* Botón de Guardar */}
-        <div className="text-right">
+        <div className="text-right flex gap-2 justify-end">
+          <button
+            type="button"
+            onClick={handleRechazar}
+            className="bg-red-600 text-white px-5 py-2 rounded-md uppercase font-bold hover:bg-red-800 cursor-pointer transition-colors"
+          >
+            Rechazar
+          </button>
+
           <input
             type="submit"
             value="Guardar"
