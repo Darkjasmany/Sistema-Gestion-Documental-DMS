@@ -6,6 +6,7 @@ import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { generarMemo } from "../utils/generarMemo.js";
+import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 import { validarFecha } from "../utils/validarFecha.js";
 import { Sequelize, Op } from "sequelize";
@@ -153,6 +154,7 @@ export const completarTramiteRevisor = async (req, res) => {
 
   const tramite = await Tramite.findOne({
     where: { id, estado: "PENDIENTE", activo: true },
+    // where: { id, activo: true },
   });
 
   if (!tramite) {
@@ -273,7 +275,8 @@ export const actualizarTramiteRevisor = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   const tramite = await Tramite.findOne({
-    where: { id, estado: "POR_REVISAR", activo: true },
+    // where: { id, estado: "POR_REVISAR", activo: true },
+    where: { id, activo: true },
   });
 
   if (!tramite) {
@@ -375,6 +378,20 @@ export const actualizarTramiteRevisor = async (req, res) => {
           { transaction }
         );
       }
+    }
+
+    const estadoAnterior = tramite.estado;
+
+    if (tramite.estado === "POR_CORREGIR") {
+      tramite.estado = "POR_REVISAR";
+      // Registrar Historial Estado
+      await registrarHistorialEstado(
+        id,
+        estadoAnterior,
+        tramite.estado,
+        req.usuario.id,
+        transaction
+      );
     }
 
     // Actualizar trámite y observación

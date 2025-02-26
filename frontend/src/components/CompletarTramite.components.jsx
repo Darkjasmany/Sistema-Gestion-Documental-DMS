@@ -140,7 +140,10 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     try {
       let response;
 
-      if (tramite.estado === "POR_REVISAR") {
+      if (
+        tramite.estado === "POR_REVISAR" ||
+        tramite.estado === "POR_CORREGIR"
+      ) {
         response = await actualizarTramiteCompletado(
           tramite.id,
           datosCompletar

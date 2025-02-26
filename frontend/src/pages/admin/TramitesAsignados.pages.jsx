@@ -61,6 +61,16 @@ const TramitesAsignados = () => {
           >
             Completados
           </button>
+          <button
+            className={`px-4 py-2 rounded  ${
+              estadoSeleccionado === "POR_CORREGIR"
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleFiltro("POR_CORREGIR")}
+          >
+            Por Corregir
+          </button>
         </div>
 
         <TablaTramitesBusqueda
