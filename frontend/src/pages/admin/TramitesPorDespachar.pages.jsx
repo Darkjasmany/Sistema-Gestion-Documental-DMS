@@ -49,17 +49,17 @@ const TramitesPorDespachar = () => {
             }`}
             onClick={() => handleFiltro("COMPLETADO")}
           >
-            Asignados
+            Por Despachar
           </button>
           <button
             className={`px-4 py-2 rounded  ${
-              estadoSeleccionado === "FINALIZADO"
+              estadoSeleccionado === "DESPACHADO"
                 ? "bg-indigo-500 text-white"
                 : "bg-gray-200"
             }`}
-            onClick={() => handleFiltro("FINALIZADO")}
+            onClick={() => handleFiltro("DESPACHADO")}
           >
-            Entregados
+            Despachados
           </button>
         </div>
 

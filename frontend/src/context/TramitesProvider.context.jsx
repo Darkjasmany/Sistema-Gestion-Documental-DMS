@@ -418,13 +418,48 @@ export const TramitesProvider = ({ children }) => {
 
   const finalizarDespacho = async (idTramite, datosFinalizar) => {
     if (!token) return;
+
+    console.log(datosFinalizar);
     try {
-      const { data } = await clienteAxios.put(
-        `tramites/revisor/tramites/${idTramite}/actualizar`,
-        datosFinalizar,
-        getAxiosConfigJSON()
+      const formData = new FormData();
+      formData.append("fechaDespacho", datosFinalizar.fechaDespacho);
+      formData.append("horaDespacho", datosFinalizar.horaDespacho);
+
+      if (datosFinalizar.archivos && datosFinalizar.archivos.length > 0) {
+        datosFinalizar.archivos.forEach((archivo) => {
+          formData.append("archivos", archivo);
+        });
+      }
+
+      if (datosFinalizar.archivosEliminar) {
+        formData.append(
+          "archivosEliminar",
+          JSON.stringify(tramite.archivosEliminar)
+        );
+      }
+
+      const { data } = await clienteAxios.post(
+        `tramites/despachador/tramites/${idTramite}/finalizar`,
+        formData,
+        getAxiosConfig()
       );
+
       console.log(data);
+
+      const tramitesAsignados = tramitesAsignarReasignar.map(
+        (tramitesAsignarState) =>
+          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      );
+
+      setTramitesAsignarReasignar(tramitesAsignados);
+
+      const tramitesAsignadosDespachador = tramitesDespachador.map(
+        (tramitesAsignarState) =>
+          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      );
+
+      setTramitesAsignarReasignar(tramitesAsignadosDespachador);
+
       return { message: data.message, error: false };
     } catch (error) {
       console.error(error.response?.data?.message || "Error desconocido");

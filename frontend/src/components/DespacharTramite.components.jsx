@@ -60,17 +60,20 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       fechaDespacho,
       horaDespacho,
       archivos,
+      archivosEliminar,
+      id,
     };
     try {
       let response;
 
-      if (tramite.estado === "COMPLETADO") {
+      if (tramite.estado === "DESPACHADO") {
         // response = await actualizarCompletarTramiteCoordinador(
         //   tramite.id,
         //   datosCompletar
         // );
       } else {
         response = await finalizarDespacho(tramite.id, datosFinalizar);
+        return;
       }
 
       setAlerta({ message: response.message, error: response.error });

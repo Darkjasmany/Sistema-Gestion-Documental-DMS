@@ -967,10 +967,103 @@ export const obtenerTramitesPorEstados = async (req, res) => {
 };
 
 export const finalizarTramite = async (req, res) => {
+  const transaction = await Tramite.sequelize.transaction();
+
+  console.log(req.body);
+  console.log(req.params);
+
+  const { fechaDespacho, horaDespacho } = req.body;
+  const { id } = req.params;
+
   if (!config || Object.keys(config).length === 0) {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
       message: "Parámetros del sistema no cargados, comunícate con Sistemas",
     });
+  }
+
+  if (
+    !fechaDespacho ||
+    fechaDespacho.trim() === "" ||
+    !horaDespacho ||
+    (horaDespacho.trim() === "") | req.files ||
+    req.files.length === 0
+  ) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message:
+        "Todos los campos son obligatorios y debes subir al menos un archivo",
+      // error: true,
+    });
+  }
+
+  const archivosNuevos = req.files ? req.files.length : 0;
+  if (archivosNuevos > config.MAX_UPLOAD_FILES) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
+      // error: true,
+    });
+  }
+
+  const tramite = await Tramite.findByPk(id);
+  if (!tramite) {
+    borrarArchivosTemporales(req.files);
+    return res.status(404).json({ message: "No Valido" });
+  }
+
+  if (
+    tramite.usuario_despacho.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
+  ) {
+    borrarArchivosTemporales(req.files);
+    return res
+      .status(403)
+      .json({ message: "El trámite seleccionado no te pertenece" });
+  }
+
+  try {
+    // Ingresar registros de los archivos
+    await Promise.all(
+      req.files.map(async (file) => {
+        await TramiteArchivo.create({
+          file_name: file.filename,
+          original_name: file.originalname,
+          ruta: file.path,
+          tipo: file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
+          size: file.size, // Guardar en bytes (número entero)
+          tramite_id: tramite.id,
+          usuario_creacion: req.usuario.id,
+        });
+      })
+    );
+
+    const estadoAnterior = tramite.estado;
+
+    // Actualizar datos
+    tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
+    tramite.hora_despacho = horaDespacho || tramite.hora_despacho;
+    tramite.estado = "DESPACHADO";
+
+    await tramite.save({ transaction });
+
+    // Registrar el cambio de estado en el historial
+    await registrarHistorialEstado(
+      id,
+      estadoAnterior,
+      tramite.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    await transaction.commit(); // Confirmar la transacción
+
+    res.status(201).json({
+      error: false,
+      message: "Trámite Despachado correctamente",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
