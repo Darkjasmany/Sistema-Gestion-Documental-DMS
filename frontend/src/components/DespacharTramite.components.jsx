@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, slice } from "react";
 import Alerta from "../components/Alerta.components";
 import clienteAxios from "../config/axios.config";
 import useTramites from "../hooks/useTramites.hook";
@@ -40,6 +40,29 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       return () => clearTimeout(timer);
     }
   }, [alerta]);
+
+  useEffect(() => {
+    if (tramite) {
+      setFechaDespacho(tramite.fecha_despacho);
+
+      // Corregir acceso a hora_despacho
+      const horaDespachoFormateada = tramite.hora_despacho
+        ? tramite.hora_despacho.slice(0, 5)
+        : "";
+      setHoraDespacho(horaDespachoFormateada);
+
+      setTimeout(() => {
+        const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
+          id: archivo.id,
+          name: archivo.original_name,
+          url: `${import.meta.env.VITE_BACKEND_URL}/${archivo.ruta}`,
+        }));
+        setArchivos(rutasArchivos);
+      }, 100); // Retrasar un poco la carga de archivos
+
+      setId(tramite.id);
+    }
+  }, [tramite]);
 
   const handleSubmitDespachar = async (e) => {
     e.preventDefault();
@@ -149,7 +172,8 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
               type="time"
               value={horaDespacho}
               onChange={(e) => setHoraDespacho(e.target.value)}
-              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md"
+              step="300" // Saltos de 5 minutos
             />
           </div>
         </div>

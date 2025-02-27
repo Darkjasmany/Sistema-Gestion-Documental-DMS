@@ -183,6 +183,7 @@ const configuracionEstados = {
   COMPLETADO,
   POR_CORREGIR,
   FINALIZADO,
+  DESPACHADO,
 };
 
 export const getConfiguracionPorEstado = (estado) => {

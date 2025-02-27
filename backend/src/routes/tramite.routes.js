@@ -78,6 +78,7 @@ router
     tramiteController.finalizarTramite
   );
 // .get(checkAuth, tramiteController.listarTramitesUsuario);
+
 router
   .route("/despachador/tramites/:estado")
   .get(checkAuth, tramiteController.obtenerTramitesPorEstados);
