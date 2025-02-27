@@ -490,7 +490,7 @@ const Formulario = () => {
             accept=".jpg,.png,.zip,.rar,.pdf"
             multiple
             ref={fileInputArchivos} // Referencia al input
-            className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="border-2 w-full h-12 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             onChange={handleArchivosSeleccionados}
           />
         </div>

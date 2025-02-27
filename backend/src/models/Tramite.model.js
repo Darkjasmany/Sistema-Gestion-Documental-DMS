@@ -123,6 +123,13 @@ export const Tramite = sequelize.define(
         isDate: true,
       },
     },
+    hora_despacho: {
+      type: DataTypes.TIME,
+      allowNull: true,
+      validate: {
+        is: /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, // Validación básica para formato de hora (HH:MM)
+      },
+    },
     fecha_entrega: {
       type: DataTypes.DATEONLY,
       allowNull: true,
