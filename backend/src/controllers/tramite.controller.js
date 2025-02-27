@@ -965,3 +965,12 @@ export const obtenerTramitesPorEstados = async (req, res) => {
     });
   }
 };
+
+export const finalizarTramite = async (req, res) => {
+  if (!config || Object.keys(config).length === 0) {
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: "Parámetros del sistema no cargados, comunícate con Sistemas",
+    });
+  }
+};

@@ -67,6 +67,17 @@ router.put(
 );
 
 // * Ruta del despachador
+
+router
+  .route("/despachador/tramites")
+  // .post(checkAuth, upload.single("archivo"), tramiteController.agregarTramite) // Cargar 1 archivo
+  // upload.array('archivo', cantidadMáxima):'archivo' es el campo esperado y 5 es el máximo de archivos permitidos
+  .post(
+    checkAuth,
+    upload.array("archivos", config.MAX_UPLOAD_FILES), // Si tienes nombres de campos diferentes para cada archivo, podrías usar upload.fields().
+    tramiteController.finalizarTramite
+  );
+// .get(checkAuth, tramiteController.listarTramitesUsuario);
 router
   .route("/despachador/tramites/:estado")
   .get(checkAuth, tramiteController.obtenerTramitesPorEstados);

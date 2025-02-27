@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import Alerta from "../components/Alerta.components";
 import clienteAxios from "../config/axios.config";
-const DespacharTramite = () => {
+import useTramites from "../hooks/useTramites.hook";
+
+const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [alerta, setAlerta] = useState({});
   const [fechaDespacho, setFechaDespacho] = useState("");
   const [horaDespacho, setHoraDespacho] = useState("");
@@ -11,6 +13,8 @@ const DespacharTramite = () => {
   const [id, setId] = useState(null);
   const [parametros, setParametros] = useState([]);
   const [maxUploadFiles, setMaxUploadFiles] = useState(null);
+
+  const { finalizarDespacho, tramitesDespachador } = useTramites();
 
   useEffect(() => {
     const fetchParametros = async () => {
@@ -37,7 +41,7 @@ const DespacharTramite = () => {
     }
   }, [alerta]);
 
-  const handleSubmitDespachar = (e) => {
+  const handleSubmitDespachar = async (e) => {
     e.preventDefault();
     if ([fechaDespacho, horaDespacho].includes("")) {
       setAlerta({ message: "Todos los campos son Obligatorios", error: true });
@@ -51,9 +55,37 @@ const DespacharTramite = () => {
       });
       return;
     }
-  };
 
-  const handleEditar = () => {};
+    const datosFinalizar = {
+      fechaDespacho,
+      horaDespacho,
+      archivos,
+    };
+    try {
+      let response;
+
+      if (tramite.estado === "COMPLETADO") {
+        // response = await actualizarCompletarTramiteCoordinador(
+        //   tramite.id,
+        //   datosCompletar
+        // );
+      } else {
+        response = await finalizarDespacho(tramite.id, datosFinalizar);
+      }
+
+      setAlerta({ message: response.message, error: response.error });
+
+      if (!response.error) {
+        setTimeout(() => {
+          closeModal();
+          onTramiteUpdated();
+        }, 2000);
+      }
+    } catch (error) {
+      setAlerta({ message: error, error: true });
+      console.error(error.message);
+    }
+  };
 
   const handleArchivosSeleccionados = (e) => {
     const archivosSeleccionados = Array.from(e.target.files); // Convertimos FileList a un array
@@ -137,13 +169,13 @@ const DespacharTramite = () => {
 
         {/* Botones */}
         <div className="text-right flex gap-2 justify-end">
-          <button
+          {/* <button
             type="button"
             onClick={handleEditar}
             className="bg-red-600 text-white px-5 py-2 rounded-md uppercase font-bold hover:bg-red-800 cursor-pointer transition-colors"
           >
             Editar
-          </button>
+          </button> */}
 
           <input
             type="submit"
