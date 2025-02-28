@@ -165,7 +165,7 @@ const POR_CORREGIR = {
 };
 const DESPACHADO = {
   ...POR_CORREGIR,
-  attributes: [...POR_CORREGIR.attributes],
+  attributes: [...POR_CORREGIR.attributes, "fecha_despacho", "hora_despacho"],
   include: [...POR_CORREGIR.include],
 };
 
