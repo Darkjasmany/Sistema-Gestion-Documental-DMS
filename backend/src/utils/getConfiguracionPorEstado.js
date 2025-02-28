@@ -52,7 +52,7 @@ const INGRESADO = {
     {
       model: TramiteArchivo,
       as: "tramiteArchivos",
-      attributes: ["id", "original_name", "ruta"],
+      attributes: ["id", "original_name", "ruta", "usuario_creacion"],
     },
     {
       model: Usuario,

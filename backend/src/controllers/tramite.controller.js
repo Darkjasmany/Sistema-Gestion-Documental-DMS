@@ -13,6 +13,7 @@ import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js
 
 import { config } from "../config/parametros.config.js";
 import { Usuario } from "../models/Usuario.model.js";
+import { TramiteHistorialEstado } from "../models/TramiteHistorialEstado.model.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -907,6 +908,84 @@ export const buscarTramites = async (req, res) => {
 };
 
 export const obtenerTramitesPorEstados = async (req, res) => {
+  const { estado } = req.params;
+  if (!estado)
+    return res.status(400).json({ message: "El estado es requerido" });
+
+  try {
+    const config = getConfiguracionPorEstado(estado);
+    if (!config) {
+      return res.status(400).json({
+        message: `No se encontró una configuración válida para el estado: ${estado}`,
+      });
+    }
+
+    // Asegurarse de que config.include sea un array
+    const includes = Array.isArray(config.include) ? [...config.include] : [];
+
+    includes.push({
+      model: TramiteHistorialEstado,
+      as: "historialEstados",
+      attributes: ["usuario_creacion", "estado_anterior", "estado_actual"],
+    });
+
+    const tramites = await Tramite.findAll({
+      where: {
+        estado,
+        departamento_tramite: req.usuario.departamento_id,
+        usuario_despacho: req.usuario.id,
+        activo: true,
+      },
+      attributes: config.attributes,
+      include: includes, // Ahora siempre será un array válido
+      order: [["id", "DESC"]],
+    });
+
+    // Modificar la ruta de los archivos y filtrar según la lógica
+    const tramitesConRutas = tramites.map((tramite) => {
+      let archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+        ...archivo.toJSON(),
+        ruta: archivo.ruta.replace(/\\/g, "/"),
+      }));
+
+      if (estado === "DESPACHADO") {
+        const cambioEstado = tramite.historialEstados?.find(
+          (historial) => historial.estado_actual === "DESPACHADO"
+        );
+
+        const usuarioCambioEstado = cambioEstado
+          ? cambioEstado.usuario_creacion.toString()
+          : null;
+
+        archivosConRutas = archivosConRutas.filter(
+          (archivo) =>
+            archivo.usuario_creacion.toString() === req.usuario.id.toString() ||
+            (usuarioCambioEstado &&
+              archivo.usuario_creacion.toString() === usuarioCambioEstado)
+        );
+      }
+
+      return {
+        ...tramite.toJSON(),
+        tramiteArchivos: archivosConRutas,
+      };
+    });
+
+    res.json(tramitesConRutas);
+  } catch (error) {
+    console.error(
+      `Error al obtener los trámites con estado: ${estado}: ${error.message}`
+    );
+    return res.status(500).json({
+      message: `Error al obtener los trámites con estado: ${estado}, intente nuevamente más tarde.`,
+    });
+  }
+};
+
+export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (
+  req,
+  res
+) => {
   // console.log(req.params);
   // console.log(req.usuario.departamento_id);
 
@@ -940,13 +1019,20 @@ export const obtenerTramitesPorEstados = async (req, res) => {
       // offset: parseInt(offset, 10),
     });
 
-    // res.json(tramites);
-    // Modificar la ruta antes de enviarla al frontend
+    // Modificar la ruta de los archivos y filtrar según la lógica
     const tramitesConRutas = tramites.map((tramite) => {
-      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+      let archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
         ...archivo.toJSON(),
         ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
       }));
+
+      // Filtrar archivos si el estado es DESPACHADO
+      if (estado === "DESPACHADO") {
+        archivosConRutas = archivosConRutas.filter(
+          (archivo) =>
+            archivo.usuario_creacion.toString() === req.usuario.id.toString() // Solo los archivos cargados por el despachador
+        );
+      }
 
       return {
         ...tramite.toJSON(),

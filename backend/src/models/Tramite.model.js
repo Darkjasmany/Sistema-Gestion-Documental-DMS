@@ -272,11 +272,6 @@ TramiteEliminacion.belongsTo(Tramite, {
   targetKey: "id",
 });
 
-TramiteHistorialEstado.belongsTo(Tramite, {
-  foreignKey: "tramite_id",
-  targetKey: "id",
-});
-
 TramiteAsignacion.belongsTo(Tramite, {
   foreignKey: "tramite_id",
   targetKey: "id",
@@ -318,4 +313,15 @@ Tramite.belongsTo(Departamento, {
 Tramite.hasMany(TramiteDestinatario, {
   foreignKey: "tramite_id",
   as: "destinatarios",
+});
+
+Tramite.hasMany(TramiteHistorialEstado, {
+  foreignKey: "tramite_id",
+  as: "historialEstados",
+});
+
+TramiteHistorialEstado.belongsTo(Tramite, {
+  foreignKey: "tramite_id",
+  targetKey: "id",
+  as: "tramite",
 });

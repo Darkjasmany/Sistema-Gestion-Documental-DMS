@@ -91,10 +91,10 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       let response;
 
       if (tramite.estado === "DESPACHADO") {
-        // response = await actualizarCompletarTramiteCoordinador(
-        //   tramite.id,
-        //   datosCompletar
-        // );
+        response = await actualizarCompletarTramiteCoordinador(
+          tramite.id,
+          datosCompletar
+        );
       } else {
         response = await finalizarDespacho(tramite.id, datosFinalizar);
         // return;
@@ -207,7 +207,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
           <input
             type="submit"
-            value={id ? "Guardar Cambios" : "Finalizar"}
+            value={id ? "Finalizar" : "Despachar"}
             className="bg-indigo-600 text-white px-5 py-2 rounded-md uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
           />
         </div>
