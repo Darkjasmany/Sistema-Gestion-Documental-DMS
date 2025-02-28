@@ -10,7 +10,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [archivos, setArchivos] = useState([]);
   const [archivosEliminar, setArchivosEliminar] = useState([]);
   const fileInputArchivos = useRef(null); // Referencia al input file
-  const [id, setId] = useState(null);
+  const [idActualizar, setIdActualizar] = useState(null);
   const [parametros, setParametros] = useState([]);
   const [maxUploadFiles, setMaxUploadFiles] = useState(null);
 
@@ -61,7 +61,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         setArchivos(rutasArchivos);
       }, 100); // Retrasar un poco la carga de archivos
 
-      setId(tramite.id);
+      setIdActualizar(tramite.id);
     }
   }, [tramite]);
 
@@ -85,20 +85,23 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       horaDespacho,
       archivos,
       archivosEliminar,
-      id,
+      idActualizar,
     };
     try {
-      let response;
+      // let response;
 
-      if (tramite.estado === "DESPACHADO") {
-        response = await actualizarCompletarTramiteCoordinador(
-          tramite.id,
-          datosCompletar
-        );
-      } else {
-        response = await finalizarDespacho(tramite.id, datosFinalizar);
-        // return;
-      }
+      // if (tramite.estado === "DESPACHADO") {
+      // response = await actualizarCompletarTramiteCoordinador(
+      // tramite.id,
+      // datosCompletar
+      // );
+
+      console.log(datosFinalizar, idActualizar);
+
+      // } else {
+      // console.log(datosFinalizar);
+      // return;
+      const response = await finalizarDespacho(tramite.id, datosFinalizar);
 
       setAlerta({ message: response.message, error: response.error });
 
@@ -207,7 +210,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
           <input
             type="submit"
-            value={id ? "Finalizar" : "Despachar"}
+            value={idActualizar ? "Finalizar" : "Despachar"}
             className="bg-indigo-600 text-white px-5 py-2 rounded-md uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
           />
         </div>
@@ -216,7 +219,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         {archivos.length > 0 && (
           <div className="mb-5">
             <h3 className="text-lg font-bold mb-3">
-              {id ? "Archivos cargados" : "Archivos seleccionados"}
+              {idActualizar ? "Archivos cargados" : "Archivos seleccionados"}
             </h3>
             <ul>
               {archivos.map((archivo, index) => (

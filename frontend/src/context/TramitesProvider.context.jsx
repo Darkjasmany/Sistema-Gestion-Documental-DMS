@@ -418,6 +418,7 @@ export const TramitesProvider = ({ children }) => {
 
   const finalizarDespacho = async (idTramite, datosFinalizar) => {
     if (!token) return;
+    let response;
 
     console.log(datosFinalizar);
     try {
@@ -438,29 +439,45 @@ export const TramitesProvider = ({ children }) => {
         );
       }
 
-      const { data } = await clienteAxios.post(
-        `tramites/despachador/tramites/${idTramite}/finalizar`,
-        formData,
-        getAxiosConfig()
-      );
-
-      console.log(data);
+      if (datosFinalizar.idActualizar) {
+        console.log("edita");
+        const { data } = await clienteAxios.post(
+          `tramites/despachador/tramites/${idTramite}/actualizar`,
+          formData,
+          getAxiosConfig()
+        );
+        response = data;
+      } else {
+        const { data } = await clienteAxios.post(
+          `tramites/despachador/tramites/${idTramite}/finalizar`,
+          formData,
+          getAxiosConfig()
+        );
+        response = data;
+      }
 
       const tramitesAsignados = tramitesAsignarReasignar.map(
         (tramitesAsignarState) =>
-          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+          // tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+          tramitesAsignarState.id === response.id
+            ? response
+            : tramitesAsignarState
       );
 
       setTramitesAsignarReasignar(tramitesAsignados);
 
       const tramitesAsignadosDespachador = tramitesDespachador.map(
         (tramitesAsignarState) =>
-          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+          // tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+          tramitesAsignarState.id === response.id
+            ? response
+            : tramitesAsignarState
       );
 
       setTramitesAsignarReasignar(tramitesAsignadosDespachador);
 
-      return { message: data.message, error: false };
+      // return { message: data.message, error: false };
+      return { message: response.message, error: false };
     } catch (error) {
       console.error(error.response?.data?.message || "Error desconocido");
 
