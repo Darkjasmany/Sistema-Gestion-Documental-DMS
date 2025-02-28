@@ -986,7 +986,8 @@ export const finalizarTramite = async (req, res) => {
     !fechaDespacho ||
     fechaDespacho.trim() === "" ||
     !horaDespacho ||
-    (horaDespacho.trim() === "") | req.files ||
+    horaDespacho.trim() === "" ||
+    !req.files ||
     req.files.length === 0
   ) {
     borrarArchivosTemporales(req.files);

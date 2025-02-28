@@ -42,13 +42,32 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   }, [alerta]);
 
   useEffect(() => {
-    if (tramite) {
-      setFechaDespacho(tramite.fecha_despacho);
+    setFechaDespacho(tramite.fecha_despacho);
 
-      // Corregir acceso a hora_despacho
-      const horaDespachoFormateada = tramite.hora_despacho
-        ? tramite.hora_despacho.slice(0, 5)
-        : "";
+    if (tramite.estado === "DESPACHADO") {
+      // // Corregir acceso a hora_despacho
+      // const horaDespachoFormateada = tramite.hora_despacho
+      //   ? tramite.hora_despacho.slice(0, 5)
+      //   : "";
+      // setHoraDespacho(horaDespachoFormateada);
+
+      // Formatear hora_despacho correctamente
+      const horaDespachoBD = tramite.hora_despacho;
+      let horaDespachoFormateada = "";
+
+      if (horaDespachoBD) {
+        // Si es un string 'HH:MM:SS'
+        if (typeof horaDespachoBD === "string") {
+          horaDespachoFormateada = horaDespachoBD.slice(0, 5);
+        }
+        // Si es un objeto Date (depende de cómo el backend envía los datos)
+        else if (horaDespachoBD instanceof Date) {
+          const horas = String(horaDespachoBD.getHours()).padStart(2, "0");
+          const minutos = String(horaDespachoBD.getMinutes()).padStart(2, "0");
+          horaDespachoFormateada = `${horas}:${minutos}`;
+        }
+      }
+
       setHoraDespacho(horaDespachoFormateada);
 
       setTimeout(() => {
@@ -96,7 +115,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         // );
       } else {
         response = await finalizarDespacho(tramite.id, datosFinalizar);
-        return;
+        // return;
       }
 
       setAlerta({ message: response.message, error: response.error });
