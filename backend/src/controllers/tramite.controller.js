@@ -408,7 +408,7 @@ export const actualizarTramite = async (req, res) => {
 
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
   let nuevoArrayEliminar = [];
-  if (archivosEliminar) {
+  if (archivosEliminar && archivosEliminar !== "undefined") {
     nuevoArrayEliminar = JSON.parse(archivosEliminar)
       .filter((id) => id != null) // Filtrar valores no nulos
       .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
@@ -923,11 +923,18 @@ export const obtenerTramitesPorEstados = async (req, res) => {
     // Asegurarse de que config.include sea un array
     const includes = Array.isArray(config.include) ? [...config.include] : [];
 
-    includes.push({
-      model: TramiteHistorialEstado,
-      as: "historialEstados",
-      attributes: ["usuario_creacion", "estado_anterior", "estado_actual"],
-    });
+    includes.push(
+      {
+        model: TramiteHistorialEstado,
+        as: "historialEstados",
+        attributes: ["usuario_creacion", "estado_anterior", "estado_actual"],
+      },
+      {
+        model: TramiteArchivo,
+        as: "tramiteArchivos",
+        attributes: ["id", "ruta", "estado_carga", "usuario_creacion"],
+      }
+    );
 
     const tramites = await Tramite.findAll({
       where: {
@@ -941,12 +948,14 @@ export const obtenerTramitesPorEstados = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
-    // Modificar la ruta de los archivos y filtrar según la lógica
+    /*   // Modificar la ruta de los archivos y filtrar según la lógica
     const tramitesConRutas = tramites.map((tramite) => {
-      let archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
-        ...archivo.toJSON(),
-        ruta: archivo.ruta.replace(/\\/g, "/"),
-      }));
+      let archivosConRutas = tramite.tramiteArchivos
+        // .filter((archivo) => archivo.estado_carga === "DESPACHADO") // Solo archivos con estado DESPACHADO
+        .map((archivo) => ({
+          ...archivo.toJSON(),
+          ruta: archivo.ruta.replace(/\\/g, "/"),
+        }));
 
       if (estado === "DESPACHADO") {
         const cambioEstado = tramite.historialEstados?.find(
@@ -959,7 +968,9 @@ export const obtenerTramitesPorEstados = async (req, res) => {
 
         archivosConRutas = archivosConRutas.filter(
           (archivo) =>
-            archivo.usuario_creacion.toString() === req.usuario.id.toString() ||
+            (archivo.estado_carga === "DESPACHADO" &&
+              archivo.usuario_creacion.toString() ===
+                req.usuario.id.toString()) ||
             (usuarioCambioEstado &&
               archivo.usuario_creacion.toString() === usuarioCambioEstado)
         );
@@ -970,8 +981,25 @@ export const obtenerTramitesPorEstados = async (req, res) => {
         tramiteArchivos: archivosConRutas,
       };
     });
+*/
+    // Filtrar y modificar archivos
+    const tramitesConArchivos = tramites.map((tramite) => {
+      // Filtrar solo los archivos con estado "DESPACHADO"
+      const archivosFiltrados =
+        tramite.tramiteArchivos
+          ?.filter((archivo) => archivo.estado_carga === "DESPACHADO")
+          .map((archivo) => ({
+            ...archivo.toJSON(),
+            ruta: archivo.ruta.replace(/\\/g, "/"),
+          })) || [];
 
-    res.json(tramitesConRutas);
+      return {
+        ...tramite.toJSON(),
+        tramiteArchivos: archivosFiltrados,
+      };
+    });
+
+    res.json(tramitesConArchivos);
   } catch (error) {
     console.error(
       `Error al obtener los trámites con estado: ${estado}: ${error.message}`
@@ -1238,7 +1266,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
 
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
   let nuevoArrayEliminar = [];
-  if (archivosEliminar) {
+  if (archivosEliminar && archivosEliminar !== "undefined") {
     nuevoArrayEliminar = JSON.parse(archivosEliminar)
       .filter((id) => id != null) // Filtrar valores no nulos
       .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
