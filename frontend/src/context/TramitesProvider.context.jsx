@@ -440,8 +440,7 @@ export const TramitesProvider = ({ children }) => {
       }
 
       if (datosFinalizar.idActualizar) {
-        console.log("edita");
-        const { data } = await clienteAxios.post(
+        const { data } = await clienteAxios.put(
           `tramites/despachador/tramites/${idTramite}/actualizar`,
           formData,
           getAxiosConfig()
@@ -476,7 +475,6 @@ export const TramitesProvider = ({ children }) => {
 
       setTramitesAsignarReasignar(tramitesAsignadosDespachador);
 
-      // return { message: data.message, error: false };
       return { message: response.message, error: false };
     } catch (error) {
       console.error(error.response?.data?.message || "Error desconocido");

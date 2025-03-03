@@ -40,6 +40,25 @@ export const TramiteArchivo = sequelize.define(
         key: "id",
       },
     },
+    estado_carga: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      defaultValue: "INGRESADO",
+      validate: {
+        isIn: [
+          [
+            "INGRESADO",
+            "PENDIENTE",
+            "POR_REVISAR",
+            "COMPLETADO",
+            "DESPACHADO",
+            "FINALIZADO",
+            "POR_CORREGIR",
+            "RECHAZADO",
+          ],
+        ],
+      },
+    },
   },
   {
     tableName: "tramite_archivo",

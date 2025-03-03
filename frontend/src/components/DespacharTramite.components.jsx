@@ -88,19 +88,6 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       idActualizar,
     };
     try {
-      // let response;
-
-      // if (tramite.estado === "DESPACHADO") {
-      // response = await actualizarCompletarTramiteCoordinador(
-      // tramite.id,
-      // datosCompletar
-      // );
-
-      console.log(datosFinalizar, idActualizar);
-
-      // } else {
-      // console.log(datosFinalizar);
-      // return;
       const response = await finalizarDespacho(tramite.id, datosFinalizar);
 
       setAlerta({ message: response.message, error: response.error });

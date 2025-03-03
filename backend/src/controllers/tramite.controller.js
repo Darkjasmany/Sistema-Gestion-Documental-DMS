@@ -1030,7 +1030,8 @@ export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (
       if (estado === "DESPACHADO") {
         archivosConRutas = archivosConRutas.filter(
           (archivo) =>
-            archivo.usuario_creacion.toString() === req.usuario.id.toString() // Solo los archivos cargados por el despachador
+            archivo.estado_carga === "DESPACHADO" &&
+            archivo.usuario_creacion.toString() === req.usuario.id.toString()
         );
       }
 
@@ -1123,6 +1124,7 @@ export const finalizarTramite = async (req, res) => {
           size: file.size, // Guardar en bytes (número entero)
           tramite_id: tramite.id,
           usuario_creacion: req.usuario.id,
+          estado_carga: "DESPACHADO",
         });
       })
     );
@@ -1162,7 +1164,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
   console.log(req.body);
   console.log(req.params);
 
-  const { fechaDespacho, horaDespacho } = req.body;
+  const { fechaDespacho, horaDespacho, archivosEliminar } = req.body;
   const { id } = req.params;
 
   if (!config || Object.keys(config).length === 0) {
@@ -1191,17 +1193,9 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     borrarArchivosTemporales(req.files);
   }
 
-  const archivosNuevos = req.files ? req.files.length : 0;
-  if (archivosNuevos > config.MAX_UPLOAD_FILES) {
-    borrarArchivosTemporales(req.files);
-    return res.status(400).json({
-      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
-      // error: true,
-    });
-  }
-
   const tramite = await Tramite.findByPk(id);
   if (!tramite) {
+    await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(404).json({ message: "No Valido" });
   }
@@ -1211,36 +1205,99 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     tramite.departamento_tramite.toString() !==
       req.usuario.departamento_id.toString()
   ) {
+    await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res
       .status(403)
       .json({ message: "El trámite seleccionado no te pertenece" });
   }
 
-  try {
-    // Ingresar registros de los archivos
-    await Promise.all(
-      req.files.map(async (file) => {
-        await TramiteArchivo.create({
-          file_name: file.filename,
-          original_name: file.originalname,
-          ruta: file.path,
-          tipo: file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
-          size: file.size, // Guardar en bytes (número entero)
-          tramite_id: tramite.id,
-          usuario_creacion: req.usuario.id,
-        });
-      })
-    );
+  const archivosExistentes = await TramiteArchivo.findAll({
+    where: {
+      tramite_id: id,
+      estado_carga: "DESPACHADO",
+    },
+  });
 
+  const archivosNuevos = req.files ? req.files.length : 0;
+
+  if (archivosExistentes.length + archivosNuevos === 0) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({ error: "No se subieron archivos" });
+  }
+
+  if (archivosExistentes.length + archivosNuevos > config.MAX_UPLOAD_FILES) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivo`,
+      // error: true,
+    });
+  }
+
+  // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
+  let nuevoArrayEliminar = [];
+  if (archivosEliminar) {
+    nuevoArrayEliminar = JSON.parse(archivosEliminar)
+      .filter((id) => id != null) // Filtrar valores no nulos
+      .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
+      .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+  }
+
+  // Buscar los archivos a eliminar en la base de datos
+  const archivosAEliminar = await TramiteArchivo.findAll({
+    where: { tramite_id: id, id: nuevoArrayEliminar },
+  });
+
+  // ** Validar si la cantidad de archivos supera el límite permitido
+  const totalArchivos =
+    archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
+
+  console.log(totalArchivos);
+  if (totalArchivos > config.MAX_UPLOAD_FILES) {
+    await transaction.rollback();
+    borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivos`,
+    });
+  }
+
+  try {
     const estadoAnterior = tramite.estado;
 
     // Actualizar datos
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     tramite.hora_despacho = horaDespacho || tramite.hora_despacho;
-    tramite.estado = "DESPACHADO";
+    tramite.usuario_actualizacion = req.usuario.id;
+    tramite.estado = "FINALIZADO";
 
+    // Guardar cambios
     await tramite.save({ transaction });
+
+    // Si hay archivos para eliminar
+    if (archivosEliminar) {
+      await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
+      borrarArchivos(archivosAEliminar);
+    }
+
+    // Ingresar registros de los archivos
+
+    if (req.files && req.files.length > 0) {
+      await Promise.all(
+        req.files.map(async (file) => {
+          await TramiteArchivo.create({
+            file_name: file.filename,
+            original_name: file.originalname,
+            ruta: file.path,
+            tipo: file.mimetype.split("/")[1],
+            size: file.size,
+            tramite_id: tramite.id,
+            usuario_creacion: req.usuario.id,
+          });
+        })
+      );
+    }
 
     // Registrar el cambio de estado en el historial
     await registrarHistorialEstado(
@@ -1255,7 +1312,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
 
     res.status(201).json({
       error: false,
-      message: "Trámite Despachado correctamente",
+      message: "Trámite Finalizado Correctamente",
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
