@@ -77,6 +77,7 @@ export const agregarTramite = async (req, res) => {
     });
   }
 
+  /*
   //Validar que el numero de refencia existe
   if (referenciaTramite) {
     const tramiteExistente = await Tramite.findOne({
@@ -91,6 +92,7 @@ export const agregarTramite = async (req, res) => {
       });
     }
   }
+*/
 
   // Validar si el departamento remitente y el empleado remitente existen
   const departamentoExiste = await Departamento.findByPk(

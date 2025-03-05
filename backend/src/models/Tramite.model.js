@@ -201,11 +201,14 @@ export const Tramite = sequelize.define(
 
 // ** AGREGAR EL HOOK
 //beforeValidate para el campo numeroTramite, garantizas que numeroTramite se establezca antes de que se valide el objeto, evitando que se produzca la violación de la restricción de no nulo.
-Tramite.addHook("beforeValidate", async (tramite) => {
+
+// ** Hace la validacion si existe el numero de referencia, asigna el mismo numero de trmite
+/*Tramite.addHook("beforeValidate", async (tramite) => {
   // console.log(tramite);
   if (tramite.referencia_tramite) {
     // Validar si existe un trámite con la referencia proporcionada
     const referencia = tramite.referencia_tramite.toString();
+    
     const tramiteExistente = await Tramite.findOne({
       where: { numero_tramite: referencia }, // La comparación será string = string
     });
@@ -217,6 +220,51 @@ Tramite.addHook("beforeValidate", async (tramite) => {
       throw new Error(
         "La referencia proporcionada no corresponde a un trámite existente."
       );
+    }
+  } else {
+    // Si no hay referencia, asignar un número de trámite
+    const lastTramite = await Tramite.findOne({
+      order: [["numero_tramite", "DESC"]],
+    });
+    tramite.numero_tramite = lastTramite
+      ? lastTramite.numero_tramite + 1
+      : config.TRAMITE; // : process.env.TRAMITE; // :1; // Iniciar en 1 si no hay registros
+  }
+});*/
+
+Tramite.addHook("beforeValidate", async (tramite) => {
+  if (tramite.referencia_tramite) {
+    const referencia = tramite.referencia_tramite.toString();
+
+    // Busca el trámite con esa referencia
+    const tramiteExistente = await Tramite.findOne({
+      where: { numero_tramite: referencia },
+    });
+
+    // Obtener el último número de trámite en la base de datos
+    const lastTramite = await Tramite.findOne({
+      order: [["numero_tramite", "DESC"]],
+    });
+
+    const ultimoNumeroTramite = lastTramite
+      ? lastTramite.numero_tramite
+      : config.TRAMITE;
+
+    if (tramiteExistente) {
+      // Si existe, asignar el mismo número de trámite
+      tramite.numero_tramite = tramiteExistente.numero_tramite;
+    } else {
+      const referenciaNumerica = parseInt(referencia);
+      if (
+        !isNaN(referenciaNumerica) &&
+        referenciaNumerica <= ultimoNumeroTramite
+      ) {
+        // Si la referencia es un número válido y no supera el último número de trámite, asignarla
+        tramite.numero_tramite = referenciaNumerica;
+      } else {
+        // Si la referencia no es válida o es superior al último número, asignar el siguiente número disponible
+        tramite.numero_tramite = ultimoNumeroTramite + 1;
+      }
     }
   } else {
     // Si no hay referencia, asignar un número de trámite
