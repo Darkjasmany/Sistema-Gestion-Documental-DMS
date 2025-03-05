@@ -162,7 +162,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     // Hasta aqui configuracion por defecto para que funciones, seguido para la paginación
     initialState: {
       pagination: {
-        pageSize: 4, // Cambia este valor al número de registros que deseas mostrar por página
+        pageSize: 15, // Cambia este valor al número de registros que deseas mostrar por página
       },
     },
   });

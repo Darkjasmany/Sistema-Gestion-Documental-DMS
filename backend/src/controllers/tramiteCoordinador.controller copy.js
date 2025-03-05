@@ -687,7 +687,7 @@ export const completarTramite = async (req, res) => {
     // referenciaTramite,
     fechaDespacho,
     observacion,
-    // empleadoDespachadorId,
+    empleadoDespachadorId,
   } = req.body;
 
   if (
@@ -696,29 +696,29 @@ export const completarTramite = async (req, res) => {
     !destinatarios ||
     destinatarios.length === 0 ||
     !observacion ||
-    observacion.trim() === ""
-    //  || !empleadoDespachadorId ||
-    // empleadoDespachadorId.length === 0
+    observacion.trim() === "" ||
+    !empleadoDespachadorId ||
+    empleadoDespachadorId.length === 0
   ) {
     return res.status(400).json({
       message: "Todos los campos obligatorios",
     });
   }
 
-  // const existeUsuarioDespahador = await Usuario.findOne({
-  //   where: {
-  //     id: empleadoDespachadorId,
-  //     // rol: "REVISOR",
-  //     departamento_id: req.usuario.departamento_id,
-  //   },
-  // });
+  const existeUsuarioDespahador = await Usuario.findOne({
+    where: {
+      id: empleadoDespachadorId,
+      // rol: "REVISOR",
+      departamento_id: req.usuario.departamento_id,
+    },
+  });
 
-  // if (!existeUsuarioDespahador) {
-  //   await transaction.rollback();
-  //   return res
-  //     .status(404)
-  //     .json({ message: "Usuario Despachador no encontrado" });
-  // }
+  if (!existeUsuarioDespahador) {
+    await transaction.rollback();
+    return res
+      .status(404)
+      .json({ message: "Usuario Despachador no encontrado" });
+  }
 
   const tramite = await Tramite.findOne({
     where: { id, activo: true },
@@ -811,7 +811,6 @@ export const completarTramite = async (req, res) => {
     }
 
     const estadoAnterior = tramite.estado;
-    /*
     const despachadorAnterior = tramite.usuario_despacho;
     let sms;
 
@@ -832,7 +831,7 @@ export const completarTramite = async (req, res) => {
       tramite.usuario_despacho =
         empleadoDespachadorId || tramite.usuario_despacho;
       sms = "reasignado";
-    }*/
+    }
 
     await registrarHistorialEstado(
       id,
@@ -866,8 +865,7 @@ export const completarTramite = async (req, res) => {
 
     res.json({
       // message: "Revisor asignado/reasignado correctamente",
-      message: "Trámite Aprobado",
-      // message: `Trámite Actualizado Correctamente, Despachador ${sms} correctamente`,
+      message: `Trámite Actualizado Correctamente, Despachador ${sms} correctamente`,
       // sms,
     });
   } catch (error) {
@@ -895,7 +893,7 @@ export const actualizarCompletarTramite = async (req, res) => {
     // referenciaTramite,
     fechaDespacho,
     observacion,
-    // empleadoDespachadorId,
+    empleadoDespachadorId,
   } = req.body;
 
   if (
@@ -904,11 +902,28 @@ export const actualizarCompletarTramite = async (req, res) => {
     !destinatarios ||
     destinatarios.length === 0 ||
     !observacion ||
-    observacion.trim() === ""
+    observacion.trim() === "" ||
+    !empleadoDespachadorId ||
+    empleadoDespachadorId.length === 0
   ) {
     return res.status(400).json({
       message: "Todos los campos obligatorios",
     });
+  }
+
+  const existeUsuarioDespahador = await Usuario.findOne({
+    where: {
+      id: empleadoDespachadorId,
+      // rol: "REVISOR",
+      departamento_id: req.usuario.departamento_id,
+    },
+  });
+
+  if (!existeUsuarioDespahador) {
+    await transaction.rollback();
+    return res
+      .status(404)
+      .json({ message: "Usuario Despachador no encontrado" });
   }
 
   const tramite = await Tramite.findOne({
@@ -1002,6 +1017,27 @@ export const actualizarCompletarTramite = async (req, res) => {
     }
 
     const estadoAnterior = tramite.estado;
+    const despachadorAnterior = tramite.usuario_despacho;
+    let sms;
+
+    // Corregir tramite si necesita, caso contrario solo asigna el despachador
+    if (tramite.estado === "POR_REVISAR" && !despachadorAnterior) {
+      tramite.usuario_despacho =
+        empleadoDespachadorId || tramite.usuario_despacho;
+      sms = "asignado";
+    } else if (tramite.estado === "COMPLETADO" && despachadorAnterior) {
+      // if (
+      //   tramite.usuario_despacho.toString() === empleadoDespachadorId.toString()
+      // ) {
+      //   await transaction.rollback();
+      //   return res.status(400).json({
+      //     message: "El usuario de despacho es el mismo, no se puede reasignar.",
+      //   });
+      // }
+      tramite.usuario_despacho =
+        empleadoDespachadorId || tramite.usuario_despacho;
+      sms = "reasignado";
+    }
 
     await registrarHistorialEstado(
       id,
@@ -1015,7 +1051,6 @@ export const actualizarCompletarTramite = async (req, res) => {
     tramite.estado = "COMPLETADO";
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     tramite.numero_oficio = memo || tramite.numero_oficio;
-
     await tramite.save({ transaction });
 
     // Actualizar observacion del tramite
@@ -1025,7 +1060,7 @@ export const actualizarCompletarTramite = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
-    // console.log(tramiteObservacion);
+    console.log(tramiteObservacion);
 
     if (tramiteObservacion) {
       tramiteObservacion.observacion =
