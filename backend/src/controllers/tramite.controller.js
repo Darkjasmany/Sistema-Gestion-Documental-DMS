@@ -336,6 +336,10 @@ export const actualizarTramite = async (req, res) => {
 
   if (!req.files) {
     borrarArchivosTemporales(req.files);
+    return res.status(400).json({
+      message:
+        "Todos los campos son obligatorios y se debe mantener al menos un archivo",
+    });
   }
 
   const tramite = await Tramite.findOne(
@@ -408,7 +412,8 @@ export const actualizarTramite = async (req, res) => {
 
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
   let nuevoArrayEliminar = [];
-  if (archivosEliminar && archivosEliminar !== "undefined") {
+  // if (archivosEliminar && archivosEliminar !== "undefined") {
+  if (archivosEliminar) {
     nuevoArrayEliminar = JSON.parse(archivosEliminar)
       .filter((id) => id != null) // Filtrar valores no nulos
       .map((id) => parseInt(id)) // Convertir los valores restantes a enteros

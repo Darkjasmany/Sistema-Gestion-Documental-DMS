@@ -5,6 +5,7 @@ import { TramitesProvider } from "./context/TramitesProvider.context";
 
 import AuthLayout from "./layout/Auth.layout";
 import RutaProtegida from "./layout/RutaProtegida.layout";
+import RutaProtegidaCoodinador from "./layout/RutaProtegidaCoordinador.layout";
 
 import Login from "./pages/auth/Login.pages";
 import ConfirmarCuenta from "./pages/auth/ConfirmarCuenta.pages";
@@ -46,19 +47,24 @@ function App() {
               <Route path="asignados" element={<TramitesAsignados />} />
               <Route path="consultar-tramite" element={<ConsultarTramites />} />
               <Route
-                path="asignar-reasignar"
-                element={<TramitesAsignarReasignar />}
-              />
-              <Route
-                path="completar-tramite"
-                element={<TramitesCompletados />}
-              />
-              <Route
                 path="despachar-tramite"
                 element={<TramitesPorDespachar />}
               />
+
               <Route path="perfil" element={<EditarPerfil />} />
               <Route path="cambiar-password" element={<CambiarPassword />} />
+
+              {/* Rutas solo para COORDINADORES */}
+              <Route element={<RutaProtegidaCoodinador />}>
+                <Route
+                  path="asignar-reasignar"
+                  element={<TramitesAsignarReasignar />}
+                />
+                <Route
+                  path="completar-tramite"
+                  element={<TramitesCompletados />}
+                />
+              </Route>
             </Route>
           </Routes>
         </TramitesProvider>

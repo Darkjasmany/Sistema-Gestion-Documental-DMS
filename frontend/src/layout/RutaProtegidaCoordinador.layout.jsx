@@ -1,12 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 import Spinner from "../components/Spinner/Spinner.components";
-import Header from "../components/Header.components";
-import Footer from "../components/Footer.components";
 
 import useAuth from "../hooks/useAuth.hook"; // Para sacar informacion de nuestro provider tenemos que usar nuestro HOOK
 
-const RutaProtegida = () => {
+const RutaProtegidaCoordinador = () => {
   const { auth, cargando } = useAuth();
 
   // Mostrar spinner mientras la autenticación se está cargando
@@ -18,21 +16,12 @@ const RutaProtegida = () => {
     return <Navigate to="/" />; // Si no está autenticado, redirige al login
   }
 
+  if (auth.rol !== "COORDINADOR") {
+    return <Navigate to="/admin" />; // Si no es COORDINADOR, redirige al dashboard general
+  }
+
   // Redirigir o mostrar las rutas protegidas dependiendo del estado de `auth`
-  return (
-    <>
-      <Header />
-      {/* Usamos el operador de encadenamiento opcional para verificar si hay un id en el auth muestra el Outlet */}
-      {auth?.id ? (
-        <main className="container mx-auto mt-10">
-          <Outlet />
-        </main>
-      ) : (
-        <Navigate to="/" replace />
-      )}
-      <Footer />
-    </>
-  );
+  return <Outlet />;
 };
 
-export default RutaProtegida;
+export default RutaProtegidaCoordinador;

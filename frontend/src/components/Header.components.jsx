@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth.hook";
 
 const Header = () => {
-  const { cerrarSesion } = useAuth();
+  const { auth, cerrarSesion } = useAuth();
 
   return (
     <header className="py-10 bg-indigo-600">
@@ -27,24 +27,32 @@ const Header = () => {
               >
                 Ingresar Trámites
               </Link>
-              <Link
-                to={"/admin/asignar-reasignar"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
-                Asignar/Reasignar Trámites
-              </Link>
+
+              {/* Solo visible para COODINADOR */}
+              {auth.rol === "COORDINADOR" && (
+                <Link
+                  to={"/admin/asignar-reasignar"}
+                  className="block px-4 py-2 hover:bg-indigo-700"
+                >
+                  Asignar/Reasignar Trámites
+                </Link>
+              )}
               <Link
                 to={"/admin/asignados"}
                 className="block px-4 py-2 hover:bg-indigo-700"
               >
                 Ver Trámites Asignados
               </Link>
-              <Link
-                to={"/admin/completar-tramite"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
-                Completar Trámites
-              </Link>
+
+              {/* Solo visible para COORDINADOR */}
+              {auth.rol === "COORDINADOR" && (
+                <Link
+                  to={"/admin/completar-tramite"}
+                  className="block px-4 py-2 hover:bg-indigo-700"
+                >
+                  Completar Trámites
+                </Link>
+              )}
               <Link
                 to={"/admin/despachar-tramite"}
                 className="block px-4 py-2 hover:bg-indigo-700"
