@@ -45,7 +45,7 @@ export const Usuario = sequelize.define(
       allowNull: false,
       defaultValue: "USUARIO", // Valor por defecto 'usuario'
       validate: {
-        isIn: [["ADMIN", "COORDINADOR", "REVISOR", "USUARIO"]],
+        isIn: [["ADMIN", "COORDINADOR", "REVISOR", "USUARIO", "DESPACHADOR"]],
       },
     },
     token: {

@@ -5,6 +5,8 @@ import { Tramite } from "../models/Tramite.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
+import { Usuario } from "../models/Usuario.model.js";
+
 import { generarMemo } from "../utils/generarMemo.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
@@ -413,6 +415,88 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
     await transaction.commit();
     return res.json({ message: "Trámite Actualizado Correctamente" });
+  } catch (error) {
+    console.error(
+      `Error al actualizar el trámite seleccionado: ${error.message}`
+    );
+    return res.status(500).json({
+      message:
+        "Error al actualizar el trámite seleccionado, intente nuevamente más tarde.",
+    });
+  }
+};
+export const despacharTramiteRevisor = async (req, res) => {
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
+
+  const transaction = await sequelize.transaction();
+
+  const { id } = req.params;
+
+  const { empleadoDespachadorId } = req.body;
+
+  if (!empleadoDespachadorId || empleadoDespachadorId.length === 0) {
+    return res.status(400).json({
+      message: "Debes seleccionar un despachador",
+    });
+  }
+
+  const existeUsuarioDespahador = await Usuario.findOne({
+    where: {
+      id: empleadoDespachadorId,
+      // rol: "REVISOR",
+      departamento_id: req.usuario.departamento_id,
+    },
+  });
+
+  if (!existeUsuarioDespahador) {
+    await transaction.rollback();
+    return res
+      .status(404)
+      .json({ message: "Usuario Despachador no encontrado" });
+  }
+
+  const tramite = await Tramite.findOne({
+    where: { id, activo: true },
+  });
+
+  if (!tramite) {
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
+
+  if (
+    tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
+    tramite.departamento_tramite.toString() !==
+      req.usuario.departamento_id.toString()
+  ) {
+    return res
+      .status(403)
+      .json({ message: "El trámite seleccionado no te pertenece" });
+  }
+
+  try {
+    const estadoAnterior = tramite.estado;
+    // Registrar Historial Estado
+    await registrarHistorialEstado(
+      id,
+      estadoAnterior,
+      tramite.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    // Actualizar estado
+    tramite.estado = "DESPACHADO";
+    tramite.usuario_despacho =
+      empleadoDespachadorId || tramite.usuario_despacho;
+
+    await tramite.save({ transaction });
+
+    await transaction.commit();
+
+    res.json({
+      message: `Trámite Despachado Correctamente.`,
+    });
   } catch (error) {
     console.error(
       `Error al actualizar el trámite seleccionado: ${error.message}`

@@ -176,4 +176,11 @@ router.put(
   tramiteRevisor.actualizarTramiteRevisor
 );
 
+router.put(
+  "/revisor/tramites/:id/despachar",
+  checkAuth,
+  checkRole("REVISOR"),
+  tramiteRevisor.despacharTramiteRevisor
+);
+
 export default router;

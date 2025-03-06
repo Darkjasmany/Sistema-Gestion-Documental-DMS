@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import clienteAxios from "../config/axios.config";
 import useTramites from "../hooks/useTramites.hook";
+import useAuth from "../hooks/useAuth.hook";
 
 import Alerta from "../components/Alerta.components";
 
 const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
+  const { auth } = useAuth();
+
   const [empleados, setEmpleados] = useState([]);
   const [empleadosSeleccionados, setEmpleadosSeleccionados] = useState([]);
   const [busquedaEmpleado, setBusquedaEmpleado] = useState("");
@@ -21,8 +24,14 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   // const [alcaldia, setAlcaldia] = useState(false);
   const [alerta, setAlerta] = useState({});
 
-  const { completarTramiteRevisorAsignado, actualizarTramiteCompletado } =
-    useTramites();
+  const [empleadosXRol, setEmpleadosXRol] = useState([]);
+  const [empleadoDespachadorId, setEmpleadoDespachadorId] = useState("");
+
+  const {
+    completarTramiteRevisorAsignado,
+    actualizarTramiteCompletado,
+    despacharTramiteCompletado,
+  } = useTramites();
 
   useEffect(() => {
     const fetchEmpleados = async () => {
@@ -53,6 +62,26 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     setSugerenciasEmpleados(filtro);
   }, [empleados, busquedaEmpleado]);
 
+  useEffect(() => {
+    const fecthEmpleadosXRol = async () => {
+      const rol = ["DESPACHADOR"];
+      try {
+        if (!auth.departamentoId) {
+          console.error("departamentoId no está definido en auth");
+          return;
+        }
+        const { data } = await clienteAxios.get(
+          `/usuarios/revisor-departamento/${auth.departamentoId}/${rol}`
+        );
+        setEmpleadosXRol(data);
+      } catch (error) {
+        console.error("Error al cargar los datos", error);
+      }
+    };
+
+    fecthEmpleadosXRol();
+  }, [auth.departamentoId]);
+
   //Función para seleccionar empleados
   const handleSeleccionEmpleado = (empleado) => {
     if (
@@ -79,6 +108,12 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     setEmpleadosSeleccionados(
       empleadosSeleccionados.filter((empleado) => empleado.id !== id)
     );
+  };
+
+  const handleEmpleadoDespachadorChange = (e) => {
+    console.log(e.target.value);
+    const empleadoId = e.target.value;
+    setEmpleadoDespachadorId(empleadoId);
   };
 
   // Inicializar los estados con los datos del trámite cuando se edita
@@ -135,6 +170,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       memo,
       observacion,
       destinatarios: empleadosSeleccionados.map((empleado) => empleado.id),
+      empleadoDespachadorId,
     };
 
     try {
@@ -148,6 +184,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           tramite.id,
           datosCompletar
         );
+      } else if (tramite.estado === "COMPLETADO") {
+        response = await despacharTramiteCompletado(tramite.id, datosCompletar);
       } else {
         response = await completarTramiteRevisorAsignado(
           tramite.id,
@@ -341,6 +379,33 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             </label>
           </div>
         </div> */}
+
+        {/* Campo para designar empleado que despacha */}
+        {tramite.estado === "COMPLETADO" && (
+          <div className="mb-5">
+            <label
+              htmlFor="empleadosxRol"
+              className="text-gray-700 font-medium"
+            >
+              Despachador:
+            </label>
+            <select
+              name="empleadosxRol"
+              id="empleadosxRol"
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              value={empleadoDespachadorId}
+              onChange={handleEmpleadoDespachadorChange}
+            >
+              <option value={""}>Seleccione un depachador</option>
+
+              {empleadosXRol.map((emp) => (
+                <option value={emp.id} key={emp.id}>
+                  {emp.nombres} {emp.apellidos} - {emp.rol}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Botón de Guardar */}
         <div className="text-right">
