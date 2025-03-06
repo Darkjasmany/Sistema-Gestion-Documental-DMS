@@ -1101,7 +1101,9 @@ export const rechazarTramite = async (req, res) => {
 
     // Actualizar observacion del tramite
     const tramiteObservacion = await TramiteObservacion.findOne({
-      where: { tramite_id: id, usuario_creacion: req.usuario.id },
+      // Aqui permite modificar la nota ingresada por el Coordinador
+      // where: { tramite_id: id, usuario_creacion: req.usuario.id },
+      where: { tramite_id: id }, // permite modificar la observación ingresada por el usuario
       order: [["id", "DESC"]],
     });
 
