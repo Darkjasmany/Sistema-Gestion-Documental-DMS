@@ -292,8 +292,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                 : isAsignados
                 ? (selectedTramite.estado === "PENDIENTE"
                     ? "Completar Trámite #"
+                    : selectedTramite.estado === "COMPLETADO"
+                    ? "Despachar Trámite"
                     : "Editar Trámite #") + selectedTramite.numero_tramite
-                : isCompletados
+                : // "Editar Trámite #") + selectedTramite.numero_tramite
+                isCompletados
                 ? (selectedTramite.estado === "POR_REVISAR"
                     ? "Aprobar Trámite #"
                     : "Para Despachar #") + selectedTramite.numero_tramite

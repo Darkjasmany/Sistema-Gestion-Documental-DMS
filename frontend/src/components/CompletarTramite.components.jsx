@@ -83,7 +83,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   // Inicializar los estados con los datos del trámite cuando se edita
   useEffect(() => {
-    console.log(tramite);
+    // console.log(tramite);
 
     setFechaLimite(tramite.fecha_contestacion);
     //
@@ -195,7 +195,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
               type="date"
               value={fechaLimite}
               onChange={(e) => setFechaLimite(e.target.value)}
-              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
               disabled
             />
           </div>
@@ -209,7 +209,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
               type="date"
               value={fechaDespacho}
               onChange={(e) => setFechaDespacho(e.target.value)}
-              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={tramite.estado === "COMPLETADO"}
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             />
           </div>
         </div>
@@ -222,7 +223,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             type="text"
             value={observacionCoordinador}
             // onChange={(e) => setMemo(e.target.value)}
-            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             disabled
           />
         </div>
@@ -236,7 +237,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             type="text"
             value={memo}
             onChange={(e) => setMemo(e.target.value)}
-            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            disabled={tramite.estado === "COMPLETADO"}
+            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             // disabled
           />
         </div>
@@ -252,7 +254,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             placeholder="Escribe un nombre..."
             value={busquedaEmpleado}
             onChange={(e) => setBusquedaEmpleado(e.target.value)}
-            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            disabled={tramite.estado === "COMPLETADO"}
+            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
           />
 
           {/* Sugerencias de empleados */}
@@ -289,7 +292,12 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
                   <button
                     type="button"
                     onClick={() => handleEliminarEmpleado(empleado.id)}
-                    className="text-red-600 font-bold hover:text-red-800"
+                    disabled={tramite.estado === "COMPLETADO"}
+                    className={`font-bold px-2 ${
+                      tramite.estado === "COMPLETADO"
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-red-600 hover:text-red-800"
+                    }`}
                   >
                     X
                   </button>
@@ -306,7 +314,8 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             value={observacion}
             onChange={(e) => setObservacion(e.target.value)}
             placeholder="Observación para completar el trámite"
-            className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            disabled={tramite.estado === "COMPLETADO"}
+            className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
           />
         </div>
 

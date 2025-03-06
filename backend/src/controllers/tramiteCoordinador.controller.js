@@ -850,7 +850,8 @@ export const completarTramite = async (req, res) => {
 
     // Actualizar observacion del tramite
     const tramiteObservacion = await TramiteObservacion.findOne({
-      where: { tramite_id: id, usuario_creacion: req.usuario.id },
+      where: { tramite_id: id },
+      // where: { tramite_id: id, usuario_creacion: req.usuario.id },
       order: [["id", "DESC"]],
     });
 
