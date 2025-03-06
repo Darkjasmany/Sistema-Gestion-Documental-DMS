@@ -36,6 +36,22 @@ export const agregarDespachador = async (req, res) => {
   }
 };
 
+export const cargarDespachadores = async (req, res) => {
+  try {
+    const despachadores = await Despachador.findAll({
+      where: {
+        activo: true,
+      },
+      attributes: ["id", "nombres", "apellidos"],
+    });
+  } catch (error) {
+    console.error(`Error al cargar los empleados: ${error.message}`);
+    return res.status(500).json({
+      message: "Error al cargar los empleados.",
+    });
+  }
+};
+
 export const obtenerDespachadorPorDepartamento = async (req, res) => {
   try {
     const { departamentoId } = req.params;
