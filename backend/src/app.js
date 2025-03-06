@@ -6,6 +6,7 @@ import usuarioRoutes from "./routes/usuario.routes.js";
 import tramiteRoutes from "./routes/tramite.routes.js";
 import empleadoRoutes from "./routes/empleado.routes.js";
 import departamentoRoutes from "./routes/departamento.routes.js";
+import despachadorRoutes from "./routes/despachador.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
@@ -40,6 +41,7 @@ app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/tramites", tramiteRoutes);
 app.use("/api/empleados", empleadoRoutes);
 app.use("/api/departamentos", departamentoRoutes);
+app.use("/api/despachadores", despachadorRoutes);
 app.use("/api/admin", adminRoutes);
 
 /*
