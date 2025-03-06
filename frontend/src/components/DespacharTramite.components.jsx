@@ -2,18 +2,24 @@ import React, { useEffect, useState, useRef, slice } from "react";
 import Alerta from "../components/Alerta.components";
 import clienteAxios from "../config/axios.config";
 import useTramites from "../hooks/useTramites.hook";
+import useAuth from "../hooks/useAuth.hook";
 
 const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [alerta, setAlerta] = useState({});
   const [fechaDespacho, setFechaDespacho] = useState("");
   const [horaDespacho, setHoraDespacho] = useState("");
   const [archivos, setArchivos] = useState([]);
+  const [observacion, setObservacion] = useState("");
   const [archivosEliminar, setArchivosEliminar] = useState([]);
   const fileInputArchivos = useRef(null); // Referencia al input file
   const [idActualizar, setIdActualizar] = useState(null);
   const [parametros, setParametros] = useState([]);
   const [maxUploadFiles, setMaxUploadFiles] = useState(null);
 
+  const [despachadores, setDespachadores] = useState([]);
+  const [despachadorId, setDespachadorId] = useState("");
+
+  const { auth } = useAuth();
   const { finalizarDespacho, tramitesDespachador } = useTramites();
 
   useEffect(() => {
@@ -35,6 +41,26 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   }, []);
 
   useEffect(() => {
+    const fecthDespachadoresXDepartamento = async () => {
+      try {
+        if (!auth.departamentoId) {
+          console.error("departamentoId no está definido en auth");
+          return;
+        }
+        const { data } = await clienteAxios.get(
+          `/despachadores/por-departamento/${auth.departamentoId}`
+        );
+
+        setDespachadores(data);
+      } catch (error) {
+        console.error("Error al cargar los datos", error);
+      }
+    };
+
+    fecthDespachadoresXDepartamento();
+  }, [auth.departamentoId]);
+
+  useEffect(() => {
     if (alerta.message) {
       const timer = setTimeout(() => setAlerta({}), 3000);
       return () => clearTimeout(timer);
@@ -45,7 +71,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     console.log(tramite);
     setFechaDespacho(tramite.fecha_despacho);
 
-    if (tramite.estado === "DESPACHADO") {
+    if (tramite.estado === "POR_FINALIZAR" && tramite.despachadorId !== null) {
       const horaDespachoFormateada = tramite.hora_despacho
         ? tramite.hora_despacho.slice(0, 5) // Corta "HH:MM:SS" a "HH:MM"
         : "";
@@ -61,9 +87,29 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         setArchivos(rutasArchivos);
       }, 100); // Retrasar un poco la carga de archivos
 
+      // Obtener la observación más reciente
+      if (tramite.tramiteObservaciones.length > 0) {
+        const observacionUsuario = [...tramite.tramiteObservaciones].sort(
+          // Obtener la observación más antigua (primera en la lista ordenada)
+          // (a, b) => new Date(a.fecha_creacion) - new Date(b.fecha_creacion)
+          (a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+        )[0].observacion;
+        setObservacion(observacionUsuario);
+      } else {
+        setObservacion("");
+      }
+
+      setDespachadorId(tramite.despachadorId);
+
       setIdActualizar(tramite.id);
     }
   }, [tramite]);
+
+  const handleDespachadorChange = (e) => {
+    // console.log(e.target.value);
+    const empleadoId = e.target.value;
+    setDespachadorId(empleadoId);
+  };
 
   const handleSubmitDespachar = async (e) => {
     e.preventDefault();
@@ -86,6 +132,8 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       archivos,
       archivosEliminar,
       idActualizar,
+      observacion,
+      despachadorId,
     };
     try {
       const response = await finalizarDespacho(tramite.id, datosFinalizar);
@@ -167,6 +215,38 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
               step="300" // Saltos de 5 minutos
             />
           </div>
+        </div>
+
+        {/* Campo para la selección del Despachador*/}
+        <div className="mb-5">
+          <label htmlFor="despachador" className="text-gray-700 font-medium">
+            Despachador:
+          </label>
+          <select
+            name="despachador"
+            id="despachador"
+            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            value={despachadorId}
+            onChange={handleDespachadorChange}
+          >
+            <option value={""}>Seleccione un depachador</option>
+            {despachadores.map((emp) => (
+              <option value={emp.id} key={emp.id}>
+                {emp.nombres} {emp.apellidos}
+              </option>
+            ))}{" "}
+          </select>
+        </div>
+
+        {/* Campo para la Observación */}
+        <div className="mb-5">
+          <label className="text-gray-700 font-medium">Observación:</label>
+          <textarea
+            value={observacion}
+            onChange={(e) => setObservacion(e.target.value)}
+            placeholder="Observación para completar el trámite"
+            className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          />
         </div>
 
         {/* Campo para cargar Archivos */}

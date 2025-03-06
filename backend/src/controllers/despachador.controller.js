@@ -42,8 +42,9 @@ export const cargarDespachadores = async (req, res) => {
       where: {
         activo: true,
       },
-      attributes: ["id", "nombres", "apellidos"],
+      attributes: ["id", "nombres", "apellidos", "departamento_id"],
     });
+    return res.json(despachadores);
   } catch (error) {
     console.error(`Error al cargar los empleados: ${error.message}`);
     return res.status(500).json({

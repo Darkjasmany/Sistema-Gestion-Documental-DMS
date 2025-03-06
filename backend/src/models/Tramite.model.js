@@ -10,6 +10,7 @@ import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
 import { config } from "../config/parametros.config.js";
 import { TramiteDestinatario } from "./TramiteDestinatario.model.js";
 import { Usuario } from "./Usuario.model.js";
+import { Despachador } from "./Despachador.model.js";
 export const Tramite = sequelize.define(
   "tramite",
   {
@@ -171,6 +172,14 @@ export const Tramite = sequelize.define(
       allowNull: true,
       references: {
         model: "usuario",
+        key: "id",
+      },
+    },
+    despachadorId: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "despachador",
         key: "id",
       },
     },
@@ -373,4 +382,14 @@ TramiteHistorialEstado.belongsTo(Tramite, {
   foreignKey: "tramite_id",
   targetKey: "id",
   as: "tramite",
+});
+
+Despachador.hasMany(Tramite, {
+  foreignKey: "despachadorId",
+  sourceKey: "id",
+});
+
+Tramite.belongsTo(Despachador, {
+  foreignKey: "despachadorId",
+  as: "despachador",
 });

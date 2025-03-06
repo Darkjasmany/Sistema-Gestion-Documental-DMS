@@ -111,7 +111,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   };
 
   const handleEmpleadoDespachadorChange = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     const empleadoId = e.target.value;
     setEmpleadoDespachadorId(empleadoId);
   };

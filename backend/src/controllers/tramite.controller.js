@@ -9,6 +9,7 @@ import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { borrarArchivos } from "../utils/borrarArchivos.js";
 import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
+import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
 
 import { config } from "../config/parametros.config.js";
@@ -1094,7 +1095,7 @@ export const finalizarTramite = async (req, res) => {
   console.log(req.body);
   console.log(req.params);
 
-  const { fechaDespacho, horaDespacho } = req.body;
+  const { fechaDespacho, horaDespacho, observacion, despachadorId } = req.body;
   const { id } = req.params;
 
   if (!config || Object.keys(config).length === 0) {
@@ -1109,6 +1110,10 @@ export const finalizarTramite = async (req, res) => {
     fechaDespacho.trim() === "" ||
     !horaDespacho ||
     horaDespacho.trim() === "" ||
+    !observacion ||
+    observacion.trim() === "" ||
+    !despachadorId ||
+    despachadorId.trim() === "" ||
     !req.files ||
     req.files.length === 0
   ) {
@@ -1148,6 +1153,16 @@ export const finalizarTramite = async (req, res) => {
   }
 
   try {
+    const estadoAnterior = tramite.estado;
+
+    // Actualizar datos
+    tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
+    tramite.hora_despacho = horaDespacho || tramite.hora_despacho;
+    tramite.despachadorId = despachadorId || tramite.despachadorId;
+    tramite.estado = "POR_FINALIZAR";
+
+    await tramite.save({ transaction });
+
     // Ingresar registros de los archivos
     await Promise.all(
       req.files.map(async (file) => {
@@ -1159,19 +1174,10 @@ export const finalizarTramite = async (req, res) => {
           size: file.size, // Guardar en bytes (número entero)
           tramite_id: tramite.id,
           usuario_creacion: req.usuario.id,
-          estado_carga: "DESPACHADO",
+          estado_carga: "POR_FINALIZAR",
         });
       })
     );
-
-    const estadoAnterior = tramite.estado;
-
-    // Actualizar datos
-    tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
-    tramite.hora_despacho = horaDespacho || tramite.hora_despacho;
-    tramite.estado = "DESPACHADO";
-
-    await tramite.save({ transaction });
 
     // Registrar el cambio de estado en el historial
     await registrarHistorialEstado(
@@ -1182,6 +1188,15 @@ export const finalizarTramite = async (req, res) => {
       transaction
     );
 
+    await TramiteObservacion.create(
+      {
+        tramite_id: id,
+        observacion,
+        usuario_creacion: req.usuario.id,
+      },
+      { transaction }
+    );
+
     await transaction.commit(); // Confirmar la transacción
 
     res.status(201).json({
@@ -1189,7 +1204,13 @@ export const finalizarTramite = async (req, res) => {
       message: "Trámite Despachado correctamente",
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(
+      `Error al despachar el trámite seleccionado: ${error.message}`
+    );
+    return res.status(500).json({
+      message:
+        "Error al despachar el trámite seleccionado, intente nuevamente más tarde.",
+    });
   }
 };
 
@@ -1198,8 +1219,17 @@ export const actualizarTramiteFinalizado = async (req, res) => {
 
   console.log(req.body);
   console.log(req.params);
+  console.log("editar");
 
-  const { fechaDespacho, horaDespacho, archivosEliminar } = req.body;
+  return;
+  const {
+    fechaDespacho,
+    horaDespacho,
+    archivosEliminar,
+    observacion,
+    despachadorId,
+  } = req.body;
+
   const { id } = req.params;
 
   if (!config || Object.keys(config).length === 0) {
@@ -1213,7 +1243,11 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     !fechaDespacho ||
     fechaDespacho.trim() === "" ||
     !horaDespacho ||
-    horaDespacho.trim() === ""
+    horaDespacho.trim() === "" ||
+    !observacion ||
+    observacion.trim() === "" ||
+    !despachadorId ||
+    despachadorId.trim() === ""
   ) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);

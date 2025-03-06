@@ -438,6 +438,8 @@ export const TramitesProvider = ({ children }) => {
   };
 
   const finalizarDespacho = async (idTramite, datosFinalizar) => {
+    console.log(datosFinalizar);
+
     if (!token) return;
     let response;
 
@@ -446,6 +448,8 @@ export const TramitesProvider = ({ children }) => {
       const formData = new FormData();
       formData.append("fechaDespacho", datosFinalizar.fechaDespacho);
       formData.append("horaDespacho", datosFinalizar.horaDespacho);
+      formData.append("observacion", datosFinalizar.observacion);
+      formData.append("despachadorId", datosFinalizar.despachadorId);
 
       if (datosFinalizar.archivos && datosFinalizar.archivos.length > 0) {
         datosFinalizar.archivos.forEach((archivo) => {
@@ -461,6 +465,7 @@ export const TramitesProvider = ({ children }) => {
       }
 
       if (datosFinalizar.idActualizar) {
+        console.log(datosFinalizar);
         const { data } = await clienteAxios.put(
           `tramites/despachador/tramites/${idTramite}/actualizar`,
           formData,
