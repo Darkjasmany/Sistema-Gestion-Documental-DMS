@@ -91,6 +91,7 @@ export const Tramite = sequelize.define(
             "POR_REVISAR",
             "COMPLETADO",
             "DESPACHADO",
+            "POR_FINALIZAR",
             "FINALIZADO",
             "POR_CORREGIR",
             "RECHAZADO",

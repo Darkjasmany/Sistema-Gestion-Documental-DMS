@@ -4,7 +4,7 @@ import useTramites from "../../hooks/useTramites.hook";
 
 const TramitesPorDespachar = () => {
   const { obtenerTramitesDespachadorData, tramitesDespachador } = useTramites();
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState("COMPLETADO");
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState("DESPACHADO");
   const [refreshTable, setRefreshTable] = useState(false);
 
   const handleFiltro = (estado) => {
@@ -43,23 +43,23 @@ const TramitesPorDespachar = () => {
         <div className="flex gap-4">
           <button
             className={`px-4 py-2 rounded  ${
-              estadoSeleccionado === "COMPLETADO"
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-200"
-            }`}
-            onClick={() => handleFiltro("COMPLETADO")}
-          >
-            Por Despachar
-          </button>
-          <button
-            className={`px-4 py-2 rounded  ${
               estadoSeleccionado === "DESPACHADO"
                 ? "bg-indigo-500 text-white"
                 : "bg-gray-200"
             }`}
             onClick={() => handleFiltro("DESPACHADO")}
           >
-            Despachados
+            Por Despachar
+          </button>
+          <button
+            className={`px-4 py-2 rounded  ${
+              estadoSeleccionado === "POR_FINALIZAR"
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleFiltro("POR_FINALIZAR")}
+          >
+            Por Finalizar
           </button>
         </div>
 
