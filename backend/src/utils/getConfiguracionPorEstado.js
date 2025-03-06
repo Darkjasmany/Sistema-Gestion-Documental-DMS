@@ -174,10 +174,16 @@ const DESPACHADO = {
   include: [...POR_CORREGIR.include],
 };
 
-const FINALIZADO = {
+const POR_FINALIZAR = {
   ...DESPACHADO,
   attributes: [...DESPACHADO.attributes],
   include: [...DESPACHADO.include],
+};
+
+const FINALIZADO = {
+  ...POR_FINALIZAR,
+  attributes: [...POR_FINALIZAR.attributes],
+  include: [...POR_FINALIZAR.include],
 };
 
 // Crear el objeto
@@ -187,8 +193,9 @@ const configuracionEstados = {
   POR_REVISAR,
   COMPLETADO,
   POR_CORREGIR,
-  FINALIZADO,
   DESPACHADO,
+  POR_FINALIZAR,
+  FINALIZADO,
 };
 
 export const getConfiguracionPorEstado = (estado) => {

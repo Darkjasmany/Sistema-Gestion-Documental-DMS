@@ -11,6 +11,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [archivos, setArchivos] = useState([]);
   const [observacion, setObservacion] = useState("");
   const [archivosEliminar, setArchivosEliminar] = useState([]);
+
   const fileInputArchivos = useRef(null); // Referencia al input file
   const [idActualizar, setIdActualizar] = useState(null);
   const [parametros, setParametros] = useState([]);
@@ -68,7 +69,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   }, [alerta]);
 
   useEffect(() => {
-    console.log(tramite);
+    // console.log(tramite);
     setFechaDespacho(tramite.fecha_despacho);
 
     if (tramite.estado === "POR_FINALIZAR" && tramite.despachadorId !== null) {
@@ -169,14 +170,15 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     setArchivos([...archivos, ...archivosSeleccionados]); // Agregar los nuevos
   };
 
+  // Funcion para eliminar archivo
   const eliminarArchivo = (index) => {
     const nuevosArchivos = archivos.filter((_, i) => i !== index);
     setArchivos(nuevosArchivos);
-    setArchivosEliminar(...archivosEliminar, archivos[index].id);
+    setArchivosEliminar([...archivosEliminar, archivos[index].id]);
 
     // Reiniciar el input file si no quedan archivos
     if (nuevosArchivos.length === 0) {
-      fileInputArchivos.current.value = ""; //Reinicia el input type file
+      fileInputArchivos.current.value = ""; // Reinicia el input file
     }
   };
 
@@ -281,38 +283,33 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             className="bg-indigo-600 text-white px-5 py-2 rounded-md uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
           />
         </div>
-
-        {/* Mostrar archivos seleccionados*/}
-        {archivos.length > 0 && (
-          <div className="mb-5">
-            <h3 className="text-lg font-bold mb-3">
-              {idActualizar ? "Archivos cargados" : "Archivos seleccionados"}
-            </h3>
-            <ul>
-              {archivos.map((archivo, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2 select-none "
-                >
-                  <a
-                    href={archivo.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {archivo.name ? archivo.name : archivo.url.split("/").pop()}
-                  </a>
-                  <button
-                    onClick={() => eliminarArchivo(index)}
-                    className="text-red-600 hover:text-red-800 font-extrabold"
-                  >
-                    X
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </form>
+      {/* Mostrar archivos seleccionados*/}
+      {archivos.length > 0 && (
+        <div className="mb-5">
+          <h3 className="text-lg font-bold mb-3">
+            {idActualizar ? "Archivos cargados" : "Archivos seleccionados"}
+          </h3>
+          <ul>
+            {archivos.map((archivo, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2 select-none "
+              >
+                <a href={archivo.url} target="_blank" rel="noopener noreferrer">
+                  {archivo.name ? archivo.name : archivo.url.split("/").pop()}
+                </a>
+                <button
+                  onClick={() => eliminarArchivo(index)}
+                  className="text-red-600 hover:text-red-800 font-extrabold"
+                >
+                  X
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

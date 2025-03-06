@@ -1174,7 +1174,7 @@ export const finalizarTramite = async (req, res) => {
           size: file.size, // Guardar en bytes (número entero)
           tramite_id: tramite.id,
           usuario_creacion: req.usuario.id,
-          estado_carga: "POR_FINALIZAR",
+          estado_carga: "DESPACHADO",
         });
       })
     );
@@ -1219,9 +1219,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
 
   console.log(req.body);
   console.log(req.params);
-  console.log("editar");
 
-  return;
   const {
     fechaDespacho,
     horaDespacho,
@@ -1231,6 +1229,8 @@ export const actualizarTramiteFinalizado = async (req, res) => {
   } = req.body;
 
   const { id } = req.params;
+
+  // return;
 
   if (!config || Object.keys(config).length === 0) {
     borrarArchivosTemporales(req.files);
@@ -1331,6 +1331,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
       message: `Solo puedes subir hasta ${config.MAX_UPLOAD_FILES} archivos`,
     });
   }
+  console.log("editar");
 
   try {
     const estadoAnterior = tramite.estado;
@@ -1339,6 +1340,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     tramite.hora_despacho = horaDespacho || tramite.hora_despacho;
     tramite.usuario_actualizacion = req.usuario.id;
+    tramite.despachadorId = despachadorId || tramite.despachadorId;
     tramite.estado = "FINALIZADO";
 
     // Guardar cambios
@@ -1363,6 +1365,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
             size: file.size,
             tramite_id: tramite.id,
             usuario_creacion: req.usuario.id,
+            estado_carga: "DESPACHADO",
           });
         })
       );
@@ -1376,6 +1379,21 @@ export const actualizarTramiteFinalizado = async (req, res) => {
       req.usuario.id,
       transaction
     );
+
+    // Actualizar observacion del tramite
+    const tramiteObservacion = await TramiteObservacion.findOne({
+      // where: { tramite_id: id },
+      where: { tramite_id: id, usuario_creacion: req.usuario.id },
+      order: [["id", "DESC"]],
+    });
+
+    // console.log(tramiteObservacion);
+
+    if (tramiteObservacion) {
+      tramiteObservacion.observacion =
+        observacion || tramiteObservacion.observacion;
+      await tramiteObservacion.save({ transaction });
+    }
 
     await transaction.commit(); // Confirmar la transacción
 
