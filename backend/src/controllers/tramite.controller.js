@@ -1308,10 +1308,11 @@ export const actualizarTramiteFinalizado = async (req, res) => {
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
   let nuevoArrayEliminar = [];
   if (archivosEliminar && archivosEliminar !== "undefined") {
+    // Convertir los archivos a eliminar en un array de enteros
     nuevoArrayEliminar = JSON.parse(archivosEliminar)
-      .filter((id) => id != null) // Filtrar valores no nulos
-      .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
-      .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+      .filter((id) => id != null) // Filtrar valores nulos
+      .map((id) => parseInt(id)) // Convertir valores restantes a enteros
+      .filter((id) => !isNaN(id)); // Filtrar valores NaN
   }
 
   // Buscar los archivos a eliminar en la base de datos
@@ -1353,7 +1354,6 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     }
 
     // Ingresar registros de los archivos
-
     if (req.files && req.files.length > 0) {
       await Promise.all(
         req.files.map(async (file) => {

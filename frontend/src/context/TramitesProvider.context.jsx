@@ -460,7 +460,7 @@ export const TramitesProvider = ({ children }) => {
       if (datosFinalizar.archivosEliminar) {
         formData.append(
           "archivosEliminar",
-          JSON.stringify(tramite.archivosEliminar)
+          JSON.stringify(datosFinalizar.archivosEliminar)
         );
       }
 
