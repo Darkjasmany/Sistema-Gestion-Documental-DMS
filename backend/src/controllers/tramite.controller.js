@@ -15,6 +15,7 @@ import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js
 import { config } from "../config/parametros.config.js";
 import { Usuario } from "../models/Usuario.model.js";
 import { TramiteHistorialEstado } from "../models/TramiteHistorialEstado.model.js";
+import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -828,12 +829,17 @@ export const buscarTramites = async (req, res) => {
         "fecha_documento",
         "prioridad",
         "descripcion",
+        "estado",
         "externo",
         "createdAt",
         "fecha_contestacion",
         "fecha_despacho",
         "numero_oficio",
-        "estado",
+        "fecha_contestacion",
+        "usuario_despacho",
+        "fecha_despacho",
+        "hora_despacho",
+        "despachadorId",
         [
           // Concatenar nombres de departamentos destinatarios
           Sequelize.literal(`
@@ -864,7 +870,7 @@ export const buscarTramites = async (req, res) => {
             "id",
             [
               Sequelize.literal(
-                '"remitente"."nombres" || \' \' || "remitente"."apellidos"'
+                "CONCAT(remitente.nombres, ' ',  remitente.apellidos)"
               ),
               "nombreCompleto",
             ],
@@ -878,6 +884,18 @@ export const buscarTramites = async (req, res) => {
         },
         {
           model: Usuario,
+          as: "usuario",
+          attributes: [
+            [
+              Sequelize.literal(
+                'CONCAT("usuario"."nombres", \' \', "usuario"."apellidos")'
+              ),
+              "UsuarioCreacion",
+            ],
+          ],
+        },
+        {
+          model: Usuario,
           as: "usuarioRevisor",
           attributes: [
             [
@@ -885,6 +903,62 @@ export const buscarTramites = async (req, res) => {
                 '"usuarioRevisor"."nombres" || \' \' || "usuarioRevisor"."apellidos"'
               ),
               "UsuarioRevisor",
+            ],
+          ],
+        },
+        {
+          model: TramiteObservacion,
+          as: "tramiteObservaciones",
+          attributes: [
+            "id",
+            "observacion",
+            "fecha_creacion",
+            "usuario_creacion",
+          ],
+          //
+          include: [
+            {
+              model: Usuario, // <-- ¡Esta línea es crucial! Indica el modelo para el alias
+              as: "usuarioCreacionObservacion",
+              attributes: ["id", "nombres", "apellidos"],
+              required: false, // Permite que se retornen trámites sin observaciones
+            },
+          ],
+          //
+        },
+        {
+          model: TramiteDestinatario,
+          as: "destinatarios",
+          attributes: [
+            "tramite_id",
+            "departamento_destinatario",
+            "destinatario_id",
+          ],
+
+          include: [
+            {
+              model: Empleado,
+              as: "destinatario",
+              attributes: ["id", "nombres", "apellidos"],
+            },
+            {
+              model: Departamento,
+              as: "departamentoDestinatario",
+              attributes: ["id", "nombre"],
+            },
+          ],
+
+          where: { activo: true },
+        },
+        {
+          model: Usuario,
+          as: "usuarioDespacho", // Usar el alias correcto
+          attributes: [
+            [
+              Sequelize.literal(
+                'CONCAT("usuarioDespacho"."nombres", \' \', "usuarioDespacho"."apellidos")' // Referenciar el alias
+              ),
+              "usuarioDespacho",
             ],
           ],
         },
