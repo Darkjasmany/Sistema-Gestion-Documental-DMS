@@ -6,7 +6,7 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import Alerta from "./Alerta.components";
+import Alerta from "../components/Alerta.components";
 import { formatearFecha } from "../helpers/formatearFecha.helpers";
 import AsignarReasignarTramite from "./AsignarReasignarTramite.components";
 import CompletarTramite from "./CompletarTramite.components";
@@ -107,26 +107,51 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         ),
       });
     }
-    if (isAsignados || isCompletados || isDespachar) {
+
+    if (isAsignados) {
       baseColumns.push({
         header: "Acción",
         cell: ({ row }) => (
           <button
-            className="bg-purple-600 text-white px-3 py-1 rounded"
+            className="bg-blue-500 text-white px-3 py-1 rounded"
             onClick={() => openModal(row.original)}
           >
-            {isAsignados &&
-              (row.original.estado === "PENDIENTE" ? "Completar" : "Editar")}
-            {isCompletados &&
-              (row.original.estado === "POR_REVISAR" ? "Aprobar" : "Editar")}
-            {isDespachar && "Despachar"}
+            {row.original.estado === "PENDIENTE" ? "Completar" : "Editar"}
+          </button>
+        ),
+      });
+    }
+
+    if (isCompletados) {
+      baseColumns.push({
+        header: "Acción",
+        cell: ({ row }) => (
+          <button
+            className="bg-blue-500 text-white px-3 py-1 rounded"
+            onClick={() => openModal(row.original)}
+          >
+            {row.original.estado === "POR_REVISAR" ? "Aprobar" : "Editar"}
+          </button>
+        ),
+      });
+    }
+
+    if (isDespachar) {
+      baseColumns.push({
+        header: "Acción",
+        cell: ({ row }) => (
+          <button
+            className="bg-blue-500 text-white px-3 py-1 rounded"
+            onClick={() => openModal(row.original)}
+          >
+            {row.original.estado === "COMPLETADO" ? "Entregar" : "Finalizar"}
           </button>
         ),
       });
     }
 
     return baseColumns;
-  }, [tramiteExpandido]);
+  }, [tramiteExpandido, isAsignarReasignar, isAsignados, isCompletados]);
 
   // Configuración de react-table por defecto para que funcione
   const table = useReactTable({
@@ -188,48 +213,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                           {row.original.descripcion}
                         </p>
 
-                        <p>
-                          <strong>Prioridad:</strong> {row.original.prioridad}
-                        </p>
-
-                        {row.original.fecha_contestacion && (
+                        {row.original.usuarioRevisor?.UsuarioRevisor && (
                           <p>
-                            <strong>Fecha Contestación:</strong>{" "}
-                            {row.original.fecha_contestacion}
+                            <strong>Usuario Revisor:</strong>{" "}
+                            {row.original.usuarioRevisor.UsuarioRevisor}
                           </p>
-                        )}
-
-                        {row.original.numero_oficio && (
-                          <p>
-                            <strong>Número de Memo|Oficio Contestación:</strong>{" "}
-                            {row.original.numero_oficio}
-                          </p>
-                        )}
-
-                        {row.original.destinatarios && (
-                          <>
-                            <p>
-                              <strong>Destinatarios:</strong>
-                            </p>
-                            <ul className="list-disc pl-5">
-                              {row.original.destinatarios?.length > 0 ? (
-                                row.original.destinatarios.map(
-                                  (destinatario) => (
-                                    <li key={destinatario.destinatario.id}>
-                                      {destinatario.destinatario.nombres +
-                                        " " +
-                                        destinatario.destinatario.apellidos +
-                                        " - " +
-                                        destinatario.departamentoDestinatario
-                                          .nombre}
-                                    </li>
-                                  )
-                                )
-                              ) : (
-                                <li>No hay destinatarios</li>
-                              )}
-                            </ul>
-                          </>
                         )}
 
                         <p>
@@ -262,25 +250,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                           <strong>Usuario Creación:</strong>{" "}
                           {row.original.usuario?.UsuarioCreacion}
                         </p>
-
                         <p>
                           <strong>Fecha de Creación:</strong>{" "}
                           {formatearFecha(row.original.createdAt)}
                         </p>
-
-                        {row.original.usuarioRevisor?.UsuarioRevisor && (
-                          <p>
-                            <strong>Usuario Revisor:</strong>{" "}
-                            {row.original.usuarioRevisor.UsuarioRevisor}
-                          </p>
-                        )}
-
-                        {row.original.usuarioDespacho?.usuarioDespacho && (
-                          <p>
-                            <strong>Usuario Despacho:</strong>{" "}
-                            {row.original.usuarioDespacho.usuarioDespacho}
-                          </p>
-                        )}
                       </div>
                     </td>
                   </tr>
