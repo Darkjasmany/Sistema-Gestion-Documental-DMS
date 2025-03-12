@@ -21,12 +21,14 @@ const Header = () => {
             </Link>
 
             <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-500 p-2 shadow-lg rounded-lg">
-              <Link
-                to={"/admin"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
-                Ingresar Trámites
-              </Link>
+              {auth.rol !== "DESPACHADOR" && (
+                <Link
+                  to={"/admin"}
+                  className="block px-4 py-2 hover:bg-indigo-700"
+                >
+                  Ingresar Trámites
+                </Link>
+              )}
 
               {/* Solo visible para COODINADOR */}
               {auth.rol === "COORDINADOR" && (
@@ -37,12 +39,15 @@ const Header = () => {
                   Asignar/Reasignar Trámites
                 </Link>
               )}
-              <Link
-                to={"/admin/asignados"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
-                Ver Trámites Asignados
-              </Link>
+
+              {auth.rol !== "DESPACHADOR" && (
+                <Link
+                  to={"/admin/asignados"}
+                  className="block px-4 py-2 hover:bg-indigo-700"
+                >
+                  Ver Trámites Asignados
+                </Link>
+              )}
 
               {/* Solo visible para COORDINADOR */}
               {auth.rol === "COORDINADOR" && (
@@ -53,12 +58,14 @@ const Header = () => {
                   Completar Trámites
                 </Link>
               )}
-              <Link
-                to={"/admin/despachar-tramite"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
-                Trámites Por Despachar
-              </Link>
+              {auth.rol === "DESPACHADOR" && (
+                <Link
+                  to={"/admin/despachar-tramite"}
+                  className="block px-4 py-2 hover:bg-indigo-700"
+                >
+                  Trámites Por Despachar
+                </Link>
+              )}
               <Link
                 to={"/admin/consultar-tramite"}
                 className="block px-4 py-2 hover:bg-indigo-700"
