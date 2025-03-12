@@ -840,22 +840,6 @@ export const buscarTramites = async (req, res) => {
         "fecha_despacho",
         "hora_despacho",
         "despachadorId",
-        [
-          // Concatenar nombres de departamentos destinatarios
-          Sequelize.literal(`
-        (
-         SELECT STRING_AGG(
-            CONCAT(e.nombres, ' ', e.apellidos , ', ', d."nombre"), 
-            ' - '
-        ) 
-        FROM tramite_destinatario td
-        INNER JOIN empleado e ON e.id = td.destinatario_id
-        INNER JOIN departamento d ON d.id = td.departamento_destinatario
-        WHERE td.tramite_id = tramite.id
-        )
-      `),
-          "departamentosDestinatarios",
-        ],
       ],
       include: [
         {
@@ -905,6 +889,7 @@ export const buscarTramites = async (req, res) => {
               "UsuarioRevisor",
             ],
           ],
+          required: false,
         },
         {
           model: TramiteObservacion,
@@ -915,16 +900,15 @@ export const buscarTramites = async (req, res) => {
             "fecha_creacion",
             "usuario_creacion",
           ],
-          //
           include: [
             {
-              model: Usuario, // <-- ¡Esta línea es crucial! Indica el modelo para el alias
+              model: Usuario,
               as: "usuarioCreacionObservacion",
               attributes: ["id", "nombres", "apellidos"],
-              required: false, // Permite que se retornen trámites sin observaciones
+              required: false,
             },
           ],
-          //
+          order: [["fecha_creacion", "ASC"]],
         },
         {
           model: TramiteDestinatario,
@@ -947,7 +931,7 @@ export const buscarTramites = async (req, res) => {
               attributes: ["id", "nombre"],
             },
           ],
-
+          required: false,
           where: { activo: true },
         },
         {
@@ -961,6 +945,7 @@ export const buscarTramites = async (req, res) => {
               "usuarioDespacho",
             ],
           ],
+          required: false,
         },
       ],
       order: [["id", "ASC"]],

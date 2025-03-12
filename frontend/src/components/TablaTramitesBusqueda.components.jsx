@@ -267,7 +267,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                               <strong>Observaciones:</strong>
                             </p>
                             {/* Cambiado list-disc por list-decimal */}
-                            <ul className="list-decimal pl-5">
+                            <ul className="list-disc pl-5">
                               {" "}
                               {row.original.tramiteObservaciones?.length > 0 ? (
                                 row.original.tramiteObservaciones.map(
