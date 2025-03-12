@@ -232,6 +232,76 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                           </>
                         )}
 
+                        {/* 
+                        {row.original.tramiteObservaciones && (
+                          <>
+                            <p>
+                              <strong>Observaciones:</strong>
+                            </p>
+                            <ul className="list-disc pl-5">
+                              {row.original.tramiteObservaciones?.length > 0 ? (
+                                row.original.tramiteObservaciones.map(
+                                  (observacion) => (
+                                    <li key={observacion.id}>
+                                      {" Usuario Creación: " +
+                                        observacion.usuarioCreacionObservacion
+                                          .nombres +
+                                        observacion.usuarioCreacionObservacion
+                                          .apellidos +
+                                        " Detalle " +
+                                        observacion.observacion}
+                                    </li>
+                                  )
+                                )
+                              ) : (
+                                <li>No hay destinatarios</li>
+                              )}
+                            </ul>
+                          </>
+                        )}
+                        */}
+
+                        {row.original.tramiteObservaciones && (
+                          <>
+                            <p>
+                              <strong>Observaciones:</strong>
+                            </p>
+                            {/* Cambiado list-disc por list-decimal */}
+                            <ul className="list-decimal pl-5">
+                              {" "}
+                              {row.original.tramiteObservaciones?.length > 0 ? (
+                                row.original.tramiteObservaciones.map(
+                                  (observacion) => (
+                                    <li key={observacion.id}>
+                                      <div className="flex flex-col">
+                                        <span className="mb-1">
+                                          <strong>Usuario Creación:</strong>{" "}
+                                          {
+                                            observacion
+                                              .usuarioCreacionObservacion
+                                              .nombres
+                                          }{" "}
+                                          {
+                                            observacion
+                                              .usuarioCreacionObservacion
+                                              .apellidos
+                                          }
+                                        </span>
+                                        <span>
+                                          <strong>Detalle:</strong>{" "}
+                                          {observacion.observacion}
+                                        </span>
+                                      </div>
+                                    </li>
+                                  )
+                                )
+                              ) : (
+                                <li>No hay observaciones</li>
+                              )}
+                            </ul>
+                          </>
+                        )}
+
                         <p>
                           <strong>Archivos:</strong>
                         </p>
