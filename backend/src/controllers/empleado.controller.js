@@ -66,14 +66,25 @@ export const cargarEmpleados = async (req, res) => {
       where: {
         activo: true,
       },
-      attributes: ["id", "cedula", "nombres", "apellidos", "email"],
+      attributes: [
+        "id",
+        "cedula",
+        "nombres",
+        "apellidos",
+        "email",
+        "departamento_id",
+      ], // Asegúrate de incluir los campos necesarios
+      include: [
+        {
+          model: Departamento,
+          attributes: ["nombre"], // Incluye el nombre del departamento
+        },
+      ],
     });
     res.json(empleados);
   } catch (error) {
-    console.error(`Error al cargar los empleados: ${error.message}`);
-    return res.status(500).json({
-      message: "Error al cargar los empleados.",
-    });
+    console.error(`Error al cargar empleados: ${error.message}`);
+    return res.status(500).json({ message: "Error al cargar empleados." });
   }
 };
 
@@ -124,45 +135,51 @@ export const obtenerEmpleadoPorDepartamento = async (req, res) => {
 };
 
 export const actualizarEmpleado = async (req, res) => {
+  const { id } = req.params;
+  const { cedula, nombres, apellidos, email, departamentoId } = req.body;
+
+  if (!cedula || !nombres || !apellidos || !email || !departamentoId)
+    return res
+      .status(400)
+      .json({ message: "Todos los campos son obligatorios" });
+
   try {
-    const { id } = req.params;
-    const { cedula, nombres, apellidos, email, departamentoId } = req.body;
+    const empleado = await Empleado.findByPk(id);
+    if (!empleado)
+      return res.status(404).json({ message: "Empleado no encontrado" });
 
-    const empleadoActualizar = await Empleado.findByPk(id);
-    if (!empleadoActualizar)
-      return res.status(400).json({ message: "Empleado no válido" });
+    await empleado.update({
+      cedula,
+      nombres,
+      apellidos,
+      email,
+      departamento_id: departamentoId,
+    });
 
-    empleadoActualizar.cedula = cedula || empleadoActualizar.cedula;
-    empleadoActualizar.nombres = nombres || empleadoActualizar.nombres;
-    empleadoActualizar.apellidos = apellidos || empleadoActualizar.apellidos;
-    empleadoActualizar.email = email || empleadoActualizar.email;
-    empleadoActualizar.departamento_id =
-      departamentoId || empleadoActualizar.departamento_id;
-
-    await empleadoActualizar.save();
-
-    res.json(empleadoActualizar);
+    res.json({ message: "Empleado actualizado correctamente" });
   } catch (error) {
     console.error(`Error al actualizar el empleado: ${error.message}`);
-    return res.status(500).json({
-      message: "Error al actualizar el empleado.",
-    });
+    return res
+      .status(500)
+      .json({ message: "Error al actualizar el empleado." });
   }
 };
 
 export const eliminarEmpleado = async (req, res) => {
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
+  try {
     const empleado = await Empleado.findByPk(id);
     if (!empleado)
-      return res.status(400).json({ message: "Empleado no válido" });
+      return res.status(404).json({ message: "Empleado no encontrado" });
 
-    await Empleado.destroy({ where: { id } });
+    await empleado.update({ activo: false });
+
+    res.json({ message: "Empleado desactivado correctamente" });
   } catch (error) {
     console.error(`Error al eliminar el empleado: ${error.message}`);
-    return res.status(500).json({
-      message: "Error al eliminar el empleado.",
-    });
+    return res
+      .status(500)
+      .json({ message: "Error al desactivar el empleado." });
   }
 };

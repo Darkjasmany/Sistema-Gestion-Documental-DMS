@@ -92,75 +92,58 @@ const AdminProvider = ({ children }) => {
   };
 
   //** EMPLEADOS */
-  const obtenerEmpleados = async () => {
+  // Dentro de AdminProvider
+  const agregarEmpleado = async (empleado) => {
     try {
-      const response = await fetch("/api/empleados"); // Aquí va tu URL de la API
-      const data = await response.json();
-      setEmpleados(data);
-      return data;
-    } catch (error) {
-      console.error("Error al obtener empleados:", error);
-    }
-  };
-
-  // Función para agregar un nuevo empleado
-  const guardarEmpleado = async (empleado) => {
-    try {
-      const response = await fetch("/api/empleados", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(empleado),
-      });
-
-      const data = await response.json();
-      setEmpleados((prevState) => [...prevState, data]); // Agregar el nuevo empleado a la lista
-      return data;
+      const response = await clienteAxios.post(
+        "/empleados",
+        empleado,
+        getAxiosConfigJSON()
+      );
+      return response.data;
     } catch (error) {
       console.error("Error al agregar empleado:", error);
+      throw error;
     }
   };
 
-  // Función para obtener un empleado específico para editar
-  const obtenerEmpleado = async (id) => {
+  const obtenerEmpleados = async () => {
     try {
-      const response = await fetch(`/api/empleados/${id}`);
-      const data = await response.json();
-      return data;
+      const response = await clienteAxios.get(
+        "/empleados",
+        getAxiosConfigJSON()
+      );
+      setEmpleados(response.data); // Guarda los empleados en el estado
     } catch (error) {
-      console.error("Error al obtener empleado:", error);
+      console.error("Error al obtener empleados:", error);
+      throw error;
     }
   };
 
-  // Función para actualizar un empleado
   const actualizarEmpleado = async (id, empleado) => {
     try {
-      const response = await fetch(`/api/empleados/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(empleado),
-      });
-
-      const data = await response.json();
-      setEmpleados((prevState) =>
-        prevState.map((emp) => (emp.id === id ? data : emp))
-      ); // Actualizar el empleado en la lista
-      return data;
+      const response = await clienteAxios.put(
+        `/empleados/${id}`,
+        empleado,
+        getAxiosConfigJSON()
+      );
+      return response.data;
     } catch (error) {
       console.error("Error al actualizar empleado:", error);
+      throw error;
     }
   };
 
-  // Función para eliminar un empleado
   const eliminarEmpleado = async (id) => {
     try {
-      await fetch(`/api/empleados/${id}`, { method: "DELETE" });
-      setEmpleados((prevState) => prevState.filter((emp) => emp.id !== id)); // Eliminar de la lista local
+      const response = await clienteAxios.delete(
+        `/empleados/${id}`,
+        getAxiosConfigJSON()
+      );
+      return response.data;
     } catch (error) {
       console.error("Error al eliminar empleado:", error);
+      throw error;
     }
   };
 
@@ -174,9 +157,8 @@ const AdminProvider = ({ children }) => {
         obtenerDepartamento,
         eliminarDepartamento,
         actualizarDepartamento,
-        guardarEmpleado,
+        agregarEmpleado,
         obtenerEmpleados,
-        obtenerEmpleado,
         actualizarEmpleado,
         eliminarEmpleado,
         cargando,

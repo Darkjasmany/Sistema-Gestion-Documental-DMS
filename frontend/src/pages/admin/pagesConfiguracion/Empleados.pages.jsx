@@ -1,17 +1,299 @@
+import React, { useState, useEffect } from "react";
+import useAdmin from "../../../hooks/useAdmin.hooks";
+import clienteAxios from "../../../config/axios.config";
+
 const Empleados = () => {
+  const {
+    guardarEmpleado,
+    obtenerEmpleados,
+    actualizarEmpleado,
+    eliminarEmpleado,
+    obtenerEmpleado,
+  } = useAdmin();
+
+  const [empleados, setEmpleados] = useState([]);
+  const [departamentos, setDepartamentos] = useState([]);
+  const [nuevoEmpleado, setNuevoEmpleado] = useState({
+    cedula: "",
+    nombres: "",
+    apellidos: "",
+    email: "",
+    departamentoId: "",
+  });
+  const [empleadoAEditar, setEmpleadoAEditar] = useState(null);
+
+  // Cargar departamentos al montar el componente
+  useEffect(() => {
+    const fetchDepartamentos = async () => {
+      try {
+        const { data } = await clienteAxios("/departamentos");
+        setDepartamentos(data);
+      } catch (error) {
+        console.error("Error al cargar departamentos:", error);
+      }
+    };
+
+    fetchDepartamentos();
+  }, []);
+
+  useEffect(() => {
+    cargarEmpleados();
+  }, []);
+
+  const cargarEmpleados = async () => {
+    try {
+      const empleadosData = await obtenerEmpleados();
+      if (Array.isArray(empleadosData)) {
+        setEmpleados(empleadosData);
+      } else {
+        console.error("La respuesta no es un arreglo de empleados");
+      }
+    } catch (error) {
+      console.error("Error al cargar empleados:", error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setNuevoEmpleado({
+      ...nuevoEmpleado,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const agregarEmpleado = async () => {
+    try {
+      if (empleadoAEditar) {
+        await actualizarEmpleado(empleadoAEditar.id, nuevoEmpleado);
+        setEmpleadoAEditar(null); // Limpiar el empleado a editar
+      } else {
+        await guardarEmpleado(nuevoEmpleado);
+      }
+      cargarEmpleados();
+      setNuevoEmpleado({
+        cedula: "",
+        nombres: "",
+        apellidos: "",
+        email: "",
+        departamentoId: "",
+      }); // Limpiar formulario después de agregar/editar
+    } catch (error) {
+      console.error("Error al agregar/actualizar empleado:", error);
+    }
+  };
+
+  const editarEmpleado = async (id) => {
+    try {
+      const empleado = await obtenerEmpleado(id);
+      setEmpleadoAEditar(empleado);
+      setNuevoEmpleado({
+        cedula: empleado.cedula,
+        nombres: empleado.nombres,
+        apellidos: empleado.apellidos,
+        email: empleado.email,
+        departamentoId: empleado.departamento_id, // Cargar el ID del departamento
+      }); // Cargar datos en el formulario
+    } catch (error) {
+      console.error("Error al obtener empleado para editar:", error);
+    }
+  };
+
+  const eliminarEmpleadoSeleccionado = async (id) => {
+    try {
+      await eliminarEmpleado(id);
+      cargarEmpleados();
+    } catch (error) {
+      console.error("Error al eliminar empleado:", error);
+    }
+  };
+
+  // Paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+  const empleadosPorPagina = 10;
+
+  const indexUltimoEmpleado = paginaActual * empleadosPorPagina;
+  const indexPrimerEmpleado = indexUltimoEmpleado - empleadosPorPagina;
+  const empleadosVisibles = Array.isArray(empleados)
+    ? empleados.slice(indexPrimerEmpleado, indexUltimoEmpleado)
+    : [];
+
+  const totalPaginas = Math.ceil(empleados.length / empleadosPorPagina);
+
+  const cambiarPagina = (numeroPagina) => {
+    if (numeroPagina >= 1 && numeroPagina <= totalPaginas) {
+      setPaginaActual(numeroPagina);
+    }
+  };
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-2">
         Gestión de Empleados
       </h2>
-      <p className="text-gray-600">
-        Aquí podrás registrar, editar o eliminar los empleados del sistema. En
-        futuras versiones también podrás asignar roles o departamentos.
+      <p className="text-gray-600 mb-6">
+        Administra los empleados del sistema y gestiona su información.
       </p>
 
-      {/* BONUS: Aquí podrías poner una tabla o formulario en el futuro */}
-      <div className="mt-6 text-sm text-gray-500 italic">
-        (Módulo en desarrollo - próximamente funcionalidades disponibles)
+      {/* Formulario para agregar o editar empleado */}
+      <div className="mb-10">
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+          {empleadoAEditar ? "Editar Empleado" : "Agregar Empleado"}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            name="cedula"
+            placeholder="Cédula"
+            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+            value={nuevoEmpleado.cedula}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            name="nombres"
+            placeholder="Nombres"
+            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+            value={nuevoEmpleado.nombres}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            name="apellidos"
+            placeholder="Apellidos"
+            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+            value={nuevoEmpleado.apellidos}
+            onChange={handleInputChange}
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+            value={nuevoEmpleado.email}
+            onChange={handleInputChange}
+          />
+          {/* Select para departamento */}
+          <select
+            name="departamentoId"
+            value={nuevoEmpleado.departamentoId}
+            onChange={handleInputChange}
+            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+          >
+            <option value="">Seleccione un Departamento</option>
+            {departamentos.map((departamento) => (
+              <option key={departamento.id} value={departamento.id}>
+                {departamento.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={agregarEmpleado}
+          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2 rounded-lg shadow transition"
+        >
+          {empleadoAEditar ? "Actualizar" : "Agregar"}
+        </button>
+      </div>
+
+      {/* Tabla de empleados */}
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">
+          Lista de Empleados
+        </h3>
+
+        <div className="overflow-x-auto border rounded-lg shadow-sm">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  #
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Nombres
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Apellidos
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Cédula
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Email
+                </th>
+                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 bg-white">
+              {empleadosVisibles.map((empleado, index) => (
+                <tr key={empleado.id}>
+                  <td className="px-4 py-2 text-sm text-gray-600">
+                    {indexPrimerEmpleado + index + 1}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {empleado.nombres}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {empleado.apellidos}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {empleado.cedula}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {empleado.email}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-center space-x-2">
+                    <button
+                      onClick={() => editarEmpleado(empleado.id)}
+                      className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 px-3 py-1 rounded-md text-xs font-medium"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => eliminarEmpleadoSeleccionado(empleado.id)}
+                      className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Paginación */}
+        <div className="mt-4 flex justify-end items-center gap-2 text-sm text-gray-600">
+          <button
+            onClick={() => cambiarPagina(paginaActual - 1)}
+            disabled={paginaActual === 1}
+            className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-40"
+          >
+            Anterior
+          </button>
+
+          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((num) => (
+            <button
+              key={num}
+              onClick={() => cambiarPagina(num)}
+              className={`px-3 py-1 border rounded-md ${
+                num === paginaActual
+                  ? "bg-blue-600 text-white"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
+
+          <button
+            onClick={() => cambiarPagina(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+            className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-40"
+          >
+            Siguiente
+          </button>
+        </div>
       </div>
     </div>
   );
