@@ -13,7 +13,6 @@ const Departamentos = () => {
   const [departamentos, setDepartamentos] = useState([]);
   const [nuevoDepartamento, setNuevoDepartamento] = useState({
     nombre: "",
-    coordinadorId: "",
   });
   const [departamentoAEditar, setDepartamentoAEditar] = useState(null);
 
@@ -39,11 +38,16 @@ const Departamentos = () => {
 
   const agregarDepartamento = async () => {
     try {
-      await guardarDepartamento(nuevoDepartamento);
+      if (departamentoAEditar) {
+        await actualizarDepartamento(departamentoAEditar.id, nuevoDepartamento);
+        setDepartamentoAEditar(null); // Limpiar el departamento a editar
+      } else {
+        await guardarDepartamento(nuevoDepartamento);
+      }
       cargarDepartamentos();
-      setNuevoDepartamento({ nombre: "", coordinadorId: "" });
+      setNuevoDepartamento({ nombre: "" }); // Limpiar formulario después de agregar/editar
     } catch (error) {
-      console.error("Error al agregar departamento:", error);
+      console.error("Error al agregar/actualizar departamento:", error);
     }
   };
 
@@ -51,18 +55,9 @@ const Departamentos = () => {
     try {
       const departamento = await obtenerDepartamento(id);
       setDepartamentoAEditar(departamento);
+      setNuevoDepartamento({ nombre: departamento.nombre }); // Cargar datos en el formulario
     } catch (error) {
       console.error("Error al obtener departamento para editar:", error);
-    }
-  };
-
-  const actualizarDepartamentoEditado = async () => {
-    try {
-      await actualizarDepartamento(departamentoAEditar.id, departamentoAEditar);
-      cargarDepartamentos();
-      setDepartamentoAEditar(null);
-    } catch (error) {
-      console.error("Error al actualizar departamento:", error);
     }
   };
 
@@ -75,11 +70,10 @@ const Departamentos = () => {
     }
   };
 
-  // Estados para paginación
+  // Paginación
   const [paginaActual, setPaginaActual] = useState(1);
   const departamentosPorPagina = 10;
 
-  // Cálculos para paginación
   const indexUltimoDepartamento = paginaActual * departamentosPorPagina;
   const indexPrimerDepartamento =
     indexUltimoDepartamento - departamentosPorPagina;
@@ -90,7 +84,6 @@ const Departamentos = () => {
 
   const totalPaginas = Math.ceil(departamentos.length / departamentosPorPagina);
 
-  // Función para cambiar de página
   const cambiarPagina = (numeroPagina) => {
     if (numeroPagina >= 1 && numeroPagina <= totalPaginas) {
       setPaginaActual(numeroPagina);
@@ -107,10 +100,10 @@ const Departamentos = () => {
         gestiona su información.
       </p>
 
-      {/* Formulario para agregar departamento */}
+      {/* Formulario para agregar o editar departamento */}
       <div className="mb-10">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-          Agregar Departamento
+          {departamentoAEditar ? "Editar Departamento" : "Agregar Departamento"}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
@@ -121,20 +114,12 @@ const Departamentos = () => {
             value={nuevoDepartamento.nombre}
             onChange={handleInputChange}
           />
-          <input
-            type="text"
-            name="coordinadorId"
-            placeholder="ID del Coordinador"
-            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
-            value={nuevoDepartamento.coordinadorId}
-            onChange={handleInputChange}
-          />
         </div>
         <button
           onClick={agregarDepartamento}
           className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2 rounded-lg shadow transition"
         >
-          Agregar
+          {departamentoAEditar ? "Actualizar" : "Agregar"}
         </button>
       </div>
 
@@ -154,9 +139,6 @@ const Departamentos = () => {
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Nombre
                 </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  ID Coordinador
-                </th>
                 <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
                   Acciones
                 </th>
@@ -170,9 +152,6 @@ const Departamentos = () => {
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-800">
                     {departamento.nombre}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {departamento.coordinador_id}
                   </td>
                   <td className="px-4 py-2 text-sm text-center space-x-2">
                     <button
