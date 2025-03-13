@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthProvider.context";
 import { TramitesProvider } from "./context/TramitesProvider.context";
+import { AdminProvider } from "./context/AdminProvider.context";
 
 import AuthLayout from "./layout/Auth.layout";
 import RutaProtegida from "./layout/RutaProtegida.layout";
@@ -73,7 +74,14 @@ function App() {
                 />
 
                 {/* Ruta padre para AdminDMS */}
-                <Route path="admin-dms" element={<AdminDMS />}>
+                <Route
+                  path="admin-dms"
+                  element={
+                    <AdminProvider>
+                      <AdminDMS />
+                    </AdminProvider>
+                  }
+                >
                   {/* BONUS: Ruta por defecto al entrar a /admin/admin-dms */}
                   <Route index element={<InicioDMS />} />
                   <Route path="empleados" element={<Empleados />} />
