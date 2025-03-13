@@ -55,7 +55,7 @@ export const obtenerDepartamento = async (req, res) => {
     if (!departamento)
       return res.status(400).json({ message: "Departamento no válido" });
 
-    res.status(400).json(departamento);
+    res.status(200).json(departamento);
   } catch (error) {
     console.error(`Error al cargar el departamento: ${error.message}`);
     return res.status(500).json({

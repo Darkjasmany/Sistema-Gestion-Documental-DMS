@@ -96,8 +96,7 @@ const Departamentos = () => {
         Gestión de Departamentos
       </h2>
       <p className="text-gray-600 mb-6">
-        Administra los departamentos del sistema, asigna un coordinador y
-        gestiona su información.
+        Administra los departamentos del sistema y gestiona su información.
       </p>
 
       {/* Formulario para agregar o editar departamento */}
