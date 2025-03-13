@@ -7,10 +7,21 @@ const Header = () => {
   return (
     <header className="py-10 bg-indigo-600">
       <div className="container mx-auto flex flex-col lg:flex-row justify-between items-center">
-        <h1 className="font-bold text-2xl text-indigo-200 text-center select-none ">
+        {/* <h1 className="font-bold text-2xl text-indigo-200 text-center select-none ">
           Administrador de Documentos en {""}{" "}
           <span className="text-white font-black">DMS</span>
-        </h1>
+        </h1> */}
+        <Link
+          to={"/admin"}
+          className="font-bold text-2xl text-indigo-200 text-center select-none hover:text-white transition-colors duration-300 group"
+        >
+          Administrador de Documentos en{" "}
+          <span className="text-white font-black relative inline-block">
+            DMS
+            <span className="block w-0 group-hover:w-full h-[2px] bg-white transition-all duration-300 absolute bottom-0 left-0"></span>
+          </span>
+        </Link>
+
         <nav className="flex flex-col items-center lg:flex-row gap-4 mt-5 lg:mt-0 ">
           <nav className="relative group">
             <Link

@@ -5,8 +5,10 @@ const InicioDMSUsuario = () => {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        {auth?.nombre ? `Hola, ${auth.nombre}` : "Bienvenido"}
+      <h2 className="text-xl font-bold mb-4 text-blue-800 ">
+        {auth?.nombre
+          ? `Hola, ${auth.nombre}`
+          : "Bienvenido al  Sistema de Gestión Documental - DMS"}
       </h2>
       <p className="text-gray-600">
         Has iniciado sesión como <strong>{auth?.rol}</strong>. Utiliza el menú
