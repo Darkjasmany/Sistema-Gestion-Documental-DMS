@@ -14,7 +14,7 @@ const Header = () => {
         <nav className="flex flex-col items-center lg:flex-row gap-4 mt-5 lg:mt-0 ">
           <nav className="relative group">
             <Link
-              to={"/admin"}
+              // to={"/"}
               className="text-white text-sm uppercase font-bold  hover:underline"
             >
               Trámites
@@ -23,7 +23,7 @@ const Header = () => {
             <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-500 p-2 shadow-lg rounded-lg">
               {auth.rol !== "DESPACHADOR" && (
                 <Link
-                  to={"/admin"}
+                  to={"/admin/ingresar"}
                   className="block px-4 py-2 hover:bg-indigo-700"
                 >
                   Ingresar Trámites
@@ -72,12 +72,21 @@ const Header = () => {
               >
                 Consultas Trámites
               </Link>
+              {/* Solo visible para COORDINADOR */}
+              {auth.rol === "COORDINADOR" && (
+                <Link
+                  to={"/admin/admin-dms"}
+                  className="block px-4 py-2 hover:bg-indigo-700"
+                >
+                  Configuración
+                </Link>
+              )}
             </div>
           </nav>
 
           <nav className="relative group">
             <Link
-              to={"/admin/perfil"}
+              // to={"/admin/perfil"}
               className="text-white text-sm uppercase font-bold hover:underline"
             >
               Perfil

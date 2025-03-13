@@ -21,6 +21,12 @@ import EditarPerfil from "./pages/admin/EditarPerfil.pages";
 import CambiarPassword from "./pages/admin/CambiarPassword.pages";
 import TramitesPorDespachar from "./pages/admin/TramitesPorDespachar.pages";
 
+import AdminDMS from "./pages/admin/AdminDMS.pages";
+import Empleados from "./pages/admin/pagesConfiguracion/Empleados.pages";
+import Departamentos from "./pages/admin/pagesConfiguracion/Departamentos.pages";
+import InicioDMS from "./pages/admin/pagesConfiguracion/InicioDMS.pages";
+import InicioDMSUsuario from "./pages/admin/InicioDMSUsuario.pages";
+
 function App() {
   return (
     <BrowserRouter>
@@ -43,14 +49,15 @@ function App() {
 
             {/* Ruta Privada */}
             <Route path="/admin" element={<RutaProtegida />}>
-              <Route index element={<AdministrarTramites />} />
+              {/* <Route index element={<AdministrarTramites />} /> */}
+              <Route index element={<InicioDMSUsuario />} />
+              <Route path="ingresar" element={<AdministrarTramites />} />
               <Route path="asignados" element={<TramitesAsignados />} />
               <Route path="consultar-tramite" element={<ConsultarTramites />} />
               <Route
                 path="despachar-tramite"
                 element={<TramitesPorDespachar />}
               />
-
               <Route path="perfil" element={<EditarPerfil />} />
               <Route path="cambiar-password" element={<CambiarPassword />} />
 
@@ -64,6 +71,14 @@ function App() {
                   path="completar-tramite"
                   element={<TramitesCompletados />}
                 />
+
+                {/* Ruta padre para AdminDMS */}
+                <Route path="admin-dms" element={<AdminDMS />}>
+                  {/* BONUS: Ruta por defecto al entrar a /admin/admin-dms */}
+                  <Route index element={<InicioDMS />} />
+                  <Route path="empleados" element={<Empleados />} />
+                  <Route path="departamentos" element={<Departamentos />} />
+                </Route>
               </Route>
             </Route>
           </Routes>

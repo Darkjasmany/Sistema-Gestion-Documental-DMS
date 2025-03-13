@@ -20,18 +20,13 @@ const RutaProtegida = () => {
 
   // Redirigir o mostrar las rutas protegidas dependiendo del estado de `auth`
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      {/* Usamos el operador de encadenamiento opcional para verificar si hay un id en el auth muestra el Outlet */}
-      {auth?.id ? (
-        <main className="container mx-auto mt-10">
-          <Outlet />
-        </main>
-      ) : (
-        <Navigate to="/" replace />
-      )}
+      <main className="flex-1 container mx-auto mt-10">
+        {auth?.id ? <Outlet /> : <Navigate to="/" replace />}
+      </main>
       <Footer />
-    </>
+    </div>
   );
 };
 
