@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useAdmin from "../../../hooks/useAdmin.hooks";
 import clienteAxios from "../../../config/axios.config";
+import Alerta from "../../../components/Alerta.components";
 
 const Empleados = () => {
   const {
@@ -22,24 +23,22 @@ const Empleados = () => {
   });
   const [empleadoAEditar, setEmpleadoAEditar] = useState(null);
 
+  const [alerta, setAlerta] = useState({});
+
   // Cargar departamentos al montar el componente
   useEffect(() => {
-    const fetchDepartamentos = async () => {
-      try {
-        const { data } = await clienteAxios("/departamentos");
-        setDepartamentos(data);
-      } catch (error) {
-        console.error("Error al cargar departamentos:", error);
-      }
-    };
-
     fetchDepartamentos();
-  }, []);
-
-  useEffect(() => {
     cargarEmpleados();
   }, []);
 
+  const fetchDepartamentos = async () => {
+    try {
+      const { data } = await clienteAxios("/departamentos");
+      setDepartamentos(data);
+    } catch (error) {
+      console.error("Error al cargar departamentos:", error);
+    }
+  };
   const cargarEmpleados = async () => {
     try {
       const empleadosData = await obtenerEmpleados();
@@ -61,6 +60,16 @@ const Empleados = () => {
   };
 
   const agregarEmpleado = async () => {
+    const { cedula, nombres, apellidos, email, departamentoId } = nuevoEmpleado;
+
+    // Validación frontend: campos obligatorios
+    if (!cedula || !nombres || !apellidos || !email || !departamentoId) {
+      return setAlerta({
+        message: "Todos los campos son obligatorios",
+        error: true,
+      });
+    }
+
     try {
       if (empleadoAEditar) {
         await actualizarEmpleado(empleadoAEditar.id, nuevoEmpleado);
@@ -124,6 +133,8 @@ const Empleados = () => {
     }
   };
 
+  const { message } = alerta;
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
       <h2 className="text-2xl font-semibold text-gray-800 mb-2">
@@ -132,6 +143,8 @@ const Empleados = () => {
       <p className="text-gray-600 mb-6">
         Administra los empleados del sistema y gestiona su información.
       </p>
+
+      {message && <Alerta alerta={alerta} />}
 
       {/* Formulario para agregar o editar empleado */}
       <div className="mb-10">
@@ -250,8 +263,9 @@ const Empleados = () => {
                       Editar
                     </button>
                     <button
+                      disabled
                       onClick={() => eliminarEmpleadoSeleccionado(empleado.id)}
-                      className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium"
+                      className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium opacity-50 cursor-not-allowed"
                     >
                       Eliminar
                     </button>

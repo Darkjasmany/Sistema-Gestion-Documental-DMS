@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useAdmin from "../../../hooks/useAdmin.hooks";
+import Alerta from "../../../components/Alerta.components";
 
 const Departamentos = () => {
   const {
@@ -15,6 +16,8 @@ const Departamentos = () => {
     nombre: "",
   });
   const [departamentoAEditar, setDepartamentoAEditar] = useState(null);
+
+  const [alerta, setAlerta] = useState({});
 
   useEffect(() => {
     cargarDepartamentos();
@@ -37,6 +40,14 @@ const Departamentos = () => {
   };
 
   const agregarDepartamento = async () => {
+    const { nombre } = nuevoDepartamento;
+    if (!nombre) {
+      return setAlerta({
+        message: "Debes ingresar un nombre para el departamento",
+        error: true,
+      });
+    }
+
     try {
       if (departamentoAEditar) {
         await actualizarDepartamento(departamentoAEditar.id, nuevoDepartamento);
@@ -90,6 +101,8 @@ const Departamentos = () => {
     }
   };
 
+  const { message } = alerta;
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
       <h2 className="text-2xl font-semibold text-gray-800 mb-2">
@@ -98,6 +111,8 @@ const Departamentos = () => {
       <p className="text-gray-600 mb-6">
         Administra los departamentos del sistema y gestiona su información.
       </p>
+
+      {message && <Alerta alerta={alerta} />}
 
       {/* Formulario para agregar o editar departamento */}
       <div className="mb-10">
@@ -160,10 +175,11 @@ const Departamentos = () => {
                       Editar
                     </button>
                     <button
+                      disabled
                       onClick={() =>
                         eliminarDepartamentoSeleccionado(departamento.id)
                       }
-                      className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium"
+                      className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium opacity-50 cursor-not-allowed"
                     >
                       Eliminar
                     </button>
