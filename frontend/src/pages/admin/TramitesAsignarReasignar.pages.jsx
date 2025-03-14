@@ -8,8 +8,8 @@ const TramitesAsignarReasignar = () => {
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("INGRESADO");
   const [refreshTable, setRefreshTable] = useState(false); // Estado para refrescar la tabla
 
-  const [contadorAsignar, setContadorAsignar] = useState(0);
-  const [contadorReasignar, setContadorReasignar] = useState(0);
+  // const [contadorAsignar, setContadorAsignar] = useState(0);
+  // const [contadorReasignar, setContadorReasignar] = useState(0);
 
   const handleFiltro = (estado) => {
     setEstadoSeleccionado(estado);
@@ -19,15 +19,16 @@ const TramitesAsignarReasignar = () => {
   useEffect(() => {
     const datosTramites = async () => {
       try {
-        const data = await obtenerTramitesCoordinador(estadoSeleccionado);
+        await obtenerTramitesCoordinador(estadoSeleccionado);
+        // const data = await obtenerTramitesCoordinador(estadoSeleccionado);
 
         // console.log(data?.length);
 
-        if (estadoSeleccionado === "INGRESADO")
-          setContadorAsignar(data?.length || 0);
+        // if (estadoSeleccionado === "INGRESADO")
+        //   setContadorAsignar(data?.length || 0);
 
-        if (estadoSeleccionado === "PENDIENTE")
-          setContadorReasignar(data?.length || 0);
+        // if (estadoSeleccionado === "PENDIENTE")
+        //   setContadorReasignar(data?.length || 0);
       } catch (error) {
         console.error(error.message);
       } finally {
@@ -64,7 +65,8 @@ const TramitesAsignarReasignar = () => {
             }`}
             onClick={() => handleFiltro("INGRESADO")}
           >
-            Asignar: <span className="font-bold">{contadorAsignar}</span>
+            Asignar
+            {/* Asignar: <span className="font-bold">{contadorAsignar}</span> */}
           </button>
           <button
             className={`px-4 py-2 rounded   ${
@@ -74,7 +76,8 @@ const TramitesAsignarReasignar = () => {
             }`}
             onClick={() => handleFiltro("PENDIENTE")}
           >
-            Reasignar: <span className="font-bold">{contadorReasignar}</span>
+            Reasignar
+            {/* Reasignar: <span className="font-bold">{contadorReasignar}</span> */}
           </button>
         </div>
 
