@@ -47,3 +47,11 @@ export const emailOlvidePassword = async (datos) => {
 
   return await enviarEmail({ email, subject, html });
 };
+
+export const emailAsignarReasignar = async (datos) => {
+  const { sms, email, nombres, apellidos, tramite, observacion } = datos;
+  const subject = `Trámite #${tramite} ${sms}`;
+  const html = `<p>Hola: ${nombres} ${apellidos}, se te ha ${sms} un trámite con #${tramite}, ${observacion}.</p>`;
+
+  return await enviarEmail({ email, subject, html });
+};

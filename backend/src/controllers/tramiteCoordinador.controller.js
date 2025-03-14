@@ -17,6 +17,8 @@ import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 
 import { sequelize } from "../config/db.config.js";
 
+import { emailAsignarReasignar } from "../services/email.service.js";
+
 export const obtenerTramitesPorEstado = async (req, res) => {
   // console.log(req.params);
   // console.log(req.usuario.departamento_id);
@@ -657,6 +659,15 @@ export const asignarOReasignarRevisor = async (req, res) => {
 
     await tramiteAsignar.save({ transaction });
     await transaction.commit();
+
+    emailAsignarReasignar({
+      sms,
+      nombres: existeUsuarioRevisor.nombres,
+      apellidos: existeUsuarioRevisor.apellidos,
+      email: existeUsuarioRevisor.email,
+      tramite: tramiteAsignar.numero_tramite,
+      observacion: observacionRevisor,
+    });
 
     res.json({
       // message: "Revisor asignado/reasignado correctamente",
