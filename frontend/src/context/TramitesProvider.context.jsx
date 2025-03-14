@@ -197,6 +197,7 @@ export const TramitesProvider = ({ children }) => {
       );
 
       setTramitesAsignarReasignar(data);
+      return data;
     } catch (error) {
       console.error(error.response?.data?.message);
     }

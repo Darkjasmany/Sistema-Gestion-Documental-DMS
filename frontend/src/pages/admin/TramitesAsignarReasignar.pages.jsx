@@ -8,6 +8,9 @@ const TramitesAsignarReasignar = () => {
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("INGRESADO");
   const [refreshTable, setRefreshTable] = useState(false); // Estado para refrescar la tabla
 
+  const [contadorAsignar, setContadorAsignar] = useState(0);
+  const [contadorReasignar, setContadorReasignar] = useState(0);
+
   const handleFiltro = (estado) => {
     setEstadoSeleccionado(estado);
     setRefreshTable(true); // Indicamos que cuando cambie el estado refresque la tabla
@@ -16,7 +19,15 @@ const TramitesAsignarReasignar = () => {
   useEffect(() => {
     const datosTramites = async () => {
       try {
-        await obtenerTramitesCoordinador(estadoSeleccionado);
+        const data = await obtenerTramitesCoordinador(estadoSeleccionado);
+
+        // console.log(data?.length);
+
+        if (estadoSeleccionado === "INGRESADO")
+          setContadorAsignar(data?.length || 0);
+
+        if (estadoSeleccionado === "PENDIENTE")
+          setContadorReasignar(data?.length || 0);
       } catch (error) {
         console.error(error.message);
       } finally {
@@ -26,6 +37,7 @@ const TramitesAsignarReasignar = () => {
 
     if (refreshTable) {
       // Solo obtiene los datos si es necesario actualizar
+
       datosTramites();
     } else {
       datosTramites(); // Obtiene los datos en el primer render
@@ -52,7 +64,7 @@ const TramitesAsignarReasignar = () => {
             }`}
             onClick={() => handleFiltro("INGRESADO")}
           >
-            Asignar
+            Asignar: <span className="font-bold">{contadorAsignar}</span>
           </button>
           <button
             className={`px-4 py-2 rounded   ${
@@ -62,7 +74,7 @@ const TramitesAsignarReasignar = () => {
             }`}
             onClick={() => handleFiltro("PENDIENTE")}
           >
-            Reasignar
+            Reasignar: <span className="font-bold">{contadorReasignar}</span>
           </button>
         </div>
 
