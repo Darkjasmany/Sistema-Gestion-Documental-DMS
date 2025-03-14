@@ -231,6 +231,9 @@ const Empleados = () => {
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Email
+                </th>{" "}
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Departamento
                 </th>
                 <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
                   Acciones
@@ -254,6 +257,9 @@ const Empleados = () => {
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-800">
                     {empleado.email}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {empleado.departamento.nombre}
                   </td>
                   <td className="px-4 py-2 text-sm text-center space-x-2">
                     <button
