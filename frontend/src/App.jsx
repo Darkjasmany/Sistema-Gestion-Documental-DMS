@@ -30,7 +30,8 @@ import InicioDMSUsuario from "./pages/admin/InicioDMSUsuario.pages";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/dms">
+      {/* Reemplaza 'mi-app' con el nombre de tu subdirectorio */}
       <AuthProvider>
         <TramitesProvider>
           <Routes>
