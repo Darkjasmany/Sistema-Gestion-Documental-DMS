@@ -3,8 +3,10 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
+import moment from "moment";
 
-const ExportButtons = ({ data }) => {
+const ExportButtons = ({ data, filtros }) => {
+  // Exportar a Excel
   const exportToExcel = () => {
     const worksheetData = data.map((t, index) => ({
       "N°": index + 1,
@@ -15,6 +17,7 @@ const ExportButtons = ({ data }) => {
       "Depto. Remitente": t.departamentoRemitente?.nombre || "Sin departamento",
       Remitente: t.remitente?.nombreCompleto || "Sin remitente",
       Estado: t.estado,
+      Descripción: t.descripcion,
       Destinatarios:
         t.destinatarios?.map((d) => d.nombreCompleto).join(", ") ||
         "Sin destinatarios",
@@ -22,6 +25,8 @@ const ExportButtons = ({ data }) => {
         t.historialObservaciones
           ?.map((o) => `(${o.fecha}) ${o.observacion}`)
           .join(" | ") || "Sin observaciones",
+      Usuario_Creador: t.usuario?.UsuarioCreacion || "",
+      Fecha_Creación: moment(t.createdAt).format("YYYY-MM-DD HH:mm"),
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
@@ -30,9 +35,29 @@ const ExportButtons = ({ data }) => {
     XLSX.writeFile(workbook, "Tramites.xlsx");
   };
 
+  // Exportar a PDF
   const exportToPDF = () => {
-    const doc = new jsPDF("landscape"); //horizontal x defecto vacio que es ("portrait")
+    const doc = new jsPDF("landscape"); // o "portrait" = vertical
 
+    // Cabecera
+    doc.setFontSize(16);
+    doc.text("DMS - Sistema de Gestión Documental", 14, 15);
+
+    // Mostrar filtros aplicados
+    /*let filtrosTexto = "";
+    if (filtros && Object.keys(filtros).length > 0) {
+      filtrosTexto = Object.entries(filtros)
+        .map(([clave, valor]) => `${clave}: ${valor}`)
+        .join(" | ");
+
+      doc.setFontSize(10);
+      doc.text(`Filtros aplicados: ${filtrosTexto}`, 14, 25);
+    }*/
+
+    // Ajuste para la tabla para que no se sobreponga con el título
+    const startY = 20; // Ubicación de la tabla (después del título y filtros)
+
+    // Insertar los datos a la tabla con autoTable
     const tableData = data.map((t, index) => [
       index + 1,
       t.numero_tramite,
@@ -42,13 +67,17 @@ const ExportButtons = ({ data }) => {
       t.departamentoRemitente?.nombre || "Sin departamento",
       t.remitente?.nombreCompleto || "Sin remitente",
       t.estado,
+      t.descripcion,
       t.destinatarios?.map((d) => d.nombreCompleto).join(", ") ||
         "Sin destinatarios",
       t.historialObservaciones
         ?.map((o) => `(${o.fecha}) ${o.observacion}`)
         .join(" | ") || "Sin observaciones",
+      t.usuario?.UsuarioCreacion || "",
+      moment(t.createdAt).format("YYYY-MM-DD HH:mm"),
     ]);
 
+    // ✅ Insertar la tabla con autoTable
     autoTable(doc, {
       head: [
         [
@@ -60,8 +89,11 @@ const ExportButtons = ({ data }) => {
           "Depto. Remitente",
           "Remitente",
           "Estado",
+          "Descripción",
           "Destinatarios",
           "Observaciones",
+          "Usuario_Creador",
+          "Fecha_Creación",
         ],
       ],
       body: tableData,
@@ -70,8 +102,22 @@ const ExportButtons = ({ data }) => {
         8: { cellWidth: 60 },
         9: { cellWidth: 80 },
       },
+      startY: startY, // Inicia la tabla en la posición ajustada
+      didDrawPage: (data) => {
+        // ✅ Pie de página: Número de página
+        const pageCount = doc.internal.getNumberOfPages();
+        const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
+        const str = `Página ${pageNumber} de ${pageCount}`;
+        doc.setFontSize(9);
+        doc.text(
+          str,
+          data.settings.margin.left,
+          doc.internal.pageSize.height - 10
+        );
+      },
     });
 
+    // ✅ Descargar el archivo PDF
     doc.save("Tramites.pdf");
   };
 
