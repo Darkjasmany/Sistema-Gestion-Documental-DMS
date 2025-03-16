@@ -12,6 +12,7 @@ import AsignarReasignarTramite from "./AsignarReasignarTramite.components";
 import CompletarTramite from "./CompletarTramite.components";
 import AprobarTramite from "./AprobarTramite.components";
 import DespacharTramite from "./DespacharTramite.components";
+import ExportButtons from "./Buttons/ExportButtons.components";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // console.log(tramiteBusqueda);
@@ -126,7 +127,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     }
 
     return baseColumns;
-  }, [tramiteExpandido]);
+  }, [isAsignarReasignar, isAsignados, isCompletados, isDespachar]);
+  // }, [tramiteExpandido]);
 
   // Configuración de react-table por defecto para que funcione
   const table = useReactTable({
@@ -149,90 +151,97 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     <div className="overflow-x-auto">
       {message && <Alerta alerta={alerta} />}
       {tramiteBusqueda.length === 0 ? (
-        <p className="text-center text-gray-500"> No hay támites dispobibles</p>
+        <p className="text-center text-gray-500"> No hay támites disponibles</p>
       ) : (
-        <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
-          <thead className="bg-gray-200">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="border p-3">
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <React.Fragment key={row.id}>
-                <tr className="hover:bg-gray-100">
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="border p-3">
+        <>
+          {/* Botones para export */}
+          <ExportButtons data={tramiteBusqueda} />
+
+          {/* Tabla */}
+          <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
+            <thead className="bg-gray-200">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id} className="border p-3">
                       {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    </td>
+                    </th>
                   ))}
                 </tr>
-                {tramiteExpandido === row.original.id && (
-                  <tr className="bg-gray-100">
-                    <td colSpan={columns.length} className="p-4">
-                      <div>
-                        <p>
-                          <strong>Descripción Tramite:</strong>{" "}
-                          {row.original.descripcion}
-                        </p>
-
-                        <p>
-                          <strong>Prioridad:</strong> {row.original.prioridad}
-                        </p>
-
-                        {row.original.fecha_contestacion && (
-                          <p>
-                            <strong>Fecha Contestación:</strong>{" "}
-                            {row.original.fecha_contestacion}
-                          </p>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <React.Fragment key={row.id}>
+                  <tr className="hover:bg-gray-100">
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="border p-3">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
                         )}
-
-                        {row.original.numero_oficio && (
+                      </td>
+                    ))}
+                  </tr>
+                  {tramiteExpandido === row.original.id && (
+                    <tr className="bg-gray-100">
+                      <td colSpan={columns.length} className="p-4">
+                        <div>
                           <p>
-                            <strong>Número de Memo|Oficio Contestación:</strong>{" "}
-                            {row.original.numero_oficio}
+                            <strong>Descripción Tramite:</strong>{" "}
+                            {row.original.descripcion}
                           </p>
-                        )}
 
-                        {row.original.destinatarios && (
-                          <>
+                          <p>
+                            <strong>Prioridad:</strong> {row.original.prioridad}
+                          </p>
+
+                          {row.original.fecha_contestacion && (
                             <p>
-                              <strong>Destinatarios:</strong>
+                              <strong>Fecha Contestación:</strong>{" "}
+                              {row.original.fecha_contestacion}
                             </p>
-                            <ul className="list-disc pl-5">
-                              {row.original.destinatarios?.length > 0 ? (
-                                row.original.destinatarios.map(
-                                  (destinatario) => (
-                                    <li key={destinatario.destinatario.id}>
-                                      {destinatario.destinatario.nombres +
-                                        " " +
-                                        destinatario.destinatario.apellidos +
-                                        " - " +
-                                        destinatario.departamentoDestinatario
-                                          .nombre}
-                                    </li>
-                                  )
-                                )
-                              ) : (
-                                <li>No hay destinatarios</li>
-                              )}
-                            </ul>
-                          </>
-                        )}
+                          )}
 
-                        {/* 
+                          {row.original.numero_oficio && (
+                            <p>
+                              <strong>
+                                Número de Memo|Oficio Contestación:
+                              </strong>{" "}
+                              {row.original.numero_oficio}
+                            </p>
+                          )}
+
+                          {row.original.destinatarios && (
+                            <>
+                              <p>
+                                <strong>Destinatarios:</strong>
+                              </p>
+                              <ul className="list-disc pl-5">
+                                {row.original.destinatarios?.length > 0 ? (
+                                  row.original.destinatarios.map(
+                                    (destinatario) => (
+                                      <li key={destinatario.destinatario.id}>
+                                        {destinatario.destinatario.nombres +
+                                          " " +
+                                          destinatario.destinatario.apellidos +
+                                          " - " +
+                                          destinatario.departamentoDestinatario
+                                            .nombre}
+                                      </li>
+                                    )
+                                  )
+                                ) : (
+                                  <li>No hay destinatarios</li>
+                                )}
+                              </ul>
+                            </>
+                          )}
+
+                          {/* 
                         {row.original.tramiteObservaciones && (
                           <>
                             <p>
@@ -261,104 +270,106 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                         )}
                         */}
 
-                        {row.original.tramiteObservaciones && (
-                          <>
-                            <p>
-                              <strong>Observaciones:</strong>
-                            </p>
-                            {/* Cambiado list-disc por list-decimal */}
-                            <ul className="list-disc pl-5">
-                              {" "}
-                              {row.original.tramiteObservaciones?.length > 0 ? (
-                                row.original.tramiteObservaciones.map(
-                                  (observacion) => (
-                                    <li key={observacion.id}>
-                                      <div className="flex flex-col">
-                                        <span className="mb-1">
-                                          <strong>Usuario Creación:</strong>{" "}
-                                          {
-                                            observacion
-                                              .usuarioCreacionObservacion
-                                              .nombres
-                                          }{" "}
-                                          {
-                                            observacion
-                                              .usuarioCreacionObservacion
-                                              .apellidos
-                                          }
-                                        </span>
-                                        <span>
-                                          <strong>Detalle:</strong>{" "}
-                                          {observacion.observacion}
-                                        </span>
-                                      </div>
-                                    </li>
+                          {row.original.tramiteObservaciones && (
+                            <>
+                              <p>
+                                <strong>Observaciones:</strong>
+                              </p>
+                              {/* Cambiado list-disc por list-decimal */}
+                              <ul className="list-disc pl-5">
+                                {" "}
+                                {row.original.tramiteObservaciones?.length >
+                                0 ? (
+                                  row.original.tramiteObservaciones.map(
+                                    (observacion) => (
+                                      <li key={observacion.id}>
+                                        <div className="flex flex-col">
+                                          <span className="mb-1">
+                                            <strong>Usuario Creación:</strong>{" "}
+                                            {
+                                              observacion
+                                                .usuarioCreacionObservacion
+                                                .nombres
+                                            }{" "}
+                                            {
+                                              observacion
+                                                .usuarioCreacionObservacion
+                                                .apellidos
+                                            }
+                                          </span>
+                                          <span>
+                                            <strong>Detalle:</strong>{" "}
+                                            {observacion.observacion}
+                                          </span>
+                                        </div>
+                                      </li>
+                                    )
                                   )
-                                )
-                              ) : (
-                                <li>No hay observaciones</li>
-                              )}
-                            </ul>
-                          </>
-                        )}
-
-                        <p>
-                          <strong>Archivos:</strong>
-                        </p>
-                        <ul className="list-disc pl-5">
-                          {row.original.tramiteArchivos?.length > 0 ? (
-                            row.original.tramiteArchivos.map((archivo) => (
-                              <li key={archivo.id}>
-                                <a
-                                  href={
-                                    import.meta.env.VITE_BACKEND_URL +
-                                    "/" +
-                                    archivo.ruta
-                                  }
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 underline"
-                                >
-                                  {archivo.original_name}
-                                </a>
-                              </li>
-                            ))
-                          ) : (
-                            <li>No hay archivos adjuntos</li>
+                                ) : (
+                                  <li>No hay observaciones</li>
+                                )}
+                              </ul>
+                            </>
                           )}
-                        </ul>
 
-                        <p>
-                          <strong>Usuario Creación:</strong>{" "}
-                          {row.original.usuario?.UsuarioCreacion}
-                        </p>
-
-                        <p>
-                          <strong>Fecha de Creación:</strong>{" "}
-                          {formatearFecha(row.original.createdAt)}
-                        </p>
-
-                        {row.original.usuarioRevisor?.UsuarioRevisor && (
                           <p>
-                            <strong>Usuario Revisor:</strong>{" "}
-                            {row.original.usuarioRevisor.UsuarioRevisor}
+                            <strong>Archivos:</strong>
                           </p>
-                        )}
+                          <ul className="list-disc pl-5">
+                            {row.original.tramiteArchivos?.length > 0 ? (
+                              row.original.tramiteArchivos.map((archivo) => (
+                                <li key={archivo.id}>
+                                  <a
+                                    href={
+                                      import.meta.env.VITE_BACKEND_URL +
+                                      "/" +
+                                      archivo.ruta
+                                    }
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 underline"
+                                  >
+                                    {archivo.original_name}
+                                  </a>
+                                </li>
+                              ))
+                            ) : (
+                              <li>No hay archivos adjuntos</li>
+                            )}
+                          </ul>
 
-                        {row.original.usuarioDespacho?.usuarioDespacho && (
                           <p>
-                            <strong>Usuario Despacho:</strong>{" "}
-                            {row.original.usuarioDespacho.usuarioDespacho}
+                            <strong>Usuario Creación:</strong>{" "}
+                            {row.original.usuario?.UsuarioCreacion}
                           </p>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
+
+                          <p>
+                            <strong>Fecha de Creación:</strong>{" "}
+                            {formatearFecha(row.original.createdAt)}
+                          </p>
+
+                          {row.original.usuarioRevisor?.UsuarioRevisor && (
+                            <p>
+                              <strong>Usuario Revisor:</strong>{" "}
+                              {row.original.usuarioRevisor.UsuarioRevisor}
+                            </p>
+                          )}
+
+                          {row.original.usuarioDespacho?.usuarioDespacho && (
+                            <p>
+                              <strong>Usuario Despacho:</strong>{" "}
+                              {row.original.usuarioDespacho.usuarioDespacho}
+                            </p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
       {/* Controles de paginación */}
       <div className="flex justify-between p-2">
