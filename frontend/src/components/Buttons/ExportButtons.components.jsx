@@ -99,8 +99,10 @@ const ExportButtons = ({ data, filtros }) => {
       body: tableData,
       styles: { fontSize: 6 },
       columnStyles: {
-        8: { cellWidth: 60 },
-        9: { cellWidth: 80 },
+        // 8: { cellWidth: 60 },
+        // 9: { cellWidth: 80 },
+        8: { cellWidth: "auto" }, // Ajustar la columna de "Estado" al contenido
+        9: { cellWidth: "auto" }, // Ajustar la columna de "Descripción" al contenido
       },
       startY: startY, // Inicia la tabla en la posición ajustada
       didDrawPage: (data) => {
@@ -115,9 +117,11 @@ const ExportButtons = ({ data, filtros }) => {
           doc.internal.pageSize.height - 10
         );
       },
+      // Ajuste automático del tamaño de las celdas
+      autoSize: true,
     });
 
-    // ✅ Descargar el archivo PDF
+    // Descargar el archivo PDF
     doc.save("Tramites.pdf");
   };
 
