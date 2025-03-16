@@ -2,6 +2,7 @@ import React from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 
 const ExportButtons = ({ data }) => {
   const exportToExcel = () => {
@@ -75,18 +76,20 @@ const ExportButtons = ({ data }) => {
   };
 
   return (
-    <div className="flex justify-end mb-4 gap-2">
+    <div className="flex gap-3 my-4">
       <button
-        className="bg-green-600 text-white px-3 py-1 rounded"
-        onClick={() => exportToExcel()}
+        onClick={exportToExcel}
+        className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 shadow-md"
       >
-        Exportar a Excel
+        <FaFileExcel className="text-white text-lg" />
+        Excel
       </button>
       <button
-        className="bg-red-600 text-white px-3 py-1 rounded"
-        onClick={() => exportToPDF()}
+        onClick={exportToPDF}
+        className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 shadow-md"
       >
-        Exportar a PDF
+        <FaFilePdf className="text-white text-lg" />
+        PDF
       </button>
     </div>
   );
