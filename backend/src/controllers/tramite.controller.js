@@ -240,7 +240,8 @@ export const listarTramitesUsuario = async (req, res) => {
     const tramitesConRutas = tramites.map((tramite) => {
       const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
         ...archivo.toJSON(),
-        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
       }));
 
       return {
@@ -955,7 +956,8 @@ export const buscarTramites = async (req, res) => {
     const tramitesConRutas = tramites.map((tramite) => {
       const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
         ...archivo.toJSON(),
-        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
       }));
 
       return {
@@ -1057,7 +1059,8 @@ export const obtenerTramitesPorEstados = async (req, res) => {
           ?.filter((archivo) => archivo.estado_carga === "DESPACHADO")
           .map((archivo) => ({
             ...archivo.toJSON(),
-            ruta: archivo.ruta.replace(/\\/g, "/"),
+            // ruta: archivo.ruta.replace(/\\/g, "/"),
+            ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
           })) || [];
 
       return {
@@ -1118,7 +1121,8 @@ export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (
     const tramitesConRutas = tramites.map((tramite) => {
       let archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
         ...archivo.toJSON(),
-        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
       }));
 
       // Filtrar archivos si el estado es DESPACHADO

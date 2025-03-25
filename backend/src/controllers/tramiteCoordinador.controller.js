@@ -57,7 +57,8 @@ export const obtenerTramitesPorEstado = async (req, res) => {
     const tramitesConRutas = tramites.map((tramite) => {
       const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
         ...archivo.toJSON(),
-        ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
+        ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
       }));
 
       return {
