@@ -162,7 +162,7 @@ router.put(
 );
 
 router.put(
-  "/coordinador/tramites/:id/despachar",
+  "/coordinador/tramites/:id/despachar-directo",
   checkAuth,
   checkRole("COORDINADOR"),
   tramiteCoordinador.despacharTramiteDirectoRevisor

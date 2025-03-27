@@ -376,12 +376,38 @@ export const TramitesProvider = ({ children }) => {
       };
     }
   };
+
   const despacharTramiteCompletado = async (idTramite, datosCompletar) => {
     if (!token) return;
 
     try {
       const { data } = await clienteAxios.put(
         `/tramites/revisor/tramites/${idTramite}/despachar`,
+        datosCompletar,
+        getAxiosConfigJSON()
+      );
+
+      console.log(data);
+      return { message: data.message, error: false };
+    } catch (error) {
+      console.error(error.response?.data?.message || "Error desconocido");
+
+      return {
+        message: error.response?.data?.message || "Error en la solicitud",
+        error: true,
+      };
+    }
+  };
+
+  const despacharTramiteDirectoCompletado = async (
+    idTramite,
+    datosCompletar
+  ) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.put(
+        `/tramites/coordinador/tramites/${idTramite}/despachar-directo`,
         datosCompletar,
         getAxiosConfigJSON()
       );
@@ -542,6 +568,7 @@ export const TramitesProvider = ({ children }) => {
         obtenerTramitesRevisorData,
         completarTramiteRevisorAsignado,
         despacharTramiteCompletado,
+        despacharTramiteDirectoCompletado,
         tramitesRevisor,
         actualizarTramiteCompletado,
         obtenerTramitesDespachadorData,

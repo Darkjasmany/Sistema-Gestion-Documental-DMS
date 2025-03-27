@@ -25,8 +25,10 @@ export const agregarEmpleado = async (req, res) => {
       cedula: cedula, // Igualdad directa en lugar de ILIKE
     },
   });
-  if (empleadoExiste)
-    return res.status(400).json({ message: "Empleado ya registrado" });
+
+  // Se comenta porque se necesita que se ingrese empleados con 0999999999
+  // if (empleadoExiste)
+  //   return res.status(400).json({ message: "Empleado ya registrado" });
 
   const emailRegistrado = await Empleado.findOne({
     where: {

@@ -1182,7 +1182,7 @@ export const despacharTramiteDirectoRevisor = async (req, res) => {
 
   const { id } = req.params;
 
-  const { empleadoDespachadorId } = req.body;
+  const { empleadoDespachadorId, observacion } = req.body;
 
   if (!empleadoDespachadorId || empleadoDespachadorId.length === 0) {
     return res.status(400).json({
@@ -1213,13 +1213,13 @@ export const despacharTramiteDirectoRevisor = async (req, res) => {
     return res.status(404).json({ message: "Trámite no encontrado" });
   }
 
-  if (
-    tramite.departamento_tramite.toString() !==
-    req.usuario.departamento_id.toString()
-  )
-    return res.status(403).json({
-      message: "Acción no válida",
-    });
+  // if (
+  //   tramite.departamento_tramite.toString() !==
+  //   req.usuario.departamento_id.toString()
+  // )
+  //   return res.status(403).json({
+  //     message: "Acción no válida",
+  //   });
 
   try {
     const estadoAnterior = tramite.estado;
@@ -1238,6 +1238,15 @@ export const despacharTramiteDirectoRevisor = async (req, res) => {
       empleadoDespachadorId || tramite.usuario_despacho;
 
     await tramite.save({ transaction });
+
+    await TramiteObservacion.create(
+      {
+        tramite_id: id,
+        observacion,
+        usuario_creacion: req.usuario.id,
+      },
+      { transaction }
+    );
 
     await transaction.commit();
 

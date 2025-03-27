@@ -7,31 +7,11 @@ import Alerta from "./Alerta.components";
 
 const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
   const { auth } = useAuth();
-
-  const [empleados, setEmpleados] = useState([]);
-  const [empleadosSeleccionados, setEmpleadosSeleccionados] = useState([]);
-  const [busquedaEmpleado, setBusquedaEmpleado] = useState("");
-  const [sugerenciasEmpleados, setSugerenciasEmpleados] = useState([]);
-  const [fechaDespacho, setFechaDespacho] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [fechaLimite, setFechaLimite] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [observacionCoordinador, setObservacionCoordinador] = useState("");
   const [observacion, setObservacion] = useState("");
-  const [memo, setMemo] = useState("");
-  // const [alcaldia, setAlcaldia] = useState(false);
   const [alerta, setAlerta] = useState({});
-
   const [empleadosXRol, setEmpleadosXRol] = useState([]);
   const [empleadoDespachadorId, setEmpleadoDespachadorId] = useState("");
-
-  const {
-    completarTramiteRevisorAsignado,
-    actualizarTramiteCompletado,
-    despacharTramiteCompletado,
-  } = useTramites();
+  const { despacharTramiteDirectoCompletado } = useTramites();
 
   useEffect(() => {
     const fecthEmpleadosXRol = async () => {
@@ -59,7 +39,7 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
     setEmpleadoDespachadorId(empleadoId);
   };
 
-  const handleSubmitCompletar = async (e) => {
+  const handleSubmitCompletarDirecto = async (e) => {
     e.preventDefault();
 
     const datosCompletar = {
@@ -71,7 +51,10 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
       let response;
 
       if (tramite.estado === "INGRESADO") {
-        response = await despacharTramiteCompletado(tramite.id, datosCompletar);
+        response = await despacharTramiteDirectoCompletado(
+          tramite.id,
+          datosCompletar
+        );
       }
 
       setAlerta({ message: response.message, error: response.error });
@@ -99,7 +82,7 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
     <div>
       <form
         className="my-5 py-4 px-10 shadow-md rounded-md border"
-        onSubmit={handleSubmitCompletar}
+        onSubmit={handleSubmitCompletarDirecto}
       >
         {alerta.message && <Alerta alerta={alerta} />}
 

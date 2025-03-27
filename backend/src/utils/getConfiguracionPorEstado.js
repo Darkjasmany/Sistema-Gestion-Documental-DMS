@@ -89,12 +89,13 @@ const PENDIENTE = {
           "UsuarioRevisor",
         ],
       ],
+      required: false,
     },
     {
       model: TramiteObservacion,
       as: "tramiteObservaciones",
       attributes: ["id", "observacion", "fecha_creacion", "usuario_creacion"],
-      //
+      required: false,
       include: [
         {
           model: Usuario, // <-- ¡Esta línea es crucial! Indica el modelo para el alias
@@ -110,6 +111,7 @@ const PENDIENTE = {
 const POR_REVISAR = {
   ...PENDIENTE,
   attributes: [...PENDIENTE.attributes, "fecha_despacho", "numero_oficio"],
+  required: false,
   include: [
     ...PENDIENTE.include,
     {
@@ -120,17 +122,20 @@ const POR_REVISAR = {
         "departamento_destinatario",
         "destinatario_id",
       ],
+      required: false,
 
       include: [
         {
           model: Empleado,
           as: "destinatario",
           attributes: ["id", "nombres", "apellidos"],
+          required: false,
         },
         {
           model: Departamento,
           as: "departamentoDestinatario",
           attributes: ["id", "nombre"],
+          required: false,
         },
       ],
 
@@ -142,6 +147,7 @@ const POR_REVISAR = {
 const COMPLETADO = {
   ...POR_REVISAR,
   attributes: [...POR_REVISAR.attributes, "usuario_despacho"],
+  required: false,
   include: [
     ...POR_REVISAR.include,
     {
@@ -155,12 +161,14 @@ const COMPLETADO = {
           "usuarioDespacho",
         ],
       ],
+      required: false,
     },
   ],
 };
 const POR_CORREGIR = {
   ...COMPLETADO,
   attributes: [...COMPLETADO.attributes],
+  required: false,
   include: [...COMPLETADO.include],
 };
 const DESPACHADO = {

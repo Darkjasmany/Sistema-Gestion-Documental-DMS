@@ -145,7 +145,7 @@ export const Tramite = sequelize.define(
       allowNull: true,
     },
     numero_oficio: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(100),
       allowNull: true,
       unique: true,
     },
