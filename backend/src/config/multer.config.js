@@ -3,8 +3,9 @@ import path from "path"; // Lo utilizas para manejar y manipular rutas de archiv
 import fs from "fs"; // Se usa el módulo fs para verificar si la carpeta uploads/ existe con fs.existsSync().
 
 // Verificar y crear la carpeta "uploads" si no existe
-// Cambia "uploads/" por tu carpeta de almacenamiento
-const uploadDir = "uploads/";
+// Cambia "uploads/" por tu carpeta de almacenamiento en la raiz del proyecto Backend
+// const uploadDir = "uploads/";
+const uploadDir = "/home/jasmany/uploads/";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true }); // Crea la carpeta si no existe
 }

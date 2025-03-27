@@ -1173,3 +1173,84 @@ function encontrarDestinatariosAIngresar(
 
   return destinariosAIngresar;
 }
+
+export const despacharTramiteDirectoRevisor = async (req, res) => {
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
+
+  const transaction = await sequelize.transaction();
+
+  const { id } = req.params;
+
+  const { empleadoDespachadorId } = req.body;
+
+  if (!empleadoDespachadorId || empleadoDespachadorId.length === 0) {
+    return res.status(400).json({
+      message: "Debes seleccionar un despachador",
+    });
+  }
+
+  const existeUsuarioDespahador = await Usuario.findOne({
+    where: {
+      id: empleadoDespachadorId,
+      // rol: "REVISOR",
+      departamento_id: req.usuario.departamento_id,
+    },
+  });
+
+  if (!existeUsuarioDespahador) {
+    await transaction.rollback();
+    return res
+      .status(404)
+      .json({ message: "Usuario Despachador no encontrado" });
+  }
+
+  const tramite = await Tramite.findOne({
+    where: { id, activo: true },
+  });
+
+  if (!tramite) {
+    return res.status(404).json({ message: "Trámite no encontrado" });
+  }
+
+  if (
+    tramite.departamento_tramite.toString() !==
+    req.usuario.departamento_id.toString()
+  )
+    return res.status(403).json({
+      message: "Acción no válida",
+    });
+
+  try {
+    const estadoAnterior = tramite.estado;
+    // Registrar Historial Estado
+    await registrarHistorialEstado(
+      id,
+      estadoAnterior,
+      tramite.estado,
+      req.usuario.id,
+      transaction
+    );
+
+    // Actualizar estado
+    tramite.estado = "DESPACHADO";
+    tramite.usuario_despacho =
+      empleadoDespachadorId || tramite.usuario_despacho;
+
+    await tramite.save({ transaction });
+
+    await transaction.commit();
+
+    res.json({
+      message: `Trámite Despachado Correctamente.`,
+    });
+  } catch (error) {
+    console.error(
+      `Error al actualizar el trámite seleccionado: ${error.message}`
+    );
+    return res.status(500).json({
+      message:
+        "Error al actualizar el trámite seleccionado, intente nuevamente más tarde.",
+    });
+  }
+};

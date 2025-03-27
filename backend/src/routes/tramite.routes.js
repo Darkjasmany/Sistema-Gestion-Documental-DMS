@@ -139,6 +139,7 @@ router.put(
   checkRole("COORDINADOR"),
   tramiteCoordinador.asignarOReasignarRevisor
 );
+
 router.put(
   "/coordinador/tramites/:id/completar",
   checkAuth,
@@ -152,11 +153,19 @@ router.put(
   checkRole("COORDINADOR"),
   tramiteCoordinador.actualizarCompletarTramite
 );
+
 router.put(
   "/coordinador/tramites/:id/rechazar",
   checkAuth,
   checkRole("COORDINADOR"),
   tramiteCoordinador.rechazarTramite
+);
+
+router.put(
+  "/coordinador/tramites/:id/despachar",
+  checkAuth,
+  checkRole("COORDINADOR"),
+  tramiteCoordinador.despacharTramiteDirectoRevisor
 );
 
 // * Rutas exclusivas para el revisor

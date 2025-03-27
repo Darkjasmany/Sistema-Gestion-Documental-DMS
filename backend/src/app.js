@@ -34,7 +34,8 @@ app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 app.use(express.json());
 
 // Servir archivos estáticos
-app.use("/uploads", express.static("uploads")); // Sirve la carpeta "uploads" como estática
+// app.use("/uploads", express.static("uploads")); // Sirve la carpeta "uploads" como estática
+app.use("/home/jasmany/uploads/", express.static("/home/jasmany/uploads/")); // Sirve la carpeta "uploads" como estática
 
 // Routes
 app.use("/api/usuarios", usuarioRoutes);
