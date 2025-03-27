@@ -13,6 +13,7 @@ import CompletarTramite from "./CompletarTramite.components";
 import AprobarTramite from "./AprobarTramite.components";
 import DespacharTramite from "./DespacharTramite.components";
 import ExportButtons from "./Buttons/ExportButtons.components";
+import CompletarTramiteDirecto from "./CompletarTramiteDirecto.components";
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // console.log(tramiteBusqueda);
@@ -25,6 +26,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
   const [tramiteExpandido, setTramiteExpandido] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenDirecto, setIsModalOpenDirecto] = useState(false);
   const [selectedTramite, setSelectedTramite] = useState(null);
 
   const [alerta, setAlerta] = useState({});
@@ -36,6 +38,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   const openModal = (tramite) => {
     setSelectedTramite(tramite);
     setIsModalOpen(true);
+  };
+
+  const openModalDirecto = (tramite) => {
+    setSelectedTramite(tramite);
+    setIsModalOpenDirecto(true);
   };
 
   const closeModal = () => {
@@ -99,12 +106,24 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       baseColumns.push({
         header: "Asigna | Reasigna",
         cell: ({ row }) => (
-          <button
-            className="bg-blue-500 text-white px-3 py-1 rounded"
-            onClick={() => openModal(row.original)}
-          >
-            {row.original.estado === "INGRESADO" ? "Asignar" : "Reasignar"}
-          </button>
+          <div className="flex justify-between gap-3">
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded"
+              onClick={() => openModal(row.original)}
+            >
+              {row.original.estado === "INGRESADO" ? "Asignar" : "Reasignar"}
+            </button>
+            {row.original.estado === "INGRESADO" ? (
+              <button
+                className="bg-purple-500 text-white px-3 py-1 rounded"
+                onClick={() => openModalDirecto(row.original)}
+              >
+                {row.original.estado === "INGRESADO" ? "Despachar" : ""}
+              </button>
+            ) : (
+              []
+            )}
+          </div>
         ),
       });
     }
@@ -444,6 +463,31 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
               />
             )}
 
+            <button
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
+              onClick={closeModal}
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isModalOpenDirecto && selectedTramite && (
+        <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
+          <div className="bg-white p-5 rounded-lg w-2/4 lg:w-1/3">
+            <h2 className="text-center font-bold mb-5">
+              {"Asignar Despachador para Trámite #" +
+                selectedTramite.numero_tramite}
+            </h2>
+
+            {isAsignarReasignar && (
+              <CompletarTramiteDirecto
+                tramite={selectedTramite}
+                onTramiteUpdated={onTramiteUpdated}
+                closeModal={closeModal}
+              />
+            )}
             <button
               className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
               onClick={closeModal}
