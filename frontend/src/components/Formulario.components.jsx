@@ -542,18 +542,19 @@ const Formulario = () => {
           value={id ? "Guardar Cambios" : "Crear Trámite"}
           className="bg-indigo-600 text-white w-full p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
         /> */}
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-5">
           <button
             type="button"
             onClick={handleLimpiarFormulario}
-            className="bg-gray-300 text-gray-700 w-1/2 p-3 uppercase font-bold hover:bg-gray-400 cursor-pointer transition-colors mr-2"
+            className="bg-gray-300 text-gray-700 w-1/2 p-3 uppercase font-bold hover:bg-gray-400 cursor-pointer transition-colors rounded-md"
           >
-            Limpiar Formulario
+            {/* Limpiar Formulario */}
+            {id ? "Cancelar" : "Limpiar Formulario"}
           </button>
           <input
             type="submit"
             value={id ? "Guardar Cambios" : "Crear Trámite"}
-            className="bg-indigo-600 text-white w-1/2 p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
+            className="bg-indigo-600 text-white w-1/2 p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors rounded-md"
           />
         </div>
       </form>

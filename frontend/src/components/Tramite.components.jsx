@@ -18,6 +18,7 @@ const Tramite = ({ tramite }) => {
     createdAt,
     departamentoRemitente,
     remitente,
+    tramiteArchivos,
   } = tramite;
 
   // Formatear fechas
@@ -31,6 +32,8 @@ const Tramite = ({ tramite }) => {
 
   const nombreDepartamento = departamentoRemitente?.nombre || "No especificado";
   const nombreRemitente = remitente?.nombreCompleto || "No especificado";
+
+  console.log(tramite);
 
   return (
     <>
@@ -99,6 +102,25 @@ const Tramite = ({ tramite }) => {
             <span className="font-normal uppercase text-black ">Si</span>
           </p>
         ) : null}
+        <p className="font-bold uppercase text-indigo-700 my-2">Archivos:</p>
+        <ul className="list-disc pl-5">
+          {tramiteArchivos?.length > 0 ? (
+            tramiteArchivos.map((archivo) => (
+              <li key={archivo.id}>
+                <a
+                  href={import.meta.env.VITE_BACKEND_URL + "/" + archivo.ruta}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  {archivo.original_name}
+                </a>
+              </li>
+            ))
+          ) : (
+            <li>No hay archivos adjuntos</li>
+          )}
+        </ul>
 
         <div className="flex justify-between my-5">
           <button
