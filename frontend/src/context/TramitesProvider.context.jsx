@@ -554,6 +554,7 @@ export const TramitesProvider = ({ children }) => {
         obtenerTramites,
         setEdicion,
         tramite,
+        setTramite,
         eliminarTramite,
         buscarTramites,
         tramitesRespuesta,
