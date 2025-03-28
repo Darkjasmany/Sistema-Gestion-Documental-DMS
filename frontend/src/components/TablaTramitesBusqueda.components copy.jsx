@@ -15,136 +15,6 @@ import DespacharTramite from "./DespacharTramite.components";
 import ExportButtons from "./Buttons/ExportButtons.components";
 import CompletarTramiteDirecto from "./CompletarTramiteDirecto.components";
 
-// Componente memoizado para la fila expandida
-const FilaExpandida = memo(({ row, columns }) => {
-  return (
-    <tr className="bg-gray-100">
-      <td colSpan={columns.length} className="p-4">
-        <div>
-          <p>
-            <strong>Descripción Tramite:</strong> {row.original.descripcion}
-          </p>
-
-          <p>
-            <strong>Prioridad:</strong> {row.original.prioridad}
-          </p>
-
-          {row.original.fecha_contestacion && (
-            <p>
-              <strong>Fecha Contestación:</strong>{" "}
-              {row.original.fecha_contestacion}
-            </p>
-          )}
-
-          {row.original.numero_oficio && (
-            <p>
-              <strong>Número de Memo|Oficio Contestación:</strong>{" "}
-              {row.original.numero_oficio}
-            </p>
-          )}
-
-          {row.original.destinatarios && (
-            <>
-              <p>
-                <strong>Destinatarios:</strong>
-              </p>
-              <ul className="list-disc pl-5">
-                {row.original.destinatarios?.length > 0 ? (
-                  row.original.destinatarios.map((destinatario) => (
-                    <li key={destinatario.destinatario.id}>
-                      {destinatario.destinatario.nombres +
-                        " " +
-                        destinatario.destinatario.apellidos +
-                        " - " +
-                        destinatario.departamentoDestinatario.nombre}
-                    </li>
-                  ))
-                ) : (
-                  <li>No hay destinatarios</li>
-                )}
-              </ul>
-            </>
-          )}
-
-          {row.original.tramiteObservaciones && (
-            <>
-              <p>
-                <strong>Observaciones:</strong>
-              </p>
-              <ul className="list-disc pl-5">
-                {row.original.tramiteObservaciones?.length > 0 ? (
-                  row.original.tramiteObservaciones.map((observacion) => (
-                    <li key={observacion.id}>
-                      <div className="flex flex-col">
-                        <span className="mb-1">
-                          <strong>Usuario Creación:</strong>{" "}
-                          {observacion.usuarioCreacionObservacion.nombres}{" "}
-                          {observacion.usuarioCreacionObservacion.apellidos}
-                        </span>
-                        <span>
-                          <strong>Detalle:</strong> {observacion.observacion}
-                        </span>
-                      </div>
-                    </li>
-                  ))
-                ) : (
-                  <li>No hay observaciones</li>
-                )}
-              </ul>
-            </>
-          )}
-
-          <p>
-            <strong>Archivos:</strong>
-          </p>
-          <ul className="list-disc pl-5">
-            {row.original.tramiteArchivos?.length > 0 ? (
-              row.original.tramiteArchivos.map((archivo) => (
-                <li key={archivo.id}>
-                  <a
-                    href={import.meta.env.VITE_BACKEND_URL + "/" + archivo.ruta}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline"
-                  >
-                    {archivo.original_name}
-                  </a>
-                </li>
-              ))
-            ) : (
-              <li>No hay archivos adjuntos</li>
-            )}
-          </ul>
-
-          <p>
-            <strong>Usuario Creación:</strong>{" "}
-            {row.original.usuario?.UsuarioCreacion}
-          </p>
-
-          <p>
-            <strong>Fecha de Creación:</strong>{" "}
-            {formatearFecha(row.original.createdAt)}
-          </p>
-
-          {row.original.usuarioRevisor?.UsuarioRevisor && (
-            <p>
-              <strong>Usuario Revisor:</strong>{" "}
-              {row.original.usuarioRevisor.UsuarioRevisor}
-            </p>
-          )}
-
-          {row.original.usuarioDespacho?.usuarioDespacho && (
-            <p>
-              <strong>Usuario Despacho:</strong>{" "}
-              {row.original.usuarioDespacho.usuarioDespacho}
-            </p>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
-});
-
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // console.log(tramiteBusqueda);
 
@@ -167,6 +37,17 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     setTramiteExpandido((prev) => (prev === id ? null : id));
   };
 
+  // const toggleExpandir = (id) => {
+  //   console.log("ID clickeado:", id);
+
+  //   // setTramiteExpandido((prev) => (prev === id ? null : id));
+  //   setTramiteExpandido((prev) => {
+  //     const newValue = prev === id ? null : id;
+  //     console.log("Nuevo estado de expandedTramite:", newValue);
+  //     return newValue;
+  //   });
+  // };
+
   const openModal = (tramite) => {
     setSelectedTramite(tramite);
     setIsModalOpen(true);
@@ -181,6 +62,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     setSelectedTramite(null);
     setIsModalOpen(false);
   };
+
+  // useEffect(() => {
+  //   console.log("Trámite expandido:", tramiteExpandido);
+  // }, [tramiteExpandido]);
 
   useEffect(() => {
     if (alerta.message) {
@@ -224,13 +109,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       {
         header: "Detalle",
         cell: ({ row }) => {
+          console.log("row.original.id:", row.original.id); // Agrega este console.log
           return (
             <button
-              className={`px-3 py-1 rounded ${
-                tramiteExpandido === row.original.id
-                  ? "bg-red-500"
-                  : "bg-blue-500"
-              } text-white`}
+              className="bg-blue-500 text-white px-3 py-1 rounded"
               onClick={() => toggleExpandir(row.original.id)}
             >
               {tramiteExpandido === row.original.id ? "Ocultar" : "Más"}
@@ -285,8 +167,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
     return baseColumns;
     // }, [isAsignarReasignar, isAsignados, isCompletados, isDespachar]);
-    // }, []);
-  }, [tramiteExpandido]);
+  }, []);
+  // }, [tramiteExpandido]);
 
   // Usar useMemo para memorizar los datos
   const data = useMemo(() => tramiteBusqueda, [tramiteBusqueda]);
@@ -351,7 +233,154 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                     ))}
                   </tr>
                   {tramiteExpandido === row.original.id && (
-                    <FilaExpandida row={row} columns={columns} />
+                    <tr className="bg-gray-100">
+                      <td colSpan={columns.length} className="p-4">
+                        <div>
+                          <p>
+                            <strong>Descripción Tramite:</strong>{" "}
+                            {row.original.descripcion}
+                          </p>
+
+                          <p>
+                            <strong>Prioridad:</strong> {row.original.prioridad}
+                          </p>
+
+                          {row.original.fecha_contestacion && (
+                            <p>
+                              <strong>Fecha Contestación:</strong>{" "}
+                              {row.original.fecha_contestacion}
+                            </p>
+                          )}
+
+                          {row.original.numero_oficio && (
+                            <p>
+                              <strong>
+                                Número de Memo|Oficio Contestación:
+                              </strong>{" "}
+                              {row.original.numero_oficio}
+                            </p>
+                          )}
+
+                          {row.original.destinatarios && (
+                            <>
+                              <p>
+                                <strong>Destinatarios:</strong>
+                              </p>
+                              <ul className="list-disc pl-5">
+                                {row.original.destinatarios?.length > 0 ? (
+                                  row.original.destinatarios.map(
+                                    (destinatario) => (
+                                      <li key={destinatario.destinatario.id}>
+                                        {destinatario.destinatario.nombres +
+                                          " " +
+                                          destinatario.destinatario.apellidos +
+                                          " - " +
+                                          destinatario.departamentoDestinatario
+                                            .nombre}
+                                      </li>
+                                    )
+                                  )
+                                ) : (
+                                  <li>No hay destinatarios</li>
+                                )}
+                              </ul>
+                            </>
+                          )}
+
+                          {row.original.tramiteObservaciones && (
+                            <>
+                              <p>
+                                <strong>Observaciones:</strong>
+                              </p>
+                              {/* Cambiado list-disc por list-decimal */}
+                              <ul className="list-disc pl-5">
+                                {" "}
+                                {row.original.tramiteObservaciones?.length >
+                                0 ? (
+                                  row.original.tramiteObservaciones.map(
+                                    (observacion) => (
+                                      <li key={observacion.id}>
+                                        <div className="flex flex-col">
+                                          <span className="mb-1">
+                                            <strong>Usuario Creación:</strong>{" "}
+                                            {
+                                              observacion
+                                                .usuarioCreacionObservacion
+                                                .nombres
+                                            }{" "}
+                                            {
+                                              observacion
+                                                .usuarioCreacionObservacion
+                                                .apellidos
+                                            }
+                                          </span>
+                                          <span>
+                                            <strong>Detalle:</strong>{" "}
+                                            {observacion.observacion}
+                                          </span>
+                                        </div>
+                                      </li>
+                                    )
+                                  )
+                                ) : (
+                                  <li>No hay observaciones</li>
+                                )}
+                              </ul>
+                            </>
+                          )}
+
+                          <p>
+                            <strong>Archivos:</strong>
+                          </p>
+                          <ul className="list-disc pl-5">
+                            {row.original.tramiteArchivos?.length > 0 ? (
+                              row.original.tramiteArchivos.map((archivo) => (
+                                <li key={archivo.id}>
+                                  <a
+                                    href={
+                                      import.meta.env.VITE_BACKEND_URL +
+                                      "/" +
+                                      archivo.ruta
+                                    }
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 underline"
+                                  >
+                                    {archivo.original_name}
+                                  </a>
+                                </li>
+                              ))
+                            ) : (
+                              <li>No hay archivos adjuntos</li>
+                            )}
+                          </ul>
+
+                          <p>
+                            <strong>Usuario Creación:</strong>{" "}
+                            {row.original.usuario?.UsuarioCreacion}
+                          </p>
+
+                          <p>
+                            <strong>Fecha de Creación:</strong>{" "}
+                            {formatearFecha(row.original.createdAt)}
+                          </p>
+
+                          {row.original.usuarioRevisor?.UsuarioRevisor && (
+                            <p>
+                              <strong>Usuario Revisor:</strong>{" "}
+                              {row.original.usuarioRevisor.UsuarioRevisor}
+                            </p>
+                          )}
+
+                          {row.original.usuarioDespacho?.usuarioDespacho && (
+                            <p>
+                              <strong>Usuario Despacho:</strong>{" "}
+                              {row.original.usuarioDespacho.usuarioDespacho}
+                            </p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
                   )}
                 </React.Fragment>
               ))}
