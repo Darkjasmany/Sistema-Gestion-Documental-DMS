@@ -32,7 +32,8 @@ const Formulario = () => {
 
   const fileInputArchivos = useRef(null); // Referencia al input file
 
-  const { guardarTramite, tramite, setTramitesRespuesta } = useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
+  const { guardarTramite, tramite, setTramitesRespuesta, setTramite } =
+    useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
 
   useEffect(() => {
     // ** Cargar Departamentos y Parámetros
@@ -57,7 +58,7 @@ const Formulario = () => {
     };
 
     fecthData();
-
+    // setTramite({}); // Limpiar el estado del trámite al montar el formulario
     setTramitesRespuesta([]); // Limpiar el estado de los trámites de la consulta
   }, []);
 
@@ -198,6 +199,24 @@ const Formulario = () => {
     if (nuevosArchivos.length === 0) {
       fileInputArchivos.current.value = ""; // Reinicia el input file
     }
+  };
+
+  const handleLimpiarFormulario = () => {
+    setId(null);
+    setOficioRemitente("");
+    setAsunto("");
+    setTramiteReferencia(false);
+    setReferenciaTramite("");
+    setFechaDocumento(new Date().toISOString().split("T")[0]);
+    setDepartamentoRemitenteId("");
+    setRemitenteId("");
+    setPrioridad("NORMAL");
+    setDescripcion("");
+    setArchivos([]);
+    setTramiteExterno(false);
+    fileInputArchivos.current.value = "";
+    setAlerta({});
+    setTramite({}); // Limpiamos el estado del trámite en el Provider
   };
 
   const handleSubmit = async (e) => {
@@ -518,11 +537,25 @@ const Formulario = () => {
           </label>
         </div>
 
-        <input
+        {/* <input
           type="submit"
           value={id ? "Guardar Cambios" : "Crear Trámite"}
           className="bg-indigo-600 text-white w-full p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
-        />
+        /> */}
+        <div className="flex justify-between">
+          <button
+            type="button"
+            onClick={handleLimpiarFormulario}
+            className="bg-gray-300 text-gray-700 w-1/2 p-3 uppercase font-bold hover:bg-gray-400 cursor-pointer transition-colors mr-2"
+          >
+            Limpiar Formulario
+          </button>
+          <input
+            type="submit"
+            value={id ? "Guardar Cambios" : "Crear Trámite"}
+            className="bg-indigo-600 text-white w-1/2 p-3 uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-colors"
+          />
+        </div>
       </form>
 
       {/* Mostrar archivos seleccionados */}
