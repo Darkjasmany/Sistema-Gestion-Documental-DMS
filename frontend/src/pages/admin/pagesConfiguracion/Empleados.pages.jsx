@@ -11,7 +11,6 @@ const Empleados = () => {
     eliminarEmpleado,
     obtenerEmpleado,
   } = useAdmin();
-
   const [empleados, setEmpleados] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
@@ -22,8 +21,8 @@ const Empleados = () => {
     departamentoId: "",
   });
   const [empleadoAEditar, setEmpleadoAEditar] = useState(null);
-
   const [alerta, setAlerta] = useState({});
+  const [filtro, setFiltro] = useState("");
 
   // Cargar departamentos al montar el componente
   useEffect(() => {
@@ -31,14 +30,27 @@ const Empleados = () => {
     cargarEmpleados();
   }, []);
 
+  // ** UseEffect para Alerta
+  useEffect(() => {
+    if (alerta.message) {
+      const timer = setTimeout(() => setAlerta({}), 2000); // Limpia la alerta después de 3s
+      return () => clearTimeout(timer);
+    }
+  }, [alerta]);
+
   const fetchDepartamentos = async () => {
     try {
       const { data } = await clienteAxios("/departamentos");
       setDepartamentos(data);
     } catch (error) {
       console.error("Error al cargar departamentos:", error);
+      setAlerta({
+        message: "Error al cargar departamentos",
+        error: true,
+      });
     }
   };
+
   const cargarEmpleados = async () => {
     try {
       const empleadosData = await obtenerEmpleados();
@@ -49,6 +61,7 @@ const Empleados = () => {
       }
     } catch (error) {
       console.error("Error al cargar empleados:", error);
+      setAlerta({ message: "Error al cargar empleados", error: true });
     }
   };
 
@@ -58,6 +71,20 @@ const Empleados = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value);
+  };
+
+  const empleadosFiltrados = empleados.filter((empleado) => {
+    const textoBusqueda = filtro.toLowerCase();
+    return (
+      empleado.cedula.toLowerCase().includes(textoBusqueda) ||
+      empleado.nombres.toLowerCase().includes(textoBusqueda) ||
+      empleado.apellidos.toLowerCase().includes(textoBusqueda) ||
+      empleado.departamento.nombre.toLowerCase().includes(textoBusqueda)
+    );
+  });
 
   const agregarEmpleado = async () => {
     const { cedula, nombres, apellidos, email, departamentoId } = nuevoEmpleado;
@@ -73,9 +100,17 @@ const Empleados = () => {
     try {
       if (empleadoAEditar) {
         await actualizarEmpleado(empleadoAEditar.id, nuevoEmpleado);
+        setAlerta({
+          message: "Empleado actualizado correctamente",
+          success: true,
+        });
         setEmpleadoAEditar(null); // Limpiar el empleado a editar
       } else {
         await guardarEmpleado(nuevoEmpleado);
+        setAlerta({
+          message: "Empleado agregado correctamente",
+          success: true,
+        });
       }
       cargarEmpleados();
       setNuevoEmpleado({
@@ -87,6 +122,10 @@ const Empleados = () => {
       }); // Limpiar formulario después de agregar/editar
     } catch (error) {
       console.error("Error al agregar/actualizar empleado:", error);
+      setAlerta({
+        message: "Error al agregar/actualizar empleado",
+        error: true,
+      });
     }
   };
 
@@ -103,6 +142,10 @@ const Empleados = () => {
       }); // Cargar datos en el formulario
     } catch (error) {
       console.error("Error al obtener empleado para editar:", error);
+      setAlerta({
+        message: "Error al obtener empleado para editar",
+        error: true,
+      });
     }
   };
 
@@ -112,20 +155,38 @@ const Empleados = () => {
       cargarEmpleados();
     } catch (error) {
       console.error("Error al eliminar empleado:", error);
+      setAlerta({ message: "Error al eliminar empleado", error: true });
     }
   };
 
   // Paginación
+  // const [paginaActual, setPaginaActual] = useState(1);
+  // const empleadosPorPagina = 10;
+  // const indexUltimoEmpleado = paginaActual * empleadosPorPagina;
+  // const indexPrimerEmpleado = indexUltimoEmpleado - empleadosPorPagina;
+  // const empleadosVisibles = Array.isArray(empleados)
+  //   ? empleados.slice(indexPrimerEmpleado, indexUltimoEmpleado)
+  //   : [];
+
+  // const totalPaginas = Math.ceil(empleados.length / empleadosPorPagina);
+
+  // const cambiarPagina = (numeroPagina) => {
+  //   if (numeroPagina >= 1 && numeroPagina <= totalPaginas) {
+  //     setPaginaActual(numeroPagina);
+  //   }
+  // };
+
   const [paginaActual, setPaginaActual] = useState(1);
   const empleadosPorPagina = 10;
-
   const indexUltimoEmpleado = paginaActual * empleadosPorPagina;
   const indexPrimerEmpleado = indexUltimoEmpleado - empleadosPorPagina;
-  const empleadosVisibles = Array.isArray(empleados)
-    ? empleados.slice(indexPrimerEmpleado, indexUltimoEmpleado)
+  const empleadosVisibles = Array.isArray(empleadosFiltrados)
+    ? empleadosFiltrados.slice(indexPrimerEmpleado, indexUltimoEmpleado)
     : [];
 
-  const totalPaginas = Math.ceil(empleados.length / empleadosPorPagina);
+  const totalPaginas = Math.ceil(
+    empleadosFiltrados.length / empleadosPorPagina
+  );
 
   const cambiarPagina = (numeroPagina) => {
     if (numeroPagina >= 1 && numeroPagina <= totalPaginas) {
@@ -140,11 +201,25 @@ const Empleados = () => {
       <h2 className="text-2xl font-semibold text-gray-800 mb-2">
         Gestión de Empleados
       </h2>
-      <p className="text-gray-600 mb-6">
+      <p className="text-gray-600 mb-4">
         Administra los empleados del sistema y gestiona su información.
       </p>
 
       {message && <Alerta alerta={alerta} />}
+
+      {/* Campo de búsqueda */}
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+          Busqueda Avanzada
+        </h3>
+        <input
+          type="text"
+          placeholder="Buscar por cédula, nombre, apellido o departamento"
+          value={filtro}
+          onChange={handleFiltroChange}
+          className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+        />
+      </div>
 
       {/* Formulario para agregar o editar empleado */}
       <div className="mb-10">
@@ -231,7 +306,7 @@ const Empleados = () => {
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Email
-                </th>{" "}
+                </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Departamento
                 </th>
@@ -244,7 +319,7 @@ const Empleados = () => {
               {empleadosVisibles.map((empleado, index) => (
                 <tr key={empleado.id}>
                   <td className="px-4 py-2 text-sm text-gray-600">
-                    {indexPrimerEmpleado + index + 1}
+                    {index + 1}
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-800">
                     {empleado.nombres}

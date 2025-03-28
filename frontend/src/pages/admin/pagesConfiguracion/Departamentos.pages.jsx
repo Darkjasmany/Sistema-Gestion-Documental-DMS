@@ -16,8 +16,8 @@ const Departamentos = () => {
     nombre: "",
   });
   const [departamentoAEditar, setDepartamentoAEditar] = useState(null);
-
   const [alerta, setAlerta] = useState({});
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     cargarDepartamentos();
@@ -39,6 +39,10 @@ const Departamentos = () => {
     });
   };
 
+  const handleBusquedaChange = (e) => {
+    setBusqueda(e.target.value);
+  };
+
   const agregarDepartamento = async () => {
     const { nombre } = nuevoDepartamento;
     if (!nombre) {
@@ -51,15 +55,25 @@ const Departamentos = () => {
     try {
       if (departamentoAEditar) {
         await actualizarDepartamento(departamentoAEditar.id, nuevoDepartamento);
+        setAlerta({
+          message: "Departamento actualizado con éxito",
+          error: false,
+        });
         setDepartamentoAEditar(null); // Limpiar el departamento a editar
       } else {
         await guardarDepartamento(nuevoDepartamento);
+        setAlerta({ message: "Departamento creado con éxito", error: false });
       }
       cargarDepartamentos();
       setNuevoDepartamento({ nombre: "" }); // Limpiar formulario después de agregar/editar
     } catch (error) {
       console.error("Error al agregar/actualizar departamento:", error);
+      setAlerta({ message: "Error al procesar el departamento", error: true });
     }
+
+    setTimeout(() => {
+      setAlerta({});
+    }, 3000);
   };
 
   const editarDepartamento = async (id) => {
@@ -75,9 +89,18 @@ const Departamentos = () => {
   const eliminarDepartamentoSeleccionado = async (id) => {
     try {
       await eliminarDepartamento(id);
+      setAlerta({
+        message: "Departamento eliminado con éxito",
+        error: false,
+      });
+
       cargarDepartamentos();
     } catch (error) {
       console.error("Error al eliminar departamento:", error);
+      setAlerta({
+        message: "Error al eliminar el departamento",
+        error: true,
+      });
     }
   };
 
@@ -88,10 +111,11 @@ const Departamentos = () => {
   const indexUltimoDepartamento = paginaActual * departamentosPorPagina;
   const indexPrimerDepartamento =
     indexUltimoDepartamento - departamentosPorPagina;
-  const departamentosVisibles = departamentos.slice(
-    indexPrimerDepartamento,
-    indexUltimoDepartamento
-  );
+  const departamentosVisibles = departamentos
+    .filter((departamento) =>
+      departamento.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    )
+    .slice(indexPrimerDepartamento, indexUltimoDepartamento);
 
   const totalPaginas = Math.ceil(departamentos.length / departamentosPorPagina);
 
@@ -108,11 +132,25 @@ const Departamentos = () => {
       <h2 className="text-2xl font-semibold text-gray-800 mb-2">
         Gestión de Departamentos
       </h2>
-      <p className="text-gray-600 mb-6">
+      <p className="text-gray-600 mb-4">
         Administra los departamentos del sistema y gestiona su información.
       </p>
 
       {message && <Alerta alerta={alerta} />}
+
+      {/* Campo de búsqueda */}
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+          Busqueda Avanzada
+        </h3>
+        <input
+          type="text"
+          placeholder="Buscar departamento..."
+          className="border border-gray-300 rounded-lg px-4 py-2 w-full text-sm"
+          value={busqueda}
+          onChange={handleBusquedaChange}
+        />
+      </div>
 
       {/* Formulario para agregar o editar departamento */}
       <div className="mb-10">
