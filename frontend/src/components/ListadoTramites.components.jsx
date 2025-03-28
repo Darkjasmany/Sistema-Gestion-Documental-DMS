@@ -8,7 +8,8 @@ const ListadoTramites = () => {
   useEffect(() => {
     obtenerTramites();
     //  }, [obtenerTramites]);
-  }, [tramites, obtenerTramites]);
+    // }, [tramites, obtenerTramites]);
+  }, [obtenerTramites]);
 
   // console.log(tramites);
 

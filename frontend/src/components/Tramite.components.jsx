@@ -33,7 +33,7 @@ const Tramite = ({ tramite }) => {
   const nombreDepartamento = departamentoRemitente?.nombre || "No especificado";
   const nombreRemitente = remitente?.nombreCompleto || "No especificado";
 
-  console.log(tramite);
+  // console.log(tramite);
 
   return (
     <>

@@ -178,7 +178,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   };
 
   const closeModal = () => {
-    setSelectedTramite(null);
+    setSelectedTramite(null); // Limpia el trámite seleccionado
     setIsModalOpen(false);
   };
 
@@ -309,7 +309,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   const { message } = alerta;
 
   // console.log(tramiteBusqueda);
-  console.log("Renderizando tabla de trámites");
+  // console.log("Renderizando tabla de trámites");
 
   return (
     <div className="overflow-x-auto">
