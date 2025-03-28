@@ -23,8 +23,7 @@ export const Empleado = sequelize.define(
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false, // unique: true,
       validate: {
         isEmail: true, // validación para formato de email
       },

@@ -20,25 +20,29 @@ export const agregarEmpleado = async (req, res) => {
   if (!emailValido.test(email))
     return res.status(400).json({ message: "Email inválido" });
 
-  const empleadoExiste = await Empleado.findOne({
-    where: {
-      cedula: cedula, // Igualdad directa en lugar de ILIKE
-    },
-  });
-
-  // Se comenta porque se necesita que se ingrese empleados con 0999999999
-  // if (empleadoExiste)
-  //   return res.status(400).json({ message: "Empleado ya registrado" });
-
-  const emailRegistrado = await Empleado.findOne({
-    where: {
-      email: {
-        [Op.iLike]: email,
+  // Verificación de duplicados, excepto para los casos especiales
+  if (cedula !== "0999999999") {
+    const empleadoExiste = await Empleado.findOne({
+      where: {
+        cedula: cedula,
       },
-    },
-  });
-  if (emailRegistrado)
-    return res.status(400).json({ message: "El email ya está registrado" });
+    });
+
+    if (empleadoExiste) {
+      return res.status(400).json({ message: "Empleado ya registrado" });
+    }
+  }
+
+  if (email.toLowerCase() !== "ns@gmail.com") {
+    const emailRegistrado = await Empleado.findOne({
+      where: {
+        email: email,
+      },
+    });
+    if (emailRegistrado) {
+      return res.status(400).json({ message: "El email ya está registrado" });
+    }
+  }
 
   const departamento = await Departamento.findByPk(departamentoId);
   if (!departamento)
@@ -149,6 +153,20 @@ export const actualizarEmpleado = async (req, res) => {
     const empleado = await Empleado.findByPk(id);
     if (!empleado)
       return res.status(404).json({ message: "Empleado no encontrado" });
+
+    // Validación de duplicidad de email (excepto el empleado actual y "ns@gmail.com")
+    if (email.toLowerCase() !== "ns@gmail.com") {
+      const empleadoEmailExiste = await Empleado.findOne({
+        where: {
+          email: email,
+          id: { [Op.ne]: id }, // Excluye el empleado actual
+        },
+      });
+
+      if (empleadoEmailExiste) {
+        return res.status(400).json({ message: "El email ya está registrado" });
+      }
+    }
 
     await empleado.update({
       cedula,
