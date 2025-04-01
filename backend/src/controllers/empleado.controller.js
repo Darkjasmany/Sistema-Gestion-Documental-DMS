@@ -3,25 +3,26 @@ import { Empleado } from "../models/Empleado.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarEmpleado = async (req, res) => {
-  const { cedula, nombres, apellidos, email, departamentoId } = req.body;
+  const { cedula, nombres, apellidos, email, departamentoId, telefono } =
+    req.body;
 
-  if (!cedula || !nombres || !apellidos || !email || !departamentoId)
+  if (!nombres || !apellidos || !departamentoId)
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
 
-  if (cedula.length !== 10) {
-    return res
-      .status(400)
-      .json({ message: "La cedula debe contener 10 caracteres " });
-  }
+  // if (cedula.length !== 10) {
+  //   return res
+  //     .status(400)
+  //     .json({ message: "La cedula debe contener 10 caracteres " });
+  // }
 
-  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailValido.test(email))
-    return res.status(400).json({ message: "Email inválido" });
+  // const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // if (!emailValido.test(email))
+  //   return res.status(400).json({ message: "Email inválido" });
 
   // Verificación de duplicados, excepto para los casos especiales
-  if (cedula !== "0999999999") {
+  /* if (cedula !== "0999999999") {
     const empleadoExiste = await Empleado.findOne({
       where: {
         cedula: cedula,
@@ -43,7 +44,7 @@ export const agregarEmpleado = async (req, res) => {
       return res.status(400).json({ message: "El email ya está registrado" });
     }
   }
-
+*/
   const departamento = await Departamento.findByPk(departamentoId);
   if (!departamento)
     return res.status(400).json({ message: "Departamento no válido" });
@@ -55,8 +56,10 @@ export const agregarEmpleado = async (req, res) => {
       apellidos,
       email,
       departamento_id: departamentoId,
+      telefono,
     });
-
+    // console.log(nombres, apellidos, email, cedula, departamentoId);
+    // return;
     res.status(201).json(empleadoCreado);
   } catch (error) {
     console.error(`Error al registrar el empleado: ${error.message}`);
@@ -78,6 +81,7 @@ export const cargarEmpleados = async (req, res) => {
         "nombres",
         "apellidos",
         "email",
+        "telefono",
         "departamento_id",
       ], // Asegúrate de incluir los campos necesarios
       include: [
@@ -142,9 +146,10 @@ export const obtenerEmpleadoPorDepartamento = async (req, res) => {
 
 export const actualizarEmpleado = async (req, res) => {
   const { id } = req.params;
-  const { cedula, nombres, apellidos, email, departamentoId } = req.body;
+  const { cedula, nombres, apellidos, email, departamentoId, telefono } =
+    req.body;
 
-  if (!cedula || !nombres || !apellidos || !email || !departamentoId)
+  if (!nombres || !apellidos || !departamentoId)
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
@@ -173,6 +178,7 @@ export const actualizarEmpleado = async (req, res) => {
       nombres,
       apellidos,
       email,
+      telefono,
       departamento_id: departamentoId,
     });
 

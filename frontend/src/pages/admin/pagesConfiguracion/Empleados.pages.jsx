@@ -19,6 +19,7 @@ const Empleados = () => {
     apellidos: "",
     email: "",
     departamentoId: "",
+    telefono: "",
   });
   const [empleadoAEditar, setEmpleadoAEditar] = useState(null);
   const [alerta, setAlerta] = useState({});
@@ -87,10 +88,11 @@ const Empleados = () => {
   });
 
   const agregarEmpleado = async () => {
-    const { cedula, nombres, apellidos, email, departamentoId } = nuevoEmpleado;
+    const { cedula, nombres, apellidos, email, departamentoId, telefono } =
+      nuevoEmpleado;
 
     // Validación frontend: campos obligatorios
-    if (!cedula || !nombres || !apellidos || !email || !departamentoId) {
+    if (!nombres || !apellidos || !departamentoId) {
       return setAlerta({
         message: "Todos los campos son obligatorios",
         error: true,
@@ -119,6 +121,7 @@ const Empleados = () => {
         apellidos: "",
         email: "",
         departamentoId: "",
+        telefono: "",
       }); // Limpiar formulario después de agregar/editar
     } catch (error) {
       console.error("Error al agregar/actualizar empleado:", error);
@@ -139,6 +142,7 @@ const Empleados = () => {
         apellidos: empleado.apellidos,
         email: empleado.email,
         departamentoId: empleado.departamento_id, // Cargar el ID del departamento
+        telefono: empleado.telefono,
       }); // Cargar datos en el formulario
     } catch (error) {
       console.error("Error al obtener empleado para editar:", error);
@@ -158,23 +162,6 @@ const Empleados = () => {
       setAlerta({ message: "Error al eliminar empleado", error: true });
     }
   };
-
-  // Paginación
-  // const [paginaActual, setPaginaActual] = useState(1);
-  // const empleadosPorPagina = 10;
-  // const indexUltimoEmpleado = paginaActual * empleadosPorPagina;
-  // const indexPrimerEmpleado = indexUltimoEmpleado - empleadosPorPagina;
-  // const empleadosVisibles = Array.isArray(empleados)
-  //   ? empleados.slice(indexPrimerEmpleado, indexUltimoEmpleado)
-  //   : [];
-
-  // const totalPaginas = Math.ceil(empleados.length / empleadosPorPagina);
-
-  // const cambiarPagina = (numeroPagina) => {
-  //   if (numeroPagina >= 1 && numeroPagina <= totalPaginas) {
-  //     setPaginaActual(numeroPagina);
-  //   }
-  // };
 
   const [paginaActual, setPaginaActual] = useState(1);
   const empleadosPorPagina = 10;
@@ -231,6 +218,7 @@ const Empleados = () => {
             type="text"
             name="cedula"
             placeholder="Cédula"
+            maxLength={10}
             className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
             value={nuevoEmpleado.cedula}
             onChange={handleInputChange}
@@ -257,6 +245,15 @@ const Empleados = () => {
             placeholder="Email"
             className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
             value={nuevoEmpleado.email}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            name="telefono"
+            placeholder="Teléfono"
+            maxLength={10}
+            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-200"
+            value={nuevoEmpleado.telefono}
             onChange={handleInputChange}
           />
           {/* Select para departamento */}
@@ -308,6 +305,9 @@ const Empleados = () => {
                   Email
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Teléfono
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Departamento
                 </th>
                 <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
@@ -332,6 +332,9 @@ const Empleados = () => {
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-800">
                     {empleado.email}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {empleado.telefono}
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-800">
                     {empleado.departamento.nombre}

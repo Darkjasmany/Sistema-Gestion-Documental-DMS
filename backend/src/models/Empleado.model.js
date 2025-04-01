@@ -8,10 +8,11 @@ export const Empleado = sequelize.define(
     cedula: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isInt: true, // Valida que solo contenga números enteros
-        len: [10, 10], // Valida que la longitud sea exactamente de 10 caracteres
-      },
+      // defaultValue: "0999999999",
+      // validate: {
+      //   isInt: true, // Valida que solo contenga números enteros
+      //   len: [10, 10], // Valida que la longitud sea exactamente de 10 caracteres
+      // },
     },
     nombres: {
       type: DataTypes.STRING,
@@ -23,18 +24,19 @@ export const Empleado = sequelize.define(
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false, // unique: true,
-      validate: {
-        isEmail: true, // validación para formato de email
-      },
+      allowNull: true, // unique: true,
+      // validate: {
+      //   isEmail: true, // validación para formato de email
+      // },
+      // defaultValue: "ns@gmail.com",
     },
     telefono: {
       type: DataTypes.STRING,
       allowNull: true, // campo opcional
-      validate: {
-        isNumeric: true, // validación para que solo acepte números
-        len: [10, 10], // longitud para el teléfono
-      },
+      // validate: {
+      //   isNumeric: true, // validación para que solo acepte números
+      //   len: [10, 10], // longitud para el teléfono
+      // },
     },
     departamento_id: {
       type: DataTypes.BIGINT,
@@ -54,11 +56,24 @@ export const Empleado = sequelize.define(
     tableName: "empleado",
     hooks: {
       beforeSave: async (empleado) => {
-        empleado.cedula = empleado.cedula.toString().trim();
         empleado.nombres = empleado.nombres.trim();
         empleado.apellidos = empleado.apellidos.trim();
-        empleado.email = empleado.email.trim().toLowerCase();
-        if (empleado.telefono) {
+
+        if (!empleado.cedula || empleado.cedula.trim() === "") {
+          empleado.cedula = "0999999999";
+        } else {
+          empleado.cedula = empleado.cedula.toString().trim();
+        }
+
+        if (!empleado.email || empleado.email.trim() === "") {
+          empleado.email = "ns@gmail.com";
+        } else {
+          empleado.email = empleado.email.trim().toLowerCase();
+        }
+
+        if (!empleado.telefono || empleado.telefono.trim() === "") {
+          empleado.telefono = "0999999999";
+        } else {
           empleado.telefono = empleado.telefono.trim();
         }
       },
