@@ -378,28 +378,35 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
-          <div className="bg-white p-5 rounded-lg w-2/4 lg:w-1/3">
-            <h2 className="text-center font-bold mb-5">
+        // <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          {/* <div className="bg-white p-5 rounded-lg w-2/4 lg:w-1/3"> */}
+          <div
+            className={`bg-white max-h-screen overflow-y-auto p-6 rounded-lg shadow-lg ${
+              isAsignarReasignar ? "w-1/3" : "w-10/12"
+            }`}
+          >
+            {/* <h2 className="text-center font-bold mb-5"> */}
+            <h2 className="text-xl text-center font-semibold mb-5">
               {" "}
               {isAsignarReasignar
-                ? "Asignar|Reasignar Revisor para Trámite #" +
+                ? "Asignar|Reasignar Revisor para Trámite # " +
                   selectedTramite.numero_tramite
                 : isAsignados
                 ? (selectedTramite.estado === "PENDIENTE"
-                    ? "Completar Trámite #"
+                    ? "Completar Trámite # "
                     : selectedTramite.estado === "COMPLETADO"
-                    ? "Despachar Trámite"
-                    : "Editar Trámite #") + selectedTramite.numero_tramite
+                    ? "Despachar Trámite # "
+                    : "Editar Trámite # ") + selectedTramite.numero_tramite
                 : // "Editar Trámite #") + selectedTramite.numero_tramite
                 isCompletados
                 ? (selectedTramite.estado === "POR_REVISAR"
-                    ? "Aprobar Trámite #"
-                    : "Para Despachar #") + selectedTramite.numero_tramite
+                    ? "Aprobar Trámite # "
+                    : "Para Despachar # ") + selectedTramite.numero_tramite
                 : isDespachar
                 ? (selectedTramite.estado === "COMPLETADO"
-                    ? "Entregar Trámite #"
-                    : "Para Finalizar #") + selectedTramite.numero_tramite
+                    ? "Entregar Trámite # "
+                    : "Para Finalizar # ") + selectedTramite.numero_tramite
                 : ""}
             </h2>
             {isAsignarReasignar && (
