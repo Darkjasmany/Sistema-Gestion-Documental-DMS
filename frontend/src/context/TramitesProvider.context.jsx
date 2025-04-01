@@ -178,7 +178,7 @@ export const TramitesProvider = ({ children }) => {
 
       // console.log(data);
       setTramitesRespuesta(data);
-      // console.log("🚀 tramitesRespuesta actualizado:", tramitesRespuesta);
+      console.log("🚀 tramitesRespuesta actualizado:", tramitesRespuesta);
     } catch (error) {
       console.error(
         error.response?.data?.message || "Error al buscar trámites"

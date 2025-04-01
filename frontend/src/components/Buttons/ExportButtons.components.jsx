@@ -26,6 +26,9 @@ const ExportButtons = ({ data, filtros }) => {
           ?.map((o) => `(${o.fecha}) ${o.observacion}`)
           .join(" | ") || "Sin observaciones",
       Usuario_Creador: t.usuario?.UsuarioCreacion || "",
+      Usuario_Revisor: t.usuarioRevisor?.UsuarioRevisor || "",
+      Usuario_Despacho: t.usuarioDespacho?.usuarioDespacho || "",
+
       Fecha_Creación: moment(t.createdAt).format("YYYY-MM-DD HH:mm"),
     }));
 
@@ -74,11 +77,13 @@ const ExportButtons = ({ data, filtros }) => {
         ?.map((o) => `(${o.fecha}) ${o.observacion}`)
         .join(" | ") || "Sin observaciones",
       t.usuario?.UsuarioCreacion || "",
+      t.usuarioRevisor?.UsuarioRevisor || "",
+      t.usuarioDespacho?.usuarioDespacho || "",
       moment(t.createdAt).format("YYYY-MM-DD HH:mm"),
     ]);
 
     // ✅ Insertar la tabla con autoTable
-    autoTable(doc, {
+    /* autoTable(doc, {
       head: [
         [
           "N°",
@@ -93,6 +98,8 @@ const ExportButtons = ({ data, filtros }) => {
           "Destinatarios",
           "Observaciones",
           "Usuario_Creador",
+          "Usuario_Revisor",
+          "Usuario_Despacho",
           "Fecha_Creación",
         ],
       ],
@@ -118,6 +125,44 @@ const ExportButtons = ({ data, filtros }) => {
         );
       },
       // Ajuste automático del tamaño de las celdas
+      autoSize: true,
+    });*/
+
+    autoTable(doc, {
+      head: [
+        [
+          "N°",
+          "Trámite",
+          "Oficio Remitente",
+          "Asunto",
+          "Fecha Documento",
+          "Depto. Remitente",
+          "Remitente",
+          "Estado",
+          "Descripción",
+          "Destinatarios",
+          "Observaciones",
+          "Usuario_Creador",
+          "Usuario_Revisor",
+          "Usuario_Despacho",
+          "Fecha_Creación",
+        ],
+      ],
+      body: tableData,
+      styles: { fontSize: 6 },
+      startY: startY,
+      didDrawPage: (data) => {
+        const pageCount = doc.internal.getNumberOfPages();
+        const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
+        const date = moment().format("YYYY-MM-DD HH:mm");
+        const footerText = `Fecha de impresión: ${date}  |  Página ${pageNumber} de ${pageCount}`;
+        doc.setFontSize(9);
+        doc.text(
+          footerText,
+          data.settings.margin.left,
+          doc.internal.pageSize.height - 10
+        );
+      },
       autoSize: true,
     });
 

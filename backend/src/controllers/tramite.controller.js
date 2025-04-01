@@ -893,6 +893,19 @@ export const buscarTramites = async (req, res) => {
           required: false,
         },
         {
+          model: Usuario,
+          as: "usuarioDespacho",
+          attributes: [
+            [
+              Sequelize.literal(
+                '"usuarioDespacho"."nombres" || \' \' || "usuarioDespacho"."apellidos"'
+              ),
+              "usuarioDespacho",
+            ],
+          ],
+          required: false,
+        },
+        {
           model: TramiteObservacion,
           as: "tramiteObservaciones",
           attributes: [
@@ -934,19 +947,6 @@ export const buscarTramites = async (req, res) => {
           ],
           required: false,
           where: { activo: true },
-        },
-        {
-          model: Usuario,
-          as: "usuarioDespacho", // Usar el alias correcto
-          attributes: [
-            [
-              Sequelize.literal(
-                'CONCAT("usuarioDespacho"."nombres", \' \', "usuarioDespacho"."apellidos")' // Referenciar el alias
-              ),
-              "usuarioDespacho",
-            ],
-          ],
-          required: false,
         },
       ],
       order: [["id", "ASC"]],
