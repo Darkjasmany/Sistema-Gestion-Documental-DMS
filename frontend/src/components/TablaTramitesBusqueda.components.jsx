@@ -221,6 +221,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         header: "Estado",
         accessorKey: "estado",
       },
+
       {
         header: "Detalle",
         cell: ({ row }) => {
@@ -241,6 +242,17 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     ];
 
     if (isAsignarReasignar) {
+      // Columna condicional para el UsuarioRevisor dentro de isAsignarReasignar
+      baseColumns.splice(
+        baseColumns.findIndex((col) => col.header === "Detalle"),
+        0,
+        {
+          header: "Revisor",
+          accessorFn: (row) =>
+            row.usuarioRevisor?.UsuarioRevisor || "Sin Revisor",
+        }
+      );
+
       baseColumns.push({
         header: "Asigna | Reasigna",
         cell: ({ row }) => (
@@ -285,8 +297,15 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
     return baseColumns;
     // }, [isAsignarReasignar, isAsignados, isCompletados, isDespachar]);
-    // }, []);
-  }, [tramiteExpandido]);
+  }, [
+    isAsignarReasignar,
+    isAsignados,
+    isCompletados,
+    isDespachar,
+    tramiteExpandido,
+  ]);
+  // }, []);
+  // }, [tramiteExpandido]);
 
   // Usar useMemo para memorizar los datos
   const data = useMemo(() => tramiteBusqueda, [tramiteBusqueda]);

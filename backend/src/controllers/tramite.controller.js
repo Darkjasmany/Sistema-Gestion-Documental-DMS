@@ -1176,15 +1176,16 @@ export const finalizarTramite = async (req, res) => {
     !observacion ||
     observacion.trim() === "" ||
     !despachadorId ||
-    despachadorId.trim() === "" ||
-    !req.files ||
-    req.files.length === 0
+    despachadorId.trim() === ""
+    // || req.files ||
+    // req.files.length === 0
   ) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
       message:
-        "Todos los campos son obligatorios y debes subir al menos un archivo",
+        // "Todos los campos son obligatorios y debes subir al menos un archivo",
+        "Todos los campos son obligatorios",
       // error: true,
     });
   }
@@ -1222,25 +1223,28 @@ export const finalizarTramite = async (req, res) => {
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     tramite.hora_despacho = horaDespacho || tramite.hora_despacho;
     tramite.despachadorId = despachadorId || tramite.despachadorId;
-    tramite.estado = "POR_FINALIZAR";
+    // tramite.estado = "POR_FINALIZAR";
+    tramite.estado = "FINALIZADO";
 
     await tramite.save({ transaction });
 
     // Ingresar registros de los archivos
-    await Promise.all(
-      req.files.map(async (file) => {
-        await TramiteArchivo.create({
-          file_name: file.filename,
-          original_name: file.originalname,
-          ruta: file.path,
-          tipo: file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
-          size: file.size, // Guardar en bytes (número entero)
-          tramite_id: tramite.id,
-          usuario_creacion: req.usuario.id,
-          estado_carga: "DESPACHADO",
-        });
-      })
-    );
+    if (req.files) {
+      await Promise.all(
+        req.files.map(async (file) => {
+          await TramiteArchivo.create({
+            file_name: file.filename,
+            original_name: file.originalname,
+            ruta: file.path,
+            tipo: file.mimetype.split("/")[1], // Tomar solo la parte después de "/" Elimina "application/"
+            size: file.size, // Guardar en bytes (número entero)
+            tramite_id: tramite.id,
+            usuario_creacion: req.usuario.id,
+            estado_carga: "FINALIZADO",
+          });
+        })
+      );
+    }
 
     // Registrar el cambio de estado en el historial
     await registrarHistorialEstado(

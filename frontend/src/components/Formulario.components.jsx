@@ -341,6 +341,7 @@ const Formulario = () => {
           <input
             type="text"
             id="asunto"
+            maxLength={250}
             value={asunto}
             onChange={(e) => {
               setAsunto(e.target.value);

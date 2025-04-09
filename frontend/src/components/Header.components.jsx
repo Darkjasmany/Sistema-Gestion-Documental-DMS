@@ -51,7 +51,8 @@ const Header = () => {
                 </Link>
               )}
 
-              {auth.rol !== "DESPACHADOR" && (
+              {/* {auth.rol !== "DESPACHADOR" && ( */}
+              {auth.rol === "REVISOR" && (
                 <Link
                   to={"/admin/asignados"}
                   className="block px-4 py-2 hover:bg-indigo-700"
@@ -61,14 +62,15 @@ const Header = () => {
               )}
 
               {/* Solo visible para COORDINADOR */}
-              {auth.rol === "COORDINADOR" && (
+              {/* {auth.rol === "COORDINADOR" && (
                 <Link
                   to={"/admin/completar-tramite"}
                   className="block px-4 py-2 hover:bg-indigo-700"
                 >
                   Completar Trámites
                 </Link>
-              )}
+              )} */}
+
               {auth.rol === "DESPACHADOR" && (
                 <Link
                   to={"/admin/despachar-tramite"}

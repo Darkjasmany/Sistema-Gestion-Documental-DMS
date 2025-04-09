@@ -140,7 +140,6 @@ export const completarTramiteRevisor = async (req, res) => {
     // referenciaTramite,
     fechaDespacho,
     observacion,
-    empleadoDespachadorId,
   } = req.body;
 
   if (
@@ -149,9 +148,7 @@ export const completarTramiteRevisor = async (req, res) => {
     !destinatarios ||
     destinatarios.length === 0 ||
     !observacion ||
-    observacion.trim() === "" ||
-    !empleadoDespachadorId ||
-    empleadoDespachadorId.trim() === ""
+    observacion.trim() === ""
   ) {
     return res.status(400).json({
       message: "Todos los campos obligatorios",
@@ -203,22 +200,6 @@ export const completarTramiteRevisor = async (req, res) => {
   const multiplesDestinatarios = destinatarios.length > 1;
   const numeroMemo = await generarMemo(multiplesDestinatarios, tipo);
 */
-
-  const existeUsuarioDespahador = await Usuario.findOne({
-    where: {
-      id: empleadoDespachadorId,
-      // rol: "REVISOR",
-      departamento_id: req.usuario.departamento_id,
-    },
-  });
-
-  if (!existeUsuarioDespahador) {
-    await transaction.rollback();
-    return res
-      .status(404)
-      .json({ message: "Usuario Despachador no encontrado" });
-  }
-
   try {
     // Actualizar el trámite en una transacción
     await sequelize.transaction(async (transaction) => {
@@ -244,26 +225,12 @@ export const completarTramiteRevisor = async (req, res) => {
         }
       }
 
-      // Historial de Estado
-      const estadoAnterior = tramite.estado;
-      await registrarHistorialEstado(
-        id,
-        estadoAnterior,
-        tramite.estado,
-        req.usuario.id,
-        transaction
-      );
-
       // Actualizar datos del Trámite
       tramite.numero_oficio = memo;
       tramite.fecha_despacho = fechaDespacho;
       // tramite.referencia_tramite =
       // referenciaTramite || tramite.referencia_tramite;
-      tramite.estado = "DESPACHADO";
-      // tramite.estado = "POR_REVISAR";
-      tramite.usuario_despacho =
-        empleadoDespachadorId || tramite.usuario_despacho;
-
+      tramite.estado = "POR_REVISAR";
       await tramite.save({ transaction });
 
       await TramiteObservacion.create(
@@ -293,13 +260,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
   // console.log("Body:", req.body);
 
   const { id } = req.params;
-  const {
-    destinatarios,
-    fechaDespacho,
-    observacion,
-    memo,
-    empleadoDespachadorId,
-  } = req.body;
+  const { destinatarios, fechaDespacho, observacion, memo } = req.body;
 
   if (
     !destinatarios ||
@@ -307,9 +268,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
     !memo ||
     memo.trim() === "" ||
     !observacion ||
-    observacion.trim() === "" ||
-    !empleadoDespachadorId ||
-    empleadoDespachadorId.length === 0
+    observacion.trim() === ""
   ) {
     return res.status(400).json({
       message: "Todos los campos obligatorios",
@@ -351,21 +310,6 @@ export const actualizarTramiteRevisor = async (req, res) => {
     return res
       .status(409)
       .json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
-  }
-
-  const existeUsuarioDespahador = await Usuario.findOne({
-    where: {
-      id: empleadoDespachadorId,
-      // rol: "REVISOR",
-      departamento_id: req.usuario.departamento_id,
-    },
-  });
-
-  if (!existeUsuarioDespahador) {
-    await transaction.rollback();
-    return res
-      .status(404)
-      .json({ message: "Usuario Despachador no encontrado" });
   }
 
   //* Lógica para obtener destinatios ingresados en la BD y los que se envian por el formulario, para despues comparar e indentificar cual se inhabilita y cual se ingresa
@@ -439,7 +383,6 @@ export const actualizarTramiteRevisor = async (req, res) => {
       }
     }
 
-    /*
     const estadoAnterior = tramite.estado;
 
     if (tramite.estado === "POR_CORREGIR") {
@@ -453,13 +396,10 @@ export const actualizarTramiteRevisor = async (req, res) => {
         transaction
       );
     }
-    */
 
-    // Actualizar trámite, observación y despachador
+    // Actualizar trámite y observación
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     tramite.numero_oficio = memo || tramite.numero_oficio;
-    tramite.usuario_despacho =
-      empleadoDespachadorId || tramite.usuario_despacho;
     await tramite.save({ transaction });
 
     // Actualizar observacion del tramite

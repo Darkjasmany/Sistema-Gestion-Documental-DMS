@@ -18,6 +18,8 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const { asignarOReasignarRevisorTramite } = useTramites();
   const [alerta, setAlerta] = useState({});
 
+  const [hoveredRevisores, setHoveredRevisores] = useState({});
+
   useEffect(() => {
     const fecthRevisores = async () => {
       const rol = ["REVISOR"];
@@ -44,6 +46,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     setObservacionAsignar("");
     // setFechaContestacion("");
     setPrioridad("NORMAL");
+    setHoveredRevisores({ ...hoveredRevisores, [revisorId]: false }); // Desactiva el hover
   };
 
   const handleSubmitAsignar = async (e) => {
@@ -114,7 +117,19 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         {revisores.map((revisor) => (
           // console.log(revisor)
 
-          <li key={revisor.id} className="mb-2 ">
+          <li
+            key={revisor.id}
+            // className="mb-2 p-2 rounded-md hover:bg-indigo-100 transition-colors duration-200"
+            className={`mb-2 p-2 rounded-md ${
+              hoveredRevisores[revisor.id] ? "bg-indigo-100" : ""
+            } transition-colors duration-200`}
+            onMouseEnter={() =>
+              setHoveredRevisores({ ...hoveredRevisores, [revisor.id]: true })
+            }
+            onMouseLeave={() =>
+              setHoveredRevisores({ ...hoveredRevisores, [revisor.id]: false })
+            }
+          >
             <div className="flex justify-between">
               <span>{revisor.nombres + " " + revisor.apellidos}</span>
               <button

@@ -159,8 +159,6 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           apellidos: dest.destinatario.apellidos,
         }))
       );
-
-      setEmpleadoDespachadorId(tramite.usuario_despacho);
     }
   }, [tramite]);
 
@@ -179,16 +177,15 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       let response;
 
       if (
-        tramite.estado === "DESPACHADO"
-        // tramite.estado === "POR_REVISAR" ||
-        // tramite.estado === "POR_CORREGIR"
+        tramite.estado === "POR_REVISAR" ||
+        tramite.estado === "POR_CORREGIR"
       ) {
         response = await actualizarTramiteCompletado(
           tramite.id,
           datosCompletar
         );
-        // } else if (tramite.estado === "COMPLETADO") {
-        //   response = await despacharTramiteCompletado(tramite.id, datosCompletar);
+      } else if (tramite.estado === "COMPLETADO") {
+        response = await despacharTramiteCompletado(tramite.id, datosCompletar);
       } else {
         response = await completarTramiteRevisorAsignado(
           tramite.id,
@@ -250,7 +247,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
               type="date"
               value={fechaDespacho}
               onChange={(e) => setFechaDespacho(e.target.value)}
-              // disabled={tramite.estado === "COMPLETADO"}
+              disabled={tramite.estado === "COMPLETADO"}
               className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             />
           </div>
@@ -278,7 +275,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             type="text"
             value={memo}
             onChange={(e) => setMemo(e.target.value)}
-            // disabled={tramite.estado === "COMPLETADO"}
+            disabled={tramite.estado === "COMPLETADO"}
             className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             // disabled
           />
@@ -295,7 +292,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             placeholder="Escribe un nombre..."
             value={busquedaEmpleado}
             onChange={(e) => setBusquedaEmpleado(e.target.value)}
-            // disabled={tramite.estado === "COMPLETADO"}
+            disabled={tramite.estado === "COMPLETADO"}
             className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
           />
 
@@ -333,20 +330,13 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
                   <button
                     type="button"
                     onClick={() => handleEliminarEmpleado(empleado.id)}
-                    className={
-                      "font-bold px-2  text-red-600 hover:text-red-800"
-                    }
-                  >
-                    {/* <button
-                    type="button"
-                    onClick={() => handleEliminarEmpleado(empleado.id)}
-                    // disabled={tramite.estado === "COMPLETADO"}
+                    disabled={tramite.estado === "COMPLETADO"}
                     className={`font-bold px-2 ${
                       tramite.estado === "COMPLETADO"
                         ? "text-gray-400 cursor-not-allowed"
                         : "text-red-600 hover:text-red-800"
                     }`}
-                  > */}
+                  >
                     X
                   </button>
                 </div>
@@ -362,7 +352,7 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             value={observacion}
             onChange={(e) => setObservacion(e.target.value)}
             placeholder="Observación para completar el trámite"
-            // disabled={tramite.estado === "COMPLETADO"}
+            disabled={tramite.estado === "COMPLETADO"}
             className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
           />
         </div>
@@ -391,28 +381,31 @@ const CompletarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         </div> */}
 
         {/* Campo para designar empleado que despacha */}
-        {/* {tramite.estado === "COMPLETADO" && ( */}
-        <div className="mb-5">
-          <label htmlFor="empleadosxRol" className="text-gray-700 font-medium">
-            Despachador:
-          </label>
-          <select
-            name="empleadosxRol"
-            id="empleadosxRol"
-            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            value={empleadoDespachadorId}
-            onChange={handleEmpleadoDespachadorChange}
-          >
-            <option value={""}>Seleccione un depachador</option>
+        {tramite.estado === "COMPLETADO" && (
+          <div className="mb-5">
+            <label
+              htmlFor="empleadosxRol"
+              className="text-gray-700 font-medium"
+            >
+              Despachador:
+            </label>
+            <select
+              name="empleadosxRol"
+              id="empleadosxRol"
+              className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              value={empleadoDespachadorId}
+              onChange={handleEmpleadoDespachadorChange}
+            >
+              <option value={""}>Seleccione un depachador</option>
 
-            {empleadosXRol.map((emp) => (
-              <option value={emp.id} key={emp.id}>
-                {emp.nombres} {emp.apellidos} - {emp.rol}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* )} */}
+              {empleadosXRol.map((emp) => (
+                <option value={emp.id} key={emp.id}>
+                  {emp.nombres} {emp.apellidos} - {emp.rol}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Botón de Guardar */}
         <div className="text-right">

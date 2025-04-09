@@ -53,13 +53,33 @@ const TramitesAsignados = () => {
           </button>
           <button
             className={`px-4 py-2 rounded  ${
-              estadoSeleccionado === "DESPACHADO"
+              estadoSeleccionado === "POR_REVISAR"
                 ? "bg-indigo-500 text-white"
                 : "bg-gray-200"
             }`}
-            onClick={() => handleFiltro("DESPACHADO")}
+            onClick={() => handleFiltro("POR_REVISAR")}
           >
-            Por Despachar
+            Por Revisar
+          </button>
+          <button
+            className={`px-4 py-2 rounded  ${
+              estadoSeleccionado === "POR_CORREGIR"
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleFiltro("POR_CORREGIR")}
+          >
+            Por Corregir
+          </button>
+          <button
+            className={`px-4 py-2 rounded  ${
+              estadoSeleccionado === "COMPLETADO"
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleFiltro("COMPLETADO")}
+          >
+            Completados
           </button>
         </div>
 

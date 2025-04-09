@@ -660,7 +660,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
 
     await tramiteAsignar.save({ transaction });
     await transaction.commit();
-
+    /*
     emailAsignarReasignar({
       sms,
       nombres: existeUsuarioRevisor.nombres,
@@ -669,7 +669,7 @@ export const asignarOReasignarRevisor = async (req, res) => {
       tramite: tramiteAsignar.numero_tramite,
       observacion: observacionRevisor,
     });
-
+*/
     res.json({
       // message: "Revisor asignado/reasignado correctamente",
       message: `Revisor ${sms} correctamente`,
