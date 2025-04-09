@@ -133,9 +133,10 @@ const Tramite = ({ tramite }) => {
             Editar
           </button>
           <button
-            disabled
+            // disabled
             type="button"
-            className="py-2 px-10 bg-red-600 hover:bg-red-700 text-white uppercase font-bold rounded-lg opacity-50 cursor-not-allowed"
+            className="py-2 px-10 bg-red-600 hover:bg-red-700 text-white uppercase font-bold rounded-lg"
+            // className="py-2 px-10 bg-red-600 hover:bg-red-700 text-white uppercase font-bold rounded-lg opacity-50 cursor-not-allowed"
             onClick={() => {
               eliminarTramite(id);
             }}
