@@ -12,6 +12,7 @@ import AsignarReasignarTramite from "./AsignarReasignarTramite.components";
 import CompletarTramite from "./CompletarTramite.components";
 import AprobarTramite from "./AprobarTramite.components";
 import DespacharTramite from "./DespacharTramite.components";
+import FiltroBusqueda from "./Buttons/FiltroBusqueda.components";
 import ExportButtons from "./Buttons/ExportButtons.components";
 import CompletarTramiteDirecto from "./CompletarTramiteDirecto.components";
 
@@ -147,7 +148,6 @@ const FilaExpandida = memo(({ row, columns }) => {
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // console.log(tramiteBusqueda);
-
   const location = useLocation();
   const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
   const isAsignados = location.pathname === "/admin/asignados";
@@ -162,6 +162,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   const [selectedTramite, setSelectedTramite] = useState(null);
 
   const [alerta, setAlerta] = useState({});
+
+  const [filtroTexto, setFiltroTexto] = useState("");
 
   const toggleExpandir = (id) => {
     // setTramiteExpandido(tramiteExpandido === id ? null : id);
@@ -189,6 +191,38 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       return () => clearTimeout(timer);
     }
   }, [alerta]);
+
+  const dataFiltrada = useMemo(() => {
+    if (!filtroTexto.trim()) return tramiteBusqueda;
+
+    return tramiteBusqueda.filter((item) => {
+      const texto = filtroTexto.toLowerCase();
+
+      const numeroTramite = String(item.numero_tramite || "").toLowerCase();
+      const numeroOficioRemitente = String(
+        item.numero_oficio_remitente || ""
+      ).toLowerCase();
+      const asunto = String(item.asunto || "").toLowerCase();
+      // const estado = String(item.estado || "").toLowerCase();
+      const departamentoRemitente = String(
+        item?.departamentoRemitente?.nombre || ""
+      ).toLowerCase();
+      const remitente = String(
+        item?.remitente?.nombreCompleto || ""
+      ).toLowerCase();
+      const fechaDocumento = String(item.fecha_documento || "");
+
+      return (
+        numeroTramite.includes(texto) ||
+        numeroOficioRemitente.includes(texto) ||
+        asunto.includes(texto) ||
+        // estado.includes(texto) ||
+        departamentoRemitente.includes(texto) ||
+        remitente.includes(texto) ||
+        fechaDocumento.includes(texto)
+      );
+    });
+  }, [filtroTexto, tramiteBusqueda]);
 
   const columns = useMemo(() => {
     const baseColumns = [
@@ -314,7 +348,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   // Configuración de react-table por defecto para que funcione
   const table = useReactTable({
     // data: tramiteBusqueda,
-    data,
+    // data,
+    data: dataFiltrada,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -338,8 +373,17 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         <p className="text-center text-gray-500"> No hay támites disponibles</p>
       ) : (
         <>
-          {/* Botones para export */}
-          <ExportButtons data={tramiteBusqueda} />
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">
+            Busqueda Avanzada
+          </h3>
+          <div className="flex justify-end gap-3 mb-5 ">
+            <FiltroBusqueda
+              filtroTexto={filtroTexto}
+              setFiltroTexto={setFiltroTexto}
+            />
+            {/* Botones para export */}
+            <ExportButtons data={tramiteBusqueda} />
+          </div>
 
           {/* Tabla */}
           <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
