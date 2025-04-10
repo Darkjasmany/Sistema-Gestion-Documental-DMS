@@ -92,7 +92,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         setTimeout(() => {
           closeModal();
           onTramiteUpdated();
-        }, 2000);
+        }, 1000);
       }
       // onTramiteUpdated(); // Llama a la función de actualización para actualizar la tabla
       // closeModal(); //Cerrar modal
@@ -104,7 +104,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   useEffect(() => {
     if (alerta.message) {
-      const timer = setTimeout(() => setAlerta({}), 3000);
+      const timer = setTimeout(() => setAlerta({}), 1000);
       return () => clearTimeout(timer);
     }
   }, [alerta]);
@@ -122,7 +122,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             // className="mb-2 p-2 rounded-md hover:bg-indigo-100 transition-colors duration-200"
             className={`mb-2 p-2 rounded-md ${
               hoveredRevisores[revisor.id] ? "bg-indigo-100" : ""
-            } transition-colors duration-200`}
+            } transition-colors `}
             onMouseEnter={() =>
               setHoveredRevisores({ ...hoveredRevisores, [revisor.id]: true })
             }

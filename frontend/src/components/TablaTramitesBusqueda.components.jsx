@@ -146,7 +146,7 @@ const FilaExpandida = memo(({ row, columns }) => {
 });
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
-  console.log(tramiteBusqueda);
+  // console.log(tramiteBusqueda);
 
   const location = useLocation();
   const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
@@ -242,7 +242,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       },
     ];
 
-    if (isConsultar || isAsignarReasignar) {
+    if (isConsultar || isAsignarReasignar || isCompletados) {
       // Columna condicional para el UsuarioRevisor dentro de isAsignarReasignar
       baseColumns.splice(
         baseColumns.findIndex((col) => col.header === "Detalle"),

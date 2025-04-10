@@ -108,7 +108,8 @@ const PENDIENTE = {
     },
   ],
 };
-const POR_REVISAR = {
+// const POR_REVISAR = {
+const POR_FIRMAR = {
   ...PENDIENTE,
   attributes: [...PENDIENTE.attributes, "fecha_despacho", "numero_oficio"],
   required: false,
@@ -145,11 +146,12 @@ const POR_REVISAR = {
 };
 
 const COMPLETADO = {
-  ...POR_REVISAR,
-  attributes: [...POR_REVISAR.attributes, "usuario_despacho"],
+  // ...POR_REVISAR,
+  ...POR_FIRMAR,
+  attributes: [...POR_FIRMAR.attributes, "usuario_despacho"],
   required: false,
   include: [
-    ...POR_REVISAR.include,
+    ...POR_FIRMAR.include,
     {
       model: Usuario,
       as: "usuarioDespacho", // Usar el alias correcto
@@ -198,7 +200,7 @@ const FINALIZADO = {
 const configuracionEstados = {
   INGRESADO,
   PENDIENTE,
-  POR_REVISAR,
+  POR_FIRMAR,
   COMPLETADO,
   POR_CORREGIR,
   DESPACHADO,

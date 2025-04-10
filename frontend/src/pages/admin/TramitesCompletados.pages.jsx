@@ -5,7 +5,7 @@ import useTramites from "../../hooks/useTramites.hook";
 const TramitesCompletados = () => {
   const { obtenerTramitesCoordinador, tramitesAsignarReasignar } =
     useTramites();
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState("POR_REVISAR");
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState("POR_FIRMAR");
   const [refreshTable, setRefreshTable] = useState(false);
 
   const handleFiltro = (estado) => {
@@ -46,13 +46,13 @@ const TramitesCompletados = () => {
         <div className="flex gap-4">
           <button
             className={`px-4 py-2 rounded   ${
-              estadoSeleccionado === "POR_REVISAR"
+              estadoSeleccionado === "POR_FIRMAR"
                 ? "bg-indigo-500 text-white"
                 : "bg-gray-200"
             }`}
-            onClick={() => handleFiltro("POR_REVISAR")}
+            onClick={() => handleFiltro("POR_FIRMAR")}
           >
-            Por Revisar
+            Por Firmar
           </button>
           <button
             className={`px-4 py-2 rounded   ${

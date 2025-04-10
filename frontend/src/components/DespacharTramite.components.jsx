@@ -63,7 +63,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   useEffect(() => {
     if (alerta.message) {
-      const timer = setTimeout(() => setAlerta({}), 3000);
+      const timer = setTimeout(() => setAlerta({}), 1000);
       return () => clearTimeout(timer);
     }
   }, [alerta]);
@@ -146,7 +146,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         setTimeout(() => {
           closeModal();
           onTramiteUpdated();
-        }, 2000);
+        }, 1000);
       }
     } catch (error) {
       setAlerta({ message: error, error: true });

@@ -32,14 +32,12 @@ const Header = () => {
             </Link>
 
             <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-500 p-2 shadow-lg rounded-lg">
-              {auth.rol !== "DESPACHADOR" && (
-                <Link
-                  to={"/admin/ingresar"}
-                  className="block px-4 py-2 hover:bg-indigo-700"
-                >
-                  Ingresar Trámites
-                </Link>
-              )}
+              <Link
+                to={"/admin/ingresar"}
+                className="block px-4 py-2 hover:bg-indigo-700"
+              >
+                Ingresar Trámites
+              </Link>
 
               {/* Solo visible para COODINADOR */}
               {auth.rol === "COORDINADOR" && (
@@ -51,7 +49,7 @@ const Header = () => {
                 </Link>
               )}
 
-              {auth.rol !== "DESPACHADOR" && (
+              {auth.rol !== "DESPACHADOR" && auth.rol !== "COORDINADOR" && (
                 <Link
                   to={"/admin/asignados"}
                   className="block px-4 py-2 hover:bg-indigo-700"
@@ -66,7 +64,7 @@ const Header = () => {
                   to={"/admin/completar-tramite"}
                   className="block px-4 py-2 hover:bg-indigo-700"
                 >
-                  Completar Trámites
+                  Trámites por Firmar
                 </Link>
               )}
               {auth.rol === "DESPACHADOR" && (

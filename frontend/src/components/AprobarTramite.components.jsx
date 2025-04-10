@@ -205,7 +205,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   useEffect(() => {
     if (alerta.message) {
-      const timer = setTimeout(() => setAlerta({}), 3000);
+      const timer = setTimeout(() => setAlerta({}), 1000);
       return () => clearTimeout(timer);
     }
   }, [alerta]);

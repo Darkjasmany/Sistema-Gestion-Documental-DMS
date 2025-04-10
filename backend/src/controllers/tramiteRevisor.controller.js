@@ -230,7 +230,8 @@ export const completarTramiteRevisor = async (req, res) => {
       tramite.fecha_despacho = fechaDespacho;
       // tramite.referencia_tramite =
       // referenciaTramite || tramite.referencia_tramite;
-      tramite.estado = "POR_REVISAR";
+      // tramite.estado = "POR_REVISAR";
+      tramite.estado = "POR_FIRMAR";
       await tramite.save({ transaction });
 
       await TramiteObservacion.create(
@@ -386,7 +387,8 @@ export const actualizarTramiteRevisor = async (req, res) => {
     const estadoAnterior = tramite.estado;
 
     if (tramite.estado === "POR_CORREGIR") {
-      tramite.estado = "POR_REVISAR";
+      // tramite.estado = "POR_REVISAR";
+      tramite.estado = "POR_FIRMAR";
       // Registrar Historial Estado
       await registrarHistorialEstado(
         id,
