@@ -18,13 +18,23 @@ const ExportButtons = ({ data, filtros }) => {
       Remitente: t.remitente?.nombreCompleto || "Sin remitente",
       Estado: t.estado,
       Descripción: t.descripcion,
+      // Destinatarios:
+      //   t.destinatarios?.map((d) => d.nombreCompleto).join(", ") ||
+      //   "Sin destinatarios",
       Destinatarios:
-        t.destinatarios?.map((d) => d.nombreCompleto).join(", ") ||
-        "Sin destinatarios",
+        t.destinatarios
+          ?.map(
+            (d) => `- ${d.destinatario?.nombres} ${d.destinatario?.apellidos}`
+          )
+          .join("\n") || "Sin destinatarios",
+
       Observaciones:
-        t.historialObservaciones
-          ?.map((o) => `(${o.fecha}) ${o.observacion}`)
-          .join(" | ") || "Sin observaciones",
+        t.tramiteObservaciones
+          ?.map(
+            (o) =>
+              `- ${o.observacion} (por ${o.usuarioCreacionObservacion?.nombres} ${o.usuarioCreacionObservacion?.apellidos})`
+          )
+          .join("\n") || "Sin observaciones",
       Usuario_Creador: t.usuario?.UsuarioCreacion || "",
       Usuario_Revisor: t.usuarioRevisor?.UsuarioRevisor || "",
       Usuario_Despacho: t.usuarioDespacho?.usuarioDespacho || "",
@@ -70,12 +80,20 @@ const ExportButtons = ({ data, filtros }) => {
       t.departamentoRemitente?.nombre || "Sin departamento",
       t.remitente?.nombreCompleto || "Sin remitente",
       t.estado,
-      t.descripcion,
-      t.destinatarios?.map((d) => d.nombreCompleto).join(", ") ||
-        "Sin destinatarios",
-      t.historialObservaciones
-        ?.map((o) => `(${o.fecha}) ${o.observacion}`)
-        .join(" | ") || "Sin observaciones",
+      // t.descripcion,
+      t.destinatarios
+        ?.map(
+          (d) => `- ${d.destinatario?.nombres} ${d.destinatario?.apellidos}`
+        )
+        .join("\n") || "Sin destinatarios",
+
+      t.tramiteObservaciones
+        ?.map(
+          (o) =>
+            `- ${o.observacion} (por ${o.usuarioCreacionObservacion?.nombres} ${o.usuarioCreacionObservacion?.apellidos})`
+        )
+        .join("\n") || "Sin observaciones",
+
       t.usuario?.UsuarioCreacion || "",
       t.usuarioRevisor?.UsuarioRevisor || "",
       t.usuarioDespacho?.usuarioDespacho || "",
@@ -139,7 +157,7 @@ const ExportButtons = ({ data, filtros }) => {
           "Depto. Remitente",
           "Remitente",
           "Estado",
-          "Descripción",
+          // "Descripción",
           "Destinatarios",
           "Observaciones",
           "Usuario_Creador",

@@ -146,13 +146,14 @@ const FilaExpandida = memo(({ row, columns }) => {
 });
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
-  // console.log(tramiteBusqueda);
+  console.log(tramiteBusqueda);
 
   const location = useLocation();
   const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
   const isAsignados = location.pathname === "/admin/asignados";
   const isCompletados = location.pathname === "/admin/completar-tramite";
   const isDespachar = location.pathname === "/admin/despachar-tramite";
+  const isConsultar = location.pathname === "/admin/consultar-tramite";
 
   const [tramiteExpandido, setTramiteExpandido] = useState(null);
 
@@ -241,7 +242,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       },
     ];
 
-    if (isAsignarReasignar) {
+    if (isConsultar || isAsignarReasignar) {
       // Columna condicional para el UsuarioRevisor dentro de isAsignarReasignar
       baseColumns.splice(
         baseColumns.findIndex((col) => col.header === "Detalle"),
@@ -252,7 +253,9 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             row.usuarioRevisor?.UsuarioRevisor || "Sin Revisor",
         }
       );
+    }
 
+    if (isAsignarReasignar) {
       baseColumns.push({
         header: "Asigna | Reasigna",
         cell: ({ row }) => (
@@ -277,6 +280,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         ),
       });
     }
+
     if (isAsignados || isCompletados || isDespachar) {
       baseColumns.push({
         header: "Acción",
@@ -296,7 +300,6 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     }
 
     return baseColumns;
-    // }, [isAsignarReasignar, isAsignados, isCompletados, isDespachar]);
   }, [
     isAsignarReasignar,
     isAsignados,
@@ -304,8 +307,6 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     isDespachar,
     tramiteExpandido,
   ]);
-  // }, []);
-  // }, [tramiteExpandido]);
 
   // Usar useMemo para memorizar los datos
   const data = useMemo(() => tramiteBusqueda, [tramiteBusqueda]);
@@ -320,7 +321,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     // Hasta aqui configuracion por defecto para que funciones, seguido para la paginación
     initialState: {
       pagination: {
-        pageSize: 15, // Cambia este valor al número de registros que deseas mostrar por página
+        pageSize: 25, // Cambia este valor al número de registros que deseas mostrar por página
       },
     },
   });
