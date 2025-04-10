@@ -51,7 +51,7 @@ const TramitesPorDespachar = () => {
           >
             Por Despachar
           </button>
-          <button
+          {/* <button
             className={`px-4 py-2 rounded  ${
               estadoSeleccionado === "POR_FINALIZAR"
                 ? "bg-indigo-500 text-white"
@@ -60,7 +60,7 @@ const TramitesPorDespachar = () => {
             onClick={() => handleFiltro("POR_FINALIZAR")}
           >
             Por Finalizar
-          </button>
+          </button> */}
         </div>
 
         <TablaTramitesBusqueda

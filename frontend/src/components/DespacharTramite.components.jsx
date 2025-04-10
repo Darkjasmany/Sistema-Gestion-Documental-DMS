@@ -67,7 +67,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       return () => clearTimeout(timer);
     }
   }, [alerta]);
-
+  /*
   useEffect(() => {
     // console.log(tramite);
     setFechaDespacho(tramite.fecha_despacho);
@@ -105,7 +105,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       setIdActualizar(tramite.id);
     }
   }, [tramite]);
-
+*/
   const handleDespachadorChange = (e) => {
     // console.log(e.target.value);
     const empleadoId = e.target.value;
@@ -119,13 +119,14 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       return;
     }
 
+    /*
     if (archivos.length === 0) {
       setAlerta({
         message: "Debes seleccionar al menos un archivo",
         error: true,
       });
       return;
-    }
+    }*/
 
     const datosFinalizar = {
       fechaDespacho,

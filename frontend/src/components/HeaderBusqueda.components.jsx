@@ -97,6 +97,19 @@ const HeaderBusqueda = () => {
     buscarTramites(filtros);
   };
 
+  const handleLimpiarFormulario = () => {
+    const camposVacios = Object.fromEntries(
+      Object.keys(formData).map((key) => [key, ""])
+    );
+
+    setFormData(camposVacios);
+
+    // Pequeña espera para que setFormData termine antes de ejecutar buscarTramites
+    setTimeout(() => {
+      buscarTramites({});
+    }, 0);
+  };
+
   const { message } = alerta;
 
   return (
@@ -269,10 +282,17 @@ const HeaderBusqueda = () => {
           </div>
         </div>
 
-        <div className="mt-6 text-right">
+        <div className="mt-6 text-right flex justify-end gap-5">
+          <button
+            type="button"
+            onClick={handleLimpiarFormulario}
+            className="bg-gray-300 text-gray-700 px-6 py-2 font-bold rounded-md hover:bg-gray-400 transition-colors"
+          >
+            Limpiar Formulario
+          </button>
           <button
             type="submit"
-            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-md hover:bg-indigo-700"
+            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-md hover:bg-indigo-700 transition-colors"
           >
             Buscar Trámites
           </button>
