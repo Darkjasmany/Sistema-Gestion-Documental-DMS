@@ -707,7 +707,7 @@ export const completarTramite = async (req, res) => {
     // referenciaTramite,
     fechaDespacho,
     observacion,
-    // empleadoDespachadorId,
+    empleadoDespachadorId,
   } = req.body;
 
   if (
@@ -716,29 +716,29 @@ export const completarTramite = async (req, res) => {
     !destinatarios ||
     destinatarios.length === 0 ||
     !observacion ||
-    observacion.trim() === ""
-    //  || !empleadoDespachadorId ||
-    // empleadoDespachadorId.length === 0
+    observacion.trim() === "" ||
+    !empleadoDespachadorId ||
+    empleadoDespachadorId.length === 0
   ) {
     return res.status(400).json({
       message: "Todos los campos obligatorios",
     });
   }
 
-  // const existeUsuarioDespahador = await Usuario.findOne({
-  //   where: {
-  //     id: empleadoDespachadorId,
-  //     // rol: "REVISOR",
-  //     departamento_id: req.usuario.departamento_id,
-  //   },
-  // });
+  const existeUsuarioDespahador = await Usuario.findOne({
+    where: {
+      id: empleadoDespachadorId,
+      // rol: "REVISOR",
+      departamento_id: req.usuario.departamento_id,
+    },
+  });
 
-  // if (!existeUsuarioDespahador) {
-  //   await transaction.rollback();
-  //   return res
-  //     .status(404)
-  //     .json({ message: "Usuario Despachador no encontrado" });
-  // }
+  if (!existeUsuarioDespahador) {
+    await transaction.rollback();
+    return res
+      .status(404)
+      .json({ message: "Usuario Despachador no encontrado" });
+  }
 
   const tramite = await Tramite.findOne({
     where: { id, activo: true },
@@ -863,9 +863,12 @@ export const completarTramite = async (req, res) => {
     );
 
     // Actualizar trámite y observación
-    tramite.estado = "COMPLETADO";
+    // tramite.estado = "COMPLETADO";
+    tramite.estado = "DESPACHADO";
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     tramite.numero_oficio = memo || tramite.numero_oficio;
+    tramite.usuario_despacho =
+      empleadoDespachadorId || tramite.usuario_despacho;
     await tramite.save({ transaction });
 
     // Actualizar observacion del tramite
@@ -916,7 +919,7 @@ export const actualizarCompletarTramite = async (req, res) => {
     // referenciaTramite,
     fechaDespacho,
     observacion,
-    // empleadoDespachadorId,
+    empleadoDespachadorId,
   } = req.body;
 
   if (
@@ -947,6 +950,20 @@ export const actualizarCompletarTramite = async (req, res) => {
       .status(403)
       .json({ message: "El trámite seleccionado no te pertenece" });
   }
+
+  if (!empleadoDespachadorId || empleadoDespachadorId.length === 0) {
+    return res.status(400).json({
+      message: "Debes seleccionar un despachador",
+    });
+  }
+
+  const existeUsuarioDespahador = await Usuario.findOne({
+    where: {
+      id: empleadoDespachadorId,
+      // rol: "REVISOR",
+      departamento_id: req.usuario.departamento_id,
+    },
+  });
 
   // Buscar si el número de oficio que ingresa existe
   const numeroMemo = await Tramite.findOne({
@@ -1033,9 +1050,12 @@ export const actualizarCompletarTramite = async (req, res) => {
     );
 
     // Actualizar trámite y observación
-    tramite.estado = "COMPLETADO";
+    // tramite.estado = "COMPLETADO";
+    tramite.estado = "DESPACHADO";
     tramite.fecha_despacho = fechaDespacho || tramite.fecha_despacho;
     tramite.numero_oficio = memo || tramite.numero_oficio;
+    tramite.usuario_despacho =
+      empleadoDespachadorId || tramite.usuario_despacho;
 
     await tramite.save({ transaction });
 

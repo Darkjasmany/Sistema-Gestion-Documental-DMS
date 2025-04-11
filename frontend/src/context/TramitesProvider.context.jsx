@@ -274,6 +274,7 @@ export const TramitesProvider = ({ children }) => {
       };
     }
   };
+
   const completarTramiteCoordinador = async (idTramite, datosRevisor) => {
     if (!token) return;
 
