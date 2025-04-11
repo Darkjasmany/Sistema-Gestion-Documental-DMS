@@ -140,6 +140,16 @@ const FilaExpandida = memo(({ row, columns }) => {
               {row.original.usuarioDespacho.usuarioDespacho}
             </p>
           )}
+          {row.original.fecha_despacho && (
+            <p>
+              <strong>Fecha Despacho:</strong> {row.original.fecha_despacho}
+            </p>
+          )}
+          {row.original.hora_despacho && (
+            <p>
+              <strong>Hora Despacho:</strong> {row.original.hora_despacho}
+            </p>
+          )}
         </div>
       </td>
     </tr>
@@ -147,7 +157,7 @@ const FilaExpandida = memo(({ row, columns }) => {
 });
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
-  // console.log(tramiteBusqueda);
+  console.log(tramiteBusqueda);
   const location = useLocation();
   const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
   const isAsignados = location.pathname === "/admin/asignados";

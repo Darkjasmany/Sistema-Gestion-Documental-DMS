@@ -6,6 +6,8 @@ import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { sequelize } from "../config/db.config.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
+import { Despachador } from "../models/Despachador.model.js";
+import { Tramite } from "../models/Tramite.model.js";
 
 // Definir los objetos de estado
 const INGRESADO = {
@@ -192,8 +194,28 @@ const POR_FINALIZAR = {
 
 const FINALIZADO = {
   ...POR_FINALIZAR,
-  attributes: [...POR_FINALIZAR.attributes],
-  include: [...POR_FINALIZAR.include],
+  attributes: [
+    ...POR_FINALIZAR.attributes,
+    "despachadorId", // Mantener el despachadorId para la referencia
+  ],
+  required: false,
+
+  include: [
+    ...POR_FINALIZAR.include,
+    {
+      model: Tramite,
+      as: "despachador", // Asegúrate de usar el alias correcto
+      attributes: [
+        [
+          Sequelize.literal(
+            'CONCAT("despachador"."nombres", \' \', "despachador"."apellidos")'
+          ),
+          "usuarioEntregas", // Esto es lo que aparecerá en tu resultado
+        ],
+      ],
+      required: false, // Relación no obligatoria
+    },
+  ],
 };
 
 // Crear el objeto
