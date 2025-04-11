@@ -7,8 +7,6 @@ import useTramites from "../hooks/useTramites.hook";
 const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const { auth } = useAuth();
 
-  const [empleadoDespachadorId, setEmpleadoDespachadorId] = useState("");
-
   const [empleados, setEmpleados] = useState([]);
   const [empleadosSeleccionados, setEmpleadosSeleccionados] = useState([]);
   const [busquedaEmpleado, setBusquedaEmpleado] = useState("");
@@ -22,6 +20,9 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [observacionCoordinador, setObservacionCoordinador] = useState("");
   const [observacion, setObservacion] = useState("");
   const [memo, setMemo] = useState("");
+
+  const [empleadosXRol, setEmpleadosXRol] = useState([]);
+  const [empleadoDespachadorId, setEmpleadoDespachadorId] = useState("");
 
   const {
     completarTramiteCoordinador,
@@ -58,6 +59,32 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
     setSugerenciasEmpleados(filtro);
   }, [empleados, busquedaEmpleado]);
+
+  useEffect(() => {
+    const fecthEmpleadosXRol = async () => {
+      const rol = ["DESPACHADOR"];
+      try {
+        if (!auth.departamentoId) {
+          console.error("departamentoId no está definido en auth");
+          return;
+        }
+        const { data } = await clienteAxios.get(
+          `/usuarios/revisor-departamento/${auth.departamentoId}/${rol}`
+        );
+        setEmpleadosXRol(data);
+      } catch (error) {
+        console.error("Error al cargar los datos", error);
+      }
+    };
+
+    fecthEmpleadosXRol();
+  }, [auth.departamentoId]);
+
+  const handleEmpleadoDespachadorChange = (e) => {
+    // console.log(e.target.value);
+    const empleadoId = e.target.value;
+    setEmpleadoDespachadorId(empleadoId);
+  };
 
   //Función para seleccionar empleados
   const handleSeleccionEmpleado = (empleado) => {
@@ -172,6 +199,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       memo,
       observacion,
       destinatarios: empleadosSeleccionados.map((empleado) => empleado.id),
+      empleadoDespachadorId,
     };
 
     try {
@@ -342,6 +370,28 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             placeholder="Observación para completar el trámite"
             className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
+        </div>
+
+        {/* Campo para designar empleado que despacha */}
+        <div className="mb-5">
+          <label htmlFor="empleadosxRol" className="text-gray-700 font-medium">
+            Despachador:
+          </label>
+          <select
+            name="empleadosxRol"
+            id="empleadosxRol"
+            className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            value={empleadoDespachadorId}
+            onChange={handleEmpleadoDespachadorChange}
+          >
+            <option value={""}>Seleccione un depachador</option>
+
+            {empleadosXRol.map((emp) => (
+              <option value={emp.id} key={emp.id}>
+                {emp.nombres} {emp.apellidos} - {emp.rol}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Botones */}
