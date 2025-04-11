@@ -326,7 +326,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             {isAsignados &&
               (row.original.estado === "PENDIENTE" ? "Completar" : "Editar")}
             {isCompletados &&
-              (row.original.estado === "POR_REVISAR" ? "Aprobar" : "Editar")}
+              (row.original.estado === "POR_FIRMAR" ? "Aprobar" : "Editar")}
             {isDespachar && "Despachar"}
           </button>
         ),

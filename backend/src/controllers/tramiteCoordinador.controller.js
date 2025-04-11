@@ -111,10 +111,14 @@ export const obtenerTramite = async (req, res) => {
 export const actualizarTramite = async (req, res) => {
   const transaction = await Tramite.sequelize.transaction();
 
+  console.log(req.body);
+  console.log(req.params);
+
   try {
     const { id } = req.params;
 
     const {
+      oficioRemitente,
       asunto,
       descripcion,
       departamentoRemitenteId,
@@ -122,12 +126,16 @@ export const actualizarTramite = async (req, res) => {
       prioridad,
       fechaDocumento,
       referenciaTramite,
-      numeroOficioDespacho,
-      departamentoDestinatarioId,
-      destinatarioId,
-      fechaMaximaContestacion,
-      observacionRevisor,
-      numeroTramiteModificado,
+      tramiteExterno,
+      archivos,
+      memo,
+      destinatarios,
+      empleadoDespachadorId,
+      fechaDespacho,
+      horaDespacho,
+      archivosEliminar,
+      observacion,
+      despachadorId,
     } = req.body;
 
     if (

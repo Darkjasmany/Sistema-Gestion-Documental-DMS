@@ -25,6 +25,7 @@ import TramitesPorDespachar from "./pages/admin/TramitesPorDespachar.pages";
 import AdminDMS from "./pages/admin/AdminDMS.pages";
 import Empleados from "./pages/admin/pagesConfiguracion/Empleados.pages";
 import Departamentos from "./pages/admin/pagesConfiguracion/Departamentos.pages";
+import Tramites from "./pages/admin/pagesConfiguracion/Tramites.pages";
 import InicioDMS from "./pages/admin/pagesConfiguracion/InicioDMS.pages";
 import InicioDMSUsuario from "./pages/admin/InicioDMSUsuario.pages";
 
@@ -88,6 +89,7 @@ function App() {
                   <Route index element={<InicioDMS />} />
                   <Route path="empleados" element={<Empleados />} />
                   <Route path="departamentos" element={<Departamentos />} />
+                  <Route path="tramites" element={<Tramites />} />
                 </Route>
               </Route>
             </Route>
