@@ -67,7 +67,8 @@ const Header = () => {
                   Trámites por Firmar
                 </Link>
               )}
-              {auth.rol === "DESPACHADOR" && (
+              {/* {auth.rol === "DESPACHADOR" && ( */}
+              {auth.rol !== "REVISOR" && auth.rol !== "USUARIO" && (
                 <Link
                   to={"/admin/despachar-tramite"}
                   className="block px-4 py-2 hover:bg-indigo-700"

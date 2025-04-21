@@ -1009,7 +1009,8 @@ export const obtenerTramitesPorEstados = async (req, res) => {
       where: {
         estado,
         departamento_tramite: req.usuario.departamento_id,
-        usuario_despacho: req.usuario.id,
+        // TODO Se definio el usuario para filtrar el usuario de despacho
+        // usuario_despacho: req.usuario.id,
         activo: true,
       },
       attributes: config.attributes,

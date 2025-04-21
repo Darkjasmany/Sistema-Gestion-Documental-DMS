@@ -175,6 +175,7 @@ const POR_CORREGIR = {
   required: false,
   include: [...COMPLETADO.include],
 };
+
 const DESPACHADO = {
   ...POR_CORREGIR,
   attributes: [
@@ -183,12 +184,14 @@ const DESPACHADO = {
     "hora_despacho",
     "despachadorId",
   ],
+  required: false,
   include: [...POR_CORREGIR.include],
 };
 
 const POR_FINALIZAR = {
   ...DESPACHADO,
   attributes: [...DESPACHADO.attributes],
+  required: false,
   include: [...DESPACHADO.include],
 };
 
@@ -202,6 +205,7 @@ const FINALIZADO = {
 
   include: [
     ...POR_FINALIZAR.include,
+    /*
     {
       model: Tramite,
       as: "despachador", // Asegúrate de usar el alias correcto
@@ -215,6 +219,7 @@ const FINALIZADO = {
       ],
       required: false, // Relación no obligatoria
     },
+    */
   ],
 };
 
