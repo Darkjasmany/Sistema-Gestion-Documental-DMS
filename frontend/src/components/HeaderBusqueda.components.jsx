@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Select from "react-select";
 import clienteAxios from "../config/axios.config";
 import useTramites from "../hooks/useTramites.hook";
 import Alerta from "../components/Alerta.components";
@@ -28,7 +29,8 @@ const HeaderBusqueda = () => {
     const fetchDepartamentos = async () => {
       try {
         const { data } = await clienteAxios("/departamentos");
-        setDepartamentos(data);
+        // setDepartamentos(data);
+        setDepartamentos(data.map((d) => ({ value: d.id, label: d.nombre })));
       } catch (error) {
         console.error("Error al cargar departamentos:", error);
       }
@@ -64,7 +66,13 @@ const HeaderBusqueda = () => {
       const { data } = await clienteAxios(
         `/empleados/por-departamento/${departamentoId}`
       );
-      setRemitentes(data);
+      // setRemitentes(data);
+      setRemitentes(
+        data.map((r) => ({
+          value: r.id,
+          label: `${r.nombres} ${r.apellidos}`,
+        }))
+      );
     } catch (error) {
       console.error("Error al cargar remitentes:", error);
       setRemitentes([]);
@@ -97,14 +105,34 @@ const HeaderBusqueda = () => {
     buscarTramites(filtros);
   };
 
+  // const handleLimpiarFormulario = () => {
+  //   const camposVacios = Object.fromEntries(
+  //     Object.keys(formData).map((key) => [key, ""])
+  //   );
+
+  //   setFormData(camposVacios);
+
+  //   // Pequeña espera para que setFormData termine antes de ejecutar buscarTramites
+  //   setTimeout(() => {
+  //     buscarTramites({});
+  //   }, 0);
+  // };
+
   const handleLimpiarFormulario = () => {
-    const camposVacios = Object.fromEntries(
-      Object.keys(formData).map((key) => [key, ""])
-    );
+    setFormData({
+      numeroTramite: "",
+      oficioRemitente: "",
+      asunto: "",
+      fechaInicio: "",
+      fechaFin: "",
+      departamentoRemitenteId: "",
+      remitenteId: "",
+      prioridad: "",
+      tramiteExterno: "",
+    });
 
-    setFormData(camposVacios);
+    setRemitentes([]); // Limpia la lista también
 
-    // Pequeña espera para que setFormData termine antes de ejecutar buscarTramites
     setTimeout(() => {
       buscarTramites({});
     }, 0);
@@ -219,7 +247,7 @@ const HeaderBusqueda = () => {
             >
               Departamento Remitente:
             </label>
-            <select
+            {/* <select
               id="departamentoRemitenteId"
               name="departamentoRemitenteId"
               value={formData.departamentoRemitenteId}
@@ -232,7 +260,24 @@ const HeaderBusqueda = () => {
                   {dep.nombre}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <Select
+              options={departamentos}
+              value={
+                departamentos.find(
+                  (d) => d.value === formData.departamentoRemitenteId
+                ) || null
+              }
+              onChange={(selected) => {
+                // setDepartamentoRemitenteId(selected.value);
+                // handleDepartamentoChange({ target: { value: selected.value } });
+                const value = selected ? selected.value : "";
+                setFormData({ ...formData, departamentoRemitenteId: value });
+                handleDepartamentoChange({ target: { value } });
+              }}
+              placeholder="Selecciona un departamento..."
+              isClearable
+            />
           </div>
 
           {/* Remitente */}
@@ -243,7 +288,7 @@ const HeaderBusqueda = () => {
             >
               Remitente:
             </label>
-            <select
+            {/* <select
               id="remitenteId"
               name="remitenteId"
               value={formData.remitenteId}
@@ -256,7 +301,19 @@ const HeaderBusqueda = () => {
                   {rem.nombres} {rem.apellidos}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <Select
+              options={remitentes}
+              value={
+                remitentes.find((r) => r.value === formData.remitenteId) || null
+              }
+              onChange={(selected) => {
+                const value = selected ? selected.value : "";
+                setFormData({ ...formData, remitenteId: value });
+              }}
+              placeholder="Selecciona un remitente..."
+              isClearable
+            />
           </div>
 
           {/* Prioridad */}
