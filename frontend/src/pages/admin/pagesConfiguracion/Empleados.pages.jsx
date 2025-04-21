@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import useAdmin from "../../../hooks/useAdmin.hooks";
 import clienteAxios from "../../../config/axios.config";
 import Alerta from "../../../components/Alerta.components";
@@ -42,7 +43,8 @@ const Empleados = () => {
   const fetchDepartamentos = async () => {
     try {
       const { data } = await clienteAxios("/departamentos");
-      setDepartamentos(data);
+      // setDepartamentos(data);
+      setDepartamentos(data.map((d) => ({ value: d.id, label: d.nombre })));
     } catch (error) {
       console.error("Error al cargar departamentos:", error);
       setAlerta({
@@ -141,7 +143,8 @@ const Empleados = () => {
         nombres: empleado.nombres,
         apellidos: empleado.apellidos,
         email: empleado.email,
-        departamentoId: empleado.departamento_id, // Cargar el ID del departamento
+        // departamentoId: empleado.departamento_id, // Cargar el ID del departamento
+        departamentoId: Number(empleado.departamento_id),
         telefono: empleado.telefono,
       }); // Cargar datos en el formulario
     } catch (error) {
@@ -257,7 +260,7 @@ const Empleados = () => {
             onChange={handleInputChange}
           />
           {/* Select para departamento */}
-          <select
+          {/* <select
             name="departamentoId"
             value={nuevoEmpleado.departamentoId}
             onChange={handleInputChange}
@@ -269,7 +272,26 @@ const Empleados = () => {
                 {departamento.nombre}
               </option>
             ))}
-          </select>
+          </select> */}
+          <Select
+            options={departamentos}
+            value={
+              nuevoEmpleado.departamentoId
+                ? departamentos.find(
+                    (d) => d.value === nuevoEmpleado.departamentoId
+                  )
+                : null
+            }
+            onChange={(selectedOption) =>
+              setNuevoEmpleado({
+                ...nuevoEmpleado,
+                departamentoId: selectedOption ? selectedOption.value : "",
+              })
+            }
+            placeholder="Seleccione un Departamento"
+            className="text-sm"
+            isClearable
+          />
         </div>
         <button
           onClick={agregarEmpleado}

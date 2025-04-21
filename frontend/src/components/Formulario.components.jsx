@@ -101,7 +101,13 @@ const Formulario = () => {
               `/empleados/por-departamento/${tramite.departamentoRemitente?.id}`
             );
 
-            setRemitentes(data);
+            // setRemitentes(data);
+            setRemitentes(
+              data.map((r) => ({
+                value: r.id,
+                label: `${r.nombres} ${r.apellidos}`,
+              }))
+            );
           } catch (error) {
             console.error(error.response?.data?.message);
             setRemitentes([]); // Limpia la lista en caso de error
