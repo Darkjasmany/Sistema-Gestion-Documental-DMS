@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Select from "react-select";
 import clienteAxios from "../config/axios.config";
 import Alerta from "../components/Alerta.components";
 import useTramites from "../hooks/useTramites.hook";
@@ -44,7 +45,12 @@ const Formulario = () => {
           clienteAxios("/admin/parametros"),
         ]);
 
-        setDepartamentos(departamentos.data);
+        // setDepartamentos(departamentos.data); // Obtengo el listado de los departamentos
+        // console.log(departamentos.data);
+        // Transformo el listado de departamentos al formato que espera react-select
+        setDepartamentos(
+          departamentos.data.map((d) => ({ value: d.id, label: d.nombre }))
+        );
         setParametros(parametros.data);
 
         const maxFiles = parametros.data.find(
@@ -341,6 +347,7 @@ const Formulario = () => {
           <input
             type="text"
             id="asunto"
+            maxLength={250}
             value={asunto}
             onChange={(e) => {
               setAsunto(e.target.value);
@@ -408,8 +415,34 @@ const Formulario = () => {
           />
         </div>
 
-        {/* Campo para seleccionar Departamento */}
+        {/* Campo para seleccionar Departamento con react-select */}
         <div className="mb-5">
+          <label
+            htmlFor="departamentoRemitenteId"
+            className="text-gray-700 font-medium"
+          >
+            Departamento Remitente:
+          </label>
+          <Select
+            options={departamentos}
+            value={
+              departamentos.find((d) => d.value === departamentoRemitenteId) ||
+              null
+            }
+            onChange={(selected) => {
+              // setDepartamentoRemitenteId(selected.value);
+              // handleDepartamentoChange({ target: { value: selected.value } });
+              const value = selected ? selected.value : "";
+              setDepartamentoRemitenteId(value);
+              handleDepartamentoChange({ target: { value } });
+            }}
+            placeholder="Selecciona un departamento..."
+            isClearable
+          />
+        </div>
+
+        {/* Campo para seleccionar Departamento */}
+        {/* <div className="mb-5">
           <label
             htmlFor="departamentoRemitenteId"
             className="text-gray-700 font-medium"
@@ -430,7 +463,7 @@ const Formulario = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Campo para seleccionar Remitente */}
         <div className="mb-5">
