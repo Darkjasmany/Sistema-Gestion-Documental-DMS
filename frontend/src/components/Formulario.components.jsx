@@ -153,7 +153,7 @@ const Formulario = () => {
     }
   }, [tramite]);
 
-  // Mostrar empleados de acuerdo al departamento seleccionado
+  // TODO Mostrar empleados de acuerdo al departamento seleccionado
   const handleDepartamentoChange = async (e) => {
     const departamentoId = e.target.value;
     setDepartamentoRemitenteId(departamentoId);
@@ -168,8 +168,14 @@ const Formulario = () => {
       const { data } = await clienteAxios(
         `/empleados/por-departamento/${departamentoId}`
       );
-
-      setRemitentes(data);
+      // TODO Transformo el listado de remitentes al formato que espera react-select
+      setRemitentes(
+        data.map((r) => ({
+          value: r.id,
+          label: `${r.nombres} ${r.apellidos}`,
+        }))
+      );
+      // setRemitentes(data);
     } catch (error) {
       console.error(error.response?.data?.message);
       setRemitentes([]); // Limpia la lista en caso de error
@@ -467,6 +473,23 @@ const Formulario = () => {
 
         {/* Campo para seleccionar Remitente */}
         <div className="mb-5">
+          <label htmlFor="remitente" className="text-gray-700 font-medium">
+            Remitente:
+          </label>
+          <Select
+            id="remitente"
+            options={remitentes}
+            value={remitentes.find((r) => r.value === remitenteId) || null}
+            onChange={(selectedOption) =>
+              setRemitenteId(selectedOption ? selectedOption.value : "")
+            }
+            placeholder="Seleccione un remitente"
+            isClearable
+          />
+        </div>
+
+        {/* Campo para seleccionar Remitente */}
+        {/* <div className="mb-5">
           <label htmlFor="remitenteId" className="text-gray-700 font-medium">
             Remitente:
           </label>
@@ -493,7 +516,7 @@ const Formulario = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Campo para seleccionar Prioridad */}
         <div className="mb-5">
