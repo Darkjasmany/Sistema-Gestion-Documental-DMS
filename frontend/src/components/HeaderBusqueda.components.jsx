@@ -17,6 +17,7 @@ const HeaderBusqueda = () => {
     prioridad: "",
     tramiteExterno: "",
     estado: "",
+    usuarioRevisor: "",
   });
 
   const [departamentos, setDepartamentos] = useState([]);
@@ -157,6 +158,7 @@ const HeaderBusqueda = () => {
       prioridad: "",
       tramiteExterno: "",
       estado: "",
+      usuarioRevisor: "",
     });
 
     setRemitentes([]); // Limpia la lista también
@@ -355,13 +357,17 @@ const HeaderBusqueda = () => {
             <select
               id="revisor"
               name="revisor"
-              value={formData.revisor}
+              value={formData.usuarioRevisor}
               onChange={handleInputChange}
               className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 uppercase"
             >
               <option value="">Seleccione un revisor</option>
-              <option value="Nico">Nico</option>
-              <option value="Sele">Sele</option>
+              {revisores.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {`${r.nombres} ${r.apellidos}`}
+                </option>
+              ))}
+              <option value="sinRevisor">Sin revisor</option>
             </select>
           </div>
 
