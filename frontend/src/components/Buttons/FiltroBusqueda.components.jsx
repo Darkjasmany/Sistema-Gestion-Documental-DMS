@@ -5,8 +5,8 @@ const FiltroBusqueda = ({ filtroTexto, setFiltroTexto }) => {
     <div className="flex items-center w-full">
       <input
         type="text"
-        placeholder="Buscar trámite por número, fecha del documento, oficio remitente, asunto, remitente, departamento remitente."
-        className="border border-gray-300 w-full rounded-lg shadow-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        placeholder="Buscar trámite por número, estado, fecha del documento, revisor, sin revisor, oficio remitente, asunto, remitente, departamento remitente."
+        className="border border-gray-300 w-full rounded-lg shadow-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 uppercase"
         value={filtroTexto}
         onChange={(e) => setFiltroTexto(e.target.value)}
       />

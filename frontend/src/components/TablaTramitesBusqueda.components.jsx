@@ -213,7 +213,6 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         item.numero_oficio_remitente || ""
       ).toLowerCase();
       const asunto = String(item.asunto || "").toLowerCase();
-      // const estado = String(item.estado || "").toLowerCase();
       const departamentoRemitente = String(
         item?.departamentoRemitente?.nombre || ""
       ).toLowerCase();
@@ -221,15 +220,23 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         item?.remitente?.nombreCompleto || ""
       ).toLowerCase();
       const fechaDocumento = String(item.fecha_documento || "");
+      const estadoTramite = String(item.estado || "").toLowerCase();
+      const usuarioRevisorTramite = item?.usuarioRevisor?.UsuarioRevisor
+        ? String(item?.usuarioRevisor?.UsuarioRevisor).toLowerCase()
+        : ""; // Caso null
+      const sinRevisorTexto = "sin revisor";
 
       return (
         numeroTramite.includes(texto) ||
         numeroOficioRemitente.includes(texto) ||
         asunto.includes(texto) ||
-        // estado.includes(texto) ||
         departamentoRemitente.includes(texto) ||
         remitente.includes(texto) ||
-        fechaDocumento.includes(texto)
+        fechaDocumento.includes(texto) ||
+        estadoTramite.includes(texto) ||
+        usuarioRevisorTramite.includes(texto) ||
+        (item?.usuarioRevisor === null &&
+          sinRevisorTexto.includes(texto.toLowerCase()))
       );
     });
   }, [filtroTexto, tramiteBusqueda]);
