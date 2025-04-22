@@ -758,6 +758,7 @@ export const buscarTramites = async (req, res) => {
     prioridad,
     descripcion,
     tramiteExterno,
+    estado,
   } = req.query;
 
   if (
@@ -772,6 +773,7 @@ export const buscarTramites = async (req, res) => {
       prioridad,
       descripcion,
       tramiteExterno,
+      estado,
     ].every((valor) => !valor) // Verifica si todos son falsi
   ) {
     return res.status(400).json({
@@ -807,6 +809,8 @@ export const buscarTramites = async (req, res) => {
   if (descripcion) where.descripcion = { [Op.iLike]: `%${descripcion}%` };
 
   if (tramiteExterno) where.externo = tramiteExterno;
+
+  if (estado) where.estado = estado;
 
   if (fechaInicio && fechaFin) {
     where.fecha_documento = {

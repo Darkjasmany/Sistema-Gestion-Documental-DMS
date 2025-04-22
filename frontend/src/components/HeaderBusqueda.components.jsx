@@ -15,6 +15,7 @@ const HeaderBusqueda = () => {
     remitenteId: "",
     prioridad: "",
     tramiteExterno: "",
+    estado: "",
   });
 
   const [departamentos, setDepartamentos] = useState([]);
@@ -129,6 +130,7 @@ const HeaderBusqueda = () => {
       remitenteId: "",
       prioridad: "",
       tramiteExterno: "",
+      estado: "",
     });
 
     setRemitentes([]); // Limpia la lista también
@@ -314,6 +316,30 @@ const HeaderBusqueda = () => {
               placeholder="Selecciona un remitente..."
               isClearable
             />
+          </div>
+
+          {/* Estado */}
+          <div>
+            <label
+              htmlFor="estado"
+              className="block text-gray-700 font-medium mb-1"
+            >
+              Estado:
+            </label>
+            <select
+              id="estado"
+              name="estado"
+              value={formData.estado}
+              onChange={handleInputChange}
+              className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Todos los estados</option>
+              <option value="FINALIZADO">Finalizado</option>
+              <option value="COMPLETADO">Completado</option>
+              <option value="DESPACHADO">Despachado</option>
+              <option value="INGRESADO">Ingresado</option>
+              <option value="PENDIENTE">Pendiente</option>
+            </select>
           </div>
 
           {/* Prioridad */}
