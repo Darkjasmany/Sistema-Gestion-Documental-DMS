@@ -3,6 +3,7 @@ import Select from "react-select";
 import clienteAxios from "../config/axios.config";
 import useTramites from "../hooks/useTramites.hook";
 import Alerta from "../components/Alerta.components";
+import useAuth from "../hooks/useAuth.hook";
 
 const HeaderBusqueda = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,9 @@ const HeaderBusqueda = () => {
   });
 
   const [departamentos, setDepartamentos] = useState([]);
+  const [revisores, setRevisores] = useState([]);
+  const { auth } = useAuth();
+
   const [remitentes, setRemitentes] = useState([]);
 
   const { buscarTramites } = useTramites();
@@ -39,6 +43,28 @@ const HeaderBusqueda = () => {
 
     fetchDepartamentos();
   }, []);
+
+  useEffect(() => {
+    const fecthRevisores = async () => {
+      const rol = ["REVISOR"];
+      try {
+        if (!auth.departamentoId) {
+          console.error("departamentoId no está definido en auth");
+          return;
+        }
+        const { data } = await clienteAxios.get(
+          `/usuarios/revisor-departamento/${auth.departamentoId}/${rol}`
+        );
+        setRevisores(data);
+      } catch (error) {
+        console.error("Error al cargar los datos", error);
+      }
+    };
+
+    fecthRevisores();
+
+    console.log(revisores);
+  }, [auth.departamentoId]);
 
   useEffect(() => {
     if (alerta.message) {
@@ -318,6 +344,27 @@ const HeaderBusqueda = () => {
             />
           </div>
 
+          {/* Revisores */}
+          <div>
+            <label
+              htmlFor="revisor"
+              className="block text-gray-700 font-medium mb-1"
+            >
+              Revisor:
+            </label>
+            <select
+              id="revisor"
+              name="revisor"
+              value={formData.revisor}
+              onChange={handleInputChange}
+              className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 uppercase"
+            >
+              <option value="">Seleccione un revisor</option>
+              <option value="Nico">Nico</option>
+              <option value="Sele">Sele</option>
+            </select>
+          </div>
+
           {/* Estado */}
           <div>
             <label
@@ -331,14 +378,18 @@ const HeaderBusqueda = () => {
               name="estado"
               value={formData.estado}
               onChange={handleInputChange}
-              className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 uppercase"
             >
-              <option value="">Todos los estados</option>
-              <option value="FINALIZADO">Finalizado</option>
-              <option value="COMPLETADO">Completado</option>
-              <option value="DESPACHADO">Despachado</option>
+              <option value="">Seleccione un estado</option>
               <option value="INGRESADO">Ingresado</option>
               <option value="PENDIENTE">Pendiente</option>
+              <option value="POR_FIRMAR">Por Firmar</option>
+              <option value="COMPLETADO">Completado</option>
+              <option value="POR_CORREGIR">Por Corregir</option>
+              <option value="DESPACHADO">Despachado</option>
+              <option value="POR_FINALIZAR">Por Finalizar</option>
+              <option value="FINALIZADO">Finalizado</option>
+              <option value="RECHAZADO">Rechazado</option>
             </select>
           </div>
 
@@ -355,7 +406,7 @@ const HeaderBusqueda = () => {
               name="prioridad"
               value={formData.prioridad}
               onChange={handleInputChange}
-              className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full border-2 rounded-md h-10 p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 uppercase"
             >
               <option value="">Seleccione una Prioridad</option>
               <option value="NORMAL">NORMAL</option>
