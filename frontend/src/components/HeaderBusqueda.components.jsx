@@ -56,7 +56,13 @@ const HeaderBusqueda = () => {
         const { data } = await clienteAxios.get(
           `/usuarios/revisor-departamento/${auth.departamentoId}/${rol}`
         );
-        setRevisores(data);
+        // setRevisores(data);
+        setRevisores(
+          data.map((r) => ({
+            value: r.id,
+            label: `${r.nombres} ${r.apellidos} `,
+          }))
+        );
       } catch (error) {
         console.error("Error al cargar los datos", error);
       }
@@ -354,7 +360,7 @@ const HeaderBusqueda = () => {
             >
               Revisor:
             </label>
-            <select
+            {/* <select
               id="revisor"
               name="revisor"
               value={formData.usuarioRevisor}
@@ -367,8 +373,21 @@ const HeaderBusqueda = () => {
                   {`${r.nombres} ${r.apellidos}`}
                 </option>
               ))}
-              <option value="sinRevisor">Sin revisor</option>
-            </select>
+              <option value="sin revisor">Sin revisor</option>
+            </select> */}
+            <Select
+              options={revisores}
+              value={
+                revisores.find((r) => r.value === formData.usuarioRevisor) ||
+                null
+              }
+              onChange={(selected) => {
+                const value = selected ? selected.value : "";
+                setFormData({ ...formData, usuarioRevisor: value });
+              }}
+              placeholder="Selecciona un revisor..."
+              isClearable
+            />
           </div>
 
           {/* Estado */}
