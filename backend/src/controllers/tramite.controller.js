@@ -462,19 +462,19 @@ export const actualizarTramite = async (req, res) => {
   }
 
   //Validar que el numero de refencia existe
-  if (referenciaTramite) {
-    const tramiteExistente = await Tramite.findOne({
-      where: { numero_tramite: referenciaTramite },
-    });
+  // if (referenciaTramite) {
+  //   const tramiteExistente = await Tramite.findOne({
+  //     where: { numero_tramite: referenciaTramite },
+  //   });
 
-    if (!tramiteExistente) {
-      borrarArchivosTemporales(req.files);
-      return res.status(400).json({
-        message:
-          "La referencia proporcionada no existe, por favor ingrese una nueva referencia.",
-      });
-    }
-  }
+  //   if (!tramiteExistente) {
+  //     borrarArchivosTemporales(req.files);
+  //     return res.status(400).json({
+  //       message:
+  //         "La referencia proporcionada no existe, por favor ingrese una nueva referencia.",
+  //     });
+  //   }
+  // }
 
   try {
     // Actualización de los campos del trámite
@@ -489,6 +489,8 @@ export const actualizarTramite = async (req, res) => {
       referenciaTramite || tramite.referencia_tramite;
     tramite.usuario_actualizacion = req.usuario.id;
     tramite.externo = tramiteExterno || tramite.externo;
+
+    tramite.numero_tramite = referenciaTramite || tramite.numero_tramite;
 
     // Guardar cambios
     await tramite.save({ transaction });

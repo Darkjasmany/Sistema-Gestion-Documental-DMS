@@ -264,6 +264,8 @@ const Formulario = () => {
 
     // ** Llamamos  a la function guardarTramite del useTramites
 
+    const esEdicion = !!id; // Comprobamos si 'id' tiene un valor (indica edición)
+
     try {
       const response = await guardarTramite({
         oficioRemitente,
@@ -289,20 +291,36 @@ const Formulario = () => {
 
         // Crea ID is null
         // Limpiar el formulario SOLO si la creación o actualización fue exitosa
-        if (!id || response.tramiteId) {
-          setOficioRemitente("");
-          setAsunto("");
-          setTramiteReferencia(false);
-          setReferenciaTramite("");
-          setFechaDocumento(new Date().toISOString().split("T")[0]);
-          setDepartamentoRemitenteId("");
-          setRemitenteId("");
-          setPrioridad("NORMAL");
-          setDescripcion("");
-          setArchivos([]);
-          setTramiteExterno(false);
-          fileInputArchivos.current.value = ""; // Limpiar el input de archivos
-        }
+        // if (!id || response.tramiteId) {
+        //   setOficioRemitente("");
+        //   setAsunto("");
+        //   setTramiteReferencia(false);
+        //   setReferenciaTramite("");
+        //   setFechaDocumento(new Date().toISOString().split("T")[0]);
+        //   setDepartamentoRemitenteId("");
+        //   setRemitenteId("");
+        //   setPrioridad("NORMAL");
+        //   setDescripcion("");
+        //   setArchivos([]);
+        //   setTramiteExterno(false);
+        //   fileInputArchivos.current.value = ""; // Limpiar el input de archivos
+        // }
+
+        // Limpiar el formulario después de una creación O una edición exitosa
+        setOficioRemitente("");
+        setAsunto("");
+        setTramiteReferencia(false);
+        setReferenciaTramite("");
+        setFechaDocumento(new Date().toISOString().split("T")[0]);
+        setDepartamentoRemitenteId("");
+        setRemitenteId("");
+        setPrioridad("NORMAL");
+        setDescripcion("");
+        setArchivos([]);
+        setTramiteExterno(false);
+        fileInputArchivos.current.value = ""; // Limpiar el input de archivos
+        setId(null); // Resetear el ID para futuras creaciones
+        setTramite({}); // Limpiar el estado del trámite en el Provider para futuras ediciones
       }
     } catch (error) {
       // Mostrar el error sin borrar el formulario
@@ -611,7 +629,8 @@ const Formulario = () => {
             className="bg-gray-300 text-gray-700 w-1/2 p-3 uppercase font-bold hover:bg-gray-400 cursor-pointer transition-colors rounded-md"
           >
             {/* Limpiar Formulario */}
-            {id ? "Cancelar" : "Limpiar Formulario"}
+            {/* {id ? "Cancelar" : "Limpiar Formulario"} */}
+            {tramite?.id ? "Cancelar" : "Limpiar Formulario"}
           </button>
           <input
             type="submit"
