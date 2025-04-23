@@ -139,7 +139,6 @@ export const TramitesProvider = ({ children }) => {
   };
 
   const setEdicion = (tramite) => {
-    // console.log(tramite);
     setTramite(tramite);
   };
 
@@ -205,9 +204,6 @@ export const TramitesProvider = ({ children }) => {
 
   const asignarOReasignarRevisorTramite = async (idTramite, datosRevisor) => {
     if (!token) return;
-    // console.log(idTramite);
-    // console.log(datosRevisor);
-    // console.log(tramitesAsignarReasignar);
 
     try {
       const { data } = await clienteAxios.put(
@@ -274,6 +270,7 @@ export const TramitesProvider = ({ children }) => {
       };
     }
   };
+
   const completarTramiteCoordinador = async (idTramite, datosRevisor) => {
     if (!token) return;
 
@@ -283,8 +280,6 @@ export const TramitesProvider = ({ children }) => {
         datosRevisor,
         getAxiosConfigJSON()
       );
-
-      // console.log(data);
 
       // 1. Actualizar lista de coordinador
       const tramitesAsignados = tramitesAsignarReasignar.map(
@@ -318,8 +313,6 @@ export const TramitesProvider = ({ children }) => {
         getAxiosConfigJSON()
       );
 
-      // console.log(data);
-
       // 1. Actualizar lista de coordinador
       const tramitesAsignados = tramitesAsignarReasignar.map(
         (tramitesAsignarState) =>
@@ -336,6 +329,55 @@ export const TramitesProvider = ({ children }) => {
         message: error.response?.data?.message || "Error en la solicitud",
         error: true,
       };
+    }
+  };
+
+  const despacharTramiteDirectoCompletado = async (
+    idTramite,
+    datosCompletar
+  ) => {
+    if (!token) return;
+
+    try {
+      const { data } = await clienteAxios.put(
+        `/tramites/coordinador/tramites/${idTramite}/despachar-directo`,
+        datosCompletar,
+        getAxiosConfigJSON()
+      );
+
+      return { message: data.message, error: false };
+    } catch (error) {
+      console.error(error.response?.data?.message || "Error desconocido");
+
+      return {
+        message: error.response?.data?.message || "Error en la solicitud",
+        error: true,
+      };
+    }
+  };
+
+  const eliminarTramiteLogico = async (idTramite, observacion) => {
+    if (!token) return;
+
+    const confirmar = confirm("¿Confirmas que deseas eliminar?");
+    console.log(confirmar);
+    if (confirmar) {
+      try {
+        const { data } = await clienteAxios.put(
+          `/tramites/coordinador/tramites/${idTramite}/eliminar-tramite`,
+          { observacion },
+          getAxiosConfigJSON()
+        );
+
+        return { message: data.message, error: false };
+      } catch (error) {
+        console.error(error.response?.data?.message || "Error desconocido");
+
+        return {
+          message: error.response?.data?.message || "Error en la solicitud",
+          error: true,
+        };
+      }
     }
   };
 
@@ -383,31 +425,6 @@ export const TramitesProvider = ({ children }) => {
     try {
       const { data } = await clienteAxios.put(
         `/tramites/revisor/tramites/${idTramite}/despachar`,
-        datosCompletar,
-        getAxiosConfigJSON()
-      );
-
-      console.log(data);
-      return { message: data.message, error: false };
-    } catch (error) {
-      console.error(error.response?.data?.message || "Error desconocido");
-
-      return {
-        message: error.response?.data?.message || "Error en la solicitud",
-        error: true,
-      };
-    }
-  };
-
-  const despacharTramiteDirectoCompletado = async (
-    idTramite,
-    datosCompletar
-  ) => {
-    if (!token) return;
-
-    try {
-      const { data } = await clienteAxios.put(
-        `/tramites/coordinador/tramites/${idTramite}/despachar-directo`,
         datosCompletar,
         getAxiosConfigJSON()
       );
@@ -575,6 +592,7 @@ export const TramitesProvider = ({ children }) => {
         obtenerTramitesDespachadorData,
         tramitesDespachador,
         finalizarDespacho,
+        eliminarTramiteLogico,
       }}
     >
       {children}

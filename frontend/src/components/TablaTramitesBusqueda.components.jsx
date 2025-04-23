@@ -15,6 +15,8 @@ import DespacharTramite from "./DespacharTramite.components";
 import FiltroBusqueda from "./Buttons/FiltroBusqueda.components";
 import ExportButtons from "./Buttons/ExportButtons.components";
 import CompletarTramiteDirecto from "./CompletarTramiteDirecto.components";
+import EliminarTramite from "./EliminarTramite.components";
+import useAuth from "../hooks/useAuth.hook"; // Para sacar informacion de nuestro provider tenemos que usar nuestro HOOK
 
 // Componente memoizado para la fila expandida
 const FilaExpandida = memo(({ row, columns }) => {
@@ -164,11 +166,13 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   const isCompletados = location.pathname === "/admin/completar-tramite";
   const isDespachar = location.pathname === "/admin/despachar-tramite";
   const isConsultar = location.pathname === "/admin/consultar-tramite";
+  const { auth } = useAuth();
 
   const [tramiteExpandido, setTramiteExpandido] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenDirecto, setIsModalOpenDirecto] = useState(false);
+  const [isModalConsultar, setIsModalConsultar] = useState(false);
   const [selectedTramite, setSelectedTramite] = useState(null);
 
   const [alerta, setAlerta] = useState({});
@@ -188,6 +192,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   const openModalDirecto = (tramite) => {
     setSelectedTramite(tramite);
     setIsModalOpenDirecto(true);
+  };
+
+  const openModalConsultar = (tramite) => {
+    setSelectedTramite(tramite);
+    setIsModalConsultar(true);
   };
 
   const closeModal = () => {
@@ -350,12 +359,28 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       });
     }
 
+    if (auth.rol === "COORDINADOR" && isConsultar) {
+      baseColumns.push({
+        header: "Acción",
+        cell: ({ row }) => (
+          <button
+            className="bg-red-600 text-white px-3 py-1 rounded"
+            onClick={() => openModalConsultar(row.original)}
+          >
+            Eliminar
+          </button>
+        ),
+      });
+    }
+
     return baseColumns;
   }, [
     isAsignarReasignar,
     isAsignados,
     isCompletados,
     isDespachar,
+    isConsultar,
+    auth.rol,
     tramiteExpandido,
   ]);
 
@@ -540,6 +565,30 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
             {isAsignarReasignar && (
               <CompletarTramiteDirecto
+                tramite={selectedTramite}
+                onTramiteUpdated={onTramiteUpdated}
+                closeModal={closeModal}
+              />
+            )}
+            <button
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
+              onClick={closeModal}
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isModalConsultar && selectedTramite && (
+        <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
+          <div className="bg-white p-5 rounded-lg w-2/4 lg:w-1/3">
+            <h2 className="text-center font-bold mb-5">
+              {"Elimar el Trámite #" + selectedTramite.numero_tramite}
+            </h2>
+
+            {isConsultar && (
+              <EliminarTramite
                 tramite={selectedTramite}
                 onTramiteUpdated={onTramiteUpdated}
                 closeModal={closeModal}
