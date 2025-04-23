@@ -360,7 +360,7 @@ export const TramitesProvider = ({ children }) => {
     if (!token) return;
 
     const confirmar = confirm("¿Confirmas que deseas eliminar?");
-    console.log(confirmar);
+    // console.log(confirmar);
     if (confirmar) {
       try {
         const { data } = await clienteAxios.put(

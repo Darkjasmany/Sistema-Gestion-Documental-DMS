@@ -159,7 +159,7 @@ const FilaExpandida = memo(({ row, columns }) => {
 });
 
 const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
-  console.log(tramiteBusqueda);
+  // console.log(tramiteBusqueda);
   const location = useLocation();
   const isAsignarReasignar = location.pathname === "/admin/asignar-reasignar";
   const isAsignados = location.pathname === "/admin/asignados";
