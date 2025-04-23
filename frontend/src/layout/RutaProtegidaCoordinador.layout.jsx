@@ -16,8 +16,8 @@ const RutaProtegidaCoordinador = () => {
     return <Navigate to="/" />; // Si no está autenticado, redirige al login
   }
 
-  if (auth.rol !== "COORDINADOR") {
-    return <Navigate to="/admin" />; // Si no es COORDINADOR, redirige al dashboard general
+  if (auth.rol !== "COORDINADOR" && auth.rol !== "DESPACHADOR") {
+    return <Navigate to="/admin" />; // Redirige si NO es COORDINADOR Y NO es DESPACHADOR
   }
 
   // Redirigir o mostrar las rutas protegidas dependiendo del estado de `auth`

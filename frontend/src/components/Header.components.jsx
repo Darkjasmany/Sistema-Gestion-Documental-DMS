@@ -82,8 +82,8 @@ const Header = () => {
               >
                 Consultas Trámites
               </Link>
-              {/* Solo visible para COORDINADOR */}
-              {auth.rol === "COORDINADOR" && (
+              {/* Solo visible para COORDINADOR y DESPACHADOR*/}
+              {(auth.rol === "COORDINADOR" || auth.rol === "DESPACHADOR") && (
                 <Link
                   to={"/admin/admin-dms"}
                   className="block px-4 py-2 hover:bg-indigo-700"
