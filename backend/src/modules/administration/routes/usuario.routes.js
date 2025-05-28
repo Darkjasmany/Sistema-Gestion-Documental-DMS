@@ -12,7 +12,7 @@ import {
   // obtenerRevisorPorDepartamento,
   obtenerUsuariosPorDepartamentoYRol,
 } from "../controllers/usuario.controller.js";
-import { checkAuth } from "../middlewares/auth.middleware.js";
+import { checkAuth } from "../../../middlewares/auth.middleware.js";
 
 const router = Router();
 

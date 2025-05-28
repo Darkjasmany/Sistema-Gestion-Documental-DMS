@@ -1,6 +1,5 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.config.js";
-import { Departamento } from "./Departamento.model.js";
+import { sequelize } from "../../../config/db.config.js";
+import { Departamento } from "../../administration/models/Departamento.model.js";
 
 export const Despachador = sequelize.define(
   "despachador",

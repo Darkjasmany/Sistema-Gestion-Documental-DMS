@@ -1,6 +1,6 @@
-import { ParametroSistema } from "../models/SystemParameter.model.js";
 import { Op } from "sequelize";
-import { TramiteSecuencia } from "../models/TramiteSecuencia.model.js";
+import { ParametroSistema } from "../models/SystemParameter.model.js";
+import { TramiteSecuencia } from "../../document-management/models/TramiteSecuencia.model.js";
 
 // Tramites
 export const listarTodosLosTramites = async (req, res) => {

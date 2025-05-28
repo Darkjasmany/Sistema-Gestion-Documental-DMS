@@ -6,7 +6,6 @@ import {
   actualizarDepartamento,
   eliminarDepartamento,
 } from "../controllers/departamento.controller.js";
-// import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

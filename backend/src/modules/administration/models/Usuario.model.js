@@ -1,14 +1,13 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.config.js"; // Importamos la conexión
-import { Tramite } from "./Tramite.model.js";
-import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
+import { sequelize } from "../../../config/db.config.js";
 import { Departamento } from "./Departamento.model.js";
-import { generarId } from "../utils/generarId.js";
-import { passwordHash } from "../utils/passwordHash.js";
-import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
-import { TramiteArchivo } from "./TramiteArchivo.model.js";
-import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
-import { TramiteObservacion } from "./TramiteObservacion.model.js";
+import { Tramite } from "../../document-management/models/Tramite.model.js";
+import { TramiteAsignacion } from "../../document-management/models/TramiteAsignacion.model.js";
+import { TramiteArchivo } from "../../document-management/models/TramiteArchivo.model.js";
+import { TramiteHistorialEstado } from "../../document-management/models/TramiteHistorialEstado.model.js";
+import { TramiteEliminacion } from "../../document-management/models/TramiteEliminacion.model.js";
+import { TramiteObservacion } from "../../document-management/models/TramiteObservacion.model.js";
+import { generarId } from "../../../utils/generarId.js";
+import { passwordHash } from "../../../utils/passwordHash.js";
 import bcrypt from "bcrypt";
 
 export const Usuario = sequelize.define(

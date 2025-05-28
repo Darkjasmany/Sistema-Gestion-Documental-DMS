@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { checkAuth } from "../middlewares/auth.middleware.js";
-import { isAdmin } from "../middlewares/role.middleware.js";
+import { checkAuth } from "../../../middlewares/auth.middleware.js";
+import { isAdmin } from "../../../middlewares/role.middleware.js";
 import * as adminController from "../controllers/admin.controller.js";
+
 const router = Router();
 
 // Ruta para listar todos los trámites

@@ -1,5 +1,4 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.config.js";
+import { sequelize } from "../../../config/db.config.js";
 import { Departamento } from "./Departamento.model.js";
 
 export const Empleado = sequelize.define(

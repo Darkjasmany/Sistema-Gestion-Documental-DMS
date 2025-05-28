@@ -1,6 +1,6 @@
-import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
-import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
 import { config } from "../config/parametros.config.js";
+import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
+import { TramiteArchivo } from "../modules/document-management/models/TramiteArchivo.model.js";
 
 export const validarCantidadArchivos = async (req, res, next) => {
   const { id } = req.params;

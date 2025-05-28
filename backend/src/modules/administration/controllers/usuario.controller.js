@@ -1,9 +1,8 @@
 import bcrypt from "bcrypt";
 import { Usuario } from "../models/Usuario.model.js";
 import { Departamento } from "../models/Departamento.model.js";
-// import { IntentoFallido } from "../models/IntentoFallido.models.js";
-import { generarJWT } from "../utils/generarJWT.js";
-import { generarId } from "../utils/generarId.js";
+import { generarJWT } from "../../../utils/generarJWT.js";
+import { generarId } from "../../../utils/generarId.js";
 import {
   emailRegistro,
   emailOlvidePassword,

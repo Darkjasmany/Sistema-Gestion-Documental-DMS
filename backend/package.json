@@ -1,7 +1,7 @@
 {
-  "name": "dms-backend",
+  "name": "selnic-backend",
   "version": "1.0.0",
-  "description": "Sistema de Gestión Documental -DMS",
+  "description": "SELNIC – Sistema Estratégico para la Logística y la Gestión de Negocios Inteligentes",
   "main": "index.js",
   "type": "module",
   "scripts": {
