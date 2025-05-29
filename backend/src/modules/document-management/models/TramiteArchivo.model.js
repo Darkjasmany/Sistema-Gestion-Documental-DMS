@@ -1,5 +1,4 @@
-import { sequelize } from "../config/db.config.js";
-import { DataTypes } from "sequelize";
+import { sequelize } from "../../../config/db.config.js";
 
 export const TramiteArchivo = sequelize.define(
   "tramite_archivo",

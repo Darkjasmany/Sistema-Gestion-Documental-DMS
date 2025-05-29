@@ -2,12 +2,12 @@ import express from "express";
 import cors from "cors"; // Proteger una API para evitar que los datos no se consuman de alguien que no sabemos
 
 // Import routes
-import usuarioRoutes from "./routes/usuario.routes.js";
-import tramiteRoutes from "./routes/tramite.routes.js";
-import empleadoRoutes from "./routes/empleado.routes.js";
-import departamentoRoutes from "./routes/departamento.routes.js";
-import despachadorRoutes from "./routes/despachador.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
+import adminRoutes from "./modules/administration/routes/admin.routes.js";
+import usuarioRoutes from "./modules/administration/routes/usuario.routes.js";
+import empleadoRoutes from "./modules/administration/routes/empleado.routes.js";
+import departamentoRoutes from "./modules/administration/routes/departamento.routes.js";
+import tramiteRoutes from "./modules/document-management/routes/tramite.routes.js";
+import despachadorRoutes from "./modules/document-management/routes/despachador.routes.js";
 
 const app = express();
 

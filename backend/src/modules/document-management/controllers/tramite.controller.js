@@ -1,21 +1,20 @@
-import { Tramite } from "../models/Tramite.model.js";
-import { Empleado } from "../models/Empleado.model.js";
-import { Departamento } from "../models/Departamento.model.js";
 import { Sequelize, Op } from "sequelize";
-import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
-import path from "path"; // módulo path es parte de la API estándar de Node.js y se utiliza para manejar y transformar rutas de archivos y directorios.
 import { fileURLToPath } from "url";
-import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
-import { borrarArchivos } from "../utils/borrarArchivos.js";
-import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
+import path from "path"; // módulo path es parte de la API estándar de Node.js y se utiliza para manejar y transformar rutas de archivos y directorios.
+import { config } from "../../../config/parametros.config.js";
+import { Tramite } from "../models/Tramite.model.js";
+import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
-import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
-
-import { config } from "../config/parametros.config.js";
-import { Usuario } from "../models/Usuario.model.js";
 import { TramiteHistorialEstado } from "../models/TramiteHistorialEstado.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
+import { Usuario } from "../../administration/models/Usuario.model.js";
+import { Empleado } from "../../administration/models/Empleado.model.js";
+import { Departamento } from "../../administration/models/Departamento.model.js";
+import { borrarArchivos } from "../../../utils/borrarArchivos.js";
+import { borrarArchivosTemporales } from "../../../utils/borrarArchivosTemporales.js";
+import { registrarHistorialEstado } from "../../../utils/registrarHistorialEstado.js";
+import { getConfiguracionPorEstado } from "../../../utils/getConfiguracionPorEstado.js";
 
 // Simular __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);

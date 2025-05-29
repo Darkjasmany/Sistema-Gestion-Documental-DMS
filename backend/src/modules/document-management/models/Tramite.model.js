@@ -1,15 +1,15 @@
-import { sequelize } from "../../../config/db.config.js"; // Importamos la conexión
-import { Departamento } from "../../administration/models/Departamento.model.js";
-import { Empleado } from "../../administration/models/Empleado.model.js";
+import { sequelize } from "../../../config/db.config.js";
+import { config } from "../config/parametros.config.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 import { TramiteArchivo } from "./TramiteArchivo.model.js";
 import { TramiteObservacion } from "./TramiteObservacion.model.js";
 import { TramiteEliminacion } from "./TramiteEliminacion.model.js";
-import { config } from "../config/parametros.config.js";
 import { TramiteDestinatario } from "./TramiteDestinatario.model.js";
-import { Usuario } from "./Usuario.model.js";
 import { Despachador } from "./Despachador.model.js";
+import { Empleado } from "../../administration/models/Empleado.model.js";
+import { Departamento } from "../../administration/models/Departamento.model.js";
+
 export const Tramite = sequelize.define(
   "tramite",
   {

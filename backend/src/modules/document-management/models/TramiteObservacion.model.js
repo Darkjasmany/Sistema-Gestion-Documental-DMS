@@ -1,5 +1,4 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.config.js";
+import { sequelize } from "../../../config/db.config.js";
 
 export const TramiteObservacion = sequelize.define(
   "tramite_observacion",
@@ -40,44 +39,3 @@ export const TramiteObservacion = sequelize.define(
     },
   }
 );
-/*
-TramiteObservacion.belongsTo(Usuario, {
-  foreignKey: "usuario_creacion",
-  targetKey: "id",
-  as: "usuarioCreacionObservacion",
-});
-
-Usuario.hasMany(TramiteObservacion, {
-  foreignKey: "usuario_creacion",
-  as: "usuarioCreacion",
-});
-*/
-
-/*
-// Importación dinámica de Usuario (aquí está la clave):
-import("./Usuario.model.js").then(({ Usuario }) => {
-  // <-- Importante
-  TramiteObservacion.belongsTo(Usuario, {
-    as: "usuarioCreacionObservacion", // Alias (recuerda usar este alias en tus consultas)
-    foreignKey: "usuario_creacion",
-    targetKey: "id",
-  });
-
-  Usuario.hasMany(TramiteObservacion, {
-    foreignKey: "usuario_creacion",
-    as: "tramiteObservaciones", // Alias para la relación inversa
-    sourceKey: "id",
-  });
-});
-*/
-
-/*
-Usuario.belongsTo(TramiteObservacion, {
-  foreignKey: "usuario_creacion",
-  targetKey: "id",
-});
-TramiteObservacion.hasMany(Usuario, {
-  foreignKey: "usuario_creacion",
-  sourceKey: "id",
-});
-*/

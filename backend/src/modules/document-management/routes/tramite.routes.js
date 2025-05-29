@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { checkAuth } from "../middlewares/auth.middleware.js";
-import { checkRole } from "../middlewares/role.middleware.js";
-import { validarCantidadArchivos } from "../middlewares/validarCantidadArchivos.middleware.js";
-import { upload } from "../config/multer.config.js"; // Importamos la configuracón de Multer
+import { config } from "../../../config/parametros.config.js";
+import { upload } from "../../../config/multer.config.js"; // Importamos la configuracón de Multer
+import { checkAuth } from "../../../middlewares/auth.middleware.js";
+import { checkRole } from "../../../middlewares/role.middleware.js";
+import { validarCantidadArchivos } from "../../../middlewares/validarCantidadArchivos.middleware.js";
 import * as tramiteController from "../controllers/tramite.controller.js";
 import * as tramiteCoordinador from "../controllers/tramiteCoordinador.controller.js";
 import * as tramiteRevisor from "../controllers/tramiteRevisor.controller.js";
-import { config } from "../config/parametros.config.js";
 
 const router = Router();
 

@@ -1,6 +1,5 @@
 import { Op } from "sequelize";
 import { Despachador } from "../models/Despachador.model.js";
-import { Departamento } from "../models/Departamento.model.js";
 
 export const agregarDespachador = async (req, res) => {
   const { nombres, apellidos, departamentoId } = req.body;

@@ -1,17 +1,15 @@
-import { sequelize } from "../config/db.config.js";
-import { Departamento } from "../models/Departamento.model.js";
-import { Empleado } from "../models/Empleado.model.js";
+import { Op } from "sequelize";
+import { sequelize } from "../../../config/db.config.js";
 import { Tramite } from "../models/Tramite.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
-import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
-import { Usuario } from "../models/Usuario.model.js";
-
-import { generarMemo } from "../utils/generarMemo.js";
-import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
-import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
-import { validarFecha } from "../utils/validarFecha.js";
-import { Sequelize, Op } from "sequelize";
+import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
+import { Empleado } from "../../administration/models/Empleado.model.js";
+import { Departamento } from "../../administration/models/Departamento.model.js";
+import { Usuario } from "../../models/Usuario.model.js";
+import { validarFecha } from "../../../utils/validarFecha.js";
+import { registrarHistorialEstado } from "../../../utils/registrarHistorialEstado.js";
+import { getConfiguracionPorEstado } from "../../../utils/getConfiguracionPorEstado.js";
 
 export const listarTramitesRevisor = async (req, res) => {
   const { estado } = req.params;

@@ -1,5 +1,4 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.config.js";
+import { sequelize } from "../../../config/db.config.js";
 
 export const TramiteHistorialEstado = sequelize.define(
   "tramite_historial_estado",

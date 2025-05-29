@@ -1,7 +1,6 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/db.config.js";
-import { Departamento } from "../../administration/models/Departamento.model.js";
+import { sequelize } from "../../../config/db.config.js";
 import { Empleado } from "../../administration/models/Empleado.model.js";
+import { Departamento } from "../../administration/models/Departamento.model.js";
 
 export const TramiteDestinatario = sequelize.define(
   "tramite_destinatario",

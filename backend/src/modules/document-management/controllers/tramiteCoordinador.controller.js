@@ -1,23 +1,21 @@
-import { Departamento } from "../models/Departamento.model.js";
-import { Empleado } from "../models/Empleado.model.js";
+import { Op } from "sequelize";
+import { sequelize } from "../../../config/db.config.js";
 import { Tramite } from "../models/Tramite.model.js";
-import { Usuario } from "../models/Usuario.model.js";
 import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
 import { TramiteAsignacion } from "../models/TramiteAsignacion.model.js";
 import { TramiteHistorialEstado } from "../models/TramiteHistorialEstado.model.js";
-import { Op } from "sequelize";
-import { getConfiguracionPorEstado } from "../utils/getConfiguracionPorEstado.js";
-import { registrarHistorialEstado } from "../utils/registrarHistorialEstado.js";
-import { borrarArchivosTemporales } from "../utils/borrarArchivosTemporales.js";
-import { borrarArchivos } from "../utils/borrarArchivos.js";
-import { validarFecha } from "../utils/validarFecha.js";
 import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { TramiteEliminacion } from "../models/TramiteEliminacion.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
-
-import { sequelize } from "../config/db.config.js";
-
-import { emailAsignarReasignar } from "../services/email.service.js";
+import { Usuario } from "../../administration/models/Usuario.model.js";
+import { Empleado } from "../../administration/models/Empleado.model.js";
+import { Departamento } from "../../administration/models/Departamento.model.js";
+import { emailAsignarReasignar } from "../../administration/services/email.service.js";
+import { validarFecha } from "../../../utils/validarFecha.js";
+import { borrarArchivos } from "../../../utils/borrarArchivos.js";
+import { borrarArchivosTemporales } from "../../../utils/borrarArchivosTemporales.js";
+import { registrarHistorialEstado } from "../../../utils/registrarHistorialEstado.js";
+import { getConfiguracionPorEstado } from "../../../utils/getConfiguracionPorEstado.js";
 
 export const obtenerTramitesPorEstado = async (req, res) => {
   // console.log(req.params);
