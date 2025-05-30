@@ -1,4 +1,4 @@
-import { ParametroSistema } from "../models/SystemParameter.model.js";
+import { ParametroSistema } from "../modules/administration/models/SystemParameter.model.js";
 
 // Objeto que almacenará los parámetros de configuración
 export const config = {};

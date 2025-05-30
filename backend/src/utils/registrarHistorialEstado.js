@@ -1,4 +1,4 @@
-import { TramiteHistorialEstado } from "../models/TramiteHistorialEstado.model.js";
+import { TramiteHistorialEstado } from "../modules/document-management/models/TramiteHistorialEstado.model.js";
 
 export const registrarHistorialEstado = async (
   tramiteId,

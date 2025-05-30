@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { Usuario } from "../models/Usuario.model.js";
-import { Departamento } from "../models/Departamento.model.js";
+import { Usuario } from "../modules/administration/models/Usuario.model.js";
+import { Departamento } from "../modules/administration/models/Departamento.model.js";
 
 export const checkAuth = async (req, res, next) => {
   // TODO: lo estás asignando al objeto req en la propiedad usuario. Esto hace que el usuario autenticado esté disponible en todo el ciclo de vida de la solicitud (request), lo que te permite acceder a los datos del usuario desde cualquier otro middleware o controlador que venga después
