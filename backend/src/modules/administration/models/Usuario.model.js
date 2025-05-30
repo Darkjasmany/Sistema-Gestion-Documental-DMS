@@ -1,3 +1,4 @@
+import { DataTypes } from "sequelize";
 import { sequelize } from "../../../config/db.config.js";
 import { Departamento } from "./Departamento.model.js";
 import { Tramite } from "../../document-management/models/Tramite.model.js";

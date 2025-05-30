@@ -10,7 +10,6 @@ import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { Usuario } from "../../administration/models/Usuario.model.js";
 import { Empleado } from "../../administration/models/Empleado.model.js";
 import { Departamento } from "../../administration/models/Departamento.model.js";
-import { emailAsignarReasignar } from "../../administration/services/email.service.js";
 import { validarFecha } from "../../../utils/validarFecha.js";
 import { borrarArchivos } from "../../../utils/borrarArchivos.js";
 import { borrarArchivosTemporales } from "../../../utils/borrarArchivosTemporales.js";
@@ -667,14 +666,14 @@ export const asignarOReasignarRevisor = async (req, res) => {
     await tramiteAsignar.save({ transaction });
     await transaction.commit();
 
-    emailAsignarReasignar({
-      sms,
-      nombres: existeUsuarioRevisor.nombres,
-      apellidos: existeUsuarioRevisor.apellidos,
-      email: existeUsuarioRevisor.email,
-      tramite: tramiteAsignar.numero_tramite,
-      observacion: observacionRevisor,
-    });
+    // emailAsignarReasignar({
+    //   sms,
+    //   nombres: existeUsuarioRevisor.nombres,
+    //   apellidos: existeUsuarioRevisor.apellidos,
+    //   email: existeUsuarioRevisor.email,
+    //   tramite: tramiteAsignar.numero_tramite,
+    //   observacion: observacionRevisor,
+    // });
 
     res.json({
       // message: "Revisor asignado/reasignado correctamente",

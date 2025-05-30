@@ -68,6 +68,8 @@ Este proyecto es un sistema de gestión documental desarrollado con Node.js para
 - `react-router-dom`: Manejo de rutas en la aplicación.
 - `axios`: Para hacer peticiones HTTP al backend.
 - `tailwindcss`: Para el diseño y estilos.
+- `exceljs` `file-saver`: Para exportar a Excel.
+- `jspdf` `jspdf-autotable`: Para exportar a PDF.
 
 ---
 
