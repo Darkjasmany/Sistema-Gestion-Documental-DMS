@@ -6,7 +6,7 @@ import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
 import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
 import { Empleado } from "../../administration/models/Empleado.model.js";
 import { Departamento } from "../../administration/models/Departamento.model.js";
-import { Usuario } from "../../models/Usuario.model.js";
+import { Usuario } from "../../administration/models/Usuario.model.js";
 import { validarFecha } from "../../../utils/validarFecha.js";
 import { registrarHistorialEstado } from "../../../utils/registrarHistorialEstado.js";
 import { getConfiguracionPorEstado } from "../../../utils/getConfiguracionPorEstado.js";
