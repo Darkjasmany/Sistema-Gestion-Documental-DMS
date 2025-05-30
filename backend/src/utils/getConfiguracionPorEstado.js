@@ -1,13 +1,10 @@
 import { Sequelize } from "sequelize";
-import { Departamento } from "../models/Departamento.model.js";
-import { Empleado } from "../models/Empleado.model.js";
-import { Usuario } from "../models/Usuario.model.js";
-import { TramiteArchivo } from "../models/TramiteArchivo.model.js";
-import { sequelize } from "../config/db.config.js";
-import { TramiteDestinatario } from "../models/TramiteDestinatario.model.js";
-import { TramiteObservacion } from "../models/TramiteObservacion.model.js";
-import { Despachador } from "../models/Despachador.model.js";
-import { Tramite } from "../models/Tramite.model.js";
+import { Usuario } from "../modules/administration/models/Usuario.model.js";
+import { Empleado } from "../modules/administration/models/Empleado.model.js";
+import { Departamento } from "../modules/administration/models/Departamento.model.js";
+import { TramiteArchivo } from "../modules/document-management/models/TramiteArchivo.model.js";
+import { TramiteDestinatario } from "../modules/document-management/models/TramiteDestinatario.model.js";
+import { TramiteObservacion } from "../modules/document-management/models/TramiteObservacion.model.js";
 
 // Definir los objetos de estado
 const INGRESADO = {

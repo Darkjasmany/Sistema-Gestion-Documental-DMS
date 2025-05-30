@@ -1,6 +1,5 @@
 import { sequelize } from "../../../config/db.config.js";
-import { config } from "../../../config/config.js";
-
+import { config } from "../../../config/db.config.js";
 import { TramiteHistorialEstado } from "./TramiteHistorialEstado.model.js";
 import { TramiteAsignacion } from "./TramiteAsignacion.model.js";
 import { TramiteArchivo } from "./TramiteArchivo.model.js";
