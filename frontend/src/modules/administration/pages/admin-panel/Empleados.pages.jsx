@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import useAdmin from "../../../hooks/useAdmin.hooks";
-import clienteAxios from "../../../config/axios.config";
-import Alerta from "../../../components/Alerta.components";
+import useAdmin from "../../../../hooks/useAdmin.hooks";
+import clienteAxios from "../../../../config/axios.config";
+import Alerta from "../../../../components/Alerta.components";
 
 const Empleados = () => {
   const {

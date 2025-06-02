@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Formulario from "../../../components/Formulario.components";
-import ListadoTramites from "../../../components/ListadoTramites.components";
+import Formulario from "../components/Formulario.components";
+import ListadoTramites from "../components/ListadoTramites.components";
 
 const AdministrarTramites = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import HeaderBusqueda from "../../../components/HeaderBusqueda.components";
-import ListadoTramitesBusqueda from "../../../components/ListadoTramitesBusqueda.components";
+import HeaderBusqueda from "../components/HeaderBusqueda.components";
+import ListadoTramitesBusqueda from "../components/ListadoTramitesBusqueda.components";
 
 const ConsultarTramites = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);

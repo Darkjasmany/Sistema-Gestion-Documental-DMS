@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import useAdmin from "../../../hooks/useAdmin.hooks";
-import Alerta from "../../../components/Alerta.components";
+import useAdmin from "../../../../hooks/useAdmin.hooks";
+import Alerta from "../../../../components/Alerta.components";
 
 const Departamentos = () => {
   const {

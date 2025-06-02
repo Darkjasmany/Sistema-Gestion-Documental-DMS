@@ -6,17 +6,17 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import Alerta from "./Alerta.components";
-import { formatearFecha } from "../helpers/formatearFecha.helpers";
+import Alerta from "../../../components/Alerta.components";
+import FiltroBusqueda from "../../../components/Buttons/FiltroBusqueda.components";
+import ExportButtons from "../../../components/Buttons/ExportButtons.components";
+import { formatearFecha } from "../../../helpers/formatearFecha.helpers";
+import useAuth from "../../../hooks/useAuth.hook"; // Para sacar informacion de nuestro provider tenemos que usar nuestro HOOK
 import AsignarReasignarTramite from "./AsignarReasignarTramite.components";
 import CompletarTramite from "./CompletarTramite.components";
 import AprobarTramite from "./AprobarTramite.components";
 import DespacharTramite from "./DespacharTramite.components";
-import FiltroBusqueda from "./Buttons/FiltroBusqueda.components";
-import ExportButtons from "./Buttons/ExportButtons.components";
 import CompletarTramiteDirecto from "./CompletarTramiteDirecto.components";
 import EliminarTramite from "./EliminarTramite.components";
-import useAuth from "../hooks/useAuth.hook"; // Para sacar informacion de nuestro provider tenemos que usar nuestro HOOK
 
 // Componente memoizado para la fila expandida
 const FilaExpandida = memo(({ row, columns }) => {

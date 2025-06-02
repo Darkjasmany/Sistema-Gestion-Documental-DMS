@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useTramites from "../../../hooks/useTramites.hook";
-import TablaTramitesBusqueda from "../../../components/TablaTramitesBusqueda.components";
+import TablaTramitesBusqueda from "../components/TablaTramitesBusqueda.components";
 
 const TramitesAsignados = () => {
   const { obtenerTramitesRevisorData, tramitesRevisor } = useTramites();

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import TablaTramitesBusqueda from "../../../components/TablaTramitesBusqueda.components";
+import TablaTramitesBusqueda from "../components/TablaTramitesBusqueda.components";
 import useTramites from "../../../hooks/useTramites.hook";
 
 const TramitesAsignarReasignar = () => {

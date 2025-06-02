@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useTramites from "../../../hooks/useTramites.hook";
-import Tramite from "../../../components/Tramite.components";
+import Tramite from "./Tramite.components";
 
 const ListadoTramites = () => {
   const { tramites, obtenerTramites } = useTramites();

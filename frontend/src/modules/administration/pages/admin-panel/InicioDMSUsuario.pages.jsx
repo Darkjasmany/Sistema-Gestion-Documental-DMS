@@ -1,4 +1,4 @@
-import useAuth from "../../../hooks/useAuth.hook";
+import useAuth from "../../../../hooks/useAuth.hook";
 
 const InicioDMSUsuario = () => {
   const { auth } = useAuth();

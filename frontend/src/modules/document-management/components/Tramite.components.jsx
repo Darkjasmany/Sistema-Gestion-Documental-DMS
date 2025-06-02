@@ -1,4 +1,4 @@
-import useTramites from "../hooks/useTramites.hook";
+import useTramites from "../../../hooks/useTramites.hook";
 
 // Destructuramos el tramite que nos llega como prop siendo un objeto
 const Tramite = ({ tramite }) => {

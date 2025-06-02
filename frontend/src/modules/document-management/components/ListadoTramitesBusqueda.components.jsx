@@ -1,5 +1,5 @@
 import useTramites from "../../../hooks/useTramites.hook";
-import TablaTramitesBusqueda from "../../../components/TablaTramitesBusqueda.components";
+import TablaTramitesBusqueda from "../components/TablaTramitesBusqueda.components";
 
 const ListadoTramitesBusqueda = () => {
   const { tramitesRespuesta } = useTramites();
