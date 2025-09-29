@@ -1,0 +1,49 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file, see also https://aka.ms/tsconfig/module
+  "compilerOptions": {
+    // 📁 File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+    // 🌐 Environment Settings
+    "target": "es2020", // esnext
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    // For nodejs:
+    "lib": [
+      "ESNext"
+    ],
+    // 📦 Typing and compatibility
+    "types": [
+      "node"
+    ],
+    // and npm install -D @types/node
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
+    // Other Outputs
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    // 🧠 Stricter Typechecking Options
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    //🛠️ Ouput and Depurations 
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    // 🧹 Clean and Consistent
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noUncheckedSideEffectImports": true,
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
