@@ -8,7 +8,7 @@
     "start": "NODE_ENV=production node ./dist/index.js",
     "build": "tsc",
     "dev": "node --env-file .env --watch src/index.js",
-    "dev1": "nodemon --exec node --env-file .env src/index.js",
+    "dev:api": "tsx watch src/index.ts --env-file .env --api",
     "sequelize": "sequelize-cli"
   },
   "author": "Jasmany Franco Peralta",
