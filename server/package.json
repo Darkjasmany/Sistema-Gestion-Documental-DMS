@@ -1,12 +1,12 @@
 {
   "name": "selnic-backend",
   "version": "1.0.0",
-  "description": "SELNIC – Sistema Estratégico para la Logística y la Gestión de Negocios Inteligentes",
+  "description": "SELNIC Backend- Sistema Estratégico para la Logística y la Gestión de Negocios Inteligentes",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production node src/index.js",
+    "start": "NODE_ENV=production node ./dist/index.js",
+    "build": "tsc",
     "dev": "node --env-file .env --watch src/index.js",
     "dev1": "nodemon --exec node --env-file .env src/index.js",
     "sequelize": "sequelize-cli"
@@ -15,8 +15,10 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "express": "^4.21.0",
+    "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
@@ -25,8 +27,16 @@
     "sequelize": "^6.37.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^24.5.2",
-    "tsx": "^4.20.6",
+    "@types/nodemailer": "^7.0.2",
+    "@types/sequelize": "^4.28.20",
+    "morgan": "^1.10.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
   }
 }

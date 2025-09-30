@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors"; // Proteger una API para evitar que los datos no se consuman de alguien que no sabemos
+import cors from "cors";
 
 // Import routes
 import adminRoutes from "./modules/administration/routes/admin.routes.js";
