@@ -1,4 +1,5 @@
-import multer from "multer"; // Es el middleware que usas para manejar la carga de archivos.
+import type { Request } from "express";
+import multer, { type FileFilterCallback } from "multer"; // Es el middleware que usas para manejar la carga de archivos.
 import path from "path"; // Lo utilizas para manejar y manipular rutas de archivos (como extensiones y nombres).
 import fs from "fs"; // Se usa el módulo fs para verificar si la carpeta uploads/ existe con fs.existsSync().
 
@@ -12,10 +13,10 @@ if (!fs.existsSync(uploadDir)) {
 
 // Configuración de almacenamiento
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (req: Request, file: Express.Multer.File, cb) => {
     cb(null, uploadDir); // Carpeta donde se guardarán los archivos
   },
-  filename: (req, file, cb) => {
+  filename: (req: Request, file: Express.Multer.File, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
       null,
@@ -25,7 +26,11 @@ const storage = multer.diskStorage({
 });
 
 // Filtros de archivos permitidos
-const fileFilter = (req, file, cb) => {
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+) => {
   const filetypes = /jpeg|jpg|png|pdf|zip|rar/; // Tipos de archivo permitidos
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
