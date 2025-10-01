@@ -1,7 +1,7 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file, see also https://aka.ms/tsconfig/module
   "compilerOptions": {
-    // 📁 File Layout
+    // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
     // 🌐 Environment Settings
@@ -11,7 +11,7 @@
     "lib": [
       "ESNext"
     ],
-    // 📦 Typing and compatibility
+    // Typing and compatibility
     "types": [
       "node"
     ],
@@ -25,15 +25,15 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    // 🧠 Stricter Typechecking Options
+    // Stricter Typechecking Options
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    //🛠️ Ouput and Depurations 
+    // Ouput and Depurations 
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    // 🧹 Clean and Consistent
+    // Clean and Consistent
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

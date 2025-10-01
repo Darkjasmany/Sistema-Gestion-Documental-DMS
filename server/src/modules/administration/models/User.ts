@@ -1,11 +1,21 @@
 import { Model } from "sequelize";
 import {
+  AllowNull,
   AutoIncrement,
   Column,
   DataType,
   PrimaryKey,
   Table,
+  Unique,
 } from "sequelize-typescript";
+
+const rolStatus = {
+  USUARIO: "USUARIO",
+  REVISOR: "REVISOR",
+  DESPACHADOR: "DESPACHADOR",
+  COORDINADOR: "COORDINADOR",
+  ADMINISTRADOR: "ADMINISTRADOR",
+};
 
 @Table({
   tableName: "usuario",
@@ -16,6 +26,28 @@ export class User extends Model<User> {
   @AutoIncrement
   @Column(DataType.BIGINT)
   id!: number;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  nombres!: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  apellidos!: string;
+
+  @AllowNull(false)
+  @Unique
+  @Column({
+    type: DataType.STRING,
+    validate: {
+      isEmail: true,
+    },
+  })
+  email!: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  password!: string;
 }
 
 /**

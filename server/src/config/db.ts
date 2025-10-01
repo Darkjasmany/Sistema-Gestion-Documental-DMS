@@ -36,7 +36,7 @@ export const conectarDB = async () => {
     const now = (row as TimeRow[])[0]?.now;
     console.log(
       colors.cyan(
-        `📡 PostgreSQL conectado en: ${sequelize.config.host}:${sequelize.config.port} - Hora actual: ${now}`
+        `✅ PostgreSQL conectado en: ${sequelize.config.host}:${sequelize.config.port} - Hora actual: ${now}`
       )
     );
   } catch (error: any) {
