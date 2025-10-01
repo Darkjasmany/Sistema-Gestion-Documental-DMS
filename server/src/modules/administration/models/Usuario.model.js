@@ -8,7 +8,7 @@ import { TramiteHistorialEstado } from "../../document-management/models/Tramite
 import { TramiteEliminacion } from "../../document-management/models/TramiteEliminacion.model.js";
 import { TramiteObservacion } from "../../document-management/models/TramiteObservacion.model.js";
 import { generarId } from "../../../utils/generarId.js";
-import { passwordHash } from "../../../utils/passwordHash.js";
+import { passwordHash } from "../../../utils/auth.js";
 import bcrypt from "bcrypt";
 
 export const Usuario = sequelize.define(

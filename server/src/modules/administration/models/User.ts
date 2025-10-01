@@ -2,6 +2,8 @@ import { Model } from "sequelize";
 import {
   AllowNull,
   AutoIncrement,
+  BeforeSave,
+  BelongsTo,
   Column,
   DataType,
   Default,
@@ -9,6 +11,9 @@ import {
   Table,
   Unique,
 } from "sequelize-typescript";
+import { generarId } from "../../../utils/generarId.js";
+import { hashPassword } from "../../../utils/auth.js";
+import { Department } from "./Department.js";
 
 const tipoRol = {
   USUARIO: "USUARIO",
@@ -58,4 +63,34 @@ export class User extends Model<User> {
   })
   @Default(tipoRol.USUARIO)
   rol!: string;
+
+  @Default(generarId())
+  @Column(DataType.STRING)
+  token!: string;
+
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  confirmado!: boolean;
+
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  estado!: boolean;
+
+  @Column(DataType.BIGINT)
+  departamento_id!: number;
+
+  @BelongsTo(() => Department, "departamento_id")
+  departamento!: Department;
+
+  @BeforeSave
+  static async sanitizeAndHash(usuario: User) {
+    usuario.nombres = usuario.nombres.trim();
+    usuario.apellidos = usuario.apellidos.trim();
+    usuario.email = usuario.email.trim().toLowerCase();
+
+    if (usuario.changed("password")) {
+      usuario.password = usuario.password.trim();
+      usuario.password = await hashPassword(usuario.password);
+    }
+  }
 }
