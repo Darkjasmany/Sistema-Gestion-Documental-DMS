@@ -8,7 +8,7 @@
     "start": "NODE_ENV=production node ./dist/index.js",
     "build": "tsc",
     "dev": "node --env-file .env --watch src/index.js",
-    "dev:api": "tsx watch src/index.ts --env-file .env --api",
+    "dev:api": "tsx --env-file .env --watch src/index.ts --api",
     "sequelize": "sequelize-cli"
   },
   "author": "Jasmany Franco Peralta",
@@ -36,7 +36,6 @@
     "@types/nodemailer": "^7.0.2",
     "@types/sequelize": "^4.28.20",
     "morgan": "^1.10.1",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
   }
 }
