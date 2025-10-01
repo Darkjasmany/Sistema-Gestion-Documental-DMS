@@ -38,6 +38,9 @@
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noUncheckedSideEffectImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false
   },
   "include": [
     "src/**/*.ts"
