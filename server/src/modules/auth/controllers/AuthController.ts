@@ -1,26 +1,20 @@
 import type { Request, Response } from "express";
+import type { CreateUserInput } from "../../administration/types/schemas/userSchema.js";
 import { User } from "../../administration/models/User.js";
-import type { CreateUserInput } from "../../administration/types/IUser.js";
 
 export class AuthController {
   static createAccount = async (
     req: Request<{}, {}, CreateUserInput>,
     res: Response
   ) => {
-    const { nombres, apellidos, email, password } = req.body;
+    const { email } = req.body;
 
     const userExists = await User.findOne({ where: { email } });
     if (userExists)
       return res.status(409).json({ message: "Usuario ya registrado" });
 
     try {
-      const user = await User.create({
-        nombres,
-        apellidos,
-        email,
-        password,
-      });
-
+      await User.create(req.body); // ✅ Ya no da error
       res.send("Cuenta creada, revisa tu email para confirmarla");
     } catch (error) {
       return res.status(500).json({

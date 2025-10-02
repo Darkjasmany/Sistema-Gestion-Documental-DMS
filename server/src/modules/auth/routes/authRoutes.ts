@@ -3,10 +3,13 @@ import { body, param } from "express-validator";
 import { AuthController } from "../controllers/AuthController.js";
 import { handleInputErrors } from "../../../middlewares/validation.js";
 import { authenticate } from "../../../middlewares/auth.js";
+import { validateBody } from "../../../middlewares/validateBody.js";
+import { createUserSchema } from "../../administration/types/schemas/userSchema.js";
 
 const router = Router();
 
 // Public
+/*
 router.post(
   "/",
   body("nombres").notEmpty().withMessage("Los nombres son obligatorios"),
@@ -18,6 +21,9 @@ router.post(
   handleInputErrors,
   AuthController.createAccount
 );
+*/
+
+router.post("/", validateBody(createUserSchema), AuthController.createAccount);
 
 // Private
 

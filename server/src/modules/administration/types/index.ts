@@ -1,2 +1,2 @@
-export * from "./IUser.js";
+export * from "./IUserDTO.js";
 export * from "./IDepartment.js";

@@ -14,6 +14,11 @@ import {
 import { generarId } from "../../../utils/generarId.js";
 import { hashPassword } from "../../../utils/auth.js";
 import { Department } from "./Department.js";
+import type {
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 
 const tipoRol = {
   USUARIO: "USUARIO",
@@ -25,28 +30,32 @@ const tipoRol = {
 
 export type TipoRol = (typeof tipoRol)[keyof typeof tipoRol];
 
-export interface IUser {
-  id: number;
-  nombres: string;
-  apellidos: string;
-  email: string;
-  password: string;
-  rol: TipoRol;
-  token: string;
-  confirmado: boolean;
-  estado: boolean;
-  departamento_id: number;
-}
+// export interface IUser {
+//   id: CreationOptional<number>;
+//   nombres: string;
+//   apellidos: string;
+//   email: string;
+//   password: string;
+//   rol: CreationOptional<TipoRol>;
+//   token: CreationOptional<string>;
+//   confirmado: CreationOptional<boolean>;
+//   estado: CreationOptional<boolean>;
+//   departamento_id: CreationOptional<number>;
+// }
 
 @Table({
   tableName: "usuario",
   timestamps: false,
 })
-export class User extends Model<IUser> implements IUser {
+// export class User extends Model<IUser> {
+export class User extends Model<
+  InferAttributes<User>,
+  InferCreationAttributes<User>
+> {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.BIGINT)
-  id!: number;
+  declare id: CreationOptional<number>;
 
   @AllowNull(false)
   @Column(DataType.STRING)
@@ -75,25 +84,26 @@ export class User extends Model<IUser> implements IUser {
     values: Object.values(tipoRol),
   })
   @Default(tipoRol.USUARIO)
-  rol!: string;
+  declare rol: CreationOptional<TipoRol>;
 
   @Default(generarId())
   @Column(DataType.STRING)
-  token!: string;
+  declare token: CreationOptional<string>;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  confirmado!: boolean;
+  declare confirmado: CreationOptional<boolean>;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  estado!: boolean;
+  declare estado: CreationOptional<boolean>;
 
+  @Default(1)
   @Column(DataType.BIGINT)
-  departamento_id!: number;
+  declare departamento_id: CreationOptional<number>;
 
   @BelongsTo(() => Department, { foreignKey: "departamento_id" })
-  departamento!: Department;
+  declare departamento: CreationOptional<Department>;
 
   // TODO Faltan las demás relaciones
 
