@@ -30,22 +30,9 @@ const tipoRol = {
 
 export type TipoRol = (typeof tipoRol)[keyof typeof tipoRol];
 
-// export interface IUser {
-//   id: CreationOptional<number>;
-//   nombres: string;
-//   apellidos: string;
-//   email: string;
-//   password: string;
-//   rol: CreationOptional<TipoRol>;
-//   token: CreationOptional<string>;
-//   confirmado: CreationOptional<boolean>;
-//   estado: CreationOptional<boolean>;
-//   departamento_id: CreationOptional<number>;
-// }
-
 @Table({
   tableName: "usuario",
-  timestamps: false,
+  timestamps: true,
 })
 // export class User extends Model<IUser> {
 export class User extends Model<
@@ -79,11 +66,11 @@ export class User extends Model<
   @Column(DataType.STRING)
   password!: string;
 
+  @Default(tipoRol.USUARIO)
   @Column({
     type: DataType.ENUM,
     values: Object.values(tipoRol),
   })
-  @Default(tipoRol.USUARIO)
   declare rol: CreationOptional<TipoRol>;
 
   @Default(generarId())

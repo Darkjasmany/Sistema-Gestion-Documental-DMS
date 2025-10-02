@@ -1,7 +1,8 @@
-import { Sequelize } from "sequelize";
-import colors from "colors";
+import { Sequelize } from "sequelize-typescript";
 import { exit } from "node:process";
+import colors from "colors";
 import { PG_DATABASE, PG_USER, PG_PASSWORD, PG_HOST, PG_PORT } from "./env.js";
+import { models } from "../models/index.js";
 
 interface TimeRow {
   now: string;
@@ -20,6 +21,7 @@ export const sequelize = new Sequelize(PG_DATABASE, PG_USER, PG_PASSWORD, {
     acquire: 30000,
     idle: 10000,
   },
+  models, // Importamos los modelos
 });
 
 // Verificar la conexión

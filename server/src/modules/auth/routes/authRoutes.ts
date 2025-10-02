@@ -1,30 +1,16 @@
 import { Router } from "express";
-import { body, param } from "express-validator";
 import { AuthController } from "../controllers/AuthController.js";
-import { handleInputErrors } from "../../../middlewares/validation.js";
-import { authenticate } from "../../../middlewares/auth.js";
 import { validateBody } from "../../../middlewares/validateBody.js";
 import { createUserSchema } from "../../administration/types/schemas/userSchema.js";
 
 const router = Router();
 
 // Public
-/*
 router.post(
-  "/",
-  body("nombres").notEmpty().withMessage("Los nombres son obligatorios"),
-  body("apellidos").notEmpty().withMessage("Los apellidos son obligatorios"),
-  body("email").isEmail().withMessage("El email no es valido"),
-  body("password")
-    .isLength({ min: 8 })
-    .withMessage("La contraseña debe tener al menos 8 caracteres"),
-  handleInputErrors,
+  "/create-account",
+  validateBody(createUserSchema),
   AuthController.createAccount
 );
-*/
-
-router.post("/", validateBody(createUserSchema), AuthController.createAccount);
 
 // Private
-
 export default router;

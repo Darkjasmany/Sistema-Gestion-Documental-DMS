@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { corsConfig } from "./config/cors.js";
 import { conectarDB } from "./config/db.js";
+import authRoutes from "./modules/auth/routes/authRoutes.js";
 
 // Import routes
 // import adminRoutes from "./modules/administration/routes/admin.routes.js";
@@ -26,6 +27,7 @@ app.use(morgan("dev"));
 app.use("/home/jasmany/uploads/", express.static("/home/jasmany/uploads/")); // Sirve la carpeta "uploads" como estática
 
 // Routes
+app.use("/api/auth", authRoutes);
 // app.use("/api/usuarios", usuarioRoutes);
 // app.use("/api/tramites", tramiteRoutes);
 // app.use("/api/empleados", empleadoRoutes);

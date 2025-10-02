@@ -8,15 +8,15 @@ export class AuthController {
     res: Response
   ) => {
     const { email } = req.body;
-
     const userExists = await User.findOne({ where: { email } });
     if (userExists)
       return res.status(409).json({ message: "Usuario ya registrado" });
-
+    res.send("Cuenta creada, revisa tu email para confirmarla");
     try {
-      await User.create(req.body); // ✅ Ya no da error
+      await User.create(req.body);
       res.send("Cuenta creada, revisa tu email para confirmarla");
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         message: "Error al registrar el usuario.",
       });
