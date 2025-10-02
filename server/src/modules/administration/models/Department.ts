@@ -1,4 +1,3 @@
-import { Model } from "sequelize";
 import {
   AllowNull,
   AutoIncrement,
@@ -6,16 +5,22 @@ import {
   Column,
   DataType,
   Default,
+  Model,
   PrimaryKey,
   Table,
-  Unique,
 } from "sequelize-typescript";
+
+export interface IDepartment {
+  id: number;
+  nombre: string;
+  coordinador_id: number;
+}
 
 @Table({
   tableName: "departamento",
   timestamps: false,
 })
-export class Department extends Model<Department> {
+export class Department extends Model<IDepartment> implements IDepartment {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.BIGINT)

@@ -1,4 +1,3 @@
-import { Model } from "sequelize";
 import {
   AllowNull,
   AutoIncrement,
@@ -7,6 +6,7 @@ import {
   Column,
   DataType,
   Default,
+  Model,
   PrimaryKey,
   Table,
   Unique,
@@ -25,11 +25,24 @@ const tipoRol = {
 
 export type TipoRol = (typeof tipoRol)[keyof typeof tipoRol];
 
+export interface IUser {
+  id: number;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  password: string;
+  rol: TipoRol;
+  token: string;
+  confirmado: boolean;
+  estado: boolean;
+  departamento_id: number;
+}
+
 @Table({
   tableName: "usuario",
   timestamps: false,
 })
-export class User extends Model<User> {
+export class User extends Model<IUser> implements IUser {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.BIGINT)
@@ -79,8 +92,10 @@ export class User extends Model<User> {
   @Column(DataType.BIGINT)
   departamento_id!: number;
 
-  @BelongsTo(() => Department, "departamento_id")
+  @BelongsTo(() => Department, { foreignKey: "departamento_id" })
   departamento!: Department;
+
+  // TODO Faltan las demás relaciones
 
   @BeforeSave
   static async sanitizeAndHash(usuario: User) {

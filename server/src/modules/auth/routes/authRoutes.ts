@@ -2,6 +2,7 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import { AuthController } from "../controllers/AuthController.js";
 import { handleInputErrors } from "../../../middlewares/validation.js";
+import { authenticate } from "../../../middlewares/auth.js";
 
 const router = Router();
 
@@ -17,5 +18,7 @@ router.post(
   handleInputErrors,
   AuthController.createAccount
 );
+
+// Private
 
 export default router;
