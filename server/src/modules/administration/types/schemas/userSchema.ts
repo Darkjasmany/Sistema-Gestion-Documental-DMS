@@ -8,5 +8,13 @@ export const createUserSchema = z.object({
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
 });
 
+export const validateTokenSchema = z.object({
+  token: z
+    .string()
+    .length(6, "El token no puede ir vacio o tener mas de 6 caracteres"),
+});
+
 // Tipado - tipo inferido de ese esquema
 export type CreateUserInput = z.infer<typeof createUserSchema>;
+
+export type ValidateTokenInput = z.infer<typeof validateTokenSchema>;

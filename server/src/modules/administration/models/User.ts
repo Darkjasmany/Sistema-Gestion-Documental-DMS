@@ -73,7 +73,8 @@ export class User extends Model<
   })
   declare rol: CreationOptional<TipoRol>;
 
-  @Default(generarId())
+  // @Default(generarId())
+  @Default(null)
   @Column(DataType.STRING)
   declare token: CreationOptional<string>;
 
