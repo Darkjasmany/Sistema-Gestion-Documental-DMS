@@ -3,8 +3,10 @@ import { AuthController } from "../controllers/AuthController.js";
 import { validateBody } from "../../../middlewares/validateBody.js";
 import {
   createUserSchema,
+  validateEmailSchema,
+  validateLoginSchema,
   validateTokenSchema,
-} from "../../administration/types/schemas/userSchema.js";
+} from "../schema/userAuthSchema.js";
 
 const router = Router();
 
@@ -20,6 +22,18 @@ router.post(
   validateBody(validateTokenSchema),
   AuthController.confirmAccount
 );
+
+router.post("/login", validateBody(validateLoginSchema), AuthController.login);
+
+router.post(
+  "/forgot-password",
+  validateBody(validateEmailSchema),
+  AuthController.forgotPassword
+);
+
+router.post('/validate-token', validateBody(validateTokenSchema), AuthController.validateToken)
+
+router.post('/update-password/:token', AuthController.updatePasswordWithToken)
 
 // Private
 export default router;

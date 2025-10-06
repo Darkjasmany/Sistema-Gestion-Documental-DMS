@@ -11,7 +11,6 @@ import {
   Table,
   Unique,
 } from "sequelize-typescript";
-import { generarId } from "../../../utils/generarId.js";
 import { hashPassword } from "../../../utils/auth.js";
 import { Department } from "./Department.js";
 import type {

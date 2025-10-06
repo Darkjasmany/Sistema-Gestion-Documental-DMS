@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { User, type IUser } from "../modules/administration/models/User.js";
+import { User } from "../modules/administration/models/User.js";
 import { JWT_SECRET } from "../config/env.js";
 import { Department } from "../modules/administration/models/Department.js";
 import type { UserWithDepartment } from "../modules/administration/types/IUserDTO.js";
