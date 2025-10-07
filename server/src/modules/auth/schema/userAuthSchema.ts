@@ -46,16 +46,3 @@ export const validateUpdatePasswordSchema = z
     message: "Las constraseñas no coinciden",
     path: ["passwordConfirmation"], // el error se asigna a este campo
   });
-
-// Tipado - tipo inferido de ese esquema
-export type CreateUserInput = z.infer<typeof createUserSchema>;
-
-export type ValidateTokenInput = z.infer<typeof validateTokenSchema>;
-
-export type ValidateLoginInput = z.infer<typeof validateLoginSchema>;
-
-export type ValidateEmailInput = z.infer<typeof validateEmailSchema>;
-
-export type ValidateUpdatePasswordInput = z.infer<
-  typeof validateUpdatePasswordSchema
->;

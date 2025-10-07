@@ -5,7 +5,7 @@ import type {
   ValidateLoginInput,
   ValidateTokenInput,
   ValidateUpdatePasswordInput,
-} from "../schema/userAuthSchema.js";
+} from "../types/userAuthTypes.js";
 import { User } from "../../administration/models/User.js";
 import { EmailService } from "../services/emailService.js";
 import { generateToken } from "../../../utils/token.js";
