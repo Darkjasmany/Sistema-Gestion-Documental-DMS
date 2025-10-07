@@ -1,6 +1,6 @@
 import { userSchema } from "../../administration/schemas/index.js";
 
-import { z } from "zod";
+import { check, z } from "zod";
 
 // Esquema de Zod
 export const createUserSchema = z.object({
@@ -34,9 +34,18 @@ export const validateEmailSchema = validateLoginSchema.pick({
   email: true,
 });
 
-export const validateUpdatePasswordSchema = createUserSchema.pick({
-  password: true,
-});
+export const validateUpdatePasswordSchema = z
+  .object({
+    password: userSchema.shape.password.min(
+      8,
+      "La constraseña debe tener al menos 8 caracteres"
+    ),
+    passwordConfirmation: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: "Las constraseñas no coinciden",
+    path: ["passwordConfirmation"], // el error se asigna a este campo
+  });
 
 // Tipado - tipo inferido de ese esquema
 export type CreateUserInput = z.infer<typeof createUserSchema>;
@@ -46,3 +55,7 @@ export type ValidateTokenInput = z.infer<typeof validateTokenSchema>;
 export type ValidateLoginInput = z.infer<typeof validateLoginSchema>;
 
 export type ValidateEmailInput = z.infer<typeof validateEmailSchema>;
+
+export type ValidateUpdatePasswordInput = z.infer<
+  typeof validateUpdatePasswordSchema
+>;

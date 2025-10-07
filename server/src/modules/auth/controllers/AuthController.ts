@@ -4,12 +4,14 @@ import type {
   ValidateEmailInput,
   ValidateLoginInput,
   ValidateTokenInput,
+  ValidateUpdatePasswordInput,
 } from "../schema/userAuthSchema.js";
 import { User } from "../../administration/models/User.js";
 import { EmailService } from "../services/emailService.js";
 import { generateToken } from "../../../utils/token.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
+import { Transaction } from "sequelize";
 
 export class AuthController {
   static createAccount = async (
@@ -200,22 +202,34 @@ export class AuthController {
   };
 
   static updatePasswordWithToken = async (
-    req: Request<{}, {}, ValidateTokenInput>,
+    req: Request<ValidateTokenInput, {}, ValidateUpdatePasswordInput>,
     res: Response
   ) => {
-    const { token } = req.body;
-
+    // token viene en params (/:token), el body contiene password y passwordConfirmation (ya validados por Zod)
+    const { token } = req.params;
+    const { password } = req.body;
+    const transaction = await User.sequelize!.transaction();
     try {
-      const tokenExists = await User.findOne({ where: { token } });
-      if (!tokenExists) {
+      const userExists = await User.findOne({
+        where: { token, confirmado: true, estado: true },
+      });
+      if (!userExists) {
+        await transaction.rollback();
         const error = new Error("Token no válido");
         return res.status(404).json({ error: error.message });
       }
-      res.send("Token válido, Define tu nuevo password");
+      userExists.password = password;
+      userExists.token = "";
+
+      await userExists.save({ transaction });
+      await transaction.commit();
+
+      return res.send("Password actualizado correctamente");
     } catch (error) {
+      await transaction.rollback();
       console.log(error);
       return res.status(500).json({
-        error: "Error al validar el token.",
+        error: "Error al actualizar el password.",
       });
     }
   };
