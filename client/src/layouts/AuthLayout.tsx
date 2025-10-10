@@ -4,9 +4,11 @@ import { Outlet } from "react-router-dom";
 const AuthLayout = () => {
   return (
     <>
-      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-indigo-950 to-black  text-white px-4">
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0a0f1c]  text-white px-4">
+        {/* <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-indigo-950 to-black  text-white px-4"> */}
         {/* Contenedor principal */}
-        <div className="backdrop-blur-md bg-white/10 p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/20">
+        <div className="backdrop-blur-xl bg-[#1e293b]/60 p-10 rounded-2xl shadow-[0_0_25px_rgba(0,0,0,0.6)] border border-[#334155]/60 w-full max-w-md">
+          {/* <div className="backdrop-blur-md bg-white/10 p-10 rounded-2xl shadow-2xl w-full max-w-md border border-white/20"> */}
           <Outlet />
         </div>
       </main>

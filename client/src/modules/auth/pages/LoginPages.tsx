@@ -70,7 +70,8 @@ const LoginPages = () => {
 */
   return (
     <>
-      <h1 className="text-3xl font-bold text-center mb-6 text-indigo-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.8)]">
+      {/* <h1 className="text-3xl font-bold text-center mb-6 text-indigo-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.8)]"> */}
+      <h1 className="text-3xl font-bold text-center mb-6 text-[#7dd3fc] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)]">
         Inicia Sesión
       </h1>
       <form action="" className=" space-y-5" noValidate>
@@ -82,7 +83,8 @@ const LoginPages = () => {
             type="email"
             id="email"
             placeholder="name@naranjal.gob.ec"
-            className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+            className="w-full p-3 rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-sky-400 outline-none transition"
+            // className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
           />
         </div>
         <div>
@@ -95,20 +97,23 @@ const LoginPages = () => {
           <input
             type="password"
             id="password"
-            className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+            className="w-full p-3 rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-sky-400 outline-none transition"
+            // className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
           />
         </div>
         <div className="flex items-center justify-between text-sm text-gray-400">
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
-              className="w-4 h-4 text-indigo-500 border-gray-600 bg-transparent rounded focus:ring-indigo-500"
+              className="w-4 h-4 text-sky-500 border-gray-600 bg-transparent rounded focus:ring-sky-500"
+              // className="w-4 h-4 text-indigo-500 border-gray-600 bg-transparent rounded focus:ring-indigo-500"
             />
             <span>Recuérdame</span>
           </label>
           <Link
             to="/olvide-password"
-            className="hover:text-indigo-400 transition"
+            // className="hover:text-indigo-400 transition"
+            className="hover:text-sky-400 transition"
           >
             ¿Olvidaste tu password?
           </Link>
@@ -116,7 +121,8 @@ const LoginPages = () => {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-md shadow-lg shadow-indigo-500/20 transition-all"
+          className="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-md shadow-lg shadow-sky-500/20 transition-all"
+          // className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-md shadow-lg shadow-indigo-500/20 transition-all"
         >
           INICIAR SESIÓN
         </button>
@@ -124,7 +130,7 @@ const LoginPages = () => {
 
       <p className="text-center text-sm text-gray-400 mt-6">
         ¿No tienes una cuenta?{" "}
-        <Link to="/registrar" className="text-indigo-400 hover:underline">
+        <Link to="/registrar" className="text-sky-400 hover:underline">
           Regístrate
         </Link>
       </p>
