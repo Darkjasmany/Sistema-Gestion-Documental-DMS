@@ -70,98 +70,64 @@ const LoginPages = () => {
 */
   return (
     <>
-      <div>
-        <h1 className="text-indigo-600 font-black text-6xl">
-          Inicia Sesión y Administra tus{" "}
-          <span className="text-black">Documentos</span>
-        </h1>
-      </div>
-      <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-        {/* {message && <Alerta alerta={alerta} />} */}
-
-        {/* <form action="" onSubmit={handleSubmit}> */}
-        <form action="">
-          <div className="my-5">
-            <label
-              htmlFor="email"
-              className="uppercase font-bold text-xl text-gray-600"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              // value={email}
-              // onChange={(e) => {
-              //   setEmail(e.target.value);
-              // }}
-              className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
-              placeholder="name@naranjal.gob.ec"
-              // required
-            />
-          </div>
-
-          <div className="my-5">
-            <label
-              htmlFor="password"
-              className="uppercase font-bold text-xl text-gray-600"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              // value={password}
-              // onChange={(e) => {
-              //   setPassword(e.target.value);
-              // }}
-              className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
-              placeholder="Tu Password"
-              // required
-            />
-          </div>
-
-          <div className="flex items-start mb-5">
-            <div className="flex items-center h-5">
-              <input
-                id="remember"
-                type="checkbox"
-                // checked={remember}
-                // onChange={() => setRemember(!remember)}
-                className="w-4 h-4 border border-gray-300 rounded bg-gray-50"
-                aria-label="Recuérdame"
-              />
-            </div>
-            <label
-              htmlFor="remember"
-              className="ms-2 text-sm font-medium text-gray-900"
-            >
-              Recuérdame
-            </label>
-          </div>
-
+      <h1 className="text-3xl font-bold text-center mb-6 text-indigo-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.8)]">
+        Inicia Sesión
+      </h1>
+      <form action="" className=" space-y-5" noValidate>
+        <div>
+          <label htmlFor="email" className="block text-sm text-gray-300 mb-2">
+            Email
+          </label>
           <input
-            type="submit"
-            value={"Iniciar Sesión"}
-            className="bg-indigo-700 w-full md:w-auto py-3 px-10 rounded-xl text-white uppercase font-bold mt-5 hover:cursor-pointer hover:bg-indigo-800"
+            type="email"
+            id="email"
+            placeholder="name@naranjal.gob.ec"
+            className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
           />
-        </form>
-
-        <nav className="mt-10 lg:flex lg:justify-between">
-          <Link
-            to="/registrar"
-            className="block text-center my-5 text-gray-500"
+        </div>
+        <div>
+          <label
+            htmlFor="password"
+            className="block text-sm text-gray-300 mb-2"
           >
-            ¿No tienes una cuenta? Registrate
-          </Link>
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+          />
+        </div>
+        <div className="flex items-center justify-between text-sm text-gray-400">
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              className="w-4 h-4 text-indigo-500 border-gray-600 bg-transparent rounded focus:ring-indigo-500"
+            />
+            <span>Recuérdame</span>
+          </label>
           <Link
             to="/olvide-password"
-            className="block text-center my-5 text-gray-500"
+            className="hover:text-indigo-400 transition"
           >
-            Olvide mi password
+            ¿Olvidaste tu password?
           </Link>
-        </nav>
-      </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-md shadow-lg shadow-indigo-500/20 transition-all"
+        >
+          INICIAR SESIÓN
+        </button>
+      </form>
+
+      <p className="text-center text-sm text-gray-400 mt-6">
+        ¿No tienes una cuenta?{" "}
+        <Link to="/registrar" className="text-indigo-400 hover:underline">
+          Regístrate
+        </Link>
+      </p>
     </>
   );
 };
