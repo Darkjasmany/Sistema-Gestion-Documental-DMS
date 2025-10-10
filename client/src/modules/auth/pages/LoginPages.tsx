@@ -1,11 +1,13 @@
 // Para manejar enlaces
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Alerta from "../../../../components/Alerta.components";
-import clienteAxios from "../../../../config/axios.config";
-import useAuth from "../../../../hooks/useAuth.hook";
+// import { useState, useEffect } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+// import Alerta from "../../../components/Alerta.components";
+// import clienteAxios from "../../../../config/axios.config";
+// import useAuth from "../../../hooks/useAuth.hook";
 
-const Login = () => {
+const LoginPages = () => {
+  /*
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -65,7 +67,7 @@ const Login = () => {
   };
 
   const { message } = alerta;
-
+*/
   return (
     <>
       <div>
@@ -75,9 +77,10 @@ const Login = () => {
         </h1>
       </div>
       <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-        {message && <Alerta alerta={alerta} />}
+        {/* {message && <Alerta alerta={alerta} />} */}
 
-        <form action="" onSubmit={handleSubmit}>
+        {/* <form action="" onSubmit={handleSubmit}> */}
+        <form action="">
           <div className="my-5">
             <label
               htmlFor="email"
@@ -88,10 +91,10 @@ const Login = () => {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              // value={email}
+              // onChange={(e) => {
+              //   setEmail(e.target.value);
+              // }}
               className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
               placeholder="name@naranjal.gob.ec"
               // required
@@ -108,10 +111,10 @@ const Login = () => {
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              // value={password}
+              // onChange={(e) => {
+              //   setPassword(e.target.value);
+              // }}
               className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
               placeholder="Tu Password"
               // required
@@ -123,8 +126,8 @@ const Login = () => {
               <input
                 id="remember"
                 type="checkbox"
-                checked={remember}
-                onChange={() => setRemember(!remember)}
+                // checked={remember}
+                // onChange={() => setRemember(!remember)}
                 className="w-4 h-4 border border-gray-300 rounded bg-gray-50"
                 aria-label="Recuérdame"
               />
@@ -163,4 +166,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPages;
