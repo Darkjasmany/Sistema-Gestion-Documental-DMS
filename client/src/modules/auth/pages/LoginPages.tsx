@@ -1,118 +1,82 @@
-// Para manejar enlaces
-// import { useState, useEffect } from "react";
-// import { Link, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-// import Alerta from "../../../components/Alerta.components";
-// import clienteAxios from "../../../../config/axios.config";
-// import useAuth from "../../../hooks/useAuth.hook";
+import { MdEmail } from "react-icons/md";
+import { AiOutlineLock } from "react-icons/ai";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+
+import { useState } from "react";
 
 const LoginPages = () => {
-  /*
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
-  const [alerta, setAlerta] = useState({});
-  const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
-
-  const token =
-    localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
-
-  // ** Redirección automatica
-  // Si el usuario esta autenticado y en mi Provider se almaceno la sesión del usuario en auth y si el token está en el localStorage y redirige automáticamente si ya inició sesión:
-  useEffect(() => {
-    if (auth?.id && token) {
-      navigate("/admin");
-    }
-  }, [auth, navigate]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if ([email, password].includes("")) {
-      return setAlerta({
-        message: "Todos los campos son obligatorios",
-        error: true,
-      });
-    }
-
-    const isEmailValid = (email) => /\S+@\S+\.\S+/.test(email);
-    if (!isEmailValid(email)) {
-      return setAlerta({ message: "Correo no válido", error: true });
-    }
-
-    // ** Comunicarme con la API
-    try {
-      const { data } = await clienteAxios.post("/usuarios/login", {
-        email,
-        password,
-      });
-
-      // ** Guardar token según el estado del checkbox "Recuérdame"
-      if (remember) {
-        localStorage.setItem("dms_token", data.token);
-      } else {
-        sessionStorage.setItem("dms_token", data.token);
-      }
-
-      // Actualizar el contexto de autenticación
-      setAuth(data);
-
-      // Redireccionar al usuario
-      navigate("/admin");
-    } catch (error) {
-      const message = error.response?.data?.message;
-      setAlerta({ message, error: true });
-    }
-  };
-
-  const { message } = alerta;
-*/
+  const [show, setShow] = useState(false);
   return (
     <>
-      {/* <h1 className="text-3xl font-bold text-center mb-6 text-indigo-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.8)]"> */}
       <h1 className="text-3xl font-bold text-center mb-6 text-[#7dd3fc] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)]">
         Inicia Sesión
       </h1>
       <form action="" className=" space-y-5" noValidate>
         <div>
-          <label htmlFor="email" className="block text-sm text-gray-300 mb-2">
-            Email
+          <label htmlFor="email" className="sr-only">
+            Correo electrónico
           </label>
-          <input
-            type="email"
-            id="email"
-            placeholder="name@naranjal.gob.ec"
-            className="w-full p-3 rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-sky-400 outline-none transition"
-            // className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
-          />
+          <div className="relative">
+            <span
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              aria-hidden="true"
+            >
+              <MdEmail />
+            </span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="username"
+              placeholder="Correo electrónico"
+              className="pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+              aria-required="true"
+            />
+          </div>
         </div>
+
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm text-gray-300 mb-2"
-          >
-            Password
+          <label htmlFor="password" className="sr-only">
+            Contraseña
           </label>
-          <input
-            type="password"
-            id="password"
-            className="w-full p-3 rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-sky-400 outline-none transition"
-            // className="w-full p-3 rounded-md bg-black/30 text-white border border-white/20 placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
-          />
+          <div className="relative mt-4">
+            <span
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              aria-hidden="true"
+            >
+              <AiOutlineLock />
+            </span>
+            <input
+              id="password"
+              name="password"
+              type={show ? "text" : "password"}
+              autoComplete="current-password"
+              placeholder="Contraseña"
+              className="pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+              aria-required="true"
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300"
+              onClick={() => setShow(!show)}
+              aria-label={show ? "Ocultar contraseña" : "Mostrar contraseña"}
+            >
+              {show ? <IoMdEyeOff /> : <IoMdEye />}
+            </button>
+          </div>
         </div>
+
         <div className="flex items-center justify-between text-sm text-gray-400">
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
               className="w-4 h-4 text-sky-500 border-gray-600 bg-transparent rounded focus:ring-sky-500"
-              // className="w-4 h-4 text-indigo-500 border-gray-600 bg-transparent rounded focus:ring-indigo-500"
             />
             <span>Recuérdame</span>
           </label>
           <Link
-            to="/olvide-password"
-            // className="hover:text-indigo-400 transition"
+            to="/auth/forgot-password"
             className="hover:text-sky-400 transition"
           >
             ¿Olvidaste tu password?
@@ -122,7 +86,6 @@ const LoginPages = () => {
         <button
           type="submit"
           className="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-md shadow-lg shadow-sky-500/20 transition-all"
-          // className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-md shadow-lg shadow-indigo-500/20 transition-all"
         >
           INICIAR SESIÓN
         </button>
@@ -130,12 +93,11 @@ const LoginPages = () => {
 
       <p className="text-center text-sm text-gray-400 mt-6">
         ¿No tienes una cuenta?{" "}
-        <Link to="/registrar" className="text-sky-400 hover:underline">
+        <Link to="/auth/register" className="text-sky-400 hover:underline">
           Regístrate
         </Link>
       </p>
     </>
   );
 };
-
 export default LoginPages;

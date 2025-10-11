@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* @import "tailwindcss/preflight";
+@import "tailwindcss/utilities"; */
 
 @keyframes float {
   0%,
@@ -28,4 +30,17 @@
 
 .animate-pulse-slow {
   animation: pulse-slow 6s ease-in-out infinite;
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-pulse-slow {
+    animation: none !important;
+  }
+}
+
+/* Hints for performant particle animations */
+.particle {
+  will-change: transform, opacity;
 }
