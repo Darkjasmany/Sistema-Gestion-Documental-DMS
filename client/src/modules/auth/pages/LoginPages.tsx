@@ -10,6 +10,11 @@ import { useState } from "react";
 // import { loginSchema, type LoginForm } from "../schemas/auth.schema";
 
 const LoginPages = () => {
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
   const [show, setShow] = useState(false);
 
   // const {
