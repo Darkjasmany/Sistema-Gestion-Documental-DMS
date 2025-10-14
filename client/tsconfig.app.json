@@ -19,9 +19,6 @@
       "@/layouts/*": [
         "layouts/*"
       ],
-      "@/pages/*": [
-        "pages/*"
-      ],
       "@/modules/*": [
         "modules/*"
       ],

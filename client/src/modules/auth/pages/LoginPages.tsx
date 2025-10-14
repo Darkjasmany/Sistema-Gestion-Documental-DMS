@@ -32,11 +32,11 @@ const LoginPages = () => {
 
   return (
     <>
-      <h1 className="text-5xl font-bold text-center mb-4 text-white drop-shadow-[0_0_8px_rgba(56,189,248,0.3)] animate-fade-in">
+      {/* animate-fade-in */}
+      {/* <h1 className="text-5xl font-bold text-center mb-4 text-white drop-shadow-[0_0_8px_rgba(56,189,248,0.3)] select-none ">
         Sel<span className="text-[#7dd3fc]">Nic</span>
-      </h1>
-      <h2 className="text-2xl font-semibold text-center mb-6 text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)]">
-        {/* <h2 className="text-2xl font-semibold text-center mb-6 text-[#7dd3fc] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)]"> */}
+      </h1> */}
+      <h2 className="text-2xl font-semibold text-center mb-6 text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)] select-none">
         Inicia Sesión
       </h2>
       <form action="" className=" space-y-5" noValidate>
@@ -121,11 +121,11 @@ const LoginPages = () => {
               type="checkbox"
               className="w-4 h-4 text-sky-500 border-gray-600 bg-transparent rounded focus:ring-sky-500"
             />
-            <span>Recuérdame</span>
+            <span className="select-none">Recuérdame</span>
           </label>
           <Link
             to="/auth/forgot-password"
-            className="hover:text-sky-400 transition"
+            className="hover:text-sky-400 transition select-none"
           >
             ¿Olvidaste tu password?
           </Link>
@@ -138,8 +138,7 @@ const LoginPages = () => {
           INICIAR SESIÓN
         </button>
       </form>
-
-      <p className="text-center text-sm text-gray-400 mt-6">
+      <p className="text-center text-sm text-gray-400 mt-6 select-none">
         ¿No tienes una cuenta?{" "}
         <Link to="/auth/register" className="text-sky-400 hover:underline">
           Regístrate
