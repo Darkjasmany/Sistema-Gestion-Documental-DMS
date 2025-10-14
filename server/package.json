@@ -14,6 +14,7 @@
   "author": "Jasmany Franco Peralta",
   "license": "ISC",
   "dependencies": {
+    "@selnic/validation": "*",
     "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
     "cors": "^2.8.5",

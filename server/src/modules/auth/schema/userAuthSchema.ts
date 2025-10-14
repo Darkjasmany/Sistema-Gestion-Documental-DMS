@@ -1,6 +1,6 @@
 import { userSchema } from "../../administration/schemas/index.js";
 
-import { check, z } from "zod";
+import { z } from "zod";
 
 // Esquema de Zod
 export const createUserSchema = z.object({

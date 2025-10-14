@@ -34,7 +34,8 @@
     "react-select": "^5.10.2",
     "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.14",
-    "zod": "^4.1.12"
+    "zod": "^4.1.12",
+    "@selnic/validation": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
