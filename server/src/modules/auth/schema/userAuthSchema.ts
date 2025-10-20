@@ -1,4 +1,4 @@
-import { userSchema } from "../../administration/schemas/index.js";
+import { userSchema } from "@selnic/validation";
 
 import { z } from "zod";
 

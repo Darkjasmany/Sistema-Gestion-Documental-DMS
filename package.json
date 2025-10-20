@@ -1,8 +1,14 @@
 {
   "private": true,
   "workspaces": [
-    "server",
+    "packages/*",
     "client",
-    "packages/*"
-  ]
+    "server"
+  ],
+  "scripts": {
+    "build:validation": "npm --workspace=@selnic/validation run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
 }

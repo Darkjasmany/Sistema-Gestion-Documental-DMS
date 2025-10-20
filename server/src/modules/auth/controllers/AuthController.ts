@@ -11,7 +11,6 @@ import { EmailService } from "../services/emailService.js";
 import { generateToken } from "../../../utils/token.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
-import { Transaction } from "sequelize";
 
 export class AuthController {
   static createAccount = async (
