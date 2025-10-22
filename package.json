@@ -1,14 +1,21 @@
 {
+  "name": "selnic-monorepo",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
     "packages/*",
-    "client",
-    "server"
+    "apps/*"
   ],
   "scripts": {
-    "build:validation": "npm --workspace=@selnic/validation run build"
+    "dev": "npm run dev --workspace=apps/backend & npm run dev --workspace=apps/frontend",
+    "dev:backend": "npm run dev --workspace=apps/backend",
+    "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "build": "npm run build --workspaces",
+    "build:schemas": "npm run build --workspace=packages/schemas",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules"
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^5.3.3",
+    "turbo": "^1.11.0"
   }
 }
