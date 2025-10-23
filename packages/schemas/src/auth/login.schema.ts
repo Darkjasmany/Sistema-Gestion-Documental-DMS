@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { userBaseSchema } from "../../models/user.model";
+import { userBaseSchema } from "../models/user.model";
 
+// Esquema de Zod
 export const loginSchema = z.object({
   email: userBaseSchema.shape.email
     .email("El email no es válido")
@@ -10,7 +11,7 @@ export const loginSchema = z.object({
     .min(6, "La contraseña debe tener al menos 6 caracteres")
     .max(50, "La contraseña no puede exceder 50 caracteres"),
 });
-
+// Exportar todos los tipos de entrada (Input Types)
 export type ValidateLoginInput = z.infer<typeof loginSchema>;
 
 /**

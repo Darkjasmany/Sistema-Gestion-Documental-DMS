@@ -7,11 +7,12 @@ export const corsConfig: CorsOptions = {
     const whitelist = [FRONTEND_URL, "http://localhost:3000"];
 
     // Permitir peticiones sin origin solo en desarrollo con --api
-    const isDevApi = process.argv.includes("--api");
-    if (isDevApi) whitelist.push("");
+    // const isDevApi = process.argv.includes("--api");
+    // if (isDevApi) whitelist.push("");
 
     // Permite el origen del frontend, peticiones sin origin y en desarrollo
-    if (!origin && isDevApi) {
+    // if (!origin && isDevApi) {
+    if (!origin) {
       callback(null, true);
     } else if (origin && whitelist.includes(origin)) {
       callback(null, true);

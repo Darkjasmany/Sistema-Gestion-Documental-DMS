@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userBaseSchema } from "../../models/user.model";
+import { userBaseSchema } from "../models/user.model";
 
 export const validateTokenSchema = z.object({
   token: userBaseSchema.shape.token

@@ -7,7 +7,7 @@ import type {
   ValidateUpdatePasswordInput,
 } from "../types/userAuthTypes.js";
 import { User } from "../../administration/models/User.js";
-import { EmailService } from "../services/emailService.js";
+import { EmailService } from "../services/email.service.js";
 import { generateToken } from "../../../utils/token.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";

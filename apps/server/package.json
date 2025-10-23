@@ -5,16 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "NODE_ENV=production node ./dist/index.js",
+    "dev": "tsx --env-file .env --watch src/index.ts",
     "build": "tsc",
-    "dev": "node --env-file .env --watch src/index.js",
-    "dev:api": "tsx --env-file .env --watch src/index.ts --api",
+    "start": "NODE_ENV=production node ./dist/index.js",
     "sequelize": "sequelize-cli"
   },
   "author": "Jasmany Franco Peralta",
   "license": "ISC",
   "dependencies": {
-    "@selnic/validation": "workspace:*",
+    "@selnic/schemas": "*",
     "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
     "cors": "^2.8.5",

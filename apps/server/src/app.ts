@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { corsConfig } from "./config/cors.js";
-import { conectarDB } from "./config/db.js";
-import authRoutes from "./modules/auth/routes/authRoutes.js";
+import { conectarDB } from "./config/database.js";
+import authRoutes from "./modules/auth/routes/auth.routes.js";
 
 conectarDB();
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { AuthController } from "../controllers/AuthController.js";
+import { AuthController } from "../controllers/Auth.controller.js";
 import {
   zodValidateBody,
   zodValidateParams,
-} from "../../../middlewares/validateZod.js";
+} from "../../../middlewares/validateZod.middleware.js";
 import {
   createUserSchema,
   validateEmailSchema,

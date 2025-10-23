@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userBaseSchema } from "../../models/user.model";
+import { userBaseSchema } from "../models/user.model";
 // Esquema de Zod
 export const createUserSchema = z.object({
   nombres: userBaseSchema.shape.nombres
