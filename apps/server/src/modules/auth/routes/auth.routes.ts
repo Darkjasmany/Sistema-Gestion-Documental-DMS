@@ -10,7 +10,7 @@ import {
   validateLoginSchema,
   validateTokenSchema,
   validateUpdatePasswordSchema,
-} from "../schema/userAuthSchema.js";
+} from "@selnic/schemas/auth";
 
 const router = Router();
 
