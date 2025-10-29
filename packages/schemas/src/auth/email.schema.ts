@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { loginSchema } from "./login.schema";
+import { validateLoginSchema } from "./login.schema";
 
-export const validateEmailSchema = loginSchema.pick({
+export const validateEmailSchema = validateLoginSchema.pick({
   email: true,
 });
 

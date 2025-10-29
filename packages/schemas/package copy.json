@@ -4,19 +4,12 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": "./dist/index.js",
-    "./auth": "./dist/auth/index.js",
-    "./documents": "./dist/documents/index.js",
-    "./users": "./dist/users/index.js",
-    "./common": "./dist/common/index.js"
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
     "dev": "tsc --watch",
+    "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist"
   },
   "dependencies": {

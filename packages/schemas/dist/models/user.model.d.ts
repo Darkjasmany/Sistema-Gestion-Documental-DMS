@@ -10,7 +10,7 @@ export declare const userBaseSchema: z.ZodObject<{
     email: z.ZodString;
     password: z.ZodString;
     rol: z.ZodString;
-    token: z.ZodNullable<z.ZodString>;
+    token: z.ZodString;
     confirmado: z.ZodDefault<z.ZodBoolean>;
     estado: z.ZodDefault<z.ZodBoolean>;
     departamento_id: z.ZodNullable<z.ZodNumber>;
@@ -23,7 +23,7 @@ export declare const userBaseSchema: z.ZodObject<{
     email: string;
     password: string;
     rol: string;
-    token: string | null;
+    token: string;
     confirmado: boolean;
     estado: boolean;
     departamento_id: number | null;
@@ -36,7 +36,7 @@ export declare const userBaseSchema: z.ZodObject<{
     email: string;
     password: string;
     rol: string;
-    token: string | null;
+    token: string;
     departamento_id: number | null;
     createdAt: Date;
     updatedAt: Date;
@@ -54,7 +54,7 @@ export declare const userInsertSchema: z.ZodObject<Omit<{
     email: z.ZodString;
     password: z.ZodString;
     rol: z.ZodString;
-    token: z.ZodNullable<z.ZodString>;
+    token: z.ZodString;
     confirmado: z.ZodDefault<z.ZodBoolean>;
     estado: z.ZodDefault<z.ZodBoolean>;
     departamento_id: z.ZodNullable<z.ZodNumber>;
@@ -66,7 +66,7 @@ export declare const userInsertSchema: z.ZodObject<Omit<{
     email: string;
     password: string;
     rol: string;
-    token: string | null;
+    token: string;
     confirmado: boolean;
     estado: boolean;
     departamento_id: number | null;
@@ -76,9 +76,10 @@ export declare const userInsertSchema: z.ZodObject<Omit<{
     email: string;
     password: string;
     rol: string;
-    token: string | null;
+    token: string;
     departamento_id: number | null;
     confirmado?: boolean | undefined;
     estado?: boolean | undefined;
 }>;
 export type UserInsert = z.infer<typeof userInsertSchema>;
+//# sourceMappingURL=user.model.d.ts.map

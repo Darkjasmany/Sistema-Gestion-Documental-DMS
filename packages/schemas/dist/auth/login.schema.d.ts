@@ -23,7 +23,7 @@ export declare const loginResponseSchema: z.ZodObject<{
         email: z.ZodString;
         password: z.ZodString;
         rol: z.ZodString;
-        token: z.ZodNullable<z.ZodString>;
+        token: z.ZodString;
         confirmado: z.ZodDefault<z.ZodBoolean>;
         estado: z.ZodDefault<z.ZodBoolean>;
         departamento_id: z.ZodNullable<z.ZodNumber>;
@@ -72,3 +72,4 @@ export declare const loginResponseSchema: z.ZodObject<{
     };
 }>;
 export type LoginResponse = z.infer<typeof loginResponseSchema>;
+//# sourceMappingURL=login.schema.d.ts.map

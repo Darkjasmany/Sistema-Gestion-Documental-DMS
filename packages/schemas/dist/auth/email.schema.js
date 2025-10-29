@@ -1,4 +1,4 @@
-import { loginSchema } from "./login.schema";
-export const validateEmailSchema = loginSchema.pick({
+import { validateLoginSchema } from "./login.schema";
+export const validateEmailSchema = validateLoginSchema.pick({
     email: true,
 });

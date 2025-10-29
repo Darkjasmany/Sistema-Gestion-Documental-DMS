@@ -1,14 +1,13 @@
 {
-  "name": "@selnic/server",
+  "name": "selnic-backend",
   "version": "1.0.0",
+  "description": "SELNIC Backend- Sistema Estratégico para la Logística y la Gestión de Negocios Inteligentes",
   "main": "index.js",
   "type": "module",
-  "description": "Backend API de SelNic",
   "scripts": {
     "dev": "tsx --env-file .env --watch src/index.ts",
     "build": "tsc",
     "start": "NODE_ENV=production node ./dist/index.js",
-    "lint": "eslint src --ext .ts",
     "sequelize": "sequelize-cli"
   },
   "author": "Jasmany Franco Peralta",

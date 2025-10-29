@@ -1,11 +1,10 @@
 import { z } from "zod";
 export declare const validateTokenSchema: z.ZodObject<{
-    token: any;
+    token: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    [x: string]: any;
-    token?: unknown;
+    token: string;
 }, {
-    [x: string]: any;
-    token?: unknown;
+    token: string;
 }>;
 export type ValidateTokenInput = z.infer<typeof validateTokenSchema>;
+//# sourceMappingURL=token.schema.d.ts.map

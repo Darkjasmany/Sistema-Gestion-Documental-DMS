@@ -1,8 +1,9 @@
 {
-  "name": "selnic",
+  "name": "@selnic/client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "Frontend de SelNic",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -10,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@selnic/schemas": "workspace:*",
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
@@ -34,8 +36,7 @@
     "react-select": "^5.10.2",
     "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.14",
-    "zod": "^4.1.12",
-    "@selnic/schemas": "workspace:*"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

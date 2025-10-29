@@ -29,7 +29,7 @@ export declare const createUserResponseSchema: z.ZodObject<{
         email: z.ZodString;
         password: z.ZodString;
         rol: z.ZodString;
-        token: z.ZodNullable<z.ZodString>;
+        token: z.ZodString;
         confirmado: z.ZodDefault<z.ZodBoolean>;
         estado: z.ZodDefault<z.ZodBoolean>;
         departamento_id: z.ZodNullable<z.ZodNumber>;
@@ -90,3 +90,4 @@ export declare const createUserResponseSchema: z.ZodObject<{
     };
 }>;
 export type CreateUserResponse = z.infer<typeof createUserResponseSchema>;
+//# sourceMappingURL=register.schema.d.ts.map

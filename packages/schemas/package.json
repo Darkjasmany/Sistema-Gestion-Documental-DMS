@@ -2,15 +2,27 @@
   "name": "@selnic/schemas",
   "version": "1.0.0",
   "type": "module",
+  "description": "Schemas y validaciones compartidas con Zod",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./models": "./dist/models/index.js",
+    "./auth": "./dist/auth/index.js",
+    "./users": "./dist/users/index.js",
+    "./documents": "./dist/documents/index.js",
+    "./categories": "./dist/categories/index.js",
+    "./departments": "./dist/departments/index.js",
+    "./common": "./dist/common/index.js"
+  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
     "dev": "tsc --watch",
-    "clean": "rm -rf dist"
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .ts"
   },
   "dependencies": {
     "zod": "^3.22.4"
