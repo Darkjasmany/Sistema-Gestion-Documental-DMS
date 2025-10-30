@@ -20,8 +20,8 @@
   "devDependencies": {
     "@types/node": "^24.9.2",
     "concurrently": "^8.2.2",
-    "turbo": "^1.11.0",
-    "typescript": "^5.3.3"
+    "turbo": "^1.13.4",
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=18.0.0",

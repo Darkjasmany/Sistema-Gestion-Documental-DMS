@@ -5,7 +5,7 @@ import {
   validateLoginSchema,
   validateEmailSchema,
   validateUpdatePasswordSchema,
-} from "../schema/userAuthSchema.js";
+} from "../schema/userAuthSchema";
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type ValidateTokenInput = z.infer<typeof validateTokenSchema>;

@@ -7,7 +7,16 @@
     // 🌐 Environment Settings
     "target": "ES2020", // esnext
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@selnic/schemas": [
+        "../../packages/schemas/dist"
+      ],
+      "@selnic/schemas/*": [
+        "../../packages/schemas/dist/*"
+      ],
+    },
     "lib": [
       "ES2020"
     ],
@@ -43,7 +52,7 @@
     "useDefineForClassFields": false
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
   ],
   "exclude": [
     "node_modules",

@@ -9,7 +9,6 @@ import {
   validateEmailSchema,
   validateLoginSchema,
   validateTokenSchema,
-  validateUpdatePasswordSchema,
 } from "@selnic/schemas/auth";
 
 const router = Router();
