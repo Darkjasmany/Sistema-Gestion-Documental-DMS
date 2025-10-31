@@ -1,7 +1,20 @@
 # Dependencies
-node_modules/
-**/node_modules/
-.pnpm-store/
+node_modules
+**/node_modules
+.pnpm-store
+.pnp
+.pnp.js
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage
+
+# Turbo
+.turbo
 
 # Build outputs
 dist/
@@ -10,18 +23,13 @@ build/
 .next/
 out/
 
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Logs
+# Debug
 logs/
 *.log
 npm-debug.log*
 pnpm-debug.log*
 
-# OS
+# Misc
 .DS_Store
 Thumbs.db
 
@@ -30,9 +38,3 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-
-# Turborepo
-.turbo/
-
-# Testing
-coverage/

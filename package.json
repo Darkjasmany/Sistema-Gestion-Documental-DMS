@@ -20,14 +20,14 @@
     "check": "turbo run lint type-check test build"
   },
   "devDependencies": {
-    "turbo": "^1.13.4",
     "prettier": "^3.6.2",
+    "turbo": "^2.5.8",
     "typescript": "^5.9.3",
     "@types/node": "^24.9.2"
   },
+  "packageManager": "pnpm@10.20.0",
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
-  },
-  "packageManager": "pnpm@10.20.0"
+  }
 }
