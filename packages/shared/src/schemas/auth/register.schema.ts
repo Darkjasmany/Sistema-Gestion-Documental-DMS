@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { userBaseSchema } from "../models/user.model";
-// Esquema de Zod
+import { userBaseSchema } from "../../models/user.model";
+
+// Esquemas de Zod
 export const createUserSchema = z.object({
   nombres: userBaseSchema.shape.nombres
     .min(1, "Los nombres son obligatorios")
@@ -31,16 +32,16 @@ export const createUserSchema = z.object({
       "La contraseña debe contener mayúsculas, minúsculas y números"
     ),
 });
-// Exportar todos los tipos de entrada (Input Types)
-export type CreateUserInput = z.infer<typeof createUserSchema>;
 
 /**
  * Schema de respuesta (sin password)
- */
+*/
 export const createUserResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
   user: userBaseSchema.omit({ password: true, token: true }), // No devolver password ni token
 });
 
+// Types inferidos
+export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type CreateUserResponse = z.infer<typeof createUserResponseSchema>;

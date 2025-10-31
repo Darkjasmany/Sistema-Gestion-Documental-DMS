@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userBaseSchema } from "../models/user.model";
+import { userBaseSchema } from "../../models/user.model";
 
 export const validateTokenSchema = z.object({
   token: userBaseSchema.shape.token
@@ -7,4 +7,5 @@ export const validateTokenSchema = z.object({
     .regex(/^[0-9]+$/, "El token solo puede contener números"),
 });
 
+// Types inferidos
 export type ValidateTokenInput = z.infer<typeof validateTokenSchema>;

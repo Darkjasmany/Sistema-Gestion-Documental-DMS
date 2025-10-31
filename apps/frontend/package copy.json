@@ -1,5 +1,5 @@
 {
-  "name": "@selnic/frontend",
+  "name": "@selnic/client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,11 +8,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@selnic/shared": "workspace:*",
+    "@selnic/schemas": "workspace:*",
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",

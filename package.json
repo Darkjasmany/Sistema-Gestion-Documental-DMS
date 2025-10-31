@@ -2,29 +2,31 @@
   "name": "selnic-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "Sistema Estratégico para la Logística y la Gestión de Negocios Inteligentes - SelNic",
+  "description": "Sistema Estratégico para la Logística y la Gestión de Negocios Inteligentes - Monorepo con pnpm + Turborepo",
   "scripts": {
-    "dev": "pnpm run --parallel dev",
-    "dev:server": "pnpm --filter @selnic/server dev",
-    "dev:client": "pnpm --filter @selnic/client dev",
-    "dev:schemas": "pnpm --filter @selnic/schemas dev",
-    "build": "pnpm run --recursive build",
-    "build:schemas": "pnpm --filter @selnic/schemas build",
-    "build:server": "pnpm --filter @selnic/server build",
-    "build:client": "pnpm --filter @selnic/client build",
-    "clean": "pnpm --recursive exec rm -rf node_modules dist",
-    "clean:all": "rm -rf node_modules pnpm-lock.yaml && pnpm run clean",
-    "lint": "pnpm --recursive lint",
-    "test": "pnpm --recursive test"
+     "dev": "turbo run dev",
+    "dev:backend": "turbo run dev --filter=@selnic/backend",
+    "dev:frontend": "turbo run dev --filter=@selnic/frontend",
+    "build": "turbo run build",
+    "build:backend": "turbo run build --filter=@selnic/backend",
+    "build:frontend": "turbo run build --filter=@selnic/frontend",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "clean": "turbo run clean && pnpm clean",
+    "reset": "pnpm clean && pnpm install",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "check": "turbo run lint type-check test build"
   },
   "devDependencies": {
-    "@types/node": "^24.9.2",
-    "concurrently": "^8.2.2",
     "turbo": "^1.13.4",
-    "typescript": "^5.9.3"
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "@types/node": "^24.9.2"
   },
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
-  }
+  },
+  "packageManager": "pnpm@10.20.0"
 }

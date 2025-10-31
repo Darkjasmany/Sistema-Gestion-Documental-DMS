@@ -4,9 +4,5 @@
 export * from "./models";
 
 // Schemas generales
-// Auth
-export * from "./auth";
+export * from "./schemas";
 
-// Users
-
-// Documents

@@ -22,16 +22,17 @@ export const userBaseSchema = z.object({
   updatedAt: z.date(),
 });
 
-// Exporta el tipo inferido para usarlo en el backend (modelos/repositorios)
-export type UserBase = z.infer<typeof userBaseSchema>;
 
 /**
  * Schema SIN campos autogenerados (para inserts)
- */
+*/
 export const userInsertSchema = userBaseSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
 });
 
+
+// Export type inferido
+export type UserBase = z.infer<typeof userBaseSchema>;
 export type UserInsert = z.infer<typeof userInsertSchema>;
