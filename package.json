@@ -4,9 +4,10 @@
   "private": true,
   "description": "Sistema Estratégico para la Logística y la Gestión de Negocios Inteligentes - Monorepo con pnpm + Turborepo",
   "scripts": {
-     "dev": "turbo run dev",
+    "dev": "turbo run dev",
     "dev:backend": "turbo run dev --filter=@selnic/backend",
     "dev:frontend": "turbo run dev --filter=@selnic/frontend",
+    "dev:shared": "turbo run dev --filter=@selnic/shared",
     "build": "turbo run build",
     "build:backend": "turbo run build --filter=@selnic/backend",
     "build:frontend": "turbo run build --filter=@selnic/frontend",

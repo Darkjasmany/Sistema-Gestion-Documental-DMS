@@ -4,50 +4,51 @@ import {
   zodValidateBody,
   zodValidateParams,
 } from "../../../middlewares/validateZod.middleware.js";
-import {
-  createUserSchema,
-  validateEmailSchema,
-  validateLoginSchema,
-  validateTokenSchema,
-} from "@selnic/schemas/auth";
+// import {
+//   createUserSchema,
+//   validateEmailSchema,
+//   validateLoginSchema,
+//   validateTokenSchema,
+//   updatePasswordSchema,
+// } from "@selnic/shared/src/schemas/auth.js";
 
 const router = Router();
 
 // Public
 router.post(
   "/create-account",
-  zodValidateBody(createUserSchema),
+  // zodValidateBody(createUserSchema),
   AuthController.createAccount
 );
 
 router.post(
   "/confirm-account",
-  zodValidateBody(validateTokenSchema),
+  // zodValidateBody(validateTokenSchema),
   AuthController.confirmAccount
 );
 
 router.post(
   "/login",
-  zodValidateBody(validateLoginSchema),
+  // zodValidateBody(validateLoginSchema),
   AuthController.login
 );
 
 router.post(
   "/forgot-password",
-  zodValidateBody(validateEmailSchema),
+  // zodValidateBody(validateEmailSchema),
   AuthController.forgotPassword
 );
 
 router.post(
   "/validate-token",
-  zodValidateBody(validateTokenSchema),
+  // zodValidateBody(validateTokenSchema),
   AuthController.validateToken
 );
 
 router.post(
   "/update-password/:token",
-  zodValidateParams(validateTokenSchema),
-  zodValidateBody(validateUpdatePasswordSchema),
+  // zodValidateParams(validateTokenSchema),
+  // zodValidateBody(updatePasswordSchema),
   AuthController.updatePasswordWithToken
 );
 
