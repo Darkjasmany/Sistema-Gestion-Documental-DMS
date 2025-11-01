@@ -5,29 +5,24 @@
     "rootDir": "./src",
     "outDir": "./dist",
     // 🌐 Environment Settings
-    "target": "ES2020", // esnext
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "target": "es2020", // esnext
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "baseUrl": ".",
-    "paths": {
-      "@selnic/schemas": [
-        "../../packages/schemas/dist"
-      ],
-      "@selnic/schemas/*": [
-        "../../packages/schemas/dist/*"
-      ],
-    },
+    // "paths": {
+    //   "@selnic/schemas": [
+    //     "../../packages/schemas/dist"
+    //   ],
+    //   "@selnic/schemas/*": [
+    //     "../../packages/schemas/dist/*"
+    //   ],
+    // },
     "lib": [
-      "ES2020"
+      "es2020"
     ],
     // Typing and compatibility
     "types": [
       "node"
-    ],
-    // and npm install -D @types/node
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
     ],
     // Other Outputs
     "esModuleInterop": true,

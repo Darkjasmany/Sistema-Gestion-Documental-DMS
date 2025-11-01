@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 // Función que recibe directamente el string y devuelve una Promesa de string
 export const hashPassword = async (password: string): Promise<string> => {
