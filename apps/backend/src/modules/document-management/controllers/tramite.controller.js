@@ -63,8 +63,7 @@ export const agregarTramite = async (req, res) => {
   ) {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
-      message:
-        "Todos los campos son obligatorios y debes subir al menos un archivo",
+      message: "Todos los campos son obligatorios y debes subir al menos un archivo",
       // error: true,
     });
   }
@@ -96,9 +95,7 @@ export const agregarTramite = async (req, res) => {
 */
 
   // Validar si el departamento remitente y el empleado remitente existen
-  const departamentoExiste = await Departamento.findByPk(
-    departamentoRemitenteId
-  );
+  const departamentoExiste = await Departamento.findByPk(departamentoRemitenteId);
   if (!departamentoExiste) {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
@@ -154,7 +151,7 @@ export const agregarTramite = async (req, res) => {
     });
 
     await Promise.all(
-      req.files.map(async (file) => {
+      req.files.map(async file => {
         await TramiteArchivo.create({
           file_name: file.filename,
           original_name: file.originalname,
@@ -217,10 +214,7 @@ export const listarTramitesUsuario = async (req, res) => {
           as: "remitente", // Alias
           attributes: [
             "id",
-            [
-              Sequelize.literal("CONCAT(nombres, ' ',  apellidos)"),
-              "nombreCompleto",
-            ],
+            [Sequelize.literal("CONCAT(nombres, ' ',  apellidos)"), "nombreCompleto"],
             // "cedula",
           ],
         },
@@ -236,8 +230,8 @@ export const listarTramitesUsuario = async (req, res) => {
     });
 
     // Modificar la ruta antes de enviarla al frontend
-    const tramitesConRutas = tramites.map((tramite) => {
-      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+    const tramitesConRutas = tramites.map(tramite => {
+      const archivosConRutas = tramite.tramiteArchivos.map(archivo => ({
         ...archivo.toJSON(),
         // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
         ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
@@ -252,12 +246,9 @@ export const listarTramitesUsuario = async (req, res) => {
     // console.log(tramitesConRutas);
     res.json(tramitesConRutas);
   } catch (error) {
-    console.error(
-      `Error al obtener las trámites del usuario : ${error.message}`
-    );
+    console.error(`Error al obtener las trámites del usuario : ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al obtener las trámites del usuario, intente nuevamente más tarde.",
+      message: "Error al obtener las trámites del usuario, intente nuevamente más tarde.",
     });
   }
 };
@@ -273,12 +264,9 @@ export const obtenerTramite = async (req, res) => {
 
     if (
       tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
-      tramite.departamento_tramite.toString() !==
-        req.usuario.departamento_id.toString()
+      tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
     )
-      return res
-        .status(403)
-        .json({ message: "El trámite seleccionado no te pertenece" });
+      return res.status(403).json({ message: "El trámite seleccionado no te pertenece" });
 
     const archivos = await TramiteArchivo.findAll({
       where: { tramite_id: id },
@@ -291,8 +279,7 @@ export const obtenerTramite = async (req, res) => {
   } catch (error) {
     console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al obtener el trámite seleccionado, intente nuevamente más tarde.",
+      message: "Error al obtener el trámite seleccionado, intente nuevamente más tarde.",
     });
   }
 };
@@ -333,16 +320,14 @@ export const actualizarTramite = async (req, res) => {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
-      message:
-        "Todos los campos son obligatorios y se debe mantener al menos un archivo",
+      message: "Todos los campos son obligatorios y se debe mantener al menos un archivo",
     });
   }
 
   if (!req.files) {
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
-      message:
-        "Todos los campos son obligatorios y se debe mantener al menos un archivo",
+      message: "Todos los campos son obligatorios y se debe mantener al menos un archivo",
     });
   }
 
@@ -360,23 +345,18 @@ export const actualizarTramite = async (req, res) => {
 
   if (
     tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   ) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(403).json({ message: "Acción no válida" });
   }
 
-  const departamentoExiste = await Departamento.findByPk(
-    departamentoRemitenteId
-  );
+  const departamentoExiste = await Departamento.findByPk(departamentoRemitenteId);
   if (!departamentoExiste) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
-    return res
-      .status(400)
-      .json({ message: "Departamento del remitente no encontrado" });
+    return res.status(400).json({ message: "Departamento del remitente no encontrado" });
   }
 
   const remitenteExiste = await Empleado.findOne({
@@ -419,9 +399,9 @@ export const actualizarTramite = async (req, res) => {
   // if (archivosEliminar && archivosEliminar !== "undefined") {
   if (archivosEliminar) {
     nuevoArrayEliminar = JSON.parse(archivosEliminar)
-      .filter((id) => id != null) // Filtrar valores no nulos
-      .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
-      .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+      .filter(id => id != null) // Filtrar valores no nulos
+      .map(id => parseInt(id)) // Convertir los valores restantes a enteros
+      .filter(id => !isNaN(id)); // Filtrar los valores NaN
   }
 
   // Buscar los archivos a eliminar en la base de datos
@@ -430,8 +410,7 @@ export const actualizarTramite = async (req, res) => {
   });
 
   // ** Validar si la cantidad de archivos supera el límite permitido
-  const totalArchivos =
-    archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
+  const totalArchivos = archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
 
   console.log(totalArchivos);
   if (totalArchivos > config.MAX_UPLOAD_FILES) {
@@ -484,8 +463,7 @@ export const actualizarTramite = async (req, res) => {
     tramite.remitente_id = remitenteId;
     tramite.prioridad = prioridad || tramite.prioridad;
     tramite.fecha_documento = fechaDocumento || tramite.fecha_documento;
-    tramite.referencia_tramite =
-      referenciaTramite || tramite.referencia_tramite;
+    tramite.referencia_tramite = referenciaTramite || tramite.referencia_tramite;
     tramite.usuario_actualizacion = req.usuario.id;
     tramite.externo = tramiteExterno || tramite.externo;
 
@@ -504,7 +482,7 @@ export const actualizarTramite = async (req, res) => {
     if (req.files && req.files.length > 0) {
       // Cargar archivos nuevos
       await Promise.all(
-        req.files.map(async (file) => {
+        req.files.map(async file => {
           await TramiteArchivo.create({
             file_name: file.filename,
             original_name: file.originalname,
@@ -548,8 +526,7 @@ export const subirArchivos = async (req, res) => {
 
   if (
     tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   ) {
     borrarArchivosTemporales(req.files);
     return res.status(403).json({ message: "Acción no válida" });
@@ -562,15 +539,13 @@ export const subirArchivos = async (req, res) => {
   const archivosNuevos = req.files ? req.files.length : 0;
   if (archivosExistentes.length + archivosNuevos > 3) {
     borrarArchivosTemporales(req.files);
-    return res
-      .status(400)
-      .json({ message: "Solo puedes tener 3 archivos subidos" });
+    return res.status(400).json({ message: "Solo puedes tener 3 archivos subidos" });
   }
 
   // Subir archivos si hay archivos en la solicitud
   if (req.files && req.files.length > 0) {
     await Promise.all(
-      req.files.map(async (file) => {
+      req.files.map(async file => {
         await TramiteArchivo.create({
           file_name: file.filename,
           original_name: file.originalname,
@@ -595,32 +570,26 @@ export const eliminarArchivos = async (req, res) => {
     where: { id, estado: "INGRESADO" },
   });
 
-  if (!tramite)
-    return res.status(404).json({ message: "Trámite no encontrado" });
+  if (!tramite) return res.status(404).json({ message: "Trámite no encontrado" });
 
   if (
     tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   )
     return res.status(403).json({ message: "Acción no válida" });
 
   // Validar que haya archivos para eliminar
   if (!eliminarArchivos || eliminarArchivos.length === 0)
-    return res
-      .status(400)
-      .json({ message: "No se enviaron archivos para eliminar" });
+    return res.status(400).json({ message: "No se enviaron archivos para eliminar" });
 
   // Filtrar los valores vacíos o inválidos (null, undefined, NaN)
   const nuevoArrayEliminar = eliminarArchivos
-    .filter((id) => id != null) // Filtrar valores no nulos
-    .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
-    .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+    .filter(id => id != null) // Filtrar valores no nulos
+    .map(id => parseInt(id)) // Convertir los valores restantes a enteros
+    .filter(id => !isNaN(id)); // Filtrar los valores NaN
 
   if (nuevoArrayEliminar.length === 0)
-    return res
-      .status(400)
-      .json({ message: "Los archivos enviados no son válidos" });
+    return res.status(400).json({ message: "Los archivos enviados no son válidos" });
 
   // Buscar los archivos a eliminar en la base de datos
   const archivosAEliminar = await TramiteArchivo.findAll({
@@ -635,9 +604,7 @@ export const eliminarArchivos = async (req, res) => {
   // Eliminar registros de la base de datos
   await TramiteArchivo.destroy({ where: { id: nuevoArrayEliminar } });
 
-  return res
-    .status(200)
-    .json({ message: "Archivos eliminados correctamente." });
+  return res.status(200).json({ message: "Archivos eliminados correctamente." });
 };
 
 export const eliminarTramite = async (req, res) => {
@@ -647,8 +614,7 @@ export const eliminarTramite = async (req, res) => {
     const tramite = await Tramite.findOne({
       where: { id, estado: "INGRESADO" },
     });
-    if (!tramite)
-      return res.status(404).json({ message: "Trámite no encontrado" });
+    if (!tramite) return res.status(404).json({ message: "Trámite no encontrado" });
 
     if (tramite.usuario_creacion.toString() !== req.usuario.id.toString())
       return res.status(403).json({ msg: "Acción no válida" });
@@ -692,8 +658,7 @@ export const eliminadoLogicoTramite = async (req, res) => {
 
     if (
       tramite.usuario_creacion.toString() !== req.usuario.id.toString() ||
-      tramite.departamento_tramite.toString() !==
-        req.usuario.departamento_id.toString()
+      tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
     ) {
       await transaction.rollback();
       return res.status(403).json({ msg: "Acción no válida" });
@@ -701,9 +666,7 @@ export const eliminadoLogicoTramite = async (req, res) => {
 
     if (!observacion || observacion.trim() === "") {
       await transaction.rollback();
-      return res
-        .status(400)
-        .json({ message: "Debes escribir una Razón de Eliminación" });
+      return res.status(400).json({ message: "Debes escribir una Razón de Eliminación" });
     }
 
     const estadoAnterior = tramite.estado;
@@ -727,13 +690,7 @@ export const eliminadoLogicoTramite = async (req, res) => {
     // Actualizar registros en la BD
 
     // Registrar Historial Estado
-    await registrarHistorialEstado(
-      id,
-      estadoAnterior,
-      tramite.estado,
-      req.usuario.id,
-      transaction
-    );
+    await registrarHistorialEstado(id, estadoAnterior, tramite.estado, req.usuario.id, transaction);
 
     await transaction.commit();
 
@@ -777,7 +734,7 @@ export const buscarTramites = async (req, res) => {
       tramiteExterno,
       estado,
       usuarioRevisor,
-    ].every((valor) => !valor) // Verifica si todos son falsi
+    ].every(valor => !valor) // Verifica si todos son falsi
   ) {
     return res.status(400).json({
       message: "Al memos debes enviar un parametro de busqueda",
@@ -797,13 +754,11 @@ export const buscarTramites = async (req, res) => {
     }
   }
 
-  if (oficioRemitente)
-    where.numero_oficio_remitente = { [Op.iLike]: `%${oficioRemitente}%` };
+  if (oficioRemitente) where.numero_oficio_remitente = { [Op.iLike]: `%${oficioRemitente}%` };
 
   if (asunto) where.asunto = { [Op.iLike]: `%${asunto}%` };
 
-  if (departamentoRemitenteId)
-    where.departamento_remitente = departamentoRemitenteId;
+  if (departamentoRemitenteId) where.departamento_remitente = departamentoRemitenteId;
 
   if (remitenteId) where.remitente_id = remitenteId;
 
@@ -863,9 +818,7 @@ export const buscarTramites = async (req, res) => {
           attributes: [
             "id",
             [
-              Sequelize.literal(
-                "CONCAT(remitente.nombres, ' ',  remitente.apellidos)"
-              ),
+              Sequelize.literal("CONCAT(remitente.nombres, ' ',  remitente.apellidos)"),
               "nombreCompleto",
             ],
             // "cedula",
@@ -881,9 +834,7 @@ export const buscarTramites = async (req, res) => {
           as: "usuario",
           attributes: [
             [
-              Sequelize.literal(
-                'CONCAT("usuario"."nombres", \' \', "usuario"."apellidos")'
-              ),
+              Sequelize.literal('CONCAT("usuario"."nombres", \' \', "usuario"."apellidos")'),
               "UsuarioCreacion",
             ],
           ],
@@ -917,12 +868,7 @@ export const buscarTramites = async (req, res) => {
         {
           model: TramiteObservacion,
           as: "tramiteObservaciones",
-          attributes: [
-            "id",
-            "observacion",
-            "fecha_creacion",
-            "usuario_creacion",
-          ],
+          attributes: ["id", "observacion", "fecha_creacion", "usuario_creacion"],
           include: [
             {
               model: Usuario,
@@ -936,11 +882,7 @@ export const buscarTramites = async (req, res) => {
         {
           model: TramiteDestinatario,
           as: "destinatarios",
-          attributes: [
-            "tramite_id",
-            "departamento_destinatario",
-            "destinatario_id",
-          ],
+          attributes: ["tramite_id", "departamento_destinatario", "destinatario_id"],
 
           include: [
             {
@@ -962,8 +904,8 @@ export const buscarTramites = async (req, res) => {
     });
 
     // Modificar la ruta antes de enviarla al frontend
-    const tramitesConRutas = tramites.map((tramite) => {
-      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+    const tramitesConRutas = tramites.map(tramite => {
+      const archivosConRutas = tramite.tramiteArchivos.map(archivo => ({
         ...archivo.toJSON(),
         // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
         ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
@@ -987,8 +929,7 @@ export const buscarTramites = async (req, res) => {
 
 export const obtenerTramitesPorEstados = async (req, res) => {
   const { estado } = req.params;
-  if (!estado)
-    return res.status(400).json({ message: "El estado es requerido" });
+  if (!estado) return res.status(400).json({ message: "El estado es requerido" });
 
   try {
     const config = getConfiguracionPorEstado(estado);
@@ -1062,12 +1003,12 @@ export const obtenerTramitesPorEstados = async (req, res) => {
     });
 */
     // Filtrar y modificar archivos
-    const tramitesConArchivos = tramites.map((tramite) => {
+    const tramitesConArchivos = tramites.map(tramite => {
       // Filtrar solo los archivos con estado "DESPACHADO"
       const archivosFiltrados =
         tramite.tramiteArchivos
-          ?.filter((archivo) => archivo.estado_carga === "DESPACHADO")
-          .map((archivo) => ({
+          ?.filter(archivo => archivo.estado_carga === "DESPACHADO")
+          .map(archivo => ({
             ...archivo.toJSON(),
             // ruta: archivo.ruta.replace(/\\/g, "/"),
             ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
@@ -1081,26 +1022,20 @@ export const obtenerTramitesPorEstados = async (req, res) => {
 
     res.json(tramitesConArchivos);
   } catch (error) {
-    console.error(
-      `Error al obtener los trámites con estado: ${estado}: ${error.message}`
-    );
+    console.error(`Error al obtener los trámites con estado: ${estado}: ${error.message}`);
     return res.status(500).json({
       message: `Error al obtener los trámites con estado: ${estado}, intente nuevamente más tarde.`,
     });
   }
 };
 
-export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (
-  req,
-  res
-) => {
+export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (req, res) => {
   // console.log(req.params);
   // console.log(req.usuario.departamento_id);
 
   const { estado } = req.params; // envio como parametro adicional en la URL
   // const { estado, limit = 10, offset = 0 } = req.query; // Limitar resultados y offset para paginación
-  if (!estado)
-    return res.status(400).json({ message: "El estado es requerido" });
+  if (!estado) return res.status(400).json({ message: "El estado es requerido" });
 
   try {
     const config = getConfiguracionPorEstado(estado);
@@ -1128,8 +1063,8 @@ export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (
     });
 
     // Modificar la ruta de los archivos y filtrar según la lógica
-    const tramitesConRutas = tramites.map((tramite) => {
-      let archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+    const tramitesConRutas = tramites.map(tramite => {
+      let archivosConRutas = tramite.tramiteArchivos.map(archivo => ({
         ...archivo.toJSON(),
         // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
         ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
@@ -1138,7 +1073,7 @@ export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (
       // Filtrar archivos si el estado es DESPACHADO
       if (estado === "DESPACHADO") {
         archivosConRutas = archivosConRutas.filter(
-          (archivo) =>
+          archivo =>
             archivo.estado_carga === "DESPACHADO" &&
             archivo.usuario_creacion.toString() === req.usuario.id.toString()
         );
@@ -1153,9 +1088,7 @@ export const obtenerTramitesPorEstadosMuestraArchivosDeUsuario = async (
     // console.log(tramitesConRutas);
     res.json(tramitesConRutas);
   } catch (error) {
-    console.error(
-      `Error al obtener los trámites con estado: ${estado}: ${error.message}`
-    );
+    console.error(`Error al obtener los trámites con estado: ${estado}: ${error.message}`);
     return res.status(500).json({
       message: `Error al obtener los trámites con estado: ${estado}, intente nuevamente más tarde.`,
     });
@@ -1217,13 +1150,10 @@ export const finalizarTramite = async (req, res) => {
 
   if (
     tramite.usuario_despacho.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   ) {
     borrarArchivosTemporales(req.files);
-    return res
-      .status(403)
-      .json({ message: "El trámite seleccionado no te pertenece" });
+    return res.status(403).json({ message: "El trámite seleccionado no te pertenece" });
   }
 
   try {
@@ -1241,7 +1171,7 @@ export const finalizarTramite = async (req, res) => {
     // Ingresar registros de los archivos
     if (req.files) {
       await Promise.all(
-        req.files.map(async (file) => {
+        req.files.map(async file => {
           await TramiteArchivo.create({
             file_name: file.filename,
             original_name: file.originalname,
@@ -1257,13 +1187,7 @@ export const finalizarTramite = async (req, res) => {
     }
 
     // Registrar el cambio de estado en el historial
-    await registrarHistorialEstado(
-      id,
-      estadoAnterior,
-      tramite.estado,
-      req.usuario.id,
-      transaction
-    );
+    await registrarHistorialEstado(id, estadoAnterior, tramite.estado, req.usuario.id, transaction);
 
     await TramiteObservacion.create(
       {
@@ -1281,12 +1205,9 @@ export const finalizarTramite = async (req, res) => {
       message: "Trámite Despachado correctamente",
     });
   } catch (error) {
-    console.error(
-      `Error al despachar el trámite seleccionado: ${error.message}`
-    );
+    console.error(`Error al despachar el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al despachar el trámite seleccionado, intente nuevamente más tarde.",
+      message: "Error al despachar el trámite seleccionado, intente nuevamente más tarde.",
     });
   }
 };
@@ -1297,13 +1218,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
   console.log(req.body);
   console.log(req.params);
 
-  const {
-    fechaDespacho,
-    horaDespacho,
-    archivosEliminar,
-    observacion,
-    despachadorId,
-  } = req.body;
+  const { fechaDespacho, horaDespacho, archivosEliminar, observacion, despachadorId } = req.body;
 
   const { id } = req.params;
 
@@ -1329,8 +1244,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
     return res.status(400).json({
-      message:
-        "Todos los campos son obligatorios y debes subir al menos un archivo",
+      message: "Todos los campos son obligatorios y debes subir al menos un archivo",
       // error: true,
     });
   }
@@ -1348,14 +1262,11 @@ export const actualizarTramiteFinalizado = async (req, res) => {
 
   if (
     tramite.usuario_despacho.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   ) {
     await transaction.rollback();
     borrarArchivosTemporales(req.files);
-    return res
-      .status(403)
-      .json({ message: "El trámite seleccionado no te pertenece" });
+    return res.status(403).json({ message: "El trámite seleccionado no te pertenece" });
   }
 
   const archivosExistentes = await TramiteArchivo.findAll({
@@ -1387,9 +1298,9 @@ export const actualizarTramiteFinalizado = async (req, res) => {
   if (archivosEliminar && archivosEliminar !== "undefined") {
     // Convertir los archivos a eliminar en un array de enteros
     nuevoArrayEliminar = JSON.parse(archivosEliminar)
-      .filter((id) => id != null) // Filtrar valores nulos
-      .map((id) => parseInt(id)) // Convertir valores restantes a enteros
-      .filter((id) => !isNaN(id)); // Filtrar valores NaN
+      .filter(id => id != null) // Filtrar valores nulos
+      .map(id => parseInt(id)) // Convertir valores restantes a enteros
+      .filter(id => !isNaN(id)); // Filtrar valores NaN
   }
 
   // Buscar los archivos a eliminar en la base de datos
@@ -1398,8 +1309,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
   });
 
   // ** Validar si la cantidad de archivos supera el límite permitido
-  const totalArchivos =
-    archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
+  const totalArchivos = archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
 
   console.log(totalArchivos);
   if (totalArchivos > config.MAX_UPLOAD_FILES) {
@@ -1433,7 +1343,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     // Ingresar registros de los archivos
     if (req.files && req.files.length > 0) {
       await Promise.all(
-        req.files.map(async (file) => {
+        req.files.map(async file => {
           await TramiteArchivo.create({
             file_name: file.filename,
             original_name: file.originalname,
@@ -1449,13 +1359,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     }
 
     // Registrar el cambio de estado en el historial
-    await registrarHistorialEstado(
-      id,
-      estadoAnterior,
-      tramite.estado,
-      req.usuario.id,
-      transaction
-    );
+    await registrarHistorialEstado(id, estadoAnterior, tramite.estado, req.usuario.id, transaction);
 
     // Actualizar observacion del tramite
     const tramiteObservacion = await TramiteObservacion.findOne({
@@ -1467,8 +1371,7 @@ export const actualizarTramiteFinalizado = async (req, res) => {
     // console.log(tramiteObservacion);
 
     if (tramiteObservacion) {
-      tramiteObservacion.observacion =
-        observacion || tramiteObservacion.observacion;
+      tramiteObservacion.observacion = observacion || tramiteObservacion.observacion;
       await tramiteObservacion.save({ transaction });
     }
 

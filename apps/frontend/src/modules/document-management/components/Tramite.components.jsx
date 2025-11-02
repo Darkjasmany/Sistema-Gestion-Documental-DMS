@@ -23,11 +23,9 @@ const Tramite = ({ tramite }) => {
 
   // Formatear fechas
   // Aqui usamos una api de JS para formatear la fecha sin modificar el formato de la fecha en la base de datos
-  const formatearFecha = (fecha) => {
+  const formatearFecha = fecha => {
     const nuevaFecha = new Date(`${fecha}T00:00`); // Convierte la fecha a un objeto Date Sin la "Z" (evitamos UTC)
-    return new Intl.DateTimeFormat("es-EC", { dateStyle: "long" }).format(
-      nuevaFecha
-    );
+    return new Intl.DateTimeFormat("es-EC", { dateStyle: "long" }).format(nuevaFecha);
   };
 
   const nombreDepartamento = departamentoRemitente?.nombre || "No especificado";
@@ -40,29 +38,22 @@ const Tramite = ({ tramite }) => {
       <div className="mx-5 my-10 bg-white shadow-md p-5 py-10 rounded-xl">
         <p className="font-bold uppercase text-indigo-700 my-2">
           Número de Trámite:{" "}
-          <span className="font-normal normal-case text-black">
-            {numero_tramite}
-          </span>
+          <span className="font-normal normal-case text-black">{numero_tramite}</span>
         </p>
 
         <p className="font-bold uppercase text-indigo-700 my-2">
           Número Oficio|Memo:{" "}
-          <span className="font-normal normal-case text-black">
-            {numero_oficio_remitente}
-          </span>
+          <span className="font-normal normal-case text-black">{numero_oficio_remitente}</span>
         </p>
 
         <p className="font-bold uppercase text-indigo-700 my-2">
-          Asunto:{" "}
-          <span className="font-normal normal-case text-black">{asunto}</span>
+          Asunto: <span className="font-normal normal-case text-black">{asunto}</span>
         </p>
 
         {referencia_tramite ? (
           <p className="font-bold uppercase text-indigo-700 my-2">
             Referencia:{" "}
-            <span className="font-normal normal-case text-black">
-              {referencia_tramite}
-            </span>
+            <span className="font-normal normal-case text-black">{referencia_tramite}</span>
           </p>
         ) : null}
 
@@ -74,38 +65,26 @@ const Tramite = ({ tramite }) => {
         </p>
         <p className="font-bold uppercase text-indigo-700 my-2">
           Departamento Remitente:{" "}
-          <span className="font-normal normal-case text-black">
-            {nombreDepartamento}
-          </span>
+          <span className="font-normal normal-case text-black">{nombreDepartamento}</span>
         </p>
         <p className="font-bold uppercase text-indigo-700 my-2">
-          Remitente:{" "}
-          <span className="font-normal normal-case text-black">
-            {nombreRemitente}
-          </span>
+          Remitente: <span className="font-normal normal-case text-black">{nombreRemitente}</span>
         </p>
         <p className="font-bold uppercase text-indigo-700 my-2">
-          Prioridad:{" "}
-          <span className="font-normal normal-case text-black">
-            {prioridad}
-          </span>
+          Prioridad: <span className="font-normal normal-case text-black">{prioridad}</span>
         </p>
         <p className="font-bold uppercase text-indigo-700 my-2">
-          Descripción:{" "}
-          <span className="font-normal normal-case text-black">
-            {descripcion}
-          </span>
+          Descripción: <span className="font-normal normal-case text-black">{descripcion}</span>
         </p>
         {externo ? (
           <p className="font-bold uppercase text-indigo-700 my-2">
-            Trámite Externo:{" "}
-            <span className="font-normal uppercase text-black ">Si</span>
+            Trámite Externo: <span className="font-normal uppercase text-black ">Si</span>
           </p>
         ) : null}
         <p className="font-bold uppercase text-indigo-700 my-2">Archivos:</p>
         <ul className="list-disc pl-5">
           {tramiteArchivos?.length > 0 ? (
-            tramiteArchivos.map((archivo) => (
+            tramiteArchivos.map(archivo => (
               <li key={archivo.id}>
                 <a
                   href={import.meta.env.VITE_BACKEND_URL + "/" + archivo.ruta}

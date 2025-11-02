@@ -75,7 +75,7 @@ export const Usuario = sequelize.define(
     // * Hook para hashear el password antes de crear o actualizar
     hooks: {
       // * beforeSave es más eficiente y simplifica el código al abarcar tanto la creación como la actualización que beforeCreate
-      beforeSave: async (usuario) => {
+      beforeSave: async usuario => {
         usuario.nombres = usuario.nombres.trim();
         usuario.apellidos = usuario.apellidos.trim();
         usuario.email = usuario.email.trim().toLowerCase();

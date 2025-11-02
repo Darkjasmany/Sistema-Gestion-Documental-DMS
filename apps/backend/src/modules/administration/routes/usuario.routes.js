@@ -23,10 +23,7 @@ router.post("/login", autenticarUsuario);
 router.post("/olvide-password", olvidePassword);
 router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
 
-router.get(
-  "/revisor-departamento/:departamentoId/:roles",
-  obtenerUsuariosPorDepartamentoYRol
-);
+router.get("/revisor-departamento/:departamentoId/:roles", obtenerUsuariosPorDepartamentoYRol);
 // router.get(
 //   "/revisor-departamento/:departamentoId",
 //   obtenerRevisorPorDepartamento

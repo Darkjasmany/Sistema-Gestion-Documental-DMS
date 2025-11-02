@@ -15,8 +15,7 @@ export const TramitesProvider = ({ children }) => {
   const [tramitesDespachador, setTramitesDespachador] = useState({});
 
   // Obtener el token
-  const token =
-    localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+  const token = localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
   // ** Cuando es una petición POST, PUT, DELETE, que requiere autenticación se debe enviar el token en la configuracion en el header ya que mi middleware checkAuth valida que el token sea valido y sea un usuario existente
   // Configuración de Axios centralizada
@@ -53,7 +52,7 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const guardarTramite = async (tramite) => {
+  const guardarTramite = async tramite => {
     if (!token) {
       console.log("No hay token disponible, no se puede guardar el trámite.");
       return { message: "No hay token disponible", error: true };
@@ -65,10 +64,7 @@ export const TramitesProvider = ({ children }) => {
       formData.append("asunto", tramite.asunto);
       formData.append("referenciaTramite", tramite.referenciaTramite);
       formData.append("fechaDocumento", tramite.fechaDocumento);
-      formData.append(
-        "departamentoRemitenteId",
-        tramite.departamentoRemitenteId
-      );
+      formData.append("departamentoRemitenteId", tramite.departamentoRemitenteId);
       formData.append("remitenteId", tramite.remitenteId);
       formData.append("prioridad", tramite.prioridad);
       formData.append("descripcion", tramite.descripcion);
@@ -76,16 +72,13 @@ export const TramitesProvider = ({ children }) => {
 
       // Adjuntar archivos al FormData
       if (tramite.archivos && tramite.archivos.length > 0) {
-        tramite.archivos.forEach((archivo) => {
+        tramite.archivos.forEach(archivo => {
           formData.append("archivos", archivo);
         });
       }
 
       if (tramite.archivosEliminar) {
-        formData.append(
-          "archivosEliminar",
-          JSON.stringify(tramite.archivosEliminar)
-        );
+        formData.append("archivosEliminar", JSON.stringify(tramite.archivosEliminar));
       }
 
       // Si el tramite tiene un id, entonces es una edición
@@ -98,7 +91,7 @@ export const TramitesProvider = ({ children }) => {
 
         console.log(data);
 
-        const tramitesActualizado = tramites.map((tramiteState) =>
+        const tramitesActualizado = tramites.map(tramiteState =>
           tramiteState.id === data.id ? data : tramiteState
         );
 
@@ -109,20 +102,11 @@ export const TramitesProvider = ({ children }) => {
 
         return { message: data.message, error: false, tramiteId: data.data.id };
       } else {
-        const { data } = await clienteAxios.post(
-          "/tramites",
-          formData,
-          getAxiosConfig()
-        );
+        const { data } = await clienteAxios.post("/tramites", formData, getAxiosConfig());
 
         // Va a crear un nuevo objeto con lo que no necesitamos
-        const {
-          activo,
-          createdAt,
-          usuario_actualizacion,
-          usuario_creacion,
-          ...tramiteAlmacenado
-        } = data.data;
+        const { activo, createdAt, usuario_actualizacion, usuario_creacion, ...tramiteAlmacenado } =
+          data.data;
 
         // Actualizar el state tomando lo que hay en tramites y agregando el nuevo objecto de tramite almacenado
         setTramites([tramiteAlmacenado, ...tramites]);
@@ -131,32 +115,26 @@ export const TramitesProvider = ({ children }) => {
         return { message: data.message, error: false };
       }
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Ocurrió un error inesperado";
+      const errorMessage = error.response?.data?.message || "Ocurrió un error inesperado";
       console.error(errorMessage);
       return { message: errorMessage, error: true };
     }
   };
 
-  const setEdicion = (tramite) => {
+  const setEdicion = tramite => {
     setTramite(tramite);
   };
 
-  const eliminarTramite = async (id) => {
+  const eliminarTramite = async id => {
     const confirmar = confirm("¿Confirmas que deseas eliminar?");
     console.log(confirmar);
     if (confirmar) {
       try {
-        const { data } = await clienteAxios.delete(
-          `/tramites/${id}`,
-          getAxiosConfig()
-        );
+        const { data } = await clienteAxios.delete(`/tramites/${id}`, getAxiosConfig());
 
         console.log(data);
 
-        const tramitesActualizado = tramites.filter(
-          (tramitesState) => tramitesState.id !== id
-        );
+        const tramitesActualizado = tramites.filter(tramitesState => tramitesState.id !== id);
 
         setTramites(tramitesActualizado);
       } catch (error) {
@@ -165,7 +143,7 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const buscarTramites = async (filtros) => {
+  const buscarTramites = async filtros => {
     try {
       setTramitesRespuesta([]); // Limpiar el estado de los trámites antes de la consulta
       const config = getAxiosConfigJSON();
@@ -179,14 +157,12 @@ export const TramitesProvider = ({ children }) => {
       setTramitesRespuesta(data);
       // console.log("🚀 tramitesRespuesta actualizado:", tramitesRespuesta);
     } catch (error) {
-      console.error(
-        error.response?.data?.message || "Error al buscar trámites"
-      );
+      console.error(error.response?.data?.message || "Error al buscar trámites");
     }
   };
 
   // ** COORDINADOR
-  const obtenerTramitesCoordinador = async (estado) => {
+  const obtenerTramitesCoordinador = async estado => {
     if (!token) return;
 
     try {
@@ -214,13 +190,12 @@ export const TramitesProvider = ({ children }) => {
 
       // console.log(data);
       // 1. Actualizar lista de coordinador
-      const tramitesAsignados = tramitesAsignarReasignar.map(
-        (tramitesAsignarState) =>
-          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      const tramitesAsignados = tramitesAsignarReasignar.map(tramitesAsignarState =>
+        tramitesAsignarState.id === data.id ? data : tramitesAsignarState
       );
       setTramitesAsignarReasignar(tramitesAsignados);
       // 2. Actualizar lista general de trámites (eliminar el trámite asignado)
-      const tramitesActualizados = tramites.map((tramiteState) =>
+      const tramitesActualizados = tramites.map(tramiteState =>
         tramiteState.id === data.id ? data : tramiteState
       );
       // const tramitesActualizados = tramites.filter(
@@ -253,9 +228,8 @@ export const TramitesProvider = ({ children }) => {
       // console.log(data);
 
       // 1. Actualizar lista de coordinador
-      const tramitesAsignados = tramitesAsignarReasignar.map(
-        (tramitesAsignarState) =>
-          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      const tramitesAsignados = tramitesAsignarReasignar.map(tramitesAsignarState =>
+        tramitesAsignarState.id === data.id ? data : tramitesAsignarState
       );
 
       setTramitesAsignarReasignar(tramitesAsignados);
@@ -282,9 +256,8 @@ export const TramitesProvider = ({ children }) => {
       );
 
       // 1. Actualizar lista de coordinador
-      const tramitesAsignados = tramitesAsignarReasignar.map(
-        (tramitesAsignarState) =>
-          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      const tramitesAsignados = tramitesAsignarReasignar.map(tramitesAsignarState =>
+        tramitesAsignarState.id === data.id ? data : tramitesAsignarState
       );
 
       setTramitesAsignarReasignar(tramitesAsignados);
@@ -300,10 +273,7 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const actualizarCompletarTramiteCoordinador = async (
-    idTramite,
-    datosRevisor
-  ) => {
+  const actualizarCompletarTramiteCoordinador = async (idTramite, datosRevisor) => {
     if (!token) return;
 
     try {
@@ -314,9 +284,8 @@ export const TramitesProvider = ({ children }) => {
       );
 
       // 1. Actualizar lista de coordinador
-      const tramitesAsignados = tramitesAsignarReasignar.map(
-        (tramitesAsignarState) =>
-          tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+      const tramitesAsignados = tramitesAsignarReasignar.map(tramitesAsignarState =>
+        tramitesAsignarState.id === data.id ? data : tramitesAsignarState
       );
 
       setTramitesAsignarReasignar(tramitesAsignados);
@@ -332,10 +301,7 @@ export const TramitesProvider = ({ children }) => {
     }
   };
 
-  const despacharTramiteDirectoCompletado = async (
-    idTramite,
-    datosCompletar
-  ) => {
+  const despacharTramiteDirectoCompletado = async (idTramite, datosCompletar) => {
     if (!token) return;
 
     try {
@@ -382,7 +348,7 @@ export const TramitesProvider = ({ children }) => {
   };
 
   // ** REVISOR
-  const obtenerTramitesRevisorData = async (estado) => {
+  const obtenerTramitesRevisorData = async estado => {
     if (!token) return;
 
     try {
@@ -466,7 +432,7 @@ export const TramitesProvider = ({ children }) => {
   };
 
   // ** DESPACHADOR
-  const obtenerTramitesDespachadorData = async (estado) => {
+  const obtenerTramitesDespachadorData = async estado => {
     if (!token) return;
 
     try {
@@ -496,16 +462,13 @@ export const TramitesProvider = ({ children }) => {
       formData.append("despachadorId", datosFinalizar.despachadorId);
 
       if (datosFinalizar.archivos && datosFinalizar.archivos.length > 0) {
-        datosFinalizar.archivos.forEach((archivo) => {
+        datosFinalizar.archivos.forEach(archivo => {
           formData.append("archivos", archivo);
         });
       }
 
       if (datosFinalizar.archivosEliminar) {
-        formData.append(
-          "archivosEliminar",
-          JSON.stringify(datosFinalizar.archivosEliminar)
-        );
+        formData.append("archivosEliminar", JSON.stringify(datosFinalizar.archivosEliminar));
       }
 
       if (datosFinalizar.idActualizar) {
@@ -525,22 +488,16 @@ export const TramitesProvider = ({ children }) => {
         response = data;
       }
 
-      const tramitesAsignados = tramitesAsignarReasignar.map(
-        (tramitesAsignarState) =>
-          // tramitesAsignarState.id === data.id ? data : tramitesAsignarState
-          tramitesAsignarState.id === response.id
-            ? response
-            : tramitesAsignarState
+      const tramitesAsignados = tramitesAsignarReasignar.map(tramitesAsignarState =>
+        // tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+        tramitesAsignarState.id === response.id ? response : tramitesAsignarState
       );
 
       setTramitesAsignarReasignar(tramitesAsignados);
 
-      const tramitesAsignadosDespachador = tramitesDespachador.map(
-        (tramitesAsignarState) =>
-          // tramitesAsignarState.id === data.id ? data : tramitesAsignarState
-          tramitesAsignarState.id === response.id
-            ? response
-            : tramitesAsignarState
+      const tramitesAsignadosDespachador = tramitesDespachador.map(tramitesAsignarState =>
+        // tramitesAsignarState.id === data.id ? data : tramitesAsignarState
+        tramitesAsignarState.id === response.id ? response : tramitesAsignarState
       );
 
       setTramitesAsignarReasignar(tramitesAsignadosDespachador);

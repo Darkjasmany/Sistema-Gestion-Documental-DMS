@@ -34,15 +34,13 @@ const FilaExpandida = memo(({ row, columns }) => {
 
           {row.original.fecha_contestacion && (
             <p>
-              <strong>Fecha Contestación:</strong>{" "}
-              {row.original.fecha_contestacion}
+              <strong>Fecha Contestación:</strong> {row.original.fecha_contestacion}
             </p>
           )}
 
           {row.original.numero_oficio && (
             <p>
-              <strong>Número de Memo|Oficio Contestación:</strong>{" "}
-              {row.original.numero_oficio}
+              <strong>Número de Memo|Oficio Contestación:</strong> {row.original.numero_oficio}
             </p>
           )}
 
@@ -53,7 +51,7 @@ const FilaExpandida = memo(({ row, columns }) => {
               </p>
               <ul className="list-disc pl-5">
                 {row.original.destinatarios?.length > 0 ? (
-                  row.original.destinatarios.map((destinatario) => (
+                  row.original.destinatarios.map(destinatario => (
                     <li key={destinatario.destinatario.id}>
                       {destinatario.destinatario.nombres +
                         " " +
@@ -76,7 +74,7 @@ const FilaExpandida = memo(({ row, columns }) => {
               </p>
               <ul className="list-disc pl-5">
                 {row.original.tramiteObservaciones?.length > 0 ? (
-                  row.original.tramiteObservaciones.map((observacion) => (
+                  row.original.tramiteObservaciones.map(observacion => (
                     <li key={observacion.id}>
                       <div className="flex flex-col">
                         <span className="mb-1">
@@ -102,7 +100,7 @@ const FilaExpandida = memo(({ row, columns }) => {
           </p>
           <ul className="list-disc pl-5">
             {row.original.tramiteArchivos?.length > 0 ? (
-              row.original.tramiteArchivos.map((archivo) => (
+              row.original.tramiteArchivos.map(archivo => (
                 <li key={archivo.id}>
                   <a
                     href={import.meta.env.VITE_BACKEND_URL + "/" + archivo.ruta}
@@ -120,26 +118,22 @@ const FilaExpandida = memo(({ row, columns }) => {
           </ul>
 
           <p>
-            <strong>Usuario Creación:</strong>{" "}
-            {row.original.usuario?.UsuarioCreacion}
+            <strong>Usuario Creación:</strong> {row.original.usuario?.UsuarioCreacion}
           </p>
 
           <p>
-            <strong>Fecha de Creación:</strong>{" "}
-            {formatearFecha(row.original.createdAt)}
+            <strong>Fecha de Creación:</strong> {formatearFecha(row.original.createdAt)}
           </p>
 
           {row.original.usuarioRevisor?.UsuarioRevisor && (
             <p>
-              <strong>Usuario Revisor:</strong>{" "}
-              {row.original.usuarioRevisor.UsuarioRevisor}
+              <strong>Usuario Revisor:</strong> {row.original.usuarioRevisor.UsuarioRevisor}
             </p>
           )}
 
           {row.original.usuarioDespacho?.usuarioDespacho && (
             <p>
-              <strong>Usuario Despacho:</strong>{" "}
-              {row.original.usuarioDespacho.usuarioDespacho}
+              <strong>Usuario Despacho:</strong> {row.original.usuarioDespacho.usuarioDespacho}
             </p>
           )}
           {row.original.fecha_despacho && (
@@ -179,22 +173,22 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
   const [filtroTexto, setFiltroTexto] = useState("");
 
-  const toggleExpandir = (id) => {
+  const toggleExpandir = id => {
     // setTramiteExpandido(tramiteExpandido === id ? null : id);
-    setTramiteExpandido((prev) => (prev === id ? null : id));
+    setTramiteExpandido(prev => (prev === id ? null : id));
   };
 
-  const openModal = (tramite) => {
+  const openModal = tramite => {
     setSelectedTramite(tramite);
     setIsModalOpen(true);
   };
 
-  const openModalDirecto = (tramite) => {
+  const openModalDirecto = tramite => {
     setSelectedTramite(tramite);
     setIsModalOpenDirecto(true);
   };
 
-  const openModalConsultar = (tramite) => {
+  const openModalConsultar = tramite => {
     setSelectedTramite(tramite);
     setIsModalConsultar(true);
   };
@@ -214,20 +208,14 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   const dataFiltrada = useMemo(() => {
     if (!filtroTexto.trim()) return tramiteBusqueda;
 
-    return tramiteBusqueda.filter((item) => {
+    return tramiteBusqueda.filter(item => {
       const texto = filtroTexto.toLowerCase();
 
       const numeroTramite = String(item.numero_tramite || "").toLowerCase();
-      const numeroOficioRemitente = String(
-        item.numero_oficio_remitente || ""
-      ).toLowerCase();
+      const numeroOficioRemitente = String(item.numero_oficio_remitente || "").toLowerCase();
       const asunto = String(item.asunto || "").toLowerCase();
-      const departamentoRemitente = String(
-        item?.departamentoRemitente?.nombre || ""
-      ).toLowerCase();
-      const remitente = String(
-        item?.remitente?.nombreCompleto || ""
-      ).toLowerCase();
+      const departamentoRemitente = String(item?.departamentoRemitente?.nombre || "").toLowerCase();
+      const remitente = String(item?.remitente?.nombreCompleto || "").toLowerCase();
       const fechaDocumento = String(item.fecha_documento || "");
       const estadoTramite = String(item.estado || "").toLowerCase();
       const usuarioRevisorTramite = item?.usuarioRevisor?.UsuarioRevisor
@@ -244,8 +232,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         fechaDocumento.includes(texto) ||
         estadoTramite.includes(texto) ||
         usuarioRevisorTramite.includes(texto) ||
-        (item?.usuarioRevisor === null &&
-          sinRevisorTexto.includes(texto.toLowerCase()))
+        (item?.usuarioRevisor === null && sinRevisorTexto.includes(texto.toLowerCase()))
       );
     });
   }, [filtroTexto, tramiteBusqueda]);
@@ -271,12 +258,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       },
       {
         header: "Departamento Remitente",
-        accessorFn: (row) =>
-          row.departamentoRemitente?.nombre || "Sin departamento",
+        accessorFn: row => row.departamentoRemitente?.nombre || "Sin departamento",
       },
       {
         header: "Remitente",
-        accessorFn: (row) => row.remitente?.nombreCompleto || "Sin remitente",
+        accessorFn: row => row.remitente?.nombreCompleto || "Sin remitente",
       },
       {
         header: "Estado",
@@ -289,9 +275,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
           return (
             <button
               className={`px-3 py-1 rounded ${
-                tramiteExpandido === row.original.id
-                  ? "bg-red-500"
-                  : "bg-blue-500"
+                tramiteExpandido === row.original.id ? "bg-red-500" : "bg-blue-500"
               } text-white`}
               onClick={() => toggleExpandir(row.original.id)}
             >
@@ -305,12 +289,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
     if (isConsultar || isAsignarReasignar || isCompletados) {
       // Columna condicional para el UsuarioRevisor dentro de isAsignarReasignar
       baseColumns.splice(
-        baseColumns.findIndex((col) => col.header === "Detalle"),
+        baseColumns.findIndex(col => col.header === "Detalle"),
         0,
         {
           header: "Revisor",
-          accessorFn: (row) =>
-            row.usuarioRevisor?.UsuarioRevisor || "Sin Revisor",
+          accessorFn: row => row.usuarioRevisor?.UsuarioRevisor || "Sin Revisor",
         }
       );
     }
@@ -349,10 +332,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             className="bg-purple-600 text-white px-3 py-1 rounded"
             onClick={() => openModal(row.original)}
           >
-            {isAsignados &&
-              (row.original.estado === "PENDIENTE" ? "Completar" : "Editar")}
-            {isCompletados &&
-              (row.original.estado === "POR_FIRMAR" ? "Aprobar" : "Editar")}
+            {isAsignados && (row.original.estado === "PENDIENTE" ? "Completar" : "Editar")}
+            {isCompletados && (row.original.estado === "POR_FIRMAR" ? "Aprobar" : "Editar")}
             {isDespachar && "Despachar"}
           </button>
         ),
@@ -415,14 +396,9 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         <p className="text-center text-gray-500"> No hay támites disponibles</p>
       ) : (
         <>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
-            Busqueda Avanzada
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Busqueda Avanzada</h3>
           <div className="flex justify-end gap-3 mb-5 ">
-            <FiltroBusqueda
-              filtroTexto={filtroTexto}
-              setFiltroTexto={setFiltroTexto}
-            />
+            <FiltroBusqueda filtroTexto={filtroTexto} setFiltroTexto={setFiltroTexto} />
             {/* Botones para export */}
             <ExportButtons data={tramiteBusqueda} />
           </div>
@@ -430,29 +406,23 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
           {/* Tabla */}
           <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
             <thead className="bg-gray-200">
-              {table.getHeaderGroups().map((headerGroup) => (
+              {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <th key={header.id} className="border p-3">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </th>
                   ))}
                 </tr>
               ))}
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <React.Fragment key={row.id}>
                   <tr className="hover:bg-gray-100">
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <td key={cell.id} className="border p-3">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
                   </tr>
@@ -496,24 +466,23 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             <h2 className="text-xl text-center font-semibold mb-5">
               {" "}
               {isAsignarReasignar
-                ? "Asignar|Reasignar Revisor para Trámite # " +
-                  selectedTramite.numero_tramite
+                ? "Asignar|Reasignar Revisor para Trámite # " + selectedTramite.numero_tramite
                 : isAsignados
-                ? (selectedTramite.estado === "PENDIENTE"
-                    ? "Completar Trámite # "
-                    : selectedTramite.estado === "COMPLETADO"
-                    ? "Despachar Trámite # "
-                    : "Editar Trámite # ") + selectedTramite.numero_tramite
-                : // "Editar Trámite #") + selectedTramite.numero_tramite
-                isCompletados
-                ? (selectedTramite.estado === "POR_REVISAR"
-                    ? "Aprobar Trámite # "
-                    : "Para Despachar # ") + selectedTramite.numero_tramite
-                : isDespachar
-                ? (selectedTramite.estado === "COMPLETADO"
-                    ? "Entregar Trámite # "
-                    : "Para Finalizar # ") + selectedTramite.numero_tramite
-                : ""}
+                  ? (selectedTramite.estado === "PENDIENTE"
+                      ? "Completar Trámite # "
+                      : selectedTramite.estado === "COMPLETADO"
+                        ? "Despachar Trámite # "
+                        : "Editar Trámite # ") + selectedTramite.numero_tramite
+                  : // "Editar Trámite #") + selectedTramite.numero_tramite
+                    isCompletados
+                    ? (selectedTramite.estado === "POR_REVISAR"
+                        ? "Aprobar Trámite # "
+                        : "Para Despachar # ") + selectedTramite.numero_tramite
+                    : isDespachar
+                      ? (selectedTramite.estado === "COMPLETADO"
+                          ? "Entregar Trámite # "
+                          : "Para Finalizar # ") + selectedTramite.numero_tramite
+                      : ""}
             </h2>
             {isAsignarReasignar && (
               <AsignarReasignarTramite
@@ -545,10 +514,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
               />
             )}
 
-            <button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
-              onClick={closeModal}
-            >
+            <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded " onClick={closeModal}>
               Cerrar
             </button>
           </div>
@@ -559,8 +525,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
           <div className="bg-white p-5 rounded-lg w-2/4 lg:w-1/3">
             <h2 className="text-center font-bold mb-5">
-              {"Asignar Despachador para Trámite #" +
-                selectedTramite.numero_tramite}
+              {"Asignar Despachador para Trámite #" + selectedTramite.numero_tramite}
             </h2>
 
             {isAsignarReasignar && (
@@ -570,10 +535,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                 closeModal={closeModal}
               />
             )}
-            <button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
-              onClick={closeModal}
-            >
+            <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded " onClick={closeModal}>
               Cerrar
             </button>
           </div>
@@ -594,10 +556,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                 closeModal={closeModal}
               />
             )}
-            <button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
-              onClick={closeModal}
-            >
+            <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded " onClick={closeModal}>
               Cerrar
             </button>
           </div>

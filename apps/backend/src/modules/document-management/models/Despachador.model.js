@@ -30,7 +30,7 @@ export const Despachador = sequelize.define(
   {
     tableName: "despachador",
     hooks: {
-      beforeSave: (despachador) => {
+      beforeSave: despachador => {
         despachador.nombres = despachador.nombres.trim();
         despachador.apellidos = despachador.apellidos.trim();
       },

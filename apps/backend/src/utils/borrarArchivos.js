@@ -6,10 +6,10 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const borrarArchivos = async (array) => {
+export const borrarArchivos = async array => {
   // Eliminar los archivos físicamente usando promesas con map
   await Promise.all(
-    array.map(async (archivo) => {
+    array.map(async archivo => {
       const filePath = path.join(__dirname, "..", "..", archivo.ruta);
       try {
         await fs.promises.unlink(filePath);

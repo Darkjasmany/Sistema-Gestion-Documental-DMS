@@ -3,10 +3,7 @@ import { userBaseSchema } from "../../models/user.model";
 
 // Esquemas de Zod
 export const validateLoginSchema = z.object({
-  email: userBaseSchema.shape.email
-    .email("El email no es válido")
-    .toLowerCase()
-    .trim(),
+  email: userBaseSchema.shape.email.email("El email no es válido").toLowerCase().trim(),
   password: userBaseSchema.shape.password
     .min(6, "La contraseña debe tener al menos 6 caracteres")
     .max(50, "La contraseña no puede exceder 50 caracteres"),

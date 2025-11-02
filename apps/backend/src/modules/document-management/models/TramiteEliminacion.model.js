@@ -36,9 +36,8 @@ export const TramiteEliminacion = sequelize.define(
     tableName: "tramite_eliminacion",
     timestamps: false,
     hooks: {
-      beforeSave: (TramiteEliminacion) => {
-        TramiteEliminacion.motivo_eliminacion =
-          TramiteEliminacion.motivo_eliminacion.trim();
+      beforeSave: TramiteEliminacion => {
+        TramiteEliminacion.motivo_eliminacion = TramiteEliminacion.motivo_eliminacion.trim();
       },
     },
   }

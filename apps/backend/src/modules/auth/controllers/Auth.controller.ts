@@ -13,10 +13,7 @@ import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
 
 export class AuthController {
-  static createAccount = async (
-    req: Request<{}, {}, CreateUserInput>,
-    res: Response
-  ) => {
+  static createAccount = async (req: Request<{}, {}, CreateUserInput>, res: Response) => {
     const { email } = req.body;
     const transaction = await User.sequelize!.transaction();
 
@@ -50,10 +47,7 @@ export class AuthController {
     }
   };
 
-  static confirmAccount = async (
-    req: Request<{}, {}, ValidateTokenInput>,
-    res: Response
-  ) => {
+  static confirmAccount = async (req: Request<{}, {}, ValidateTokenInput>, res: Response) => {
     const { token } = req.body;
     const transaction = await User.sequelize!.transaction();
     const userExists = await User.findOne({ where: { token } });
@@ -82,10 +76,7 @@ export class AuthController {
     }
   };
 
-  static login = async (
-    req: Request<{}, {}, ValidateLoginInput>,
-    res: Response
-  ) => {
+  static login = async (req: Request<{}, {}, ValidateLoginInput>, res: Response) => {
     const { email, password } = req.body;
     const transaction = await User.sequelize!.transaction();
 
@@ -143,10 +134,7 @@ export class AuthController {
     }
   };
 
-  static forgotPassword = async (
-    req: Request<{}, {}, ValidateEmailInput>,
-    res: Response
-  ) => {
+  static forgotPassword = async (req: Request<{}, {}, ValidateEmailInput>, res: Response) => {
     const { email } = req.body;
     const transaction = await User.sequelize!.transaction();
     const user = await User.findOne({ where: { email } });
@@ -179,10 +167,7 @@ export class AuthController {
     }
   };
 
-  static validateToken = async (
-    req: Request<{}, {}, ValidateTokenInput>,
-    res: Response
-  ) => {
+  static validateToken = async (req: Request<{}, {}, ValidateTokenInput>, res: Response) => {
     const { token } = req.body;
 
     try {

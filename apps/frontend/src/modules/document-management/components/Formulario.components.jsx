@@ -8,9 +8,7 @@ const Formulario = () => {
   const [asunto, setAsunto] = useState("");
   const [referenciaTramite, setReferenciaTramite] = useState("");
   const [oficioRemitente, setOficioRemitente] = useState("");
-  const [fechaDocumento, setFechaDocumento] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [fechaDocumento, setFechaDocumento] = useState(new Date().toISOString().split("T")[0]);
   const [departamentoRemitenteId, setDepartamentoRemitenteId] = useState("");
   const [remitenteId, setRemitenteId] = useState("");
   const [prioridad, setPrioridad] = useState("NORMAL");
@@ -33,8 +31,7 @@ const Formulario = () => {
 
   const fileInputArchivos = useRef(null); // Referencia al input file
 
-  const { guardarTramite, tramite, setTramitesRespuesta, setTramite } =
-    useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
+  const { guardarTramite, tramite, setTramitesRespuesta, setTramite } = useTramites(); // TODO Extraemos lo que tenemos en el TramiteProvider
 
   useEffect(() => {
     // ** Cargar Departamentos y Parámetros
@@ -48,14 +45,10 @@ const Formulario = () => {
         // setDepartamentos(departamentos.data); // Obtengo el listado de los departamentos
         // console.log(departamentos.data);
         // Transformo el listado de departamentos al formato que espera react-select
-        setDepartamentos(
-          departamentos.data.map((d) => ({ value: d.id, label: d.nombre }))
-        );
+        setDepartamentos(departamentos.data.map(d => ({ value: d.id, label: d.nombre })));
         setParametros(parametros.data);
 
-        const maxFiles = parametros.data.find(
-          (parametro) => parametro.clave === "MAX_UPLOAD_FILES"
-        );
+        const maxFiles = parametros.data.find(parametro => parametro.clave === "MAX_UPLOAD_FILES");
 
         setMaxUploadFiles(Number(maxFiles?.valor || 0));
       } catch (error) {
@@ -103,7 +96,7 @@ const Formulario = () => {
 
             // setRemitentes(data);
             setRemitentes(
-              data.map((r) => ({
+              data.map(r => ({
                 value: r.id,
                 label: `${r.nombres} ${r.apellidos}`,
               }))
@@ -127,7 +120,7 @@ const Formulario = () => {
       // Generar URLs completas para los archivos existentes
 
       setTimeout(() => {
-        const rutasArchivos = tramite.tramiteArchivos.map((archivo) => ({
+        const rutasArchivos = tramite.tramiteArchivos.map(archivo => ({
           id: archivo.id,
           name: archivo.original_name,
           url: `${import.meta.env.VITE_BACKEND_URL}/${archivo.ruta}`,
@@ -160,7 +153,7 @@ const Formulario = () => {
   }, [tramite]);
 
   // TODO Mostrar empleados de acuerdo al departamento seleccionado
-  const handleDepartamentoChange = async (e) => {
+  const handleDepartamentoChange = async e => {
     const departamentoId = e.target.value;
     setDepartamentoRemitenteId(departamentoId);
 
@@ -171,12 +164,10 @@ const Formulario = () => {
     }
 
     try {
-      const { data } = await clienteAxios(
-        `/empleados/por-departamento/${departamentoId}`
-      );
+      const { data } = await clienteAxios(`/empleados/por-departamento/${departamentoId}`);
       // TODO Transformo el listado de remitentes al formato que espera react-select
       setRemitentes(
-        data.map((r) => ({
+        data.map(r => ({
           value: r.id,
           label: `${r.nombres} ${r.apellidos}`,
         }))
@@ -188,7 +179,7 @@ const Formulario = () => {
     }
   };
 
-  const handleArchivosSeleccionados = (e) => {
+  const handleArchivosSeleccionados = e => {
     const archivosSeleccionados = Array.from(e.target.files); // Convertimos FileList a un array
 
     // Verificamos si los archivos seleccionados y los ya cargados exceden el máximo
@@ -208,7 +199,7 @@ const Formulario = () => {
   };
 
   // Funcion para eliminar archivo
-  const eliminarArchivo = (index) => {
+  const eliminarArchivo = index => {
     const nuevosArchivos = archivos.filter((_, i) => i !== index);
     setArchivos(nuevosArchivos);
     setArchivosEliminar([...archivosEliminar, archivos[index].id]);
@@ -237,7 +228,7 @@ const Formulario = () => {
     setTramite({}); // Limpiamos el estado del trámite en el Provider
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     if (
       [
@@ -333,13 +324,10 @@ const Formulario = () => {
 
   return (
     <>
-      <h2 className="font-black text-3xl text-center">
-        Administrador de Trámites
-      </h2>
+      <h2 className="font-black text-3xl text-center">Administrador de Trámites</h2>
 
       <p className="text-xl mt-5 mb-10 text-center">
-        Añade tus trámites y{" "}
-        <span className="text-indigo-600 font-bold">Administralos</span>{" "}
+        Añade tus trámites y <span className="text-indigo-600 font-bold">Administralos</span>{" "}
       </p>
 
       <form
@@ -351,17 +339,14 @@ const Formulario = () => {
 
         {/* Campo para el OficioRemitente */}
         <div className="mb-5">
-          <label
-            htmlFor="oficioRemitente"
-            className="text-gray-700 font-medium"
-          >
+          <label htmlFor="oficioRemitente" className="text-gray-700 font-medium">
             Número Oficio|Memo:
           </label>
           <input
             type="text"
             id="oficioRemitente"
             value={oficioRemitente}
-            onChange={(e) => {
+            onChange={e => {
               setOficioRemitente(e.target.value);
             }}
             placeholder="Ingresa el número de oficio del Trámite"
@@ -379,7 +364,7 @@ const Formulario = () => {
             id="asunto"
             maxLength={250}
             value={asunto}
-            onChange={(e) => {
+            onChange={e => {
               setAsunto(e.target.value);
             }}
             placeholder="Ingresa el asunto del Trámite"
@@ -394,7 +379,7 @@ const Formulario = () => {
               id="tramiteReferencia"
               type="checkbox"
               checked={tramiteReferencia} // Sincroniza el estado con el valor del checkbox
-              onChange={(e) => {
+              onChange={e => {
                 setTramiteReferencia(e.target.checked);
               }}
               className="w-4 h-4 border border-gray-300 rounded bg-gray-50 "
@@ -411,17 +396,14 @@ const Formulario = () => {
 
         {/* Campo para la Referencia */}
         <div className="mb-5" hidden={!tramiteReferencia}>
-          <label
-            htmlFor="referenciaTramite"
-            className="text-gray-700 font-medium"
-          >
+          <label htmlFor="referenciaTramite" className="text-gray-700 font-medium">
             Referencia Trámite:
           </label>
           <input
             type="text"
             id="referenciaTramite"
             value={referenciaTramite}
-            onChange={(e) => {
+            onChange={e => {
               setReferenciaTramite(e.target.value);
             }}
             placeholder="Ingresa la referencia del Trámite"
@@ -438,7 +420,7 @@ const Formulario = () => {
             type="date"
             id="fechaDocumento"
             value={fechaDocumento}
-            onChange={(e) => {
+            onChange={e => {
               setFechaDocumento(e.target.value);
             }}
             className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -447,19 +429,13 @@ const Formulario = () => {
 
         {/* Campo para seleccionar Departamento con react-select */}
         <div className="mb-5">
-          <label
-            htmlFor="departamentoRemitenteId"
-            className="text-gray-700 font-medium"
-          >
+          <label htmlFor="departamentoRemitenteId" className="text-gray-700 font-medium">
             Departamento Remitente:
           </label>
           <Select
             options={departamentos}
-            value={
-              departamentos.find((d) => d.value === departamentoRemitenteId) ||
-              null
-            }
-            onChange={(selected) => {
+            value={departamentos.find(d => d.value === departamentoRemitenteId) || null}
+            onChange={selected => {
               // setDepartamentoRemitenteId(selected.value);
               // handleDepartamentoChange({ target: { value: selected.value } });
               const value = selected ? selected.value : "";
@@ -503,10 +479,8 @@ const Formulario = () => {
           <Select
             id="remitente"
             options={remitentes}
-            value={remitentes.find((r) => r.value === remitenteId) || null}
-            onChange={(selectedOption) =>
-              setRemitenteId(selectedOption ? selectedOption.value : "")
-            }
+            value={remitentes.find(r => r.value === remitenteId) || null}
+            onChange={selectedOption => setRemitenteId(selectedOption ? selectedOption.value : "")}
             placeholder="Seleccione un remitente"
             isClearable
           />
@@ -551,7 +525,7 @@ const Formulario = () => {
             name="prioridad"
             id="prioridad"
             value={prioridad}
-            onChange={(e) => {
+            onChange={e => {
               setPrioridad(e.target.value);
             }}
             className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -570,7 +544,7 @@ const Formulario = () => {
           <textarea
             id="descripcion"
             value={descripcion}
-            onChange={(e) => {
+            onChange={e => {
               setDescripcion(e.target.value);
             }}
             placeholder="Ingresa la descripción del Trámite"
@@ -602,7 +576,7 @@ const Formulario = () => {
               type="checkbox"
               // value={tramiteExterno}
               checked={tramiteExterno} // Sincroniza el estado con el valor del checkbox
-              onChange={(e) => {
+              onChange={e => {
                 setTramiteExterno(e.target.checked);
               }}
               className="w-4 h-4 border border-gray-300 rounded bg-gray-50 "

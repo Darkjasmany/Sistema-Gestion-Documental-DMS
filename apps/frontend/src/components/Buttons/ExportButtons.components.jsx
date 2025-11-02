@@ -47,21 +47,18 @@ const ExportButtons = ({ data, filtros }) => {
         numero_oficio_remitente: t.numero_oficio_remitente,
         asunto: t.asunto,
         fecha_documento: t.fecha_documento,
-        departamentoRemitente:
-          t.departamentoRemitente?.nombre || "Sin departamento",
+        departamentoRemitente: t.departamentoRemitente?.nombre || "Sin departamento",
         remitente: t.remitente?.nombreCompleto || "Sin remitente",
         estado: t.estado,
         // descripcion: t.descripcion,
         destinatarios:
           t.destinatarios
-            ?.map(
-              (d) => `- ${d.destinatario?.nombres} ${d.destinatario?.apellidos}`
-            )
+            ?.map(d => `- ${d.destinatario?.nombres} ${d.destinatario?.apellidos}`)
             .join("\n") || "Sin destinatarios",
         observaciones:
           t.tramiteObservaciones
             ?.map(
-              (o) =>
+              o =>
                 `- ${o.observacion} (por ${o.usuarioCreacionObservacion?.nombres} ${o.usuarioCreacionObservacion?.apellidos})`
             )
             .join("\n") || "Sin observaciones",
@@ -73,7 +70,7 @@ const ExportButtons = ({ data, filtros }) => {
     });
 
     // Formato de celdas
-    worksheet.columns.forEach((column) => {
+    worksheet.columns.forEach(column => {
       column.alignment = {
         vertical: "middle",
         horizontal: "left",
@@ -123,14 +120,12 @@ const ExportButtons = ({ data, filtros }) => {
       t.estado,
       // t.descripcion,
       t.destinatarios
-        ?.map(
-          (d) => `- ${d.destinatario?.nombres} ${d.destinatario?.apellidos}`
-        )
+        ?.map(d => `- ${d.destinatario?.nombres} ${d.destinatario?.apellidos}`)
         .join("\n") || "Sin destinatarios",
 
       t.tramiteObservaciones
         ?.map(
-          (o) =>
+          o =>
             `- ${o.observacion} (por ${o.usuarioCreacionObservacion?.nombres} ${o.usuarioCreacionObservacion?.apellidos})`
         )
         .join("\n") || "Sin observaciones",
@@ -165,17 +160,13 @@ const ExportButtons = ({ data, filtros }) => {
       body: tableData,
       styles: { fontSize: 6 },
       startY: startY,
-      didDrawPage: (data) => {
+      didDrawPage: data => {
         const pageCount = doc.internal.getNumberOfPages();
         const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
         const date = moment().format("YYYY-MM-DD HH:mm");
         const footerText = `Fecha de impresión: ${date}  |  Página ${pageNumber} de ${pageCount}`;
         doc.setFontSize(9);
-        doc.text(
-          footerText,
-          data.settings.margin.left,
-          doc.internal.pageSize.height - 10
-        );
+        doc.text(footerText, data.settings.margin.left, doc.internal.pageSize.height - 10);
       },
       autoSize: true,
     });

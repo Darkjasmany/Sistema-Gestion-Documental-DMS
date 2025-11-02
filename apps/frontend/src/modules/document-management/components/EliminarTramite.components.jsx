@@ -13,7 +13,7 @@ const EliminarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [empleadoDespachadorId, setEmpleadoDespachadorId] = useState("");
   const { eliminarTramiteLogico } = useTramites();
 
-  const handleSubmitEliminar = async (e) => {
+  const handleSubmitEliminar = async e => {
     e.preventDefault();
 
     try {
@@ -42,10 +42,7 @@ const EliminarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
   return (
     <div>
-      <form
-        className="my-5 py-4 px-10 shadow-md rounded-md border"
-        onSubmit={handleSubmitEliminar}
-      >
+      <form className="my-5 py-4 px-10 shadow-md rounded-md border" onSubmit={handleSubmitEliminar}>
         {alerta.message && <Alerta alerta={alerta} />}
 
         {/* Campo para la Observación */}
@@ -53,7 +50,7 @@ const EliminarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           <label className="text-gray-700 font-medium">Observación:</label>
           <textarea
             value={observacion}
-            onChange={(e) => setObservacion(e.target.value)}
+            onChange={e => setObservacion(e.target.value)}
             placeholder="Observación para eliminar el trámite"
             disabled={tramite.estado === "FINALIZADO"}
             className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"

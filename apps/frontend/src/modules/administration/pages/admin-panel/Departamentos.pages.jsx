@@ -32,14 +32,14 @@ const Departamentos = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     setNuevoDepartamento({
       ...nuevoDepartamento,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleBusquedaChange = (e) => {
+  const handleBusquedaChange = e => {
     setBusqueda(e.target.value);
   };
 
@@ -76,7 +76,7 @@ const Departamentos = () => {
     }, 3000);
   };
 
-  const editarDepartamento = async (id) => {
+  const editarDepartamento = async id => {
     try {
       const departamento = await obtenerDepartamento(id);
       setDepartamentoAEditar(departamento);
@@ -86,7 +86,7 @@ const Departamentos = () => {
     }
   };
 
-  const eliminarDepartamentoSeleccionado = async (id) => {
+  const eliminarDepartamentoSeleccionado = async id => {
     try {
       await eliminarDepartamento(id);
       setAlerta({
@@ -109,17 +109,14 @@ const Departamentos = () => {
   const departamentosPorPagina = 10;
 
   const indexUltimoDepartamento = paginaActual * departamentosPorPagina;
-  const indexPrimerDepartamento =
-    indexUltimoDepartamento - departamentosPorPagina;
+  const indexPrimerDepartamento = indexUltimoDepartamento - departamentosPorPagina;
   const departamentosVisibles = departamentos
-    .filter((departamento) =>
-      departamento.nombre.toLowerCase().includes(busqueda.toLowerCase())
-    )
+    .filter(departamento => departamento.nombre.toLowerCase().includes(busqueda.toLowerCase()))
     .slice(indexPrimerDepartamento, indexUltimoDepartamento);
 
   const totalPaginas = Math.ceil(departamentos.length / departamentosPorPagina);
 
-  const cambiarPagina = (numeroPagina) => {
+  const cambiarPagina = numeroPagina => {
     if (numeroPagina >= 1 && numeroPagina <= totalPaginas) {
       setPaginaActual(numeroPagina);
     }
@@ -129,9 +126,7 @@ const Departamentos = () => {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-        Gestión de Departamentos
-      </h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-2">Gestión de Departamentos</h2>
       <p className="text-gray-600 mb-4">
         Administra los departamentos del sistema y gestiona su información.
       </p>
@@ -140,9 +135,7 @@ const Departamentos = () => {
 
       {/* Campo de búsqueda */}
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-          Busqueda Avanzada
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">Busqueda Avanzada</h3>
         <input
           type="text"
           placeholder="Buscar departamento..."
@@ -177,20 +170,14 @@ const Departamentos = () => {
 
       {/* Tabla de departamentos */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">
-          Lista de Departamentos
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">Lista de Departamentos</h3>
 
         <div className="overflow-x-auto border rounded-lg shadow-sm">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  #
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Nombre
-                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">#</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Nombre</th>
                 <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
                   Acciones
                 </th>
@@ -202,9 +189,7 @@ const Departamentos = () => {
                   <td className="px-4 py-2 text-sm text-gray-600">
                     {indexPrimerDepartamento + index + 1}
                   </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {departamento.nombre}
-                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{departamento.nombre}</td>
                   <td className="px-4 py-2 text-sm text-center space-x-2">
                     <button
                       onClick={() => editarDepartamento(departamento.id)}
@@ -214,9 +199,7 @@ const Departamentos = () => {
                     </button>
                     <button
                       disabled
-                      onClick={() =>
-                        eliminarDepartamentoSeleccionado(departamento.id)
-                      }
+                      onClick={() => eliminarDepartamentoSeleccionado(departamento.id)}
                       className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium opacity-50 cursor-not-allowed"
                     >
                       Eliminar
@@ -238,7 +221,7 @@ const Departamentos = () => {
             Anterior
           </button>
 
-          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((num) => (
+          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(num => (
             <button
               key={num}
               onClick={() => cambiarPagina(num)}

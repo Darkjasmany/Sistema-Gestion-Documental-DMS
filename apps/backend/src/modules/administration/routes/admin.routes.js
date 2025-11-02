@@ -6,26 +6,16 @@ import * as adminController from "../controllers/admin.controller.js";
 const router = Router();
 
 // Ruta para listar todos los trámites
-router
-  .route("/tramites")
-  .get(checkAuth, isAdmin, adminController.listarTodosLosTramites);
+router.route("/tramites").get(checkAuth, isAdmin, adminController.listarTodosLosTramites);
 
 // Ruta para listar todos los empleados
-router
-  .route("/empleados")
-  .get(checkAuth, isAdmin, adminController.listarTodosLosEmpleados);
+router.route("/empleados").get(checkAuth, isAdmin, adminController.listarTodosLosEmpleados);
 
 // Ruta para listar todos los empleados
-router
-  .route("/departamentos")
-  .get(checkAuth, isAdmin, adminController.listarTodosLosDepartamentos);
+router.route("/departamentos").get(checkAuth, isAdmin, adminController.listarTodosLosDepartamentos);
 
 // Ruta para asignar departamento, solo accesible para el admin
-router.post(
-  "/asignar-departamento",
-  isAdmin,
-  adminController.asignarDepartamento
-);
+router.post("/asignar-departamento", isAdmin, adminController.asignarDepartamento);
 
 // Parametros
 router
@@ -44,9 +34,7 @@ router
   .get(checkAuth, adminController.cargarSecuencia)
   .post(checkAuth, adminController.agregarSecuencia);
 
-router
-  .route("/tramite-secuencia/:id")
-  .put(checkAuth, adminController.actualizarSecuencia);
+router.route("/tramite-secuencia/:id").put(checkAuth, adminController.actualizarSecuencia);
 
 export default router;
 

@@ -8,12 +8,9 @@ const ConsultarTramites = () => {
   return (
     <>
       <div className="flex flex-col items-center md:block">
-        <h2 className="font-black text-3xl text-center mt-10">
-          Consultas de Trámites
-        </h2>
+        <h2 className="font-black text-3xl text-center mt-10">Consultas de Trámites</h2>
         <p className="text-xl mt-5 mb-4 text-center">
-          Búsqueda Avanzada de{" "}
-          <span className="text-indigo-600 font-bold">Trámites</span>
+          Búsqueda Avanzada de <span className="text-indigo-600 font-bold">Trámites</span>
         </p>
 
         {/* <div> */}
@@ -26,11 +23,7 @@ const ConsultarTramites = () => {
         >
           {mostrarFormulario ? "Ocultar Formulario" : "Mostrar Formulario"}
         </button>
-        <div
-          className={`${
-            mostrarFormulario ? "block" : "hidden"
-          } md:block  mb-10`}
-        >
+        <div className={`${mostrarFormulario ? "block" : "hidden"} md:block  mb-10`}>
           <HeaderBusqueda />
         </div>
       </div>

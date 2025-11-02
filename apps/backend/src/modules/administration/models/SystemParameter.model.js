@@ -37,7 +37,7 @@ export const ParametroSistema = sequelize.define(
   {
     tableName: "sis_parametros",
     hooks: {
-      beforeSave: (Parametro) => {
+      beforeSave: Parametro => {
         Parametro.clave = Parametro.clave.trim();
         Parametro.valor = Parametro.valor.trim();
         Parametro.descripcion = Parametro.descripcion.trim();

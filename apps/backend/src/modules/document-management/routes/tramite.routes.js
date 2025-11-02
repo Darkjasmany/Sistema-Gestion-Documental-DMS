@@ -44,11 +44,7 @@ router
     tramiteController.eliminarTramite
   );
 
-router.put(
-  "/:id/eliminar-tramite",
-  checkAuth,
-  tramiteController.eliminadoLogicoTramite
-);
+router.put("/:id/eliminar-tramite", checkAuth, tramiteController.eliminadoLogicoTramite);
 
 // Ruta para subir archivos
 router.put(
@@ -60,11 +56,7 @@ router.put(
 );
 
 // Ruta para eliminar archivos
-router.put(
-  "/:id/eliminar-archivos",
-  checkAuth,
-  tramiteController.eliminarArchivos
-);
+router.put("/:id/eliminar-archivos", checkAuth, tramiteController.eliminarArchivos);
 
 // * Ruta del despachador
 router.post(
@@ -88,25 +80,13 @@ router
 // * Rutas exclusivas para el coordinador
 router
   .route("/coordinador/tramites/:estado")
-  .get(
-    checkAuth,
-    checkRole("COORDINADOR"),
-    tramiteCoordinador.obtenerTramitesPorEstado
-  );
+  .get(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.obtenerTramitesPorEstado);
 
 router
   .route("/coordinador/tramites/:id")
   .get(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.obtenerTramite)
-  .put(
-    checkAuth,
-    checkRole("COORDINADOR"),
-    tramiteCoordinador.actualizarTramite
-  )
-  .delete(
-    checkAuth,
-    checkRole("COORDINADOR"),
-    tramiteCoordinador.eliminarTramite
-  );
+  .put(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.actualizarTramite)
+  .delete(checkAuth, checkRole("COORDINADOR"), tramiteCoordinador.eliminarTramite);
 
 // Ruta para subir archivos Coordinador
 router.put(

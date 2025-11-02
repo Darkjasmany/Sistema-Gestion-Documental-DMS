@@ -9,7 +9,7 @@ export const cargarParametros = async () => {
     const parametros = await ParametroSistema.findAll();
 
     // Transforma cada registro en una propiedad del objeto `config` con su clave y valor
-    parametros.forEach((parametro) => {
+    parametros.forEach(parametro => {
       config[parametro.clave] = parametro.valor;
     });
     console.log("Parametros cargados correctamente", config);

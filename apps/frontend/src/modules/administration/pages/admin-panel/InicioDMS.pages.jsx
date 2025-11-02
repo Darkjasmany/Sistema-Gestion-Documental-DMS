@@ -5,9 +5,8 @@ const InicioDMS = () => {
         Bienvenido al módulo de configuración del sistema DMS
       </h2>
       <p className="text-gray-600">
-        Desde aquí puedes administrar los departamentos y los empleados del
-        sistema. Usa el menú superior para navegar entre las secciones
-        disponibles.
+        Desde aquí puedes administrar los departamentos y los empleados del sistema. Usa el menú
+        superior para navegar entre las secciones disponibles.
       </p>
     </div>
   );

@@ -46,10 +46,7 @@ function App() {
               <Route path="registrar" element={<Registrar />} />
               <Route path="confirmar/:token" element={<ConfirmarCuenta />} />
               <Route path="olvide-password" element={<OlvidePassword />} />
-              <Route
-                path="olvide-password/:token"
-                element={<NuevoPassword />}
-              />
+              <Route path="olvide-password/:token" element={<NuevoPassword />} />
             </Route>
 
             {/* Ruta Privada */}
@@ -59,23 +56,14 @@ function App() {
               <Route path="ingresar" element={<AdministrarTramites />} />
               <Route path="asignados" element={<TramitesAsignados />} />
               <Route path="consultar-tramite" element={<ConsultarTramites />} />
-              <Route
-                path="despachar-tramite"
-                element={<TramitesPorDespachar />}
-              />
+              <Route path="despachar-tramite" element={<TramitesPorDespachar />} />
               <Route path="perfil" element={<EditarPerfil />} />
               <Route path="cambiar-password" element={<CambiarPassword />} />
 
               {/* Rutas solo para COORDINADORES */}
               <Route element={<RutaProtegidaCoodinador />}>
-                <Route
-                  path="asignar-reasignar"
-                  element={<TramitesAsignarReasignar />}
-                />
-                <Route
-                  path="completar-tramite"
-                  element={<TramitesCompletados />}
-                />
+                <Route path="asignar-reasignar" element={<TramitesAsignarReasignar />} />
+                <Route path="completar-tramite" element={<TramitesCompletados />} />
 
                 {/* Ruta padre para AdminDMS */}
                 <Route

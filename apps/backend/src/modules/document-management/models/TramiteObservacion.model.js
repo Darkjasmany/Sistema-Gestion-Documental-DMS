@@ -34,7 +34,7 @@ export const TramiteObservacion = sequelize.define(
     tableName: "tramite_observacion",
     timestamps: false,
     hooks: {
-      beforeSave: (TramiteObservacion) => {
+      beforeSave: TramiteObservacion => {
         TramiteObservacion.observacion = TramiteObservacion.observacion.trim();
       },
     },

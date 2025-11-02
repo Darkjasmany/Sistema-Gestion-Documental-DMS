@@ -32,10 +32,7 @@ const Header = () => {
             </Link>
 
             <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-500 p-2 shadow-lg rounded-lg">
-              <Link
-                to={"/admin/ingresar"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
+              <Link to={"/admin/ingresar"} className="block px-4 py-2 hover:bg-indigo-700">
                 Ingresar Trámites
               </Link>
 
@@ -50,10 +47,7 @@ const Header = () => {
               )}
 
               {auth.rol !== "DESPACHADOR" && auth.rol !== "COORDINADOR" && (
-                <Link
-                  to={"/admin/asignados"}
-                  className="block px-4 py-2 hover:bg-indigo-700"
-                >
+                <Link to={"/admin/asignados"} className="block px-4 py-2 hover:bg-indigo-700">
                   Ver Trámites Asignados
                 </Link>
               )}
@@ -76,18 +70,12 @@ const Header = () => {
                   Trámites Por Despachar
                 </Link>
               )}
-              <Link
-                to={"/admin/consultar-tramite"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
+              <Link to={"/admin/consultar-tramite"} className="block px-4 py-2 hover:bg-indigo-700">
                 Consultas Trámites
               </Link>
               {/* Solo visible para COORDINADOR y DESPACHADOR*/}
               {(auth.rol === "COORDINADOR" || auth.rol === "DESPACHADOR") && (
-                <Link
-                  to={"/admin/admin-dms"}
-                  className="block px-4 py-2 hover:bg-indigo-700"
-                >
+                <Link to={"/admin/admin-dms"} className="block px-4 py-2 hover:bg-indigo-700">
                   Configuración
                 </Link>
               )}
@@ -103,16 +91,10 @@ const Header = () => {
             </Link>
 
             <div className="absolute hidden group-hover:block text-white text-sm uppercase font-bold bg-indigo-500 p-2 shadow-lg rounded-lg">
-              <Link
-                to={"/admin/perfil"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
+              <Link to={"/admin/perfil"} className="block px-4 py-2 hover:bg-indigo-700">
                 Editar Pérfil
               </Link>
-              <Link
-                to={"/admin/cambiar-password"}
-                className="block px-4 py-2 hover:bg-indigo-700"
-              >
+              <Link to={"/admin/cambiar-password"} className="block px-4 py-2 hover:bg-indigo-700">
                 Cambiar Password
               </Link>
             </div>

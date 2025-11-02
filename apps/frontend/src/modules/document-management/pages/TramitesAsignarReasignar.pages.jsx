@@ -3,15 +3,14 @@ import TablaTramitesBusqueda from "../components/TablaTramitesBusqueda.component
 import useTramites from "../../../hooks/useTramites.hook";
 
 const TramitesAsignarReasignar = () => {
-  const { obtenerTramitesCoordinador, tramitesAsignarReasignar } =
-    useTramites();
+  const { obtenerTramitesCoordinador, tramitesAsignarReasignar } = useTramites();
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("INGRESADO");
   const [refreshTable, setRefreshTable] = useState(false); // Estado para refrescar la tabla
 
   // const [contadorAsignar, setContadorAsignar] = useState(0);
   // const [contadorReasignar, setContadorReasignar] = useState(0);
 
-  const handleFiltro = (estado) => {
+  const handleFiltro = estado => {
     setEstadoSeleccionado(estado);
     setRefreshTable(true); // Indicamos que cuando cambie el estado refresque la tabla
   };
@@ -47,21 +46,16 @@ const TramitesAsignarReasignar = () => {
 
   return (
     <>
-      <h2 className="font-black text-3xl text-center mt-10">
-        Asignar o Reasignar Trámites
-      </h2>
+      <h2 className="font-black text-3xl text-center mt-10">Asignar o Reasignar Trámites</h2>
       <p className="text-xl mt-5 mb-4 text-center">
-        Búsqueda Avanzada de{" "}
-        <span className="text-indigo-600 font-bold">Trámites</span>
+        Búsqueda Avanzada de <span className="text-indigo-600 font-bold">Trámites</span>
       </p>
 
       <div className=" flex flex-col gap-5">
         <div className="flex gap-4">
           <button
             className={`px-4 py-2 rounded   ${
-              estadoSeleccionado === "INGRESADO"
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-200"
+              estadoSeleccionado === "INGRESADO" ? "bg-indigo-500 text-white" : "bg-gray-200"
             }`}
             onClick={() => handleFiltro("INGRESADO")}
           >
@@ -70,9 +64,7 @@ const TramitesAsignarReasignar = () => {
           </button>
           <button
             className={`px-4 py-2 rounded   ${
-              estadoSeleccionado === "PENDIENTE"
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-200"
+              estadoSeleccionado === "PENDIENTE" ? "bg-indigo-500 text-white" : "bg-gray-200"
             }`}
             onClick={() => handleFiltro("PENDIENTE")}
           >

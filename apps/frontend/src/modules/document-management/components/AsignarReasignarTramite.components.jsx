@@ -40,7 +40,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     fecthRevisores();
   }, [auth.departamentoId]);
 
-  const asignarOReasignarRevisor = (revisorId) => {
+  const asignarOReasignarRevisor = revisorId => {
     setMostrarInputsAsignar(true);
     setRevisorAsignado(revisorId); // Almacena el ID del revisor asignado
     setObservacionAsignar("");
@@ -49,7 +49,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     setHoveredRevisores({ ...hoveredRevisores, [revisorId]: false }); // Desactiva el hover
   };
 
-  const handleSubmitAsignar = async (e) => {
+  const handleSubmitAsignar = async e => {
     e.preventDefault();
     const fechaActual = new Date().toISOString().slice(0, 10); // fecha actual en formato "yyyy-mm-dd"
 
@@ -64,8 +64,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
     if (fechaContestacion < fechaActual) {
       setAlerta({
-        message:
-          "La fecha de contestación no puede ser inferior a la fecha actual",
+        message: "La fecha de contestación no puede ser inferior a la fecha actual",
         error: true,
       });
       return;
@@ -80,10 +79,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
     try {
       // let response;
-      const response = await asignarOReasignarRevisorTramite(
-        tramite.id,
-        datosRevisor
-      );
+      const response = await asignarOReasignarRevisorTramite(tramite.id, datosRevisor);
 
       // setAlerta({ message: response?.data?.message, error: false });
       setAlerta({ message: response.message, error: response.error });
@@ -114,7 +110,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   return (
     <div>
       <ul>
-        {revisores.map((revisor) => (
+        {revisores.map(revisor => (
           // console.log(revisor)
 
           <li
@@ -123,12 +119,8 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             className={`mb-2 p-2 rounded-md ${
               hoveredRevisores[revisor.id] ? "bg-indigo-100" : ""
             } transition-colors `}
-            onMouseEnter={() =>
-              setHoveredRevisores({ ...hoveredRevisores, [revisor.id]: true })
-            }
-            onMouseLeave={() =>
-              setHoveredRevisores({ ...hoveredRevisores, [revisor.id]: false })
-            }
+            onMouseEnter={() => setHoveredRevisores({ ...hoveredRevisores, [revisor.id]: true })}
+            onMouseLeave={() => setHoveredRevisores({ ...hoveredRevisores, [revisor.id]: false })}
           >
             <div className="flex justify-between">
               <span>{revisor.nombres + " " + revisor.apellidos}</span>
@@ -155,10 +147,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
                 <div className="grid grid-col-1 xl:grid-cols-2 xl:gap-5 ">
                   {/* Campo para la Fecha */}
                   <div className="mb-5">
-                    <label
-                      htmlFor="fechaContestacion"
-                      className="text-gray-700 font-medium block"
-                    >
+                    <label htmlFor="fechaContestacion" className="text-gray-700 font-medium block">
                       {/* block para que el label ocupe todo el ancho */}
                       Fecha de Contestación:
                     </label>
@@ -166,7 +155,7 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
                       type="date"
                       id="fechaContestacion"
                       value={fechaContestacion}
-                      onChange={(e) => {
+                      onChange={e => {
                         setFechaContestacion(e.target.value);
                       }}
                       className="border-2 w-full h-10 p-2 mt-2 placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -175,17 +164,14 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
                   {/* Campo Prioridad */}
                   <div className="mb-5">
-                    <label
-                      htmlFor="prioridad"
-                      className="text-gray-700 font-medium block"
-                    >
+                    <label htmlFor="prioridad" className="text-gray-700 font-medium block">
                       Prioridad:
                     </label>
                     <select
                       name="prioridad"
                       id="prioridad"
                       value={prioridad}
-                      onChange={(e) => {
+                      onChange={e => {
                         setPrioridad(e.target.value);
                       }}
                       className="border-2 w-full h-10 p-2 mt-2   placeholder-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -201,16 +187,13 @@ const AsignarReasignarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
                 {/* Campo para la Observación */}
                 {!tramite.usuarioRevisor && (
                   <div className="mb-5">
-                    <label
-                      htmlFor="descripcion"
-                      className="text-gray-700 font-medium"
-                    >
+                    <label htmlFor="descripcion" className="text-gray-700 font-medium">
                       Observación:
                     </label>
                     <textarea
                       id="descripcion"
                       value={observacionAsignar}
-                      onChange={(e) => {
+                      onChange={e => {
                         setObservacionAsignar(e.target.value);
                       }}
                       placeholder="Observación para el revisor"

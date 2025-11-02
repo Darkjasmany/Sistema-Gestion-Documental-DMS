@@ -17,13 +17,9 @@
     //     "../../packages/schemas/dist/*"
     //   ],
     // },
-    "lib": [
-      "es2020"
-    ],
+    "lib": ["es2020"],
     // Typing and compatibility
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     // Other Outputs
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -33,7 +29,7 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    // Ouput and Depurations 
+    // Ouput and Depurations
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
@@ -46,11 +42,6 @@
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false
   },
-  "include": [
-    "src/**/*.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

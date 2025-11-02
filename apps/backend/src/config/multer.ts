@@ -18,19 +18,12 @@ const storage = multer.diskStorage({
   },
   filename: (req: Request, file: Express.Multer.File, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    ); // Nombre único para evitar duplicados
+    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)); // Nombre único para evitar duplicados
   },
 });
 
 // Filtros de archivos permitidos
-const fileFilter = (
-  req: Request,
-  file: Express.Multer.File,
-  cb: FileFilterCallback
-) => {
+const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
   const filetypes = /jpeg|jpg|png|pdf|zip|rar/; // Tipos de archivo permitidos
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
@@ -38,11 +31,7 @@ const fileFilter = (
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(
-      new Error(
-        "Solo se permiten archivos de imagen, PDF o archivos comprimidos."
-      )
-    );
+    cb(new Error("Solo se permiten archivos de imagen, PDF o archivos comprimidos."));
   }
 };
 

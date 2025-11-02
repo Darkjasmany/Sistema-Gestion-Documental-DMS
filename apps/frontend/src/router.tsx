@@ -17,15 +17,9 @@ export default function Router() {
         <Route element={<AuthLayout />}>
           <Route path="/auth/login" element={<LoginPages />} />
           <Route path="/auth/register" element={<RegisterPages />} />
-          <Route
-            path="/auth/confirm-account"
-            element={<ConfirmAccountPages />}
-          />
+          <Route path="/auth/confirm-account" element={<ConfirmAccountPages />} />
           <Route path="/auth/request-code" element={<RequestNewCodePages />} />
-          <Route
-            path="/auth/forgot-password"
-            element={<ForgotPasswordPages />}
-          />
+          <Route path="/auth/forgot-password" element={<ForgotPasswordPages />} />
           <Route path="/auth/new-password" element={<NewPasswordPages />} />
         </Route>
       </Routes>

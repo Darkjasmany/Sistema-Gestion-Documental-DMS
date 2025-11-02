@@ -10,7 +10,7 @@ const api = axios.create(axiosConfig);
  * con los interceptors de axios antes de cada request obtenemos el token del localstorage y le enviamos a la peticion http la configuración con headers
  */
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(config => {
   const token = localStorage.getItem("AUTH_TOKEN");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

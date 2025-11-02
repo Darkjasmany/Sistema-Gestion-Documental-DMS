@@ -16,11 +16,7 @@ const AdministrarTramites = () => {
       >
         {mostrarFormulario ? "Ocultar Formulario" : "Mostrar Formulario"}
       </button>
-      <div
-        className={`${
-          mostrarFormulario ? "block" : "hidden"
-        } md:block md:w-1/2 lg:w-2/5 `}
-      >
+      <div className={`${mostrarFormulario ? "block" : "hidden"} md:block md:w-1/2 lg:w-2/5 `}>
         <Formulario />
       </div>
       <div className="md:w-1/2 lg:w-3/5">

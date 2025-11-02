@@ -14,24 +14,16 @@ declare global {
   }
 }
 
-export const authenticate = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   const bearer = req.headers.authorization; // Obtenemos el token
 
   if (!bearer || !bearer.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ error: "No Autorizado: Token ausente o mal formado" });
+    return res.status(401).json({ error: "No Autorizado: Token ausente o mal formado" });
   }
 
   const token = bearer.split(" ")[1]; //const [, token] = bearer.split(" "); // desestructuración con fallback: Separar el token cuando haya 1 espacio y devuelve un arreglo Bearer [0]: Token [1], aparece el token sin el Bearer
   if (!token) {
-    return res
-      .status(401)
-      .json({ error: "No Autorizado: Token no proporcionado" });
+    return res.status(401).json({ error: "No Autorizado: Token no proporcionado" });
   }
 
   try {
@@ -39,14 +31,7 @@ export const authenticate = async (
     if (decoded && typeof decoded === "object" && "id" in decoded) {
       if (typeof decoded === "object" && decoded.id) {
         const user = await User.findByPk(decoded.id, {
-          attributes: [
-            "id",
-            "nombres",
-            "apellidos",
-            "email",
-            "rol",
-            "departamento_id",
-          ],
+          attributes: ["id", "nombres", "apellidos", "email", "rol", "departamento_id"],
           include: [
             {
               model: Department,

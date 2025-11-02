@@ -25,12 +25,12 @@ const CambiarPassword = () => {
     }
   }, [alerta]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     // Verificar si en sus propiedades tienen un campo vacio al menos 1
     // if (Object.values(password).some((campo) => campo === "")) {
-    if (Object.values(password).some((campo) => campo.trim() === "")) {
+    if (Object.values(password).some(campo => campo.trim() === "")) {
       return setAlerta({
         message: "Todos los campos son obligatorios",
         error: true,
@@ -76,12 +76,9 @@ const CambiarPassword = () => {
     <>
       {/* Quito la barra de navegación de la página de cambio de password */}
       {/* <AdminNav /> */}
-      <h2 className="font-black text-3xl text-center mt-10">
-        Cambiar Password
-      </h2>
+      <h2 className="font-black text-3xl text-center mt-10">Cambiar Password</h2>
       <p className="text-xl mt-5 mb-10 text-center">
-        Modifica tu{" "}
-        <span className="text-indigo-600 font-bold">Password aqui</span>
+        Modifica tu <span className="text-indigo-600 font-bold">Password aqui</span>
       </p>
 
       <div className="flex justify-center">
@@ -99,7 +96,7 @@ const CambiarPassword = () => {
                 name="pwd_actual"
                 placeholder="Escribe tu password actual"
                 value={password.pwd_actual || ""}
-                onChange={(e) => {
+                onChange={e => {
                   setPassword({
                     ...password,
                     [e.target.name]: e.target.value,
@@ -118,7 +115,7 @@ const CambiarPassword = () => {
                 name="pwd_nuevo"
                 placeholder="Ingresa tu nuevo password"
                 value={password.pwd_nuevo || ""}
-                onChange={(e) => {
+                onChange={e => {
                   setPassword({
                     ...password,
                     [e.target.name]: e.target.value,
@@ -137,7 +134,7 @@ const CambiarPassword = () => {
                 name="pwd_repetir"
                 placeholder="Repite tu password nuevo"
                 value={password.pwd_repetir || ""}
-                onChange={(e) => {
+                onChange={e => {
                   setPassword({
                     ...password,
                     [e.target.name]: e.target.value,

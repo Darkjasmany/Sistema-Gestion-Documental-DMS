@@ -7,9 +7,7 @@ export const generarMemo = async (multiplesDestinatarios = false, tipo) => {
 
   const prefijo = multiplesDestinatarios ? "-Circular" : "";
 
-  const numeroMemo = `${tipo}${prefijo}-SEC-${year}-${String(
-    numeroSecuencia
-  ).padStart(5, "0")}`;
+  const numeroMemo = `${tipo}${prefijo}-SEC-${year}-${String(numeroSecuencia).padStart(5, "0")}`;
 
   return numeroMemo;
 };

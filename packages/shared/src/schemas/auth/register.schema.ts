@@ -6,23 +6,14 @@ export const createUserSchema = z.object({
   nombres: userBaseSchema.shape.nombres
     .min(1, "Los nombres son obligatorios")
     .max(100, "Los nombres no pueden exceder 100 caracteres")
-    .regex(
-      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-      "Los nombres solo pueden contener letras"
-    ),
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "Los nombres solo pueden contener letras"),
 
   apellidos: userBaseSchema.shape.apellidos
     .min(1, "Los apellidos son obligatorios")
     .max(100, "Los apellidos no pueden exceder 100 caracteres")
-    .regex(
-      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-      "Los apellidos solo pueden contener letras"
-    ),
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "Los apellidos solo pueden contener letras"),
 
-  email: userBaseSchema.shape.email
-    .email("El email no es válido")
-    .toLowerCase()
-    .trim(),
+  email: userBaseSchema.shape.email.email("El email no es válido").toLowerCase().trim(),
 
   password: userBaseSchema.shape.password
     .min(8, "La contraseña debe tener al menos 8 caracteres")
@@ -35,7 +26,7 @@ export const createUserSchema = z.object({
 
 /**
  * Schema de respuesta (sin password)
-*/
+ */
 export const createUserResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),

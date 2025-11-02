@@ -12,10 +12,8 @@ const InicioDMSUsuario = () => {
       </h2>
       <p className="text-gray-600">
         Has iniciado sesión como{" "}
-        <strong>
-          {auth?.nombres + " " + auth?.apellidos + " - " + auth?.rol}
-        </strong>
-        . Utiliza el menú superior para acceder a tus funciones.
+        <strong>{auth?.nombres + " " + auth?.apellidos + " - " + auth?.rol}</strong>. Utiliza el
+        menú superior para acceder a tus funciones.
       </p>
 
       {auth?.rol === "usuario" && (

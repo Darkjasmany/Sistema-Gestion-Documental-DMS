@@ -8,18 +8,11 @@
     "target": "es2020", // esnext
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     // Typing and compatibility
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     // and npm install -D @types/node
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     // Other Outputs
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -29,7 +22,7 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    // Ouput and Depurations 
+    // Ouput and Depurations
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
@@ -42,11 +35,6 @@
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

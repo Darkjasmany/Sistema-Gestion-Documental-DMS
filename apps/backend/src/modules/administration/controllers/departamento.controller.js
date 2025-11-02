@@ -4,10 +4,7 @@ import { Departamento } from "../models/Departamento.model.js";
 export const agregarDepartamento = async (req, res) => {
   const { nombre, coordinadorId } = req.body;
 
-  if (!nombre)
-    return res
-      .status(400)
-      .json({ message: "Todos los campos son obligatorios" });
+  if (!nombre) return res.status(400).json({ message: "Todos los campos son obligatorios" });
 
   const departamentoExiste = await Departamento.findOne({
     where: {
@@ -16,8 +13,7 @@ export const agregarDepartamento = async (req, res) => {
       },
     },
   });
-  if (departamentoExiste)
-    return res.status(400).json({ message: "Departamento ya Ingresado" });
+  if (departamentoExiste) return res.status(400).json({ message: "Departamento ya Ingresado" });
 
   try {
     const departamentoGuardado = await Departamento.create({
@@ -52,8 +48,7 @@ export const obtenerDepartamento = async (req, res) => {
     const { id } = req.params;
 
     const departamento = await Departamento.findByPk(id);
-    if (!departamento)
-      return res.status(400).json({ message: "Departamento no válido" });
+    if (!departamento) return res.status(400).json({ message: "Departamento no válido" });
 
     res.status(200).json(departamento);
   } catch (error) {
@@ -92,8 +87,7 @@ export const eliminarDepartamento = async (req, res) => {
     const { id } = req.params;
 
     const departamento = await Departamento.findByPk(id);
-    if (!departamento)
-      return res.status(400).json({ message: "Departamento no válido" });
+    if (!departamento) return res.status(400).json({ message: "Departamento no válido" });
 
     await Departamento.destroy({ where: { id } });
 

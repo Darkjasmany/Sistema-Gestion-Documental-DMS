@@ -9,9 +9,7 @@ export const createUserSchema = z.object({
 });
 
 export const validateTokenSchema = z.object({
-  token: z
-    .string()
-    .length(6, "El token no puede ir vacio o tener mas de 6 caracteres"),
+  token: z.string().length(6, "El token no puede ir vacio o tener mas de 6 caracteres"),
 });
 
 // Tipado - tipo inferido de ese esquema

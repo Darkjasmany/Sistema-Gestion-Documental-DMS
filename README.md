@@ -74,4 +74,3 @@ Este proyecto es un sistema de gestión documental desarrollado con Node.js para
 ---
 
 💡 **Notas**: Asegúrate de que el backend esté corriendo antes de iniciar el frontend. ¡Listo para desarrollar! 🚀
-

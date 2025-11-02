@@ -20,7 +20,7 @@ const EditarPerfil = () => {
     }
   }, [alerta]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     console.log(perfil);
 
@@ -48,8 +48,7 @@ const EditarPerfil = () => {
     <>
       <h2 className="font-black text-3xl text-center mt-10">Editar Perfil</h2>
       <p className="text-xl mt-5 mb-10 text-center">
-        Modifica tu{" "}
-        <span className="text-indigo-600 font-bold">Información aqui</span>
+        Modifica tu <span className="text-indigo-600 font-bold">Información aqui</span>
       </p>
 
       <div className="flex justify-center">
@@ -66,9 +65,7 @@ const EditarPerfil = () => {
                 className="border-2 border-indigo-500 bg-indigo-50 w-full p-2 mt-5 rounded-lg focus:outline-none focus:border-indigo-700"
                 name="nombres"
                 value={perfil.nombres || ""}
-                onChange={(e) =>
-                  setPerfil({ ...perfil, [e.target.name]: e.target.value })
-                }
+                onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
               />
             </div>
 
@@ -81,9 +78,7 @@ const EditarPerfil = () => {
                 className="border-2 border-indigo-500 bg-indigo-50 w-full p-2 mt-5 rounded-lg focus:outline-none focus:border-indigo-700"
                 name="apellidos"
                 value={perfil.apellidos || ""}
-                onChange={(e) =>
-                  setPerfil({ ...perfil, [e.target.name]: e.target.value })
-                }
+                onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
               />
             </div>
 

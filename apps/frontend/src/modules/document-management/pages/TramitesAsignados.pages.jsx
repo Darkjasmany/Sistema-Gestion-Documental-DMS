@@ -7,7 +7,7 @@ const TramitesAsignados = () => {
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("PENDIENTE");
   const [refreshTable, setRefreshTable] = useState(false);
 
-  const handleFiltro = (estado) => {
+  const handleFiltro = estado => {
     setEstadoSeleccionado(estado);
     setRefreshTable(true);
   };
@@ -32,9 +32,7 @@ const TramitesAsignados = () => {
 
   return (
     <>
-      <h2 className="font-black text-3xl text-center mt-10">
-        Trámites Asignados
-      </h2>
+      <h2 className="font-black text-3xl text-center mt-10">Trámites Asignados</h2>
       <p className="text-xl mt-5 mb-4 text-center">
         Completa tus <span className="text-indigo-600 font-bold">Trámites</span>
       </p>
@@ -43,9 +41,7 @@ const TramitesAsignados = () => {
         <div className="flex gap-4">
           <button
             className={`px-4 py-2 rounded  ${
-              estadoSeleccionado === "PENDIENTE"
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-200"
+              estadoSeleccionado === "PENDIENTE" ? "bg-indigo-500 text-white" : "bg-gray-200"
             }`}
             onClick={() => handleFiltro("PENDIENTE")}
           >
@@ -54,9 +50,7 @@ const TramitesAsignados = () => {
           <button
             className={`px-4 py-2 rounded  ${
               // estadoSeleccionado === "POR_REVISAR"
-              estadoSeleccionado === "POR_FIRMAR"
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-200"
+              estadoSeleccionado === "POR_FIRMAR" ? "bg-indigo-500 text-white" : "bg-gray-200"
             }`}
             // onClick={() => handleFiltro("POR_REVISAR")}
             onClick={() => handleFiltro("POR_FIRMAR")}
@@ -65,9 +59,7 @@ const TramitesAsignados = () => {
           </button>
           <button
             className={`px-4 py-2 rounded  ${
-              estadoSeleccionado === "POR_CORREGIR"
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-200"
+              estadoSeleccionado === "POR_CORREGIR" ? "bg-indigo-500 text-white" : "bg-gray-200"
             }`}
             onClick={() => handleFiltro("POR_CORREGIR")}
           >
@@ -75,9 +67,7 @@ const TramitesAsignados = () => {
           </button>
           <button
             className={`px-4 py-2 rounded  ${
-              estadoSeleccionado === "COMPLETADO"
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-200"
+              estadoSeleccionado === "COMPLETADO" ? "bg-indigo-500 text-white" : "bg-gray-200"
             }`}
             onClick={() => handleFiltro("COMPLETADO")}
           >

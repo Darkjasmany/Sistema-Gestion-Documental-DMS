@@ -9,9 +9,6 @@ const router = Router();
 
 router.route("/").get(cargarDespachadores).post(agregarDespachador);
 
-router.get(
-  "/por-departamento/:departamentoId",
-  obtenerDespachadorPorDepartamento
-);
+router.get("/por-departamento/:departamentoId", obtenerDespachadorPorDepartamento);
 
 export default router;

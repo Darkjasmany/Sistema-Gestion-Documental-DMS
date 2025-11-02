@@ -5,9 +5,7 @@ export const agregarDespachador = async (req, res) => {
   const { nombres, apellidos, departamentoId } = req.body;
 
   if (!nombres || !apellidos || !departamentoId)
-    return res
-      .status(400)
-      .json({ message: "Todos los campos son obligatorios" });
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
 
   const despachadorExiste = await Despachador.findOne({
     where: {
@@ -16,8 +14,7 @@ export const agregarDespachador = async (req, res) => {
     },
   });
 
-  if (despachadorExiste)
-    return res.status(400).json({ message: "Despachador ya Ingresado" });
+  if (despachadorExiste) return res.status(400).json({ message: "Despachador ya Ingresado" });
 
   try {
     const despachadorGuardado = await Despachador.create({
@@ -66,8 +63,7 @@ export const obtenerDespachadorPorDepartamento = async (req, res) => {
 
     if (despachadores.length === 0)
       return res.status(404).json({
-        message:
-          "No se encontraron empleados para el departamento seleccionado",
+        message: "No se encontraron empleados para el departamento seleccionado",
       });
 
     return res.json(despachadores);
@@ -76,8 +72,7 @@ export const obtenerDespachadorPorDepartamento = async (req, res) => {
       `Error al cargar los despachadores del departamento seleccionado: ${error.message}`
     );
     return res.status(500).json({
-      message:
-        "Error al cargar los despachadores del departamento seleccionado",
+      message: "Error al cargar los despachadores del departamento seleccionado",
     });
   }
 };

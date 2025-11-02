@@ -193,17 +193,15 @@ export const Tramite = sequelize.define(
   {
     tableName: "tramite",
     hooks: {
-      beforeSave: (tramite) => {
+      beforeSave: tramite => {
         tramite.asunto = tramite.asunto.trim();
         tramite.descripcion = tramite.descripcion.trim();
-        tramite.numero_oficio_remitente =
-          tramite.numero_oficio_remitente.trim();
+        tramite.numero_oficio_remitente = tramite.numero_oficio_remitente.trim();
         if (tramite.numero_oficio) {
           tramite.numero_oficio = tramite.numero_oficio.trim();
         }
         if (tramite.numero_oficio_modificado) {
-          tramite.numero_oficio_modificado =
-            tramite.numero_oficio_modificado.trim();
+          tramite.numero_oficio_modificado = tramite.numero_oficio_modificado.trim();
         }
       },
     },
@@ -243,7 +241,7 @@ export const Tramite = sequelize.define(
   }
 });*/
 
-Tramite.addHook("beforeValidate", async (tramite) => {
+Tramite.addHook("beforeValidate", async tramite => {
   if (tramite.referencia_tramite) {
     const referencia = tramite.referencia_tramite.toString();
 
@@ -257,19 +255,14 @@ Tramite.addHook("beforeValidate", async (tramite) => {
       order: [["numero_tramite", "DESC"]],
     });
 
-    const ultimoNumeroTramite = lastTramite
-      ? lastTramite.numero_tramite
-      : config.TRAMITE;
+    const ultimoNumeroTramite = lastTramite ? lastTramite.numero_tramite : config.TRAMITE;
 
     if (tramiteExistente) {
       // Si existe, asignar el mismo número de trámite
       tramite.numero_tramite = tramiteExistente.numero_tramite;
     } else {
       const referenciaNumerica = parseInt(referencia);
-      if (
-        !isNaN(referenciaNumerica) &&
-        referenciaNumerica <= ultimoNumeroTramite
-      ) {
+      if (!isNaN(referenciaNumerica) && referenciaNumerica <= ultimoNumeroTramite) {
         // Si la referencia es un número válido y no supera el último número de trámite, asignarla
         tramite.numero_tramite = referenciaNumerica;
       } else {
@@ -282,14 +275,12 @@ Tramite.addHook("beforeValidate", async (tramite) => {
     const lastTramite = await Tramite.findOne({
       order: [["numero_tramite", "DESC"]],
     });
-    tramite.numero_tramite = lastTramite
-      ? lastTramite.numero_tramite + 1
-      : config.TRAMITE; // : process.env.TRAMITE; // :1; // Iniciar en 1 si no hay registros
+    tramite.numero_tramite = lastTramite ? lastTramite.numero_tramite + 1 : config.TRAMITE; // : process.env.TRAMITE; // :1; // Iniciar en 1 si no hay registros
   }
 });
 
 // beforeUpdate para verificar si el estado cambia a RECHAZADO y automáticamente ajuste el campo activo:
-Tramite.addHook("beforeUpdate", async (tramite) => {
+Tramite.addHook("beforeUpdate", async tramite => {
   if (tramite.estado === "RECHAZADO") {
     tramite.activo = false;
   }

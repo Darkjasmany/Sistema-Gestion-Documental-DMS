@@ -25,8 +25,7 @@ const NuevoPassword = () => {
       setTokenValido(true);
       setAlerta({ message: "Coloca tu nuevo Password" });
     } catch (error) {
-      const message =
-        error.response?.data?.message || "Error al validar el token.";
+      const message = error.response?.data?.message || "Error al validar el token.";
       setAlerta({ message, error: true });
       setTokenValido(false);
     }
@@ -47,7 +46,7 @@ const NuevoPassword = () => {
     }
   }, [tokenValido, navigate]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     if ([password, repetirPassword].includes("")) {
@@ -86,8 +85,7 @@ const NuevoPassword = () => {
         navigate("/");
       }, 2000);
     } catch (error) {
-      const message =
-        error.response?.data?.message || "Error al cambiar el password.";
+      const message = error.response?.data?.message || "Error al cambiar el password.";
       setAlerta({ message, error: true });
     }
   };
@@ -109,17 +107,14 @@ const NuevoPassword = () => {
         {tokenValido && !passwordModificado ? (
           <form action="" onSubmit={handleSubmit}>
             <div className="my-5">
-              <label
-                htmlFor="password"
-                className="uppercase font-bold text-xl text-gray-600"
-              >
+              <label htmlFor="password" className="uppercase font-bold text-xl text-gray-600">
                 Ingresa tu nuevo Password
               </label>
               <input
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
                 placeholder="Tu Password"
                 required
@@ -127,17 +122,14 @@ const NuevoPassword = () => {
             </div>
 
             <div className="my-5">
-              <label
-                htmlFor="password2"
-                className="uppercase font-bold text-xl text-gray-600"
-              >
+              <label htmlFor="password2" className="uppercase font-bold text-xl text-gray-600">
                 Repitir Password
               </label>
               <input
                 type="password"
                 id="password2"
                 value={repetirPassword}
-                onChange={(e) => setRepetirPassword(e.target.value)}
+                onChange={e => setRepetirPassword(e.target.value)}
                 className="border w-full p-3 mt-3 bg-gray-50 rounded-xl"
                 placeholder="Repite tu Password"
                 required

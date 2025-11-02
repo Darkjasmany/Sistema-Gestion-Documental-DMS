@@ -40,9 +40,7 @@ const INGRESADO = {
       attributes: [
         "id",
         [
-          Sequelize.literal(
-            "CONCAT(remitente.nombres, ' ',  remitente.apellidos)"
-          ),
+          Sequelize.literal("CONCAT(remitente.nombres, ' ',  remitente.apellidos)"),
           "nombreCompleto",
         ],
         // "cedula",
@@ -58,9 +56,7 @@ const INGRESADO = {
       as: "usuario",
       attributes: [
         [
-          Sequelize.literal(
-            'CONCAT("usuario"."nombres", \' \', "usuario"."apellidos")'
-          ),
+          Sequelize.literal('CONCAT("usuario"."nombres", \' \', "usuario"."apellidos")'),
           "UsuarioCreacion",
         ],
       ],
@@ -117,11 +113,7 @@ const POR_FIRMAR = {
     {
       model: TramiteDestinatario,
       as: "destinatarios",
-      attributes: [
-        "tramite_id",
-        "departamento_destinatario",
-        "destinatario_id",
-      ],
+      attributes: ["tramite_id", "departamento_destinatario", "destinatario_id"],
       required: false,
 
       include: [
@@ -175,12 +167,7 @@ const POR_CORREGIR = {
 
 const DESPACHADO = {
   ...POR_CORREGIR,
-  attributes: [
-    ...POR_CORREGIR.attributes,
-    "fecha_despacho",
-    "hora_despacho",
-    "despachadorId",
-  ],
+  attributes: [...POR_CORREGIR.attributes, "fecha_despacho", "hora_despacho", "despachadorId"],
   required: false,
   include: [...POR_CORREGIR.include],
 };
@@ -232,6 +219,6 @@ const configuracionEstados = {
   FINALIZADO,
 };
 
-export const getConfiguracionPorEstado = (estado) => {
+export const getConfiguracionPorEstado = estado => {
   return configuracionEstados[estado] || null;
 };

@@ -36,7 +36,7 @@ const HeaderBusqueda = () => {
       try {
         const { data } = await clienteAxios("/departamentos");
         // setDepartamentos(data);
-        setDepartamentos(data.map((d) => ({ value: d.id, label: d.nombre })));
+        setDepartamentos(data.map(d => ({ value: d.id, label: d.nombre })));
       } catch (error) {
         console.error("Error al cargar departamentos:", error);
       }
@@ -58,7 +58,7 @@ const HeaderBusqueda = () => {
         );
         // setRevisores(data);
         setRevisores(
-          data.map((r) => ({
+          data.map(r => ({
             value: r.id,
             label: `${r.nombres} ${r.apellidos} `,
           }))
@@ -81,13 +81,13 @@ const HeaderBusqueda = () => {
   }, [alerta]);
 
   // Manejar cambio de inputs
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   // Manejar cambio del departamento y cargar remitentes
-  const handleDepartamentoChange = async (e) => {
+  const handleDepartamentoChange = async e => {
     const departamentoId = e.target.value;
     setFormData({ ...formData, departamentoRemitenteId: departamentoId });
 
@@ -97,12 +97,10 @@ const HeaderBusqueda = () => {
     }
 
     try {
-      const { data } = await clienteAxios(
-        `/empleados/por-departamento/${departamentoId}`
-      );
+      const { data } = await clienteAxios(`/empleados/por-departamento/${departamentoId}`);
       // setRemitentes(data);
       setRemitentes(
-        data.map((r) => ({
+        data.map(r => ({
           value: r.id,
           label: `${r.nombres} ${r.apellidos}`,
         }))
@@ -114,13 +112,13 @@ const HeaderBusqueda = () => {
   };
 
   // Enviar formulario
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     // ** El formData es un objecto por lo que convierto los valores del objeto a un array y aplico .every para  Retorna true si todos los valores son falsy ("", undefined, null, 0, false). Si al menos uno tiene un valor válido, devuelve false y permite continuar.
 
     // Validar que al menos un campo de búsqueda tenga valor
-    if (Object.values(formData).every((valor) => !valor)) {
+    if (Object.values(formData).every(valor => !valor)) {
       setAlerta({
         message: "Al menos debes enviar un parametro de busqueda",
         error: true,
@@ -184,10 +182,7 @@ const HeaderBusqueda = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {/* Número de Trámite */}
           <div>
-            <label
-              htmlFor="numeroTramite"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="numeroTramite" className="block text-gray-700 font-medium mb-1">
               Número de Trámite:
             </label>
             <input
@@ -203,10 +198,7 @@ const HeaderBusqueda = () => {
 
           {/* Oficio Remitente */}
           <div>
-            <label
-              htmlFor="oficioRemitente"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="oficioRemitente" className="block text-gray-700 font-medium mb-1">
               Número de Oficio/Memo:
             </label>
             <input
@@ -222,10 +214,7 @@ const HeaderBusqueda = () => {
 
           {/* Asunto */}
           <div>
-            <label
-              htmlFor="asunto"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="asunto" className="block text-gray-700 font-medium mb-1">
               Asunto del Trámite:
             </label>
             <input
@@ -241,10 +230,7 @@ const HeaderBusqueda = () => {
 
           {/* Fecha Documento Inicio*/}
           <div>
-            <label
-              htmlFor="fechaInicio"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="fechaInicio" className="block text-gray-700 font-medium mb-1">
               Fecha Inicio:
             </label>
             <input
@@ -259,10 +245,7 @@ const HeaderBusqueda = () => {
 
           {/* Fecha Documento Fin*/}
           <div>
-            <label
-              htmlFor="fechaFin"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="fechaFin" className="block text-gray-700 font-medium mb-1">
               Fecha Fin:
             </label>
             <input
@@ -299,12 +282,8 @@ const HeaderBusqueda = () => {
             </select> */}
             <Select
               options={departamentos}
-              value={
-                departamentos.find(
-                  (d) => d.value === formData.departamentoRemitenteId
-                ) || null
-              }
-              onChange={(selected) => {
+              value={departamentos.find(d => d.value === formData.departamentoRemitenteId) || null}
+              onChange={selected => {
                 // setDepartamentoRemitenteId(selected.value);
                 // handleDepartamentoChange({ target: { value: selected.value } });
                 const value = selected ? selected.value : "";
@@ -318,10 +297,7 @@ const HeaderBusqueda = () => {
 
           {/* Remitente */}
           <div>
-            <label
-              htmlFor="remitenteId"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="remitenteId" className="block text-gray-700 font-medium mb-1">
               Remitente:
             </label>
             {/* <select
@@ -340,10 +316,8 @@ const HeaderBusqueda = () => {
             </select> */}
             <Select
               options={remitentes}
-              value={
-                remitentes.find((r) => r.value === formData.remitenteId) || null
-              }
-              onChange={(selected) => {
+              value={remitentes.find(r => r.value === formData.remitenteId) || null}
+              onChange={selected => {
                 const value = selected ? selected.value : "";
                 setFormData({ ...formData, remitenteId: value });
               }}
@@ -354,10 +328,7 @@ const HeaderBusqueda = () => {
 
           {/* Revisores */}
           <div>
-            <label
-              htmlFor="revisor"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="revisor" className="block text-gray-700 font-medium mb-1">
               Revisor:
             </label>
             {/* <select
@@ -377,11 +348,8 @@ const HeaderBusqueda = () => {
             </select> */}
             <Select
               options={revisores}
-              value={
-                revisores.find((r) => r.value === formData.usuarioRevisor) ||
-                null
-              }
-              onChange={(selected) => {
+              value={revisores.find(r => r.value === formData.usuarioRevisor) || null}
+              onChange={selected => {
                 const value = selected ? selected.value : "";
                 setFormData({ ...formData, usuarioRevisor: value });
               }}
@@ -392,10 +360,7 @@ const HeaderBusqueda = () => {
 
           {/* Estado */}
           <div>
-            <label
-              htmlFor="estado"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="estado" className="block text-gray-700 font-medium mb-1">
               Estado:
             </label>
             <select
@@ -420,10 +385,7 @@ const HeaderBusqueda = () => {
 
           {/* Prioridad */}
           <div>
-            <label
-              htmlFor="prioridad"
-              className="block text-gray-700 font-medium mb-1"
-            >
+            <label htmlFor="prioridad" className="block text-gray-700 font-medium mb-1">
               Prioridad:
             </label>
             <select

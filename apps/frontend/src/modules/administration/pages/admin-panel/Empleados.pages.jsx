@@ -44,7 +44,7 @@ const Empleados = () => {
     try {
       const { data } = await clienteAxios("/departamentos");
       // setDepartamentos(data);
-      setDepartamentos(data.map((d) => ({ value: d.id, label: d.nombre })));
+      setDepartamentos(data.map(d => ({ value: d.id, label: d.nombre })));
     } catch (error) {
       console.error("Error al cargar departamentos:", error);
       setAlerta({
@@ -68,18 +68,18 @@ const Empleados = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     setNuevoEmpleado({
       ...nuevoEmpleado,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleFiltroChange = (e) => {
+  const handleFiltroChange = e => {
     setFiltro(e.target.value);
   };
 
-  const empleadosFiltrados = empleados.filter((empleado) => {
+  const empleadosFiltrados = empleados.filter(empleado => {
     const textoBusqueda = filtro.toLowerCase();
     return (
       empleado.cedula.toLowerCase().includes(textoBusqueda) ||
@@ -90,8 +90,7 @@ const Empleados = () => {
   });
 
   const agregarEmpleado = async () => {
-    const { cedula, nombres, apellidos, email, departamentoId, telefono } =
-      nuevoEmpleado;
+    const { cedula, nombres, apellidos, email, departamentoId, telefono } = nuevoEmpleado;
 
     // Validación frontend: campos obligatorios
     if (!nombres || !apellidos || !departamentoId) {
@@ -134,7 +133,7 @@ const Empleados = () => {
     }
   };
 
-  const editarEmpleado = async (id) => {
+  const editarEmpleado = async id => {
     try {
       const empleado = await obtenerEmpleado(id);
       setEmpleadoAEditar(empleado);
@@ -156,7 +155,7 @@ const Empleados = () => {
     }
   };
 
-  const eliminarEmpleadoSeleccionado = async (id) => {
+  const eliminarEmpleadoSeleccionado = async id => {
     try {
       await eliminarEmpleado(id);
       cargarEmpleados();
@@ -174,11 +173,9 @@ const Empleados = () => {
     ? empleadosFiltrados.slice(indexPrimerEmpleado, indexUltimoEmpleado)
     : [];
 
-  const totalPaginas = Math.ceil(
-    empleadosFiltrados.length / empleadosPorPagina
-  );
+  const totalPaginas = Math.ceil(empleadosFiltrados.length / empleadosPorPagina);
 
-  const cambiarPagina = (numeroPagina) => {
+  const cambiarPagina = numeroPagina => {
     if (numeroPagina >= 1 && numeroPagina <= totalPaginas) {
       setPaginaActual(numeroPagina);
     }
@@ -188,9 +185,7 @@ const Empleados = () => {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-        Gestión de Empleados
-      </h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-2">Gestión de Empleados</h2>
       <p className="text-gray-600 mb-4">
         Administra los empleados del sistema y gestiona su información.
       </p>
@@ -199,9 +194,7 @@ const Empleados = () => {
 
       {/* Campo de búsqueda */}
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-          Busqueda Avanzada
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">Busqueda Avanzada</h3>
         <input
           type="text"
           placeholder="Buscar por cédula, nombre, apellido o departamento"
@@ -277,12 +270,10 @@ const Empleados = () => {
             options={departamentos}
             value={
               nuevoEmpleado.departamentoId
-                ? departamentos.find(
-                    (d) => d.value === nuevoEmpleado.departamentoId
-                  )
+                ? departamentos.find(d => d.value === nuevoEmpleado.departamentoId)
                 : null
             }
-            onChange={(selectedOption) =>
+            onChange={selectedOption =>
               setNuevoEmpleado({
                 ...nuevoEmpleado,
                 departamentoId: selectedOption ? selectedOption.value : "",
@@ -303,29 +294,19 @@ const Empleados = () => {
 
       {/* Tabla de empleados */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">
-          Lista de Empleados
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">Lista de Empleados</h3>
 
         <div className="overflow-x-auto border rounded-lg shadow-sm">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  #
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Nombres
-                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">#</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Nombres</th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Apellidos
                 </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Cédula
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Email
-                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Cédula</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Email</th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Teléfono
                 </th>
@@ -340,24 +321,12 @@ const Empleados = () => {
             <tbody className="divide-y divide-gray-100 bg-white">
               {empleadosVisibles.map((empleado, index) => (
                 <tr key={empleado.id}>
-                  <td className="px-4 py-2 text-sm text-gray-600">
-                    {index + 1}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {empleado.nombres}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {empleado.apellidos}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {empleado.cedula}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {empleado.email}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {empleado.telefono}
-                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-600">{index + 1}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{empleado.nombres}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{empleado.apellidos}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{empleado.cedula}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{empleado.email}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{empleado.telefono}</td>
                   <td className="px-4 py-2 text-sm text-gray-800">
                     {empleado.departamento.nombre}
                   </td>
@@ -392,14 +361,12 @@ const Empleados = () => {
             Anterior
           </button>
 
-          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((num) => (
+          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(num => (
             <button
               key={num}
               onClick={() => cambiarPagina(num)}
               className={`px-3 py-1 border rounded-md ${
-                num === paginaActual
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-gray-100"
+                num === paginaActual ? "bg-blue-600 text-white" : "hover:bg-gray-100"
               }`}
             >
               {num}

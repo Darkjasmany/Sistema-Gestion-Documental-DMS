@@ -14,7 +14,7 @@ export const updatePasswordBaseSchema = z.object({
 
 // Crear updatePasswordSchema aplicando el refine al esquema base
 export const updatePasswordSchema = updatePasswordBaseSchema.refine(
-  (data) => data.password === data.passwordConfirmation,
+  data => data.password === data.passwordConfirmation,
   {
     message: "Las contraseñas no coinciden",
     path: ["passwordConfirmation"],
@@ -24,16 +24,16 @@ export const updatePasswordSchema = updatePasswordBaseSchema.refine(
 /**
  * Schema para cambio de contraseña (requiere contraseña actual)
  * Extiende el ZodObject base ANTES de aplicar el refine.
-*/
+ */
 export const changePasswordSchema = updatePasswordBaseSchema
-.extend({
-  currentPassword: z.string().min(1, "La contraseña actual es requerida"),
-})
-  .refine((data) => data.password === data.passwordConfirmation, {
+  .extend({
+    currentPassword: z.string().min(1, "La contraseña actual es requerida"),
+  })
+  .refine(data => data.password === data.passwordConfirmation, {
     message: "Las contraseñas no coinciden",
     path: ["passwordConfirmation"],
   });
-  
-  // Types inferidos
-  export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
-  export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+// Types inferidos
+export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

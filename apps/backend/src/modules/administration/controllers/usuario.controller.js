@@ -3,10 +3,7 @@ import { Usuario } from "../models/Usuario.model.js";
 import { Departamento } from "../models/Departamento.model.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
 import { generarId } from "../../../utils/generarId.js";
-import {
-  emailRegistro,
-  emailOlvidePassword,
-} from "../services/email.service.js";
+import { emailRegistro, emailOlvidePassword } from "../services/email.service.js";
 
 export const registrarUsuario = async (req, res) => {
   // const { nombres, apellidos, email, password, departamentoId } = req.body;
@@ -16,23 +13,17 @@ export const registrarUsuario = async (req, res) => {
 
   // if (!nombres || !apellidos || !email || !password || !departamentoId)
   if (!nombres || !apellidos || !email || !password)
-    return res
-      .status(400)
-      .json({ message: "Todos los campos son obligatorios" });
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
 
   const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailValido.test(email))
-    return res.status(400).json({ message: "Email inválido" });
+  if (!emailValido.test(email)) return res.status(400).json({ message: "Email inválido" });
 
   if (password.length < 6)
-    return res
-      .status(400)
-      .json({ message: "La constraseña debe tener al menos 6 caracteres " });
+    return res.status(400).json({ message: "La constraseña debe tener al menos 6 caracteres " });
 
   // Prevenir usuarios duplicados, en el model Usuario ya esta definido el campo unique: true, para el email, pero se hara una verificación complementaria
   const usuarioExiste = await Usuario.findOne({ where: { email } });
-  if (usuarioExiste)
-    return res.status(400).json({ message: "Usuario ya registrado" });
+  if (usuarioExiste) return res.status(400).json({ message: "Usuario ya registrado" });
 
   //if (!departamento)
   //return res.status(400).json({ message: "Departamento no válido" });
@@ -121,9 +112,7 @@ export const autenticarUsuario = async (req, res) => {
     }
 
     if (!usuario.confirmado) {
-      return res
-        .status(403)
-        .json({ message: "Usuario no confirmado o suspendido" });
+      return res.status(403).json({ message: "Usuario no confirmado o suspendido" });
     }
 
     if (!usuario.estado === 0 || !usuario.estado) {
@@ -136,8 +125,7 @@ export const autenticarUsuario = async (req, res) => {
           "El usuario no tiene asignado ningún departamento, comunicate con el departamento de Tecnología",
       });
 
-    if (!departamento)
-      return res.status(404).json("El departamento asignado no existe");
+    if (!departamento) return res.status(404).json("El departamento asignado no existe");
 
     // * Comparar la contraseña ingresada con la contraseña hasheada
     if (!(await bcrypt.compare(password, usuario.password))) {
@@ -201,8 +189,7 @@ export const olvidePassword = async (req, res) => {
     await transaction.rollback();
     console.log(`Error al recuperar Password: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al recuperar el password del usuario, intente nuevamente más tarde.",
+      message: "Error al recuperar el password del usuario, intente nuevamente más tarde.",
     });
   }
 };
@@ -212,8 +199,7 @@ export const comprobarToken = async (req, res) => {
 
   try {
     const tokenValido = await Usuario.findOne({ where: { token } });
-    if (!tokenValido)
-      return res.status(400).json({ message: "Token no válido o expirado" });
+    if (!tokenValido) return res.status(400).json({ message: "Token no válido o expirado" });
 
     return res.status(200).json({ message: "Token válido" });
   } catch (error) {
@@ -246,15 +232,12 @@ export const nuevoPassword = async (req, res) => {
 
     await transaction.commit();
 
-    return res
-      .status(200)
-      .json({ message: "Contraseña actualizada correctamente" });
+    return res.status(200).json({ message: "Contraseña actualizada correctamente" });
   } catch (error) {
     await transaction.rollback();
     console.error(`Error al actualizar la contraseña: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Hubo un error al actualizar la contraseña, inténtalo más tarde.",
+      message: "Hubo un error al actualizar la contraseña, inténtalo más tarde.",
     });
   }
 };
@@ -340,9 +323,7 @@ export const actualizarPassword = async (req, res) => {
   const esCorrecto = await usuario.comprobarPassword(pwd_actual);
 
   if (!esCorrecto) {
-    return res
-      .status(401)
-      .json({ mensaje: "EL password actual es incorrecto" });
+    return res.status(401).json({ mensaje: "EL password actual es incorrecto" });
   }
 
   // Almacenar el nuevo password
@@ -390,9 +371,7 @@ export const obtenerUsuariosPorDepartamentoYRol = async (req, res) => {
 
     return res.json(usuarios);
   } catch (error) {
-    console.error(
-      `Error al cargar los usuarios del departamento: ${error.message}`
-    );
+    console.error(`Error al cargar los usuarios del departamento: ${error.message}`);
     return res.status(500).json({
       message: "Error al cargar los usuarios del departamento",
     });

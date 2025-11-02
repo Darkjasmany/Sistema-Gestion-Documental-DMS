@@ -55,7 +55,7 @@ export const Empleado = sequelize.define(
   {
     tableName: "empleado",
     hooks: {
-      beforeSave: async (empleado) => {
+      beforeSave: async empleado => {
         empleado.nombres = empleado.nombres.trim();
         empleado.apellidos = empleado.apellidos.trim();
 

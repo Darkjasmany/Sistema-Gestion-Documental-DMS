@@ -42,9 +42,7 @@ export const conectarDB = async () => {
       )
     );
   } catch (error: any) {
-    console.error(
-      colors.red(`❌ Error de conexión a PostgreSQL: ${error.message}`)
-    );
+    console.error(colors.red(`❌ Error de conexión a PostgreSQL: ${error.message}`));
     exit(1); // Termina el proceso si ocurre un error
   }
 };

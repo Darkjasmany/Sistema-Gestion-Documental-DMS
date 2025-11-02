@@ -33,13 +33,13 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
     fecthEmpleadosXRol();
   }, [auth.departamentoId]);
 
-  const handleEmpleadoDespachadorChange = (e) => {
+  const handleEmpleadoDespachadorChange = e => {
     // console.log(e.target.value);
     const empleadoId = e.target.value;
     setEmpleadoDespachadorId(empleadoId);
   };
 
-  const handleSubmitCompletarDirecto = async (e) => {
+  const handleSubmitCompletarDirecto = async e => {
     e.preventDefault();
 
     const datosCompletar = {
@@ -51,10 +51,7 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
       let response;
 
       if (tramite.estado === "INGRESADO") {
-        response = await despacharTramiteDirectoCompletado(
-          tramite.id,
-          datosCompletar
-        );
+        response = await despacharTramiteDirectoCompletado(tramite.id, datosCompletar);
       }
 
       setAlerta({ message: response.message, error: response.error });
@@ -91,7 +88,7 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
           <label className="text-gray-700 font-medium">Observación:</label>
           <textarea
             value={observacion}
-            onChange={(e) => setObservacion(e.target.value)}
+            onChange={e => setObservacion(e.target.value)}
             placeholder="Observación para completar el trámite"
             // disabled={tramite.estado === "COMPLETADO"}
             className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
@@ -101,10 +98,7 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
         {/* Campo para designar empleado que despacha */}
         {tramite.estado === "INGRESADO" && (
           <div className="mb-5">
-            <label
-              htmlFor="empleadosxRol"
-              className="text-gray-700 font-medium"
-            >
+            <label htmlFor="empleadosxRol" className="text-gray-700 font-medium">
               Despachador:
             </label>
             <select
@@ -116,7 +110,7 @@ const CompletarTramiteDirecto = ({ tramite, onTramiteUpdated, closeModal }) => {
             >
               <option value={""}>Seleccione un depachador</option>
 
-              {empleadosXRol.map((emp) => (
+              {empleadosXRol.map(emp => (
                 <option value={emp.id} key={emp.id}>
                   {emp.nombres} {emp.apellidos} - {emp.rol}
                 </option>

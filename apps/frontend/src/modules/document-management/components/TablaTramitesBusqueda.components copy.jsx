@@ -32,9 +32,9 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
   const [alerta, setAlerta] = useState({});
 
-  const toggleExpandir = (id) => {
+  const toggleExpandir = id => {
     // setTramiteExpandido(tramiteExpandido === id ? null : id);
-    setTramiteExpandido((prev) => (prev === id ? null : id));
+    setTramiteExpandido(prev => (prev === id ? null : id));
   };
 
   // const toggleExpandir = (id) => {
@@ -48,12 +48,12 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
   //   });
   // };
 
-  const openModal = (tramite) => {
+  const openModal = tramite => {
     setSelectedTramite(tramite);
     setIsModalOpen(true);
   };
 
-  const openModalDirecto = (tramite) => {
+  const openModalDirecto = tramite => {
     setSelectedTramite(tramite);
     setIsModalOpenDirecto(true);
   };
@@ -95,12 +95,11 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
       },
       {
         header: "Departamento Remitente",
-        accessorFn: (row) =>
-          row.departamentoRemitente?.nombre || "Sin departamento",
+        accessorFn: row => row.departamentoRemitente?.nombre || "Sin departamento",
       },
       {
         header: "Remitente",
-        accessorFn: (row) => row.remitente?.nombreCompleto || "Sin remitente",
+        accessorFn: row => row.remitente?.nombreCompleto || "Sin remitente",
       },
       {
         header: "Estado",
@@ -155,10 +154,8 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             className="bg-purple-600 text-white px-3 py-1 rounded"
             onClick={() => openModal(row.original)}
           >
-            {isAsignados &&
-              (row.original.estado === "PENDIENTE" ? "Completar" : "Editar")}
-            {isCompletados &&
-              (row.original.estado === "POR_REVISAR" ? "Aprobar" : "Editar")}
+            {isAsignados && (row.original.estado === "PENDIENTE" ? "Completar" : "Editar")}
+            {isCompletados && (row.original.estado === "POR_REVISAR" ? "Aprobar" : "Editar")}
             {isDespachar && "Despachar"}
           </button>
         ),
@@ -206,29 +203,23 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
           {/* Tabla */}
           <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
             <thead className="bg-gray-200">
-              {table.getHeaderGroups().map((headerGroup) => (
+              {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <th key={header.id} className="border p-3">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </th>
                   ))}
                 </tr>
               ))}
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <React.Fragment key={row.id}>
                   <tr className="hover:bg-gray-100">
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <td key={cell.id} className="border p-3">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
                   </tr>
@@ -237,8 +228,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                       <td colSpan={columns.length} className="p-4">
                         <div>
                           <p>
-                            <strong>Descripción Tramite:</strong>{" "}
-                            {row.original.descripcion}
+                            <strong>Descripción Tramite:</strong> {row.original.descripcion}
                           </p>
 
                           <p>
@@ -247,16 +237,13 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
 
                           {row.original.fecha_contestacion && (
                             <p>
-                              <strong>Fecha Contestación:</strong>{" "}
-                              {row.original.fecha_contestacion}
+                              <strong>Fecha Contestación:</strong> {row.original.fecha_contestacion}
                             </p>
                           )}
 
                           {row.original.numero_oficio && (
                             <p>
-                              <strong>
-                                Número de Memo|Oficio Contestación:
-                              </strong>{" "}
+                              <strong>Número de Memo|Oficio Contestación:</strong>{" "}
                               {row.original.numero_oficio}
                             </p>
                           )}
@@ -268,18 +255,15 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                               </p>
                               <ul className="list-disc pl-5">
                                 {row.original.destinatarios?.length > 0 ? (
-                                  row.original.destinatarios.map(
-                                    (destinatario) => (
-                                      <li key={destinatario.destinatario.id}>
-                                        {destinatario.destinatario.nombres +
-                                          " " +
-                                          destinatario.destinatario.apellidos +
-                                          " - " +
-                                          destinatario.departamentoDestinatario
-                                            .nombre}
-                                      </li>
-                                    )
-                                  )
+                                  row.original.destinatarios.map(destinatario => (
+                                    <li key={destinatario.destinatario.id}>
+                                      {destinatario.destinatario.nombres +
+                                        " " +
+                                        destinatario.destinatario.apellidos +
+                                        " - " +
+                                        destinatario.departamentoDestinatario.nombre}
+                                    </li>
+                                  ))
                                 ) : (
                                   <li>No hay destinatarios</li>
                                 )}
@@ -295,33 +279,21 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                               {/* Cambiado list-disc por list-decimal */}
                               <ul className="list-disc pl-5">
                                 {" "}
-                                {row.original.tramiteObservaciones?.length >
-                                0 ? (
-                                  row.original.tramiteObservaciones.map(
-                                    (observacion) => (
-                                      <li key={observacion.id}>
-                                        <div className="flex flex-col">
-                                          <span className="mb-1">
-                                            <strong>Usuario Creación:</strong>{" "}
-                                            {
-                                              observacion
-                                                .usuarioCreacionObservacion
-                                                .nombres
-                                            }{" "}
-                                            {
-                                              observacion
-                                                .usuarioCreacionObservacion
-                                                .apellidos
-                                            }
-                                          </span>
-                                          <span>
-                                            <strong>Detalle:</strong>{" "}
-                                            {observacion.observacion}
-                                          </span>
-                                        </div>
-                                      </li>
-                                    )
-                                  )
+                                {row.original.tramiteObservaciones?.length > 0 ? (
+                                  row.original.tramiteObservaciones.map(observacion => (
+                                    <li key={observacion.id}>
+                                      <div className="flex flex-col">
+                                        <span className="mb-1">
+                                          <strong>Usuario Creación:</strong>{" "}
+                                          {observacion.usuarioCreacionObservacion.nombres}{" "}
+                                          {observacion.usuarioCreacionObservacion.apellidos}
+                                        </span>
+                                        <span>
+                                          <strong>Detalle:</strong> {observacion.observacion}
+                                        </span>
+                                      </div>
+                                    </li>
+                                  ))
                                 ) : (
                                   <li>No hay observaciones</li>
                                 )}
@@ -334,14 +306,10 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                           </p>
                           <ul className="list-disc pl-5">
                             {row.original.tramiteArchivos?.length > 0 ? (
-                              row.original.tramiteArchivos.map((archivo) => (
+                              row.original.tramiteArchivos.map(archivo => (
                                 <li key={archivo.id}>
                                   <a
-                                    href={
-                                      import.meta.env.VITE_BACKEND_URL +
-                                      "/" +
-                                      archivo.ruta
-                                    }
+                                    href={import.meta.env.VITE_BACKEND_URL + "/" + archivo.ruta}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 underline"
@@ -412,24 +380,23 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
             <h2 className="text-center font-bold mb-5">
               {" "}
               {isAsignarReasignar
-                ? "Asignar|Reasignar Revisor para Trámite #" +
-                  selectedTramite.numero_tramite
+                ? "Asignar|Reasignar Revisor para Trámite #" + selectedTramite.numero_tramite
                 : isAsignados
-                ? (selectedTramite.estado === "PENDIENTE"
-                    ? "Completar Trámite #"
-                    : selectedTramite.estado === "COMPLETADO"
-                    ? "Despachar Trámite"
-                    : "Editar Trámite #") + selectedTramite.numero_tramite
-                : // "Editar Trámite #") + selectedTramite.numero_tramite
-                isCompletados
-                ? (selectedTramite.estado === "POR_REVISAR"
-                    ? "Aprobar Trámite #"
-                    : "Para Despachar #") + selectedTramite.numero_tramite
-                : isDespachar
-                ? (selectedTramite.estado === "COMPLETADO"
-                    ? "Entregar Trámite #"
-                    : "Para Finalizar #") + selectedTramite.numero_tramite
-                : ""}
+                  ? (selectedTramite.estado === "PENDIENTE"
+                      ? "Completar Trámite #"
+                      : selectedTramite.estado === "COMPLETADO"
+                        ? "Despachar Trámite"
+                        : "Editar Trámite #") + selectedTramite.numero_tramite
+                  : // "Editar Trámite #") + selectedTramite.numero_tramite
+                    isCompletados
+                    ? (selectedTramite.estado === "POR_REVISAR"
+                        ? "Aprobar Trámite #"
+                        : "Para Despachar #") + selectedTramite.numero_tramite
+                    : isDespachar
+                      ? (selectedTramite.estado === "COMPLETADO"
+                          ? "Entregar Trámite #"
+                          : "Para Finalizar #") + selectedTramite.numero_tramite
+                      : ""}
             </h2>
             {isAsignarReasignar && (
               <AsignarReasignarTramite
@@ -461,10 +428,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
               />
             )}
 
-            <button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
-              onClick={closeModal}
-            >
+            <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded " onClick={closeModal}>
               Cerrar
             </button>
           </div>
@@ -475,8 +439,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
         <div className="fixed inset-0 bg-black opacity-95 flex justify-center items-center">
           <div className="bg-white p-5 rounded-lg w-2/4 lg:w-1/3">
             <h2 className="text-center font-bold mb-5">
-              {"Asignar Despachador para Trámite #" +
-                selectedTramite.numero_tramite}
+              {"Asignar Despachador para Trámite #" + selectedTramite.numero_tramite}
             </h2>
 
             {isAsignarReasignar && (
@@ -486,10 +449,7 @@ const TablaTramitesBusqueda = ({ tramiteBusqueda, onTramiteUpdated }) => {
                 closeModal={closeModal}
               />
             )}
-            <button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded "
-              onClick={closeModal}
-            >
+            <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded " onClick={closeModal}>
               Cerrar
             </button>
           </div>

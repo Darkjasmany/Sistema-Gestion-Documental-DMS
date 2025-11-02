@@ -13,12 +13,8 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   const [empleadosSeleccionados, setEmpleadosSeleccionados] = useState([]);
   const [busquedaEmpleado, setBusquedaEmpleado] = useState("");
   const [sugerenciasEmpleados, setSugerenciasEmpleados] = useState([]);
-  const [fechaDespacho, setFechaDespacho] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [fechaLimite, setFechaLimite] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [fechaDespacho, setFechaDespacho] = useState(new Date().toISOString().split("T")[0]);
+  const [fechaLimite, setFechaLimite] = useState(new Date().toISOString().split("T")[0]);
   const [observacionCoordinador, setObservacionCoordinador] = useState("");
   const [observacion, setObservacion] = useState("");
   const [memo, setMemo] = useState("");
@@ -50,7 +46,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       return;
     }
 
-    const filtro = empleados.filter((empleado) =>
+    const filtro = empleados.filter(empleado =>
       `${empleado.nombres} ${empleado.apellidos}`
         .toLowerCase()
         .includes(busquedaEmpleado.toLowerCase())
@@ -60,10 +56,8 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   }, [empleados, busquedaEmpleado]);
 
   //Función para seleccionar empleados
-  const handleSeleccionEmpleado = (empleado) => {
-    if (
-      empleadosSeleccionados.some((seleccion) => seleccion.id === empleado.id)
-    ) {
+  const handleSeleccionEmpleado = empleado => {
+    if (empleadosSeleccionados.some(seleccion => seleccion.id === empleado.id)) {
       setEmpleadosSeleccionados(
         // TODO Si el empleado ya está en la lista, lo elimina
         // empleadosSeleccionados.filter(
@@ -81,10 +75,8 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   };
 
   // Función para eliminar un empleado seleccionado
-  const handleEliminarEmpleado = (id) => {
-    setEmpleadosSeleccionados(
-      empleadosSeleccionados.filter((empleado) => empleado.id !== id)
-    );
+  const handleEliminarEmpleado = id => {
+    setEmpleadosSeleccionados(empleadosSeleccionados.filter(empleado => empleado.id !== id));
   };
 
   // Inicializar los estados con los datos del trámite cuando se edita
@@ -107,9 +99,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
     if (tramite?.numero_oficio) {
       setMemo(tramite.numero_oficio);
-      setFechaDespacho(
-        tramite.fecha_despacho || new Date().toISOString().split("T")[0]
-      );
+      setFechaDespacho(tramite.fecha_despacho || new Date().toISOString().split("T")[0]);
 
       // Obtener la observación más reciente
       if (tramite.tramiteObservaciones.length > 0) {
@@ -124,7 +114,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
       }
 
       setEmpleadosSeleccionados(
-        tramite.destinatarios.map((dest) => ({
+        tramite.destinatarios.map(dest => ({
           id: dest.destinatario.id,
           nombres: dest.destinatario.nombres,
           apellidos: dest.destinatario.apellidos,
@@ -145,10 +135,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
     const observacionRechazo = { observacion };
     try {
-      const response = await rechazarTramiteCoordinador(
-        tramite.id,
-        observacionRechazo
-      );
+      const response = await rechazarTramiteCoordinador(tramite.id, observacionRechazo);
 
       setAlerta({ message: response.message, error: response.error });
 
@@ -164,29 +151,23 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     }
   };
 
-  const handleSubmitCompletar = async (e) => {
+  const handleSubmitCompletar = async e => {
     e.preventDefault();
 
     const datosCompletar = {
       fechaDespacho,
       memo,
       observacion,
-      destinatarios: empleadosSeleccionados.map((empleado) => empleado.id),
+      destinatarios: empleadosSeleccionados.map(empleado => empleado.id),
     };
 
     try {
       let response;
 
       if (tramite.estado === "COMPLETADO") {
-        response = await actualizarCompletarTramiteCoordinador(
-          tramite.id,
-          datosCompletar
-        );
+        response = await actualizarCompletarTramiteCoordinador(tramite.id, datosCompletar);
       } else {
-        response = await completarTramiteCoordinador(
-          tramite.id,
-          datosCompletar
-        );
+        response = await completarTramiteCoordinador(tramite.id, datosCompletar);
       }
 
       setAlerta({ message: response.message, error: response.error });
@@ -222,13 +203,11 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           {/* Campo para la Fecha Limite*/}
 
           <div className="mb-5 w-full">
-            <label className="text-gray-700 font-medium block">
-              Fecha Limite Contestación:
-            </label>
+            <label className="text-gray-700 font-medium block">Fecha Limite Contestación:</label>
             <input
               type="date"
               value={fechaLimite}
-              onChange={(e) => setFechaLimite(e.target.value)}
+              onChange={e => setFechaLimite(e.target.value)}
               className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
               disabled
             />
@@ -236,22 +215,18 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
           {/* Campo para la Fecha */}
           <div className="mb-5 w-full">
-            <label className="text-gray-700 font-medium block">
-              Fecha Contestación:
-            </label>
+            <label className="text-gray-700 font-medium block">Fecha Contestación:</label>
             <input
               type="date"
               value={fechaDespacho}
-              onChange={(e) => setFechaDespacho(e.target.value)}
+              onChange={e => setFechaDespacho(e.target.value)}
               className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
         </div>
 
         <div className="mb-5">
-          <label className="text-gray-700 font-medium block">
-            Nota Coordinador:
-          </label>
+          <label className="text-gray-700 font-medium block">Nota Coordinador:</label>
           <input
             type="text"
             value={observacionCoordinador}
@@ -263,13 +238,11 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
         {/* {memo && ( */}
         <div className="mb-5">
-          <label className="text-gray-700 font-medium block">
-            Número de Memo|Ofico:
-          </label>
+          <label className="text-gray-700 font-medium block">Número de Memo|Ofico:</label>
           <input
             type="text"
             value={memo}
-            onChange={(e) => setMemo(e.target.value)}
+            onChange={e => setMemo(e.target.value)}
             className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             // disabled
           />
@@ -278,21 +251,19 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
         {/* Input de búsqueda y selección de empleados */}
         <div className="mb-5">
-          <label className="text-gray-700 font-medium block">
-            Buscar y seleccionar empleados:
-          </label>
+          <label className="text-gray-700 font-medium block">Buscar y seleccionar empleados:</label>
           <input
             type="text"
             placeholder="Escribe un nombre..."
             value={busquedaEmpleado}
-            onChange={(e) => setBusquedaEmpleado(e.target.value)}
+            onChange={e => setBusquedaEmpleado(e.target.value)}
             className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
 
           {/* Sugerencias de empleados */}
           {sugerenciasEmpleados.length > 0 && (
             <ul className="border mt-2 rounded-md bg-white shadow-md max-h-40 overflow-y-auto">
-              {sugerenciasEmpleados.map((empleado) => (
+              {sugerenciasEmpleados.map(empleado => (
                 <li
                   key={empleado.id}
                   onClick={() => handleSeleccionEmpleado(empleado)}
@@ -308,11 +279,9 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         {/* Lista de empleados seleccionados */}
         {empleadosSeleccionados.length > 0 && (
           <div className="mb-5">
-            <label className="text-gray-700 font-medium block">
-              Empleados seleccionados:
-            </label>
+            <label className="text-gray-700 font-medium block">Empleados seleccionados:</label>
             <div className="flex flex-wrap gap-2 mt-2">
-              {empleadosSeleccionados.map((empleado) => (
+              {empleadosSeleccionados.map(empleado => (
                 <div
                   key={empleado.id}
                   className="bg-indigo-200 px-3 py-1 rounded-full flex items-center"
@@ -338,7 +307,7 @@ const AprobarTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           <label className="text-gray-700 font-medium">Observación:</label>
           <textarea
             value={observacion}
-            onChange={(e) => setObservacion(e.target.value)}
+            onChange={e => setObservacion(e.target.value)}
             placeholder="Observación para completar el trámite"
             className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />

@@ -12,33 +12,40 @@ Este es el frontend de la aplicación de **Gestión Documental**, desarrollado c
 ## Instalación
 
 1. Clona este repositorio.
+
    ```bash
    git clone https://github.com/Darkjasmany/Sistema-Gestion-Documental-DMS.git
+
+   ```
 
 2. Navega a la carpeta front
    ```bash
    cd frontend
+   ```
 3. Intala las dependencias
    ```bash
    npm install
+   ```
 4. Ejecuta en modo desarrollo:
    ```bash
    npm run dev
+   ```
 5. Para producción, usa:
    ```bash
    npm start
+   ```
 
 La aplicación estará disponible en http://localhost:3000
 
 frontend/
 │
-├── public/           # Archivos estáticos (favicon, index.html, etc.)
-├── src/              # Archivos fuente
-│   ├── components/   # Componentes reutilizables
-│   ├── pages/        # Páginas de la aplicación
-│   ├── utils/        # Funciones y configuraciones auxiliares
-│   ├── App.js        # Componente principal de la aplicación
-│   └── index.js      # Entrada de la aplicación React
+├── public/ # Archivos estáticos (favicon, index.html, etc.)
+├── src/ # Archivos fuente
+│ ├── components/ # Componentes reutilizables
+│ ├── pages/ # Páginas de la aplicación
+│ ├── utils/ # Funciones y configuraciones auxiliares
+│ ├── App.js # Componente principal de la aplicación
+│ └── index.js # Entrada de la aplicación React
 └── tailwind.config.js # Configuración de TailwindCSS
 
 ## Funcionalidades principales

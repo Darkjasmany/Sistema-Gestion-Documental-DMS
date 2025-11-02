@@ -1,7 +1,6 @@
 function getEnv(name: keyof NodeJS.ProcessEnv): string {
   const value = process.env[name];
-  if (!value)
-    throw new Error(`La variable de entorno ${name} no está definida`);
+  if (!value) throw new Error(`La variable de entorno ${name} no está definida`);
   return value;
 }
 

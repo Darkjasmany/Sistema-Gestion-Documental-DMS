@@ -29,9 +29,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         const { data } = await clienteAxios("/admin/parametros");
         setParametros(data);
 
-        const maxFiles = data.find(
-          (parametro) => parametro.clave === "MAX_UPLOAD_FILES"
-        );
+        const maxFiles = data.find(parametro => parametro.clave === "MAX_UPLOAD_FILES");
 
         setMaxUploadFiles(Number(maxFiles?.valor || 0));
       } catch (error) {
@@ -106,13 +104,13 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     }
   }, [tramite]);
 */
-  const handleDespachadorChange = (e) => {
+  const handleDespachadorChange = e => {
     // console.log(e.target.value);
     const empleadoId = e.target.value;
     setDespachadorId(empleadoId);
   };
 
-  const handleSubmitDespachar = async (e) => {
+  const handleSubmitDespachar = async e => {
     e.preventDefault();
     if ([fechaDespacho, horaDespacho].includes("")) {
       setAlerta({ message: "Todos los campos son Obligatorios", error: true });
@@ -154,7 +152,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
     }
   };
 
-  const handleArchivosSeleccionados = (e) => {
+  const handleArchivosSeleccionados = e => {
     const archivosSeleccionados = Array.from(e.target.files); // Convertimos FileList a un array
 
     // Verificamos si los archivos seleccionados y los ya cargados exceden el máximo
@@ -172,7 +170,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
   };
 
   // Funcion para eliminar archivo
-  const eliminarArchivo = (index) => {
+  const eliminarArchivo = index => {
     const nuevosArchivos = archivos.filter((_, i) => i !== index);
     setArchivos(nuevosArchivos);
     setArchivosEliminar([...archivosEliminar, archivos[index].id]);
@@ -195,25 +193,21 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
         <div className="flex justify-between gap-5">
           {/* Campo para la Fecha Despacho*/}
           <div className="mb-5 w-full">
-            <label className="text-gray-700 font-medium block">
-              Fecha Despacho:
-            </label>
+            <label className="text-gray-700 font-medium block">Fecha Despacho:</label>
             <input
               type="date"
               value={fechaDespacho}
-              onChange={(e) => setFechaDespacho(e.target.value)}
+              onChange={e => setFechaDespacho(e.target.value)}
               className="border-2 w-full h-10 p-2 mt-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           {/* Campo para la Hora Despacho*/}
           <div className="mb-5 w-full">
-            <label className="text-gray-700 font-medium block">
-              Hora Despacho:
-            </label>
+            <label className="text-gray-700 font-medium block">Hora Despacho:</label>
             <input
               type="time"
               value={horaDespacho}
-              onChange={(e) => setHoraDespacho(e.target.value)}
+              onChange={e => setHoraDespacho(e.target.value)}
               className="border-2 w-full h-10 p-2 mt-2 rounded-md"
               step="300" // Saltos de 5 minutos
             />
@@ -233,7 +227,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
             onChange={handleDespachadorChange}
           >
             <option value={""}>Seleccione un depachador</option>
-            {despachadores.map((emp) => (
+            {despachadores.map(emp => (
               <option value={emp.id} key={emp.id}>
                 {emp.nombres} {emp.apellidos}
               </option>
@@ -246,7 +240,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
           <label className="text-gray-700 font-medium">Observación:</label>
           <textarea
             value={observacion}
-            onChange={(e) => setObservacion(e.target.value)}
+            onChange={e => setObservacion(e.target.value)}
             placeholder="Observación para completar el trámite"
             className="border-2 w-full p-2 mt-2 h-20 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           />
@@ -254,9 +248,7 @@ const DespacharTramite = ({ tramite, onTramiteUpdated, closeModal }) => {
 
         {/* Campo para cargar Archivos */}
         <div className="mb-5">
-          <label className="text-gray-700 font-medium block">
-            Cargar Archivos:
-          </label>
+          <label className="text-gray-700 font-medium block">Cargar Archivos:</label>
           <input
             type="file"
             id="archivo"

@@ -11,8 +11,7 @@ const AuthProvider = ({ children }) => {
 
   const autenticarUsuario = async () => {
     //** Verificar el token
-    const token =
-      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+    const token = localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
     // console.log(token || auth?.id);
     if (!token) {
@@ -62,10 +61,9 @@ const AuthProvider = ({ children }) => {
   //   console.log("Estado auth actualizado:", auth);
   // }, [auth]);
 
-  const actualizarPerfil = async (datos) => {
+  const actualizarPerfil = async datos => {
     //** Verificar el token
-    const token =
-      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+    const token = localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
     // ** Header de Configuración
     const config = {
@@ -82,7 +80,7 @@ const AuthProvider = ({ children }) => {
       console.log(data);
 
       // Actualizar el estado auth con la información completa del usuario
-      setAuth((prevAuth) => ({
+      setAuth(prevAuth => ({
         ...prevAuth, // Mantén los valores anteriores
         ...data, // Actualiza con los nuevos datos
         departamento: data.departamento || prevAuth.departamento, // Asegúrate de que departamento esté presente
@@ -100,11 +98,10 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const guardarPassword = async (datos) => {
+  const guardarPassword = async datos => {
     // console.log(datos);
     //** Verificar el token
-    const token =
-      localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+    const token = localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
     // ** Header de Configuración
     const config = {

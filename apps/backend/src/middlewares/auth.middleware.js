@@ -17,14 +17,7 @@ export const checkAuth = async (req, res, next) => {
 
     // * Almacenar al objeto req la propiedad del usuario almacenado en la BD
     req.usuario = await Usuario.findByPk(decoded.id, {
-      attributes: [
-        "id",
-        "nombres",
-        "apellidos",
-        "email",
-        "rol",
-        "departamento_id",
-      ],
+      attributes: ["id", "nombres", "apellidos", "email", "rol", "departamento_id"],
       include: [
         {
           model: Departamento,

@@ -29,9 +29,9 @@ export const validarCantidadArchivos = async (req, res, next) => {
   let nuevoArrayEliminar = [];
   if (archivosEliminar) {
     nuevoArrayEliminar = JSON.parse(archivosEliminar)
-      .filter((id) => id != null) // Filtrar valores no nulos
-      .map((id) => parseInt(id)) // Convertir los valores restantes a enteros
-      .filter((id) => !isNaN(id)); // Filtrar los valores NaN
+      .filter(id => id != null) // Filtrar valores no nulos
+      .map(id => parseInt(id)) // Convertir los valores restantes a enteros
+      .filter(id => !isNaN(id)); // Filtrar los valores NaN
   }
 
   // // Buscar los archivos a eliminar en la base de datos
@@ -40,8 +40,7 @@ export const validarCantidadArchivos = async (req, res, next) => {
   // });
 
   // ** Validar si la cantidad de archivos supera el límite permitido
-  const totalArchivos =
-    archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
+  const totalArchivos = archivosExistentes.length - nuevoArrayEliminar.length + archivosNuevos;
 
   console.log(totalArchivos);
 

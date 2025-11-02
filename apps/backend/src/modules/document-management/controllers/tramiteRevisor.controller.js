@@ -13,8 +13,7 @@ import { getConfiguracionPorEstado } from "../../../utils/getConfiguracionPorEst
 
 export const listarTramitesRevisor = async (req, res) => {
   const { estado } = req.params;
-  if (!estado)
-    return res.status(400).json({ message: "El estado es requerido" });
+  if (!estado) return res.status(400).json({ message: "El estado es requerido" });
 
   try {
     const config = await getConfiguracionPorEstado(estado);
@@ -41,8 +40,8 @@ export const listarTramitesRevisor = async (req, res) => {
 
     // res.json(tramites);
     // Modificar la ruta antes de enviarla al frontend
-    const tramitesConRutas = tramites.map((tramite) => {
-      const archivosConRutas = tramite.tramiteArchivos.map((archivo) => ({
+    const tramitesConRutas = tramites.map(tramite => {
+      const archivosConRutas = tramite.tramiteArchivos.map(archivo => ({
         ...archivo.toJSON(),
         // ruta: `${archivo.ruta.replace(/\\/g, "/")}`,
         ruta: archivo.ruta.replace(/\\/g, "/").replace(/^\/+/, ""), // Elimina barras extra al inicio
@@ -57,9 +56,7 @@ export const listarTramitesRevisor = async (req, res) => {
     // console.log(tramitesConRutas);
     res.json(tramitesConRutas);
   } catch (error) {
-    console.error(
-      `Error al obtener los trámites con estado: ${estado}: ${error.message}`
-    );
+    console.error(`Error al obtener los trámites con estado: ${estado}: ${error.message}`);
     return res.status(500).json({
       message: `Error al obtener los trámites con estado: ${estado}, intente nuevamente más tarde.`,
     });
@@ -71,8 +68,7 @@ export const obtenerTramiteRevisor = async (req, res) => {
     const { id } = req.params;
     const { estado } = req.query;
 
-    if (!estado)
-      return res.status(400).json({ message: "El estado es requerido" });
+    if (!estado) return res.status(400).json({ message: "El estado es requerido" });
 
     const tramite = await Tramite.findOne({
       where: { id, estado, activo: true },
@@ -81,12 +77,9 @@ export const obtenerTramiteRevisor = async (req, res) => {
 
     if (
       tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
-      tramite.departamento_tramite.toString() !==
-        req.usuario.departamento_id.toString()
+      tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
     )
-      return res
-        .status(403)
-        .json({ message: "El trámite seleccionado no te pertenece" });
+      return res.status(403).json({ message: "El trámite seleccionado no te pertenece" });
 
     const archivos = await TramiteArchivo.findAll({
       where: { tramite_id: id },
@@ -120,8 +113,7 @@ export const obtenerTramiteRevisor = async (req, res) => {
   } catch (error) {
     console.error(`Error al obtener el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al obtener el trámite seleccionado, intente nuevamente más tarde.",
+      message: "Error al obtener el trámite seleccionado, intente nuevamente más tarde.",
     });
   }
 };
@@ -164,12 +156,9 @@ export const completarTramiteRevisor = async (req, res) => {
 
   if (
     tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   ) {
-    return res
-      .status(403)
-      .json({ message: "El trámite seleccionado no te pertenece" });
+    return res.status(403).json({ message: "El trámite seleccionado no te pertenece" });
   }
 
   const { valido, mensaje } = validarFecha(fechaDespacho);
@@ -178,7 +167,7 @@ export const completarTramiteRevisor = async (req, res) => {
   }
 
   // Asegurarme que voy a recibir un array de objetos
-  const destinatariosProcesados = destinatarios.map((dest) =>
+  const destinatariosProcesados = destinatarios.map(dest =>
     typeof dest === "number" ? { id: dest } : dest
   );
 
@@ -188,9 +177,7 @@ export const completarTramiteRevisor = async (req, res) => {
   });
 
   if (numeroMemo) {
-    return res
-      .status(409)
-      .json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
+    return res.status(409).json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
   }
   /*
   // Generar número de Memo Automatico
@@ -200,7 +187,7 @@ export const completarTramiteRevisor = async (req, res) => {
 */
   try {
     // Actualizar el trámite en una transacción
-    await sequelize.transaction(async (transaction) => {
+    await sequelize.transaction(async transaction => {
       for (const destinatario of destinatariosProcesados) {
         const departamentoDestinatario = await Empleado.findOne({
           where: { id: destinatario.id },
@@ -211,9 +198,7 @@ export const completarTramiteRevisor = async (req, res) => {
           await TramiteDestinatario.create(
             {
               tramite_id: id,
-              departamento_destinatario: parseInt(
-                departamentoDestinatario.departamento_id
-              ),
+              departamento_destinatario: parseInt(departamentoDestinatario.departamento_id),
               destinatario_id: destinatario.id,
               activo: true,
               usuario_creacion: req.usuario.id,
@@ -244,12 +229,9 @@ export const completarTramiteRevisor = async (req, res) => {
 
     return res.json({ message: "Tramite Completado" });
   } catch (error) {
-    console.error(
-      `Error al completar el trámite seleccionado: ${error.message}`
-    );
+    console.error(`Error al completar el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al completar el trámite seleccionado, intente nuevamente más tarde.",
+      message: "Error al completar el trámite seleccionado, intente nuevamente más tarde.",
     });
   }
 };
@@ -287,12 +269,9 @@ export const actualizarTramiteRevisor = async (req, res) => {
 
   if (
     tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   ) {
-    return res
-      .status(403)
-      .json({ message: "El trámite seleccionado no te pertenece" });
+    return res.status(403).json({ message: "El trámite seleccionado no te pertenece" });
   }
 
   const { valido, mensaje } = validarFecha(fechaDespacho);
@@ -306,9 +285,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
   });
 
   if (numeroMemo) {
-    return res
-      .status(409)
-      .json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
+    return res.status(409).json({ message: "El numero de Memo|Oficio ya esta siendo utilizado" });
   }
 
   //* Lógica para obtener destinatios ingresados en la BD y los que se envian por el formulario, para despues comparar e indentificar cual se inhabilita y cual se ingresa
@@ -321,7 +298,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
     },
   });
 
-  const destinatariosActuales = destinatariosTramite.map((destinatarioActual) =>
+  const destinatariosActuales = destinatariosTramite.map(destinatarioActual =>
     parseInt(destinatarioActual.destinatario_id)
   );
 
@@ -331,9 +308,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
   // );
   // Asegurarme que voy a recibir un array de objetos, al extraer el id de los objetos o usar directamente el número, aseguramos que destinatariosIngresados sea un array de números, permitiendo comparaciones válidas y consultas correctas a la base de datos.
 
-  const destinatariosIngresados = destinatarios.map((dest) =>
-    dest.id ? dest.id : dest
-  );
+  const destinatariosIngresados = destinatarios.map(dest => (dest.id ? dest.id : dest));
 
   // Identificar los destinatarios que se nuevos a ingresar y los que se deben inhabilitar
   const destinatariosEliminar = encontrarDestinariosABorrar(
@@ -370,9 +345,7 @@ export const actualizarTramiteRevisor = async (req, res) => {
         await TramiteDestinatario.create(
           {
             tramite_id: id,
-            departamento_destinatario: parseInt(
-              departamentoDestinatario.departamento_id
-            ),
+            departamento_destinatario: parseInt(departamentoDestinatario.departamento_id),
             destinatario_id: destinatario,
             activo: true,
             usuario_creacion: req.usuario.id,
@@ -409,20 +382,16 @@ export const actualizarTramiteRevisor = async (req, res) => {
     });
 
     if (tramiteObservacion) {
-      tramiteObservacion.observacion =
-        observacion || tramiteObservacion.observacion;
+      tramiteObservacion.observacion = observacion || tramiteObservacion.observacion;
       await tramiteObservacion.save({ transaction });
     }
 
     await transaction.commit();
     return res.json({ message: "Trámite Actualizado Correctamente" });
   } catch (error) {
-    console.error(
-      `Error al actualizar el trámite seleccionado: ${error.message}`
-    );
+    console.error(`Error al actualizar el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al actualizar el trámite seleccionado, intente nuevamente más tarde.",
+      message: "Error al actualizar el trámite seleccionado, intente nuevamente más tarde.",
     });
   }
 };
@@ -452,9 +421,7 @@ export const despacharTramiteRevisor = async (req, res) => {
 
   if (!existeUsuarioDespahador) {
     await transaction.rollback();
-    return res
-      .status(404)
-      .json({ message: "Usuario Despachador no encontrado" });
+    return res.status(404).json({ message: "Usuario Despachador no encontrado" });
   }
 
   const tramite = await Tramite.findOne({
@@ -467,29 +434,19 @@ export const despacharTramiteRevisor = async (req, res) => {
 
   if (
     tramite.usuario_revisor.toString() !== req.usuario.id.toString() ||
-    tramite.departamento_tramite.toString() !==
-      req.usuario.departamento_id.toString()
+    tramite.departamento_tramite.toString() !== req.usuario.departamento_id.toString()
   ) {
-    return res
-      .status(403)
-      .json({ message: "El trámite seleccionado no te pertenece" });
+    return res.status(403).json({ message: "El trámite seleccionado no te pertenece" });
   }
 
   try {
     const estadoAnterior = tramite.estado;
     // Registrar Historial Estado
-    await registrarHistorialEstado(
-      id,
-      estadoAnterior,
-      tramite.estado,
-      req.usuario.id,
-      transaction
-    );
+    await registrarHistorialEstado(id, estadoAnterior, tramite.estado, req.usuario.id, transaction);
 
     // Actualizar estado
     tramite.estado = "DESPACHADO";
-    tramite.usuario_despacho =
-      empleadoDespachadorId || tramite.usuario_despacho;
+    tramite.usuario_despacho = empleadoDespachadorId || tramite.usuario_despacho;
 
     await tramite.save({ transaction });
 
@@ -499,20 +456,14 @@ export const despacharTramiteRevisor = async (req, res) => {
       message: `Trámite Despachado Correctamente.`,
     });
   } catch (error) {
-    console.error(
-      `Error al actualizar el trámite seleccionado: ${error.message}`
-    );
+    console.error(`Error al actualizar el trámite seleccionado: ${error.message}`);
     return res.status(500).json({
-      message:
-        "Error al actualizar el trámite seleccionado, intente nuevamente más tarde.",
+      message: "Error al actualizar el trámite seleccionado, intente nuevamente más tarde.",
     });
   }
 };
 
-function encontrarDestinariosABorrar(
-  destinatariosActuales,
-  destinatariosIngresados
-) {
+function encontrarDestinariosABorrar(destinatariosActuales, destinatariosIngresados) {
   const destinatariosABorrar = [];
 
   // Convertimos destinatariosIngresados a un conjunto para una búsqueda más rápida
@@ -528,10 +479,7 @@ function encontrarDestinariosABorrar(
   return destinatariosABorrar;
 }
 
-function encontrarDestinatariosAIngresar(
-  destinatariosActuales,
-  destinatariosIngresados
-) {
+function encontrarDestinatariosAIngresar(destinatariosActuales, destinatariosIngresados) {
   const destinariosAIngresar = [];
 
   const conjuntoActual = new Set(destinatariosActuales);

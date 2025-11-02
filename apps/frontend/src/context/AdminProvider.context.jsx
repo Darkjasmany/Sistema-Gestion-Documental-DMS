@@ -6,8 +6,7 @@ const AdminContext = createContext();
 
 const AdminProvider = ({ children }) => {
   const { auth } = useAuth();
-  const token =
-    localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
+  const token = localStorage.getItem("dms_token") || sessionStorage.getItem("dms_token");
 
   const [departamentos, setDepartamentos] = useState([]);
   const [empleados, setEmpleados] = useState([]);
@@ -24,7 +23,7 @@ const AdminProvider = ({ children }) => {
   };
 
   //** DEPARTAMENTOS */
-  const guardarDepartamento = async (departamento) => {
+  const guardarDepartamento = async departamento => {
     if (!token) return;
 
     try {
@@ -44,10 +43,7 @@ const AdminProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const { data } = await clienteAxios.get(
-        "/departamentos",
-        getAxiosConfigJSON()
-      );
+      const { data } = await clienteAxios.get("/departamentos", getAxiosConfigJSON());
       return data;
     } catch (error) {
       console.error("Error al obtener departamentos:", error);
@@ -71,14 +67,11 @@ const AdminProvider = ({ children }) => {
     }
   };
 
-  const eliminarDepartamento = async (id) => {
+  const eliminarDepartamento = async id => {
     if (!token) return;
 
     try {
-      const { data } = await clienteAxios.delete(
-        `/departamentos/${id}`,
-        getAxiosConfigJSON()
-      );
+      const { data } = await clienteAxios.delete(`/departamentos/${id}`, getAxiosConfigJSON());
       return data;
     } catch (error) {
       console.error("Error al eliminar departamento:", error);
@@ -86,14 +79,11 @@ const AdminProvider = ({ children }) => {
     }
   };
 
-  const obtenerDepartamento = async (id) => {
+  const obtenerDepartamento = async id => {
     if (!token) return;
 
     try {
-      const { data } = await clienteAxios.get(
-        `/departamentos/${id}`,
-        getAxiosConfigJSON()
-      );
+      const { data } = await clienteAxios.get(`/departamentos/${id}`, getAxiosConfigJSON());
       return data;
     } catch (error) {
       console.error("Error al obtener departamento:", error);
@@ -115,24 +105,20 @@ const AdminProvider = ({ children }) => {
     }
   };
 
-  const guardarEmpleado = async (empleado) => {
+  const guardarEmpleado = async empleado => {
     if (!token) return;
 
     try {
-      const { data } = await clienteAxios.post(
-        "/empleados",
-        empleado,
-        getAxiosConfigJSON()
-      );
+      const { data } = await clienteAxios.post("/empleados", empleado, getAxiosConfigJSON());
 
-      setEmpleados((prevState) => [...prevState, data]); // Agregar el nuevo empleado a la lista
+      setEmpleados(prevState => [...prevState, data]); // Agregar el nuevo empleado a la lista
       return data;
     } catch (error) {
       console.error("Error al agregar empleado:", error);
     }
   };
 
-  const obtenerEmpleado = async (id) => {
+  const obtenerEmpleado = async id => {
     if (!token) return;
 
     try {
@@ -147,18 +133,12 @@ const AdminProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const { data } = await clienteAxios.put(
-        `/empleados/${id}`,
-        empleado,
-        getAxiosConfigJSON()
-      );
+      const { data } = await clienteAxios.put(`/empleados/${id}`, empleado, getAxiosConfigJSON());
 
       const empleadoActualizado = data;
 
       // Actualizar el empleado en la lista
-      setEmpleados((prevState) =>
-        prevState.map((emp) => (emp.id === id ? empleadoActualizado : emp))
-      );
+      setEmpleados(prevState => prevState.map(emp => (emp.id === id ? empleadoActualizado : emp)));
 
       return empleadoActualizado;
     } catch (error) {
@@ -166,12 +146,12 @@ const AdminProvider = ({ children }) => {
     }
   };
 
-  const eliminarEmpleado = async (id) => {
+  const eliminarEmpleado = async id => {
     if (!token) return;
 
     try {
       await clienteAxios.delete(`/empleados/${id}`, getAxiosConfigJSON());
-      setEmpleados((prevState) => prevState.filter((emp) => emp.id !== id));
+      setEmpleados(prevState => prevState.filter(emp => emp.id !== id));
     } catch (error) {
       console.error("Error al eliminar empleado:", error);
       throw error;

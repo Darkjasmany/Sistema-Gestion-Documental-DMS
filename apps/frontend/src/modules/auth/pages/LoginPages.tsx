@@ -123,10 +123,7 @@ const LoginPages = () => {
             />
             <span className="select-none">Recuérdame</span>
           </label>
-          <Link
-            to="/auth/forgot-password"
-            className="hover:text-sky-400 transition select-none"
-          >
+          <Link to="/auth/forgot-password" className="hover:text-sky-400 transition select-none">
             ¿Olvidaste tu password?
           </Link>
         </div>

@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 const AdminDMS = () => {
   const location = useLocation();
 
-  const isActive = (path) => location.pathname.includes(path);
+  const isActive = path => location.pathname.includes(path);
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-xl">
@@ -25,9 +25,7 @@ const AdminDMS = () => {
         <Link
           to="/admin/admin-dms/empleados"
           className={`text-sm font-semibold px-3 py-2 rounded-md transition ${
-            isActive("empleados")
-              ? "bg-blue-100 text-blue-700"
-              : "text-gray-600 hover:bg-gray-100"
+            isActive("empleados") ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
           }`}
         >
           Empleados
@@ -35,9 +33,7 @@ const AdminDMS = () => {
         <Link
           to="/admin/admin-dms/tramites"
           className={`text-sm font-semibold px-3 py-2 rounded-md transition ${
-            isActive("tramites")
-              ? "bg-blue-100 text-blue-700"
-              : "text-gray-600 hover:bg-gray-100"
+            isActive("tramites") ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
           }`}
         >
           Trámites

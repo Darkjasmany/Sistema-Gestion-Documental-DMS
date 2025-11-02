@@ -13,11 +13,7 @@ import {
 } from "sequelize-typescript";
 import { hashPassword } from "../../../utils/auth.js";
 import { Department } from "./Department.js";
-import type {
-  CreationOptional,
-  InferAttributes,
-  InferCreationAttributes,
-} from "sequelize";
+import type { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 
 const tipoRol = {
   USUARIO: "USUARIO",
@@ -34,10 +30,7 @@ export type TipoRol = (typeof tipoRol)[keyof typeof tipoRol];
   timestamps: true,
 })
 // export class User extends Model<IUser> {
-export class User extends Model<
-  InferAttributes<User>,
-  InferCreationAttributes<User>
-> {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.BIGINT)

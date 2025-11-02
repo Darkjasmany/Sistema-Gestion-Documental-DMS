@@ -172,9 +172,7 @@ const RegisterPages = () => {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300"
               onClick={() => setShow(!show)}
               aria-label={
-                show
-                  ? "Ocultar confirmación de contraseña"
-                  : "Mostrar confirmación de contraseña"
+                show ? "Ocultar confirmación de contraseña" : "Mostrar confirmación de contraseña"
               }
             >
               {show ? <IoMdEyeOff /> : <IoMdEye />}
@@ -186,10 +184,7 @@ const RegisterPages = () => {
         </div>
 
         <div className="flex items-center justify-end text-sm text-gray-400">
-          <Link
-            to="/auth/forgot-password"
-            className="hover:text-sky-400 transition select-none"
-          >
+          <Link to="/auth/forgot-password" className="hover:text-sky-400 transition select-none">
             ¿Olvidaste tu password?
           </Link>
         </div>
