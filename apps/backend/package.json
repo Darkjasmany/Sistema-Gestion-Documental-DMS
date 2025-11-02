@@ -9,7 +9,6 @@
     "dev": "tsx --env-file .env --watch src/index.ts",
     "start": "NODE_ENV=production node ./dist/index.js",
     "build": "tsc",
-    "lint": "eslint src --ext .ts",
     "sequelize": "sequelize-cli"
   },
   "author": "Jasmany Franco Peralta",
