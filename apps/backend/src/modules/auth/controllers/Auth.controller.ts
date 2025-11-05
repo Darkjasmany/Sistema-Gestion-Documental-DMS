@@ -10,6 +10,7 @@ import type {
   ValidateEmailInput,
   ValidateLoginInput,
   ValidateTokenInput,
+  UpdatePasswordInput,
 } from "@selnic/shared";
 
 export class AuthController {
@@ -186,7 +187,7 @@ export class AuthController {
   };
 
   static updatePasswordWithToken = async (
-    req: Request<ValidateTokenInput, {}, ValidateUpdatePasswordInput>,
+    req: Request<ValidateTokenInput, {}, UpdatePasswordInput>,
     res: Response
   ) => {
     // token viene en params (/:token), el body contiene password y passwordConfirmation (ya validados por Zod)

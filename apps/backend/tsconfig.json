@@ -11,6 +11,12 @@
     "disableSourceOfProjectReferenceRedirect": true, // ⬅️ AÑADE ESTO
     "baseUrl": ".",
     "paths": {
+      "@selnic/shared": [
+        "../../packages/shared/src/index.ts"
+      ],
+      "@selnic/shared/*": [
+        "../../packages/shared/src/*"
+      ],
       "@selnic/shared/schemas": [
         "../../packages/shared/src/index.ts"
       ],
@@ -55,5 +61,10 @@
   "exclude": [
     "node_modules",
     "dist"
+  ],
+  "references": [
+    {
+      "path": "../../packages/shared"
+    }
   ]
 }

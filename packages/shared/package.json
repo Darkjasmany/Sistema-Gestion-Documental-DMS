@@ -1,17 +1,27 @@
 {
   "name": "@selnic/shared",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "description": "Código compartido entre frontend y backend - Schemas y validaciones Zod",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "types": "./src/index.ts",
   "files": [
     "dist"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./models": "./src/models/index.ts",
-    "./schemas": "./src/schemas/index.ts"
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./models": {
+      "import": "./src/models/index.ts",
+      "default": "./dist/models/index.js"
+    },
+    "./schemas": {
+      "import": "./src/schemas/index.ts",
+      "default": "./dist/schemas/index.js"
+    }
   },
   "scripts": {
     "build": "tsc",
