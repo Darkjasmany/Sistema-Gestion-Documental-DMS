@@ -9,16 +9,16 @@ importers:
   .:
     devDependencies:
       '@eslint/js':
-        specifier: ^9.39.0
+        specifier: ^9.39.1
         version: 9.39.1
       '@typescript-eslint/eslint-plugin':
-        specifier: ^8.46.2
+        specifier: ^8.46.3
         version: 8.46.3(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@typescript-eslint/parser':
-        specifier: ^8.46.2
+        specifier: ^8.46.3
         version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       eslint:
-        specifier: ^9.39.0
+        specifier: ^9.39.1
         version: 9.39.1(jiti@2.6.1)
       eslint-config-prettier:
         specifier: ^10.1.8
@@ -48,7 +48,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       typescript-eslint:
-        specifier: ^8.46.2
+        specifier: ^8.46.3
         version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
 
   apps/backend:
@@ -136,7 +136,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.66.0(react@19.2.0))
       '@reduxjs/toolkit':
-        specifier: ^2.9.2
+        specifier: ^2.10.1
         version: 2.10.1(react-redux@9.2.0(@types/react@19.2.2)(react@19.2.0)(redux@5.0.1))(react@19.2.0)
       '@selnic/shared':
         specifier: workspace:*
@@ -148,7 +148,7 @@ importers:
         specifier: ^4.1.16
         version: 4.1.16(vite@7.2.0(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2))
       '@tanstack/react-query':
-        specifier: ^5.90.6
+        specifier: ^5.90.7
         version: 5.90.7(react@19.2.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -157,7 +157,7 @@ importers:
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       axios:
-        specifier: ^1.13.1
+        specifier: ^1.13.2
         version: 1.13.2
       exceljs:
         specifier: ^4.4.0
@@ -221,7 +221,7 @@ importers:
         specifier: ^8.5.6
         version: 8.5.6
       vite:
-        specifier: ^7.1.12
+        specifier: ^7.2.0
         version: 7.2.0(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)
 
   packages/shared:

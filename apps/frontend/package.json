@@ -14,14 +14,14 @@
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.2.2",
-    "@reduxjs/toolkit": "^2.9.2",
+    "@reduxjs/toolkit": "^2.10.1",
     "@selnic/shared": "workspace:*",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/vite": "^4.1.16",
-    "@tanstack/react-query": "^5.90.6",
+    "@tanstack/react-query": "^5.90.7",
     "@tanstack/react-query-devtools": "^5.90.2",
     "@tanstack/react-table": "^8.21.3",
-    "axios": "^1.13.1",
+    "axios": "^1.13.2",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "jspdf": "^3.0.3",
@@ -44,6 +44,6 @@
     "@vitejs/plugin-react": "^5.1.0",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "vite": "^7.1.12"
+    "vite": "^7.2.0"
   }
 }
