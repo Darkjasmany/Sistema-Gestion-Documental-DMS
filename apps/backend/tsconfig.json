@@ -8,20 +8,27 @@
     "target": "es2020", // esnext
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "disableSourceOfProjectReferenceRedirect": true, // ⬅️ AÑADE ESTO
     "baseUrl": ".",
-    // "paths": {
-    //   "@selnic/schemas": [
-    //     "../../packages/schemas/dist"
-    //   ],
-    //   "@selnic/schemas/*": [
-    //     "../../packages/schemas/dist/*"
-    //   ],
-    // },
-    "lib": ["es2020"],
+    "paths": {
+      "@selnic/shared/schemas": [
+        "../../packages/shared/src/index.ts"
+      ],
+      "@selnic/shared/schemas*": [
+        "../../packages/shared/src/*"
+      ]
+    },
+    "lib": [
+      "es2020"
+    ],
     // Typing and compatibility
-    "types": ["node"],
+    "types": [
+      "node",
+      "express"
+    ],
     // Other Outputs
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // ⬅️ Asegúrate de que esto esté aquí o en la raíz
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -42,6 +49,11 @@
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

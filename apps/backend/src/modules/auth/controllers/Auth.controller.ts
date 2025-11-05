@@ -1,16 +1,16 @@
 import type { Request, Response } from "express";
-import type {
-  CreateUserInput,
-  ValidateEmailInput,
-  ValidateLoginInput,
-  ValidateTokenInput,
-  ValidateUpdatePasswordInput,
-} from "@selnic/schemas"; // Import de tipos desde el paquete de schemas
+
 import { User } from "../../administration/models/User.js";
 import { EmailService } from "../services/email.service.js";
 import { generateToken } from "../../../utils/token.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
+import type {
+  CreateUserInput,
+  ValidateEmailInput,
+  ValidateLoginInput,
+  ValidateTokenInput,
+} from "@selnic/shared";
 
 export class AuthController {
   static createAccount = async (req: Request<{}, {}, CreateUserInput>, res: Response) => {
