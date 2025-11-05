@@ -4,24 +4,14 @@
   "type": "module",
   "private": true,
   "description": "Código compartido entre frontend y backend - Schemas y validaciones Zod",
-  "main": "./dist/index.js",
+  "main": "./src/index.ts",
   "types": "./src/index.ts",
   "files": [
     "dist"
   ],
   "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "default": "./dist/index.js"
-    },
-    "./models": {
-      "import": "./src/models/index.ts",
-      "default": "./dist/models/index.js"
-    },
-    "./schemas": {
-      "import": "./src/schemas/index.ts",
-      "default": "./dist/schemas/index.js"
-    }
+    ".": "./src/index.ts",
+    "./schemas": "./src/schemas/index.ts"
   },
   "scripts": {
     "build": "tsc",

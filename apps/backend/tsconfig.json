@@ -11,16 +11,16 @@
     "disableSourceOfProjectReferenceRedirect": true, // ⬅️ AÑADE ESTO
     "baseUrl": ".",
     "paths": {
+      // Regla 1: Cubre el punto de entrada principal (si se usa)
       "@selnic/shared": [
         "../../packages/shared/src/index.ts"
       ],
-      "@selnic/shared/*": [
-        "../../packages/shared/src/*"
-      ],
+      // Regla 2: Cubre la subruta directa de schemas (que es la que usas)
       "@selnic/shared/schemas": [
-        "../../packages/shared/src/index.ts"
+        "../../packages/shared/src/schemas/index.ts"
       ],
-      "@selnic/shared/schemas*": [
+      // Regla 3: Cubre cualquier archivo dentro del paquete compartido
+      "@selnic/shared/*": [
         "../../packages/shared/src/*"
       ]
     },
