@@ -22,15 +22,5 @@ export const userBaseSchema = z.object({
   updatedAt: z.date(),
 });
 
-/**
- * Schema SIN campos autogenerados (para inserts)
- */
-export const userInsertSchema = userBaseSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
 // Export type inferido
 export type UserBase = z.infer<typeof userBaseSchema>;
-export type UserInsert = z.infer<typeof userInsertSchema>;

@@ -11,34 +11,34 @@
     "module": "ESNext",
     "skipLibCheck": true,
     /* Importaciones */
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
       "@/components/*": [
-        "components/*"
+        "src/components/*"
       ],
       "@/layouts/*": [
-        "layouts/*"
+        "src/layouts/*"
       ],
       "@/modules/*": [
-        "modules/*"
+        "src/modules/*"
       ],
       "@/types/*": [
-        "types/*"
+        "src/types/*"
       ],
       "@/api/*": [
-        "api/*"
+        "src/api/*"
       ],
       "@/lib/*": [
-        "lib/*"
+        "src/lib/*"
       ],
       "@/utils/*": [
-        "utils/*"
+        "src/utils/*"
       ],
       "@/locales/*": [
-        "locales/*"
+        "src/locales/*"
       ],
       "@/hooks/*": [
-        "hooks/*"
+        "src/hooks/*"
       ],
       // Regla 1: Punto de entrada principal
       "@selnic/shared": [

@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
 import { MdPerson, MdPersonAdd, MdEmail } from "react-icons/md";
 import { AiOutlineLock } from "react-icons/ai";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { Link } from "react-router-dom";
-// import { IoMdEye, IoMdEyeOff, IoIosWarning } from "react-icons/io";
+import type { UserRegistrationForm } from "@selnic/shared";
+import { createAccount } from "@/api/auth/AuthAPI";
 
 const RegisterPages = () => {
-  const initialValues = {
+  const initialValues: UserRegistrationForm = {
     nombres: "",
     apellidos: "",
     email: "",
@@ -14,7 +18,34 @@ const RegisterPages = () => {
     password_confirmation: "",
   };
 
+  const {
+    register,
+    reset,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<UserRegistrationForm>({
+    defaultValues: initialValues,
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: createAccount,
+    onError: error => {
+      toast.error(error.message);
+    },
+    onSuccess: data => {
+      toast.success(data);
+      reset();
+    },
+  });
+
   const [show, setShow] = useState(false);
+
+  const password = watch("password");
+
+  const handleRegister = (formData: UserRegistrationForm) => {
+    mutate(formData);
+  };
 
   return (
     <>
@@ -22,7 +53,7 @@ const RegisterPages = () => {
         Crear Cuenta
       </h2>
 
-      <form action="" className="space-y-5">
+      <form action="" className="space-y-5" onSubmit={handleSubmit(handleRegister)} noValidate>
         <div>
           <label htmlFor="nombres" className="sr-only">
             Nombres
