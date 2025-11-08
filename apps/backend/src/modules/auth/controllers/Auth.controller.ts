@@ -6,15 +6,15 @@ import { generateToken } from "../../../utils/token.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
 import type {
-  CreateUserInput,
+  RegisterInput,
   ValidateEmailInput,
-  ValidateLoginInput,
-  ValidateTokenInput,
-  UpdatePasswordInput,
+  LoginInput,
+  TokenInput,
+  ResetPasswordInput,
 } from "@selnic/shared";
 
 export class AuthController {
-  static createAccount = async (req: Request<{}, {}, CreateUserInput>, res: Response) => {
+  static createAccount = async (req: Request<{}, {}, RegisterInput>, res: Response) => {
     const { email } = req.body;
     const transaction = await User.sequelize!.transaction();
 
@@ -48,7 +48,7 @@ export class AuthController {
     }
   };
 
-  static confirmAccount = async (req: Request<{}, {}, ValidateTokenInput>, res: Response) => {
+  static confirmAccount = async (req: Request<{}, {}, TokenInput>, res: Response) => {
     const { token } = req.body;
     const transaction = await User.sequelize!.transaction();
     const userExists = await User.findOne({ where: { token } });
@@ -77,7 +77,7 @@ export class AuthController {
     }
   };
 
-  static login = async (req: Request<{}, {}, ValidateLoginInput>, res: Response) => {
+  static login = async (req: Request<{}, {}, LoginInput>, res: Response) => {
     const { email, password } = req.body;
     const transaction = await User.sequelize!.transaction();
 
@@ -168,7 +168,7 @@ export class AuthController {
     }
   };
 
-  static validateToken = async (req: Request<{}, {}, ValidateTokenInput>, res: Response) => {
+  static validateToken = async (req: Request<{}, {}, TokenInput>, res: Response) => {
     const { token } = req.body;
 
     try {
@@ -187,7 +187,7 @@ export class AuthController {
   };
 
   static updatePasswordWithToken = async (
-    req: Request<ValidateTokenInput, {}, UpdatePasswordInput>,
+    req: Request<TokenInput, {}, ResetPasswordInput>,
     res: Response
   ) => {
     // token viene en params (/:token), el body contiene password y passwordConfirmation (ya validados por Zod)
