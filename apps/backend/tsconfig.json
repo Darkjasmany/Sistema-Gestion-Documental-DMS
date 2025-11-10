@@ -2,27 +2,26 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "target": "es2020",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "@selnic/shared": [
-        "../../packages/shared/dist/index.js"
+        "../../packages/shared/src/index.ts"
       ],
       "@selnic/shared/schemas": [
-        "../../packages/shared/dist/schemas/index.js"
+        "../../packages/shared/src/schemas/index.ts"
       ],
       "@selnic/shared/*": [
-        "../../packages/shared/dist/*"
+        "../../packages/shared/src/*"
       ]
     },
     "lib": [
-      "es2020"
+      "ES2022"
     ],
     "types": [
       "node",
-      "express"
     ],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
