@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "lib": [
+      "ES2022"
+    ],
+    "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
       "@selnic/shared": [
@@ -17,11 +19,8 @@
         "../../packages/shared/src/*"
       ]
     },
-    "lib": [
-      "ES2022"
-    ],
     "types": [
-      "node",
+      "node"
     ],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -32,6 +31,8 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
@@ -45,6 +46,8 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts"
   ]
 }

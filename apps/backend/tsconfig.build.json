@@ -1,0 +1,28 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "baseUrl": ".",
+        "paths": {
+            "@selnic/shared": [
+                "../../packages/shared/dist/index.js"
+            ],
+            "@selnic/shared/schemas": [
+                "../../packages/shared/dist/schemas/index.js"
+            ],
+            "@selnic/shared/*": [
+                "../../packages/shared/dist/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.spec.ts",
+        "**/*.test.ts"
+    ]
+}
