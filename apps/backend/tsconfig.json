@@ -1,52 +1,38 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file, see also https://aka.ms/tsconfig/module
   "compilerOptions": {
-    // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
-    // 🌐 Environment Settings
-    "target": "es2020", // esnext
+    "target": "es2020",
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "disableSourceOfProjectReferenceRedirect": true, // ⬅️ AÑADE ESTO
     "baseUrl": ".",
     "paths": {
-      // Regla 1: Cubre el punto de entrada principal (si se usa)
       "@selnic/shared": [
-        "../../packages/shared/src/index.ts"
+        "../../packages/shared/dist/index.js"
       ],
-      // Regla 2: Cubre la subruta directa de schemas (que es la que usas)
       "@selnic/shared/schemas": [
-        "../../packages/shared/src/schemas/index.ts"
+        "../../packages/shared/dist/schemas/index.js"
       ],
-      // Regla 3: Cubre cualquier archivo dentro del paquete compartido
       "@selnic/shared/*": [
-        "../../packages/shared/src/*"
+        "../../packages/shared/dist/*"
       ]
     },
     "lib": [
       "es2020"
     ],
-    // Typing and compatibility
     "types": [
       "node",
       "express"
     ],
-    // Other Outputs
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true, // ⬅️ Asegúrate de que esto esté aquí o en la raíz
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    // Stricter Typechecking Options
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    // Ouput and Depurations
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    // Clean and Consistent
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
@@ -61,10 +47,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ],
-  "references": [
-    {
-      "path": "../../packages/shared"
-    }
   ]
 }

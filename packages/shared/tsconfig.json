@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "composite": false,
     "incremental": true,
     "target": "ES2022",
     "module": "ESNext",

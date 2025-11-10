@@ -1,5 +1,4 @@
-// Exports de validaciones de autenticación con Zod
+// Exports de schemas de autenticación
 export * from "./auth.schema";
-
-// Exports de types de dominio para la autenticación
+// Exports de types de autenticación
 export * from "./auth.types";

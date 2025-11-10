@@ -2,21 +2,18 @@ import { Router } from "express";
 import { AuthController } from "../controllers/Auth.controller.js";
 import { zodValidateBody, zodValidateParams } from "../../../middlewares/validateZod.middleware.js";
 import {
-  registerValidationSchema,
-  resetPassordValidationSchema,
-  validateEmailSchema,
-  loginValidationSchema,
+  registerBaseSchema,
   tokenValidationSchema,
+  loginValidationSchema,
+  validateEmailSchema,
+  updatePasswordSchema,
 } from "@selnic/shared";
+// } from "@selnic/shared/schemas/auth/auth.schema.js";
 
 const router = Router();
 
 // Public
-router.post(
-  "/create-account",
-  zodValidateBody(registerValidationSchema),
-  AuthController.createAccount
-);
+router.post("/create-account", zodValidateBody(registerBaseSchema), AuthController.createAccount);
 
 router.post(
   "/confirm-account",
@@ -32,16 +29,12 @@ router.post(
   AuthController.forgotPassword
 );
 
-router.post(
-  "/validate-token",
-  zodValidateBody(tokenValidationSchema),
-  AuthController.validateToken
-);
+router.post("/validate-token", zodValidateBody(validateEmailSchema), AuthController.validateToken);
 
 router.post(
   "/update-password/:token",
   zodValidateParams(tokenValidationSchema),
-  zodValidateBody(resetPassordValidationSchema),
+  zodValidateBody(updatePasswordSchema),
   AuthController.updatePasswordWithToken
 );
 

@@ -7,10 +7,11 @@ import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
 import type {
   RegisterInput,
-  ValidateEmailInput,
+  EmailInput,
   LoginInput,
   TokenInput,
   ResetPasswordInput,
+  TokenParams,
 } from "@selnic/shared";
 
 export class AuthController {
@@ -135,7 +136,7 @@ export class AuthController {
     }
   };
 
-  static forgotPassword = async (req: Request<{}, {}, ValidateEmailInput>, res: Response) => {
+  static forgotPassword = async (req: Request<{}, {}, EmailInput>, res: Response) => {
     const { email } = req.body;
     const transaction = await User.sequelize!.transaction();
     const user = await User.findOne({ where: { email } });
@@ -187,7 +188,7 @@ export class AuthController {
   };
 
   static updatePasswordWithToken = async (
-    req: Request<TokenInput, {}, ResetPasswordInput>,
+    req: Request<TokenParams, {}, ResetPasswordInput>,
     res: Response
   ) => {
     // token viene en params (/:token), el body contiene password y passwordConfirmation (ya validados por Zod)

@@ -10,7 +10,6 @@
     ],
     "module": "ESNext",
     "skipLibCheck": true,
-    /* Importaciones */
     "baseUrl": ".",
     "paths": {
       "@/components/*": [
@@ -40,17 +39,14 @@
       "@/hooks/*": [
         "src/hooks/*"
       ],
-      // Regla 1: Punto de entrada principal
       "@selnic/shared": [
-        "../../packages/shared/src/index.ts"
+        "../../packages/shared/dist/index.js"
       ],
-      // Regla 2: La subruta de schemas (la que estás usando)
       "@selnic/shared/schemas": [
-        "../../packages/shared/src/schemas/index.ts"
+        "../../packages/shared/dist/schemas/index.js"
       ],
-      // Regla 3: Cubre cualquier archivo dentro del paquete compartido
       "@selnic/shared/*": [
-        "../../packages/shared/src/*"
+        "../../packages/shared/dist/*"
       ]
     },
     /* Bundler mode */
