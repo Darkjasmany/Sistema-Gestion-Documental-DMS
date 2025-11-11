@@ -3,35 +3,22 @@
   "version": "1.0.0",
   "type": "module",
   "private": true,
-  "description": "Código compartido entre frontend y backend - Schemas y validaciones Zod",
+  "description": "Código compartido - Schemas y validaciones Zod",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": {
-      "development": "./src/index.ts",
-      "production": "./dist/index.js",
-      "default": "./src/index.ts",
-      "import": "./src/index.ts",
-      "types": "./src/index.ts"
-    },
-    "./schemas": {
-      "development": "./src/schemas/index.ts",
-      "production": "./dist/schemas/index.js",
-      "default": "./src/schemas/index.ts",
-      "import": "./src/schemas/index.ts",
-      "types": "./src/schemas/index.ts"
-    },
-    "./*": {
-      "development": "./src/*.ts",
-      "production": "./dist/*.js",
-      "default": "./src/*.ts",
-      "import": "./src/*.ts",
-      "types": "./src/*.d.ts"
-    }
+    ".": "./src/index.ts",
+    "./schemas": "./src/schemas/index.ts",
+    "./schemas/*": "./src/schemas/*.ts",
+    "./models": "./src/models/index.ts",
+    "./validations": "./src/validations/index.ts",
+    "./*": "./src/*.ts"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch --preserveWatchOutput",
+    "dev": "echo '✅ Shared se usa directo desde src/'",
+    "build": "echo '⚠️ Shared no se compila, se bundlea con los apps'",
+    "dev1": "tsc --watch --preserveWatchOutput",
+    "build1": "tsc",
     "clean": "rm -rf node_modules dist"
   },
   "dependencies": {

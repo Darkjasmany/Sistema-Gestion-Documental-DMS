@@ -34,7 +34,20 @@ pnpm-debug.log*
 Thumbs.db
 
 # IDEs
-.vscode/
+# .vscode/
 .idea/
 *.swp
 *.swo
+
+# --- Configuración de VS Code (Para ignorar archivos de usuario y temporales) ---
+# Ignora archivos temporales y de estado del workspace
+.vscode/*
+
+# Excepciones: Permite que se rastreen los archivos de configuración útiles:
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Asegura que el directorio se pueda rastrear si contiene solo las excepciones
+!.vscode/

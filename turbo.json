@@ -20,7 +20,7 @@
       "dependsOn": ["^check-types"]
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": [],
       "outputs": ["coverage/**"],
       "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
     },

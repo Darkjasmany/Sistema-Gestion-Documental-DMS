@@ -7,12 +7,13 @@
   "description": "Backend API de SelNic",
   "scripts": {
     "dev": "tsx --env-file .env --watch src/index.ts",
-    "start": "NODE_ENV=production node ./dist/index.js",
-    "build": "tsc",
-    "sequelize": "sequelize-cli"
+    "start": "node --env-file .env ./dist/index.js",
+    "build": "tsup src/index.ts --format esm --clean --sourcemap",
+    "type-check": "tsc --noEmit",
+    "sequelize": "sequelize-cli",
+    "start1": "NODE_ENV=production node ./dist/index.js",
+    "build1": "tsc"
   },
-  "author": "Jasmany Franco Peralta",
-  "license": "ISC",
   "dependencies": {
     "@selnic/shared": "workspace:*",
     "bcryptjs": "^3.0.3",
@@ -39,6 +40,7 @@
     "@types/sequelize": "^6.12.0",
     "morgan": "^1.10.1",
     "sequelize-typescript": "^2.1.6",
+    "tsup": "^8.5.0",
     "tsx": "^4.20.6"
   }
 }
