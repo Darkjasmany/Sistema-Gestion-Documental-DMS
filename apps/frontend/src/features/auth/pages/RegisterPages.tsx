@@ -1,16 +1,16 @@
+import { createAccount } from "@/api/auth/AuthAPI";
+import type { RegisterInput } from "@selnic/shared";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useMutation } from "@tanstack/react-query";
-import { MdPerson, MdPersonAdd, MdEmail } from "react-icons/md";
 import { AiOutlineLock } from "react-icons/ai";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import type { UserRegistrationForm } from "@selnic/shared";
-import { createAccount } from "@/api/auth/AuthAPI";
+import { MdEmail, MdPerson, MdPersonAdd } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const RegisterPages = () => {
-  const initialValues: UserRegistrationForm = {
+  const initialValues: RegisterInput = {
     nombres: "",
     apellidos: "",
     email: "",
@@ -24,7 +24,7 @@ const RegisterPages = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<UserRegistrationForm>({
+  } = useForm<RegisterInput>({
     defaultValues: initialValues,
   });
 
@@ -43,7 +43,7 @@ const RegisterPages = () => {
 
   const password = watch("password");
 
-  const handleRegister = (formData: UserRegistrationForm) => {
+  const handleRegister = (formData: RegisterInput) => {
     mutate(formData);
   };
 
