@@ -19,8 +19,8 @@
       "@/layouts/*": [
         "src/layouts/*"
       ],
-      "@/modules/*": [
-        "src/modules/*"
+      "@/features/*": [
+        "src/features/*"
       ],
       "@/types/*": [
         "src/types/*"

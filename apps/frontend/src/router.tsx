@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AuthLayout from "@/layouts/AuthLayout";
-import LoginPages from "@/modules/auth/pages/LoginPages";
-import RegisterPages from "@/modules/auth/pages/RegisterPages";
-import ConfirmAccountPages from "@/modules/auth/pages/ConfirmAccountPages";
-import RequestNewCodePages from "./modules/auth/pages/RequestNewCodePages";
-import ForgotPasswordPages from "./modules/auth/pages/ForgotPasswordPages";
-import NewPasswordPages from "./modules/auth/pages/NewPasswordPages";
+import ConfirmAccountPages from "@/features/auth/pages/ConfirmAccount.pages";
+import ForgotPasswordPages from "@/features/auth/pages/ForgotPassword.pages";
+import LoginPages from "@/features/auth/pages/LoginPages.pages";
+import NewPasswordPages from "@/features/auth/pages/NewPassword.pages";
+import RegisterPages from "@/features/auth/pages/Register.pages";
+import RequestNewCodePages from "@/features/auth/pages/RequestNewCode.pages.tsx";
+import AuthLayout from "@/layouts/Auth.layout";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 export default function Router() {
   return (

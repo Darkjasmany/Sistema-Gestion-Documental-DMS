@@ -1,8 +1,8 @@
 import axios from "@/lib/api";
+import type { RegisterInput } from "@selnic/shared";
 import { isAxiosError } from "axios";
-import type { UserRegistrationForm } from "@selnic/shared";
 
-export async function createAccount(formData: UserRegistrationForm) {
+export async function createAccount(formData: RegisterInput) {
   try {
     const url = "/auth/create-account";
     const { data } = await axios.post<string>(url, formData);

@@ -1,4 +1,5 @@
-import { createAccount } from "@/api/auth/AuthAPI";
+import { createAccount } from "@/api/auth/Auth.api";
+import InputError from "@/components/InputError.components";
 import type { RegisterInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -22,7 +23,7 @@ const RegisterPages = () => {
     register,
     reset,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm<RegisterInput>({
     defaultValues: initialValues,
@@ -41,8 +42,6 @@ const RegisterPages = () => {
 
   const [show, setShow] = useState(false);
 
-  const password = watch("password");
-
   const handleRegister = (formData: RegisterInput) => {
     mutate(formData);
   };
@@ -53,7 +52,7 @@ const RegisterPages = () => {
         Crear Cuenta
       </h2>
 
-      <form action="" className="space-y-5" onSubmit={handleSubmit(handleRegister)} noValidate>
+      <form action="" className="space-y-5" onSubmit={handleSubmit(handleRegister)}>
         <div>
           <label htmlFor="nombres" className="sr-only">
             Nombres
@@ -67,13 +66,19 @@ const RegisterPages = () => {
             </span>
             <input
               id="nombres"
-              name="nombres"
               type="text"
               autoComplete="name"
               placeholder="Tus nombres"
-              className="pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+              className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
+                errors.nombres
+                  ? "border-red-500 focus:ring-red-500" // Resalta el borde
+                  : "border-[#334155] focus:ring-sky-500"
+              }`}
+              aria-required="true"
+              {...register("nombres", { required: "Los Nombres son obligatorios" })}
             />
           </div>
+          {errors.nombres && <InputError>{errors.nombres.message}</InputError>}
         </div>
 
         <div>
@@ -89,13 +94,19 @@ const RegisterPages = () => {
             </span>
             <input
               id="apellidos"
-              name="apellidos"
               type="text"
               autoComplete="last-name"
               placeholder="Tus apellidos"
-              className="pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+              className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
+                errors.nombres
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-[#334155] focus:ring-sky-500"
+              }`}
+              aria-required="true"
+              {...register("apellidos", { required: "Los Apellidos son obligatorios" })}
             />
           </div>
+          {errors.apellidos && <InputError>{errors.apellidos.message}</InputError>}
         </div>
         <div>
           <label htmlFor="email" className="sr-only">
@@ -109,25 +120,27 @@ const RegisterPages = () => {
               <MdEmail />
             </span>
             <input
-              // {...register("email")}
               id="email"
-              name="email"
               type="email"
               autoComplete="username"
               placeholder="Correo electrónico"
-              className="pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
-              // className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
-              //   errors.email
-              //     ? "border-red-500 focus:ring-red-500"
-              //     : "border-[#334155] focus:ring-sky-500"
-              // }`}
+              className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
+                errors.email
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-[#334155] focus:ring-sky-500"
+              }`}
               aria-required="true"
-              // aria-invalid={errors.email ? "true" : "false"}
+              aria-invalid={errors.email ? "true" : "false"}
+              {...register("email", {
+                required: "El Email de registro es obligatorio",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "E-mail no válido",
+                },
+              })}
             />
           </div>
-          {/* {errors.email && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><IoIosWarning/> {errors.email.message}</p>
-                  )} */}
+          {errors.email && <InputError>{errors.email.message}</InputError>}
         </div>
 
         <div>
@@ -142,20 +155,24 @@ const RegisterPages = () => {
               <AiOutlineLock />
             </span>
             <input
-              // {...register("password")}
               id="password"
-              name="password"
               type={show ? "text" : "password"}
               autoComplete="new-password"
               placeholder="Contraseña"
-              className="pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
-              // className={`pl-12 pr-10 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
-              //   errors.password
-              //     ? "border-red-500 focus:ring-red-500"
-              //     : "border-[#334155] focus:ring-sky-500"
-              // }`}
+              className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
+                errors.email
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-[#334155] focus:ring-sky-500"
+              }`}
               aria-required="true"
-              // aria-invalid={errors.password ? "true" : "false"}
+              aria-invalid={errors.password ? "true" : "false"}
+              {...register("password", {
+                required: "El Password es obligatorio",
+                minLength: {
+                  value: 8,
+                  message: "El Password debe ser mínimo de 8 caracteres",
+                },
+              })}
             />
             <button
               type="button"
@@ -166,9 +183,7 @@ const RegisterPages = () => {
               {show ? <IoMdEyeOff /> : <IoMdEye />}
             </button>
           </div>
-          {/* {errors.password && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><IoIosWarning/> {errors.password.message}</p>
-                  )} */}
+          {errors.password && <InputError>{errors.password.message}</InputError>}
         </div>
 
         <div>
@@ -183,20 +198,23 @@ const RegisterPages = () => {
               <AiOutlineLock />
             </span>
             <input
-              // {...register("password")}
               id="password_confirmation"
-              name="password_confirmation"
               type={show ? "text" : "password_confirmation"}
               autoComplete="pasword_confirmation"
               placeholder="Confirmar contraseña"
-              className="pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border border-[#334155] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
-              // className={`pl-12 pr-10 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
-              //   errors.password
-              //     ? "border-red-500 focus:ring-red-500"
-              //     : "border-[#334155] focus:ring-sky-500"
-              // }`}
+              className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
+                errors.email
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-[#334155] focus:ring-sky-500"
+              }`}
               aria-required="true"
-              // aria-invalid={errors.password ? "true" : "false"}
+              {...register("password_confirmation", {
+                required: "Confirmar contraseña es obligatorio",
+                // Usamos getValues para acceder al valor de 'password'
+                validate: value =>
+                  value === getValues("password") || "Las contraseñas no coinciden",
+              })}
+              aria-invalid={errors.password ? "true" : "false"}
             />
             <button
               type="button"
@@ -209,9 +227,9 @@ const RegisterPages = () => {
               {show ? <IoMdEyeOff /> : <IoMdEye />}
             </button>
           </div>
-          {/* {errors.password && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><IoIosWarning/> {errors.password.message}</p>
-                  )} */}
+          {errors.password_confirmation && (
+            <InputError>{errors.password_confirmation.message}</InputError>
+          )}
         </div>
 
         <div className="flex items-center justify-end text-sm text-gray-400">
