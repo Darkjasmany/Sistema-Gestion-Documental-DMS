@@ -40,7 +40,8 @@ const RegisterPages = () => {
     },
   });
 
-  const [show, setShow] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleRegister = (formData: RegisterInput) => {
     mutate(formData);
@@ -98,7 +99,7 @@ const RegisterPages = () => {
               autoComplete="last-name"
               placeholder="Tus apellidos"
               className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
-                errors.nombres
+                errors.apellidos
                   ? "border-red-500 focus:ring-red-500"
                   : "border-[#334155] focus:ring-sky-500"
               }`}
@@ -156,11 +157,11 @@ const RegisterPages = () => {
             </span>
             <input
               id="password"
-              type={show ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               autoComplete="new-password"
               placeholder="Contraseña"
               className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
-                errors.email
+                errors.password
                   ? "border-red-500 focus:ring-red-500"
                   : "border-[#334155] focus:ring-sky-500"
               }`}
@@ -177,10 +178,10 @@ const RegisterPages = () => {
             <button
               type="button"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300"
-              onClick={() => setShow(!show)}
-              aria-label={show ? "Ocultar contraseña" : "Mostrar contraseña"}
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             >
-              {show ? <IoMdEyeOff /> : <IoMdEye />}
+              {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
             </button>
           </div>
           {errors.password && <InputError>{errors.password.message}</InputError>}
@@ -199,11 +200,11 @@ const RegisterPages = () => {
             </span>
             <input
               id="password_confirmation"
-              type={show ? "text" : "password_confirmation"}
-              autoComplete="pasword_confirmation"
+              type={showConfirmation ? "text" : "password"}
+              autoComplete="new-pasword-confirmation"
               placeholder="Confirmar contraseña"
               className={`pl-12 pr-4 h-12 w-full rounded-md bg-[#0f172a]/60 text-white border placeholder:text-slate-400 focus:outline-none focus:ring-2 transition ${
-                errors.email
+                errors.password_confirmation
                   ? "border-red-500 focus:ring-red-500"
                   : "border-[#334155] focus:ring-sky-500"
               }`}
@@ -214,17 +215,15 @@ const RegisterPages = () => {
                 validate: value =>
                   value === getValues("password") || "Las contraseñas no coinciden",
               })}
-              aria-invalid={errors.password ? "true" : "false"}
+              aria-invalid={errors.password_confirmation ? "true" : "false"}
             />
             <button
               type="button"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300"
-              onClick={() => setShow(!show)}
-              aria-label={
-                show ? "Ocultar confirmación de contraseña" : "Mostrar confirmación de contraseña"
-              }
+              onClick={() => setShowConfirmation(!showConfirmation)}
+              aria-label={showConfirmation ? "Ocultar contraseña" : "Mostrar contraseña"}
             >
-              {show ? <IoMdEyeOff /> : <IoMdEye />}
+              {showConfirmation ? <IoMdEyeOff /> : <IoMdEye />}
             </button>
           </div>
           {errors.password_confirmation && (
