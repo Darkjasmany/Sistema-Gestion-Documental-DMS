@@ -18,6 +18,8 @@ const RegisterPages = () => {
     password: "",
     password_confirmation: "",
   };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const {
     register,
@@ -39,9 +41,6 @@ const RegisterPages = () => {
       reset();
     },
   });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleRegister = (formData: RegisterInput) => {
     mutate(formData);

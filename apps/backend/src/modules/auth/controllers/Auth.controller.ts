@@ -1,18 +1,18 @@
 import type { Request, Response } from "express";
 
-import { User } from "../../administration/models/User.js";
-import { EmailService } from "../services/email.service.js";
-import { generateToken } from "../../../utils/token.js";
-import { checkPassword } from "../../../utils/auth.js";
-import { generarJWT } from "../../../utils/generarJWT.js";
 import type {
-  RegisterInput,
   EmailInput,
   LoginInput,
-  TokenInput,
+  RegisterInput,
   ResetPasswordInput,
+  TokenInput,
   TokenParams,
 } from "@selnic/shared";
+import { checkPassword } from "../../../utils/auth.js";
+import { generarJWT } from "../../../utils/generarJWT.js";
+import { generateToken } from "../../../utils/token.js";
+import { User } from "../../administration/models/User.js";
+import { EmailService } from "../services/email.service.js";
 
 export class AuthController {
   static createAccount = async (req: Request<{}, {}, RegisterInput>, res: Response) => {
@@ -127,7 +127,7 @@ export class AuthController {
       const jwt = generarJWT({ id: user.id });
       res.send({
         jwt,
-        user,
+        // user,
       });
     } catch (error) {
       await transaction.rollback();
