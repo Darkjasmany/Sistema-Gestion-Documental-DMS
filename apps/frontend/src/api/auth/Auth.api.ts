@@ -1,5 +1,5 @@
 import axios from "@/lib/api";
-import type { LoginInput, RegisterInput } from "@selnic/shared";
+import type { EmailInput, LoginInput, RegisterInput } from "@selnic/shared";
 import { isAxiosError } from "axios";
 
 export async function createAccount(formData: RegisterInput) {
@@ -26,6 +26,18 @@ export async function authenticateUser({ formData, rememberMe }: AuthenticatePar
     const { data } = await axios.post<string>(url, formData);
     const storage = rememberMe ? localStorage : sessionStorage;
     storage.setItem("AUTH_TOKEN", data);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error);
+    }
+  }
+}
+
+export async function forgotPassword(formData: EmailInput) {
+  try {
+    const url = "/auth/forgot-password";
+    const { data } = await axios.post<string>(url, formData);
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
