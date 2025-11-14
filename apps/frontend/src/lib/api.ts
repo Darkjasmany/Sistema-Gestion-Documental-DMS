@@ -1,5 +1,5 @@
 import axios from "axios";
-import { axiosConfig } from "../config/axios";
+import { axiosConfig } from "../config/axios.config";
 
 const api = axios.create(axiosConfig);
 
@@ -11,7 +11,7 @@ const api = axios.create(axiosConfig);
  */
 
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem("AUTH_TOKEN");
+  const token = localStorage.getItem("AUTH_TOKEN") || sessionStorage.getItem("AUTH_TOKEN");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

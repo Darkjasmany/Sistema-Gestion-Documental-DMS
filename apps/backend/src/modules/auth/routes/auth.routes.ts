@@ -1,14 +1,13 @@
-import { Router } from "express";
-import { AuthController } from "../controllers/Auth.controller.js";
-import { zodValidateBody, zodValidateParams } from "../../../middlewares/validateZod.middleware.js";
 import {
+  loginValidationSchema,
   registerBaseSchema,
   tokenValidationSchema,
-  loginValidationSchema,
-  validateEmailSchema,
   updatePasswordSchema,
+  validateEmailSchema,
 } from "@selnic/shared";
-// } from "@selnic/shared/schemas/auth/auth.schema.js";
+import { Router } from "express";
+import { zodValidateBody, zodValidateParams } from "../../../middlewares/validateZod.middleware.js";
+import { AuthController } from "../controllers/Auth.controller.js";
 
 const router = Router();
 

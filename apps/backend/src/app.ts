@@ -1,5 +1,5 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
 import morgan from "morgan";
 import { corsConfig } from "./config/cors.js";
 import { conectarDB } from "./config/database.js";

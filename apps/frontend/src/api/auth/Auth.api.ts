@@ -6,6 +6,7 @@ export async function createAccount(formData: RegisterInput) {
   try {
     const url = "/auth/create-account";
     const { data } = await axios.post<string>(url, formData);
+    console.log(data);
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
