@@ -1,5 +1,5 @@
-import NewPasswordForm from "@/components/auth/NewPasswordForm.components";
-import NewPasswordToken from "@/components/auth/NewPasswordToken.components";
+import NewPasswordForm from "@/features/auth/components/NewPasswordForm.components";
+import NewPasswordToken from "@/features/auth/components/NewPasswordToken.components";
 import type { TokenInput } from "@selnic/shared";
 import { useState } from "react";
 

@@ -1,4 +1,4 @@
-import { confirmAccount } from "@/api/auth/Auth.api";
+import { confirmAccount } from "@/features/auth/api/Auth.api";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
 import type { TokenInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";

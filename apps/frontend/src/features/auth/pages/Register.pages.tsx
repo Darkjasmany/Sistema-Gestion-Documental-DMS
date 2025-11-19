@@ -1,5 +1,5 @@
-import { createAccount } from "@/api/auth/Auth.api";
 import InputError from "@/components/InputError.components";
+import { createAccount } from "@/features/auth/api/Auth.api";
 import type { RegisterInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";

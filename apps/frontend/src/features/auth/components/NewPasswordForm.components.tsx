@@ -1,5 +1,5 @@
-import { updatePasswordWithToken } from "@/api/auth/Auth.api";
 import InputError from "@/components/InputError.components";
+import { updatePasswordWithToken } from "@/features/auth/api/Auth.api";
 import type { ResetPasswordInput, TokenInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
