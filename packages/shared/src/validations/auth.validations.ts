@@ -30,12 +30,10 @@ export const nameValidation = (field: string) =>
     .max(100, `El ${field} no puede exceder 100 caracteres`)
     .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, `El ${field} solo puede contener letras`);
 
-// Validación de Token
-export const tokenValidation = z.object({
-  token: userBaseSchema.shape.token
-    .length(6, "El token debe tener exactamente 6 caracteres")
-    .regex(/^[0-9]+$/, "El token solo puede contener números"),
-});
+// Validación de Token (schema de cadena de 6 dígitos)
+export const tokenValidation = userBaseSchema.shape.token
+  .length(6, "El token debe tener exactamente 6 caracteres")
+  .regex(/^[0-9]+$/, "El token solo puede contener números");
 
 // Validación del Schema reutilizable para la lógica de "password + confirmación"
 export const passwordMatchSchema = z
