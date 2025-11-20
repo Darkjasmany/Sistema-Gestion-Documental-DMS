@@ -13,20 +13,23 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@/assets/*": [
+        "src/assets/*"
+      ],
       "@/components/*": [
         "src/components/*"
       ],
-      "@/layouts/*": [
-        "src/layouts/*"
+      "@/core/*": [
+        "src/core/*"
       ],
       "@/features/*": [
         "src/features/*"
       ],
-      "@/types/*": [
-        "src/types/*"
+      "@/layouts/*": [
+        "src/layouts/*"
       ],
-      "@/api/*": [
-        "src/api/*"
+      "@/pages/*": [
+        "src/pages/*"
       ],
       "@/lib/*": [
         "src/lib/*"

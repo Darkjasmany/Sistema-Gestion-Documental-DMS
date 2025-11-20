@@ -1,4 +1,4 @@
-import api from "@/api/api";
+import api from "@/core/api/api-client";
 import type {
   EmailInput,
   LoginInput,

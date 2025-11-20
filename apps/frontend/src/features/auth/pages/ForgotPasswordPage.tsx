@@ -1,5 +1,5 @@
 import InputError from "@/components/InputError";
-import { forgotPassword } from "@/features/auth/api/Auth";
+import { forgotPassword } from "@/features/auth/api/AuthAPI";
 import type { EmailInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
