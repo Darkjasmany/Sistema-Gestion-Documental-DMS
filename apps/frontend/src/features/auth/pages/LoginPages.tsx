@@ -1,5 +1,5 @@
-import InputError from "@/components/InputError.components";
-import { authenticateUser } from "@/features/auth/api/Auth.api";
+import InputError from "@/components/InputError";
+import { authenticateUser } from "@/features/auth/api/Auth";
 import type { LoginInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";

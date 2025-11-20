@@ -6,8 +6,8 @@ import {
   validateEmailSchema,
 } from "@selnic/shared";
 import { Router } from "express";
-import { zodValidateBody, zodValidateParams } from "../../../middlewares/validateZod.middleware.js";
-import { AuthController } from "../controllers/Auth.controller.js";
+import { zodValidateBody, zodValidateParams } from "../../../middlewares/validateZod.js";
+import { AuthController } from "../controllers/Auth.js";
 
 const router = Router();
 

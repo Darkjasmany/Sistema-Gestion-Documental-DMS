@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userBaseSchema } from "../models/user.model";
+import { userBaseSchema } from "../models/User";
 
 // Validación de Email
 export const emailValidation = userBaseSchema.shape.email

@@ -1,5 +1,5 @@
-import InputError from "@/components/InputError.components";
-import { requestConfirmationCode } from "@/features/auth/api/Auth.api";
+import InputError from "@/components/InputError";
+import { forgotPassword } from "@/features/auth/api/Auth";
 import type { EmailInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -7,38 +7,36 @@ import { MdEmail } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const RequestNewCodePages = () => {
-  const initialValues: EmailInput = {
-    email: "",
-  };
+const ForgotPasswordPages = () => {
+  const initialValues: EmailInput = { email: "" };
 
   const {
-    register,
     handleSubmit,
+    register,
+    reset,
     formState: { errors },
-  } = useForm({ defaultValues: initialValues });
+  } = useForm<EmailInput>({
+    defaultValues: initialValues,
+  });
 
   const { mutate } = useMutation({
-    mutationFn: requestConfirmationCode,
-    onError: error => {
-      toast.error(error.message);
+    mutationFn: forgotPassword,
+    onError: errors => {
+      toast.error(errors.message);
     },
     onSuccess: data => {
       toast.success(data);
     },
   });
 
-  const handleRequestCode = (formData: EmailInput) => {
+  const hangleResetPassword = (formData: EmailInput) => {
     mutate(formData);
+    reset();
   };
 
   return (
     <>
-      <h2 className="text-2xl font-semibold text-center mb-6 text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)] select-none">
-        Solicitar Código de Confirmación
-      </h2>
-
-      <form action="" className=" space-y-5" onSubmit={handleSubmit(handleRequestCode)}>
+      <form action="" className="space-y-5" onSubmit={handleSubmit(hangleResetPassword)}>
         <div>
           <label htmlFor="email" className="sr-only">
             Correo electrónico
@@ -74,11 +72,17 @@ const RequestNewCodePages = () => {
           {errors.email && <InputError>{errors.email.message}</InputError>}
         </div>
 
+        <div className="flex items-center justify-end text-sm text-gray-400">
+          <Link to="/auth/login" className="hover:text-sky-400 transition select-none">
+            ¿Ya tienes cuenta? Iniciar Sesión
+          </Link>
+        </div>
+
         <button
           type="submit"
           className="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-md shadow-lg shadow-sky-500/20 transition-all"
         >
-          ENVIAR CÓDIGO
+          ENVIAR INSTRUCCIONES
         </button>
       </form>
       <p className="text-center text-sm text-gray-400 mt-6 select-none">
@@ -91,4 +95,4 @@ const RequestNewCodePages = () => {
   );
 };
 
-export default RequestNewCodePages;
+export default ForgotPasswordPages;

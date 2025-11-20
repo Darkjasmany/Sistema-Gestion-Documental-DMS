@@ -1,4 +1,4 @@
-import { validateToken } from "@/features/auth/api/Auth.api";
+import { validateToken } from "@/features/auth/api/Auth";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
 import type { TokenInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";

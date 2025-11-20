@@ -1,6 +1,6 @@
 // para que se puede ver el componente de nuestro /pages/Login, tenemos que importar en nuestro layout principal algo que se conoce como Outlet de react-router-dom-> Carga el componente hijo, con el Outlet lo que sea que hay en ese componente es como que lo metiera donde esta el componente <Outlet>
 
-import Particles from "@/components/Particles.components";
+import Particles from "@/components/Particles";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
