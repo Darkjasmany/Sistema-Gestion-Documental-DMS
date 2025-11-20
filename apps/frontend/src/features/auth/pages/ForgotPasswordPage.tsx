@@ -36,6 +36,9 @@ const ForgotPasswordPages = () => {
 
   return (
     <>
+      <h2 className="text-2xl font-semibold text-center mb-6 text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)] select-none">
+        Ingresa el tu correo electrónico
+      </h2>
       <form action="" className="space-y-5" onSubmit={handleSubmit(hangleResetPassword)}>
         <div>
           <label htmlFor="email" className="sr-only">

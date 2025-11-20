@@ -4,7 +4,7 @@ import type { TokenInput } from "@selnic/shared";
 import { useMutation } from "@tanstack/react-query";
 import type React from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface NewPasswordTokenProps {
@@ -14,7 +14,7 @@ interface NewPasswordTokenProps {
 }
 
 const NewPasswordToken = ({ token, setToken, setIsValidToken }: NewPasswordTokenProps) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: validateToken,
@@ -24,7 +24,7 @@ const NewPasswordToken = ({ token, setToken, setIsValidToken }: NewPasswordToken
     onSuccess: data => {
       toast.success(data);
       setIsValidToken(true);
-      setTimeout(() => navigate("/auth/login"), 3000);
+      // setTimeout(() => navigate("/auth/login"), 3000);
     },
   });
 
@@ -38,6 +38,9 @@ const NewPasswordToken = ({ token, setToken, setIsValidToken }: NewPasswordToken
 
   return (
     <>
+      <h2 className="text-2xl font-semibold text-center mb-6 text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)] select-none">
+        Ingresa el PIN que recibiste
+      </h2>
       <form className="space-y-8 p-10 rounded-lg bg-[0_0_8px_rgba(56,189,248,0.3)] mt-10 border border-sky-500">
         <label className="font-normal text-2xl text-center block">Código de 6 dígitos</label>
         <div className="flex justify-center gap-5">

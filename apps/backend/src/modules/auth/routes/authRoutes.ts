@@ -2,9 +2,9 @@ import {
   loginValidationSchema,
   registerBaseSchema,
   tokenValidationSchema,
-  updatePasswordSchema,
   validateEmailSchema,
 } from "@selnic/shared";
+import { passwordMatchSchema } from "@selnic/shared/validations/auth.validations.js";
 import { Router } from "express";
 import { zodValidateBody, zodValidateParams } from "../../../middlewares/validateZod.js";
 import { AuthController } from "../controllers/Auth.js";
@@ -28,12 +28,16 @@ router.post(
   AuthController.forgotPassword
 );
 
-router.post("/validate-token", zodValidateBody(validateEmailSchema), AuthController.validateToken);
+router.post(
+  "/validate-token",
+  zodValidateBody(tokenValidationSchema),
+  AuthController.validateToken
+);
 
 router.post(
   "/update-password/:token",
   zodValidateParams(tokenValidationSchema),
-  zodValidateBody(updatePasswordSchema),
+  zodValidateBody(passwordMatchSchema),
   AuthController.updatePasswordWithToken
 );
 

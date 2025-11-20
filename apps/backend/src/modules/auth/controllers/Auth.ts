@@ -170,9 +170,10 @@ export class AuthController {
   };
 
   static validateToken = async (req: Request<{}, {}, TokenInput>, res: Response) => {
-    const { token } = req.body;
-
     try {
+      const { token } = req.body;
+      console.log(token);
+
       const tokenExists = await User.findOne({ where: { token } });
       if (!tokenExists) {
         const error = new Error("Token no válido");

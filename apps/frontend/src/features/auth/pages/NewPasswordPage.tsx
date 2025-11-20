@@ -9,9 +9,6 @@ const NewPasswordPages = () => {
 
   return (
     <>
-      <h1 className="text-5xl font-black">Reestablecer Password</h1>
-      <p>Ingresa el código que recibiste</p>
-
       {!isValidToken ? (
         <NewPasswordToken token={token} setToken={setToken} setIsValidToken={setIsValidToken} />
       ) : (

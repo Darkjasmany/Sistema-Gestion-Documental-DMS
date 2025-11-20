@@ -30,6 +30,10 @@ const ConfirmAccountPages = () => {
 
   return (
     <>
+      {/* <h1 className="text-5xl font-black text-center">Confirma tu Cuenta</h1>{" "} */}
+      <h2 className="text-2xl font-semibold text-center mb-6 text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.3)] select-none">
+        Confirma tu Cuenta
+      </h2>
       <form className="space-y-8 p-10 rounded-lg bg-[0_0_8px_rgba(56,189,248,0.3)] mt-10 border border-sky-500">
         <label className="font-normal text-2xl text-center block">Código de 6 dígitos</label>
         <div className="flex justify-center gap-5">
