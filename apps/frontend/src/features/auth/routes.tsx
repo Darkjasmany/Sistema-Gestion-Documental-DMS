@@ -5,19 +5,24 @@ import NewPasswordPages from "@/features/auth/pages/NewPasswordPage";
 import RegisterPages from "@/features/auth/pages/RegisterPage";
 import RequestNewCodePages from "@/features/auth/pages/RequestNewCodePage";
 import AuthLayout from "@/layouts/Auth";
-import { Route } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 export default function AuthRoutes() {
   return (
-    <>
+    <Routes>
       <Route element={<AuthLayout />}>
-        <Route path="/auth/login" element={<LoginPages />} />
-        <Route path="/auth/register" element={<RegisterPages />} />
-        <Route path="/auth/confirm-account" element={<ConfirmAccountPages />} />
-        <Route path="/auth/request-code" element={<RequestNewCodePages />} />
-        <Route path="/auth/forgot-password" element={<ForgotPasswordPages />} />
-        <Route path="/auth/new-password" element={<NewPasswordPages />} />
+        <Route path="login" element={<LoginPages />} />
+        <Route path="register" element={<RegisterPages />} />
+        <Route path="confirm-account" element={<ConfirmAccountPages />} />
+        <Route path="request-code" element={<RequestNewCodePages />} />
+        <Route path="forgot-password" element={<ForgotPasswordPages />} />
+        <Route path="new-password" element={<NewPasswordPages />} />
+        {/* 
+           Si el usuario entra a "/auth" (sin nada más), 
+           lo redirigimos automáticamente al login.
+        */}
+        <Route path="" element={<Navigate to="login" replace />} />
       </Route>
-    </>
+    </Routes>
   );
 }

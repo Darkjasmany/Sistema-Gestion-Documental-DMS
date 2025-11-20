@@ -1,5 +1,5 @@
 import AuthRoutes from "@/features/auth/routes";
-import { BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 export default function Router() {
   return (
@@ -8,7 +8,7 @@ export default function Router() {
       {/* <BrowserRouter basename="/dms"> */}
 
       <Routes>
-        <AuthRoutes />
+        <Route path="/auth/*" element={<AuthRoutes />} />
       </Routes>
     </BrowserRouter>
   );
