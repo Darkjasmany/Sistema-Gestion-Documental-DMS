@@ -1,19 +1,15 @@
+import type { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 import {
-  AllowNull,
-  AutoIncrement,
   BeforeSave,
   BelongsTo,
   Column,
   DataType,
-  Default,
+  ForeignKey,
   Model,
-  PrimaryKey,
   Table,
-  Unique,
 } from "sequelize-typescript";
 import { hashPassword } from "../../../utils/auth.js";
 import { Department } from "./Department.js";
-import type { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 
 const tipoRol = {
   USUARIO: "USUARIO",
@@ -31,59 +27,88 @@ export type TipoRol = (typeof tipoRol)[keyof typeof tipoRol];
 })
 // export class User extends Model<IUser> {
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  @PrimaryKey
-  @AutoIncrement
-  @Column(DataType.BIGINT)
+  @Column({
+    type: DataType.BIGINT,
+    primaryKey: true,
+    autoIncrement: true,
+  })
   declare id: CreationOptional<number>;
 
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  nombres!: string;
-
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  apellidos!: string;
-
-  @AllowNull(false)
-  @Unique
   @Column({
-    type: DataType.STRING,
-    validate: {
-      isEmail: true,
-    },
+    type: DataType.STRING(100), // Definimos longitud para optimizar
+    allowNull: false,
+    // validate: {
+    //   notEmpty: { msg: "El nombre es obligatorio" },
+    // },
   })
-  email!: string;
+  declare nombres: string;
 
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  password!: string;
-
-  @Default(tipoRol.USUARIO)
   @Column({
-    type: DataType.ENUM,
-    values: Object.values(tipoRol),
+    type: DataType.STRING(100),
+    allowNull: false,
+  })
+  declare apellidos: string;
+
+  @Column({
+    type: DataType.STRING(150),
+    allowNull: false,
+    unique: true,
+    // unique: {
+    //   name: "users_email_unique", // Nombre custom para el índice
+    //   msg: "El correo electrónico ya está registrado",
+    // },
+    // validate: {
+    //   isEmail: { msg: "Debe ser un correo válido" },
+    // },
+  })
+  declare email: string;
+
+  @Column({
+    type: DataType.STRING(255),
+    allowNull: false,
+  })
+  declare password: string;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(tipoRol)),
+    defaultValue: tipoRol.USUARIO,
+    allowNull: false,
   })
   declare rol: CreationOptional<TipoRol>;
 
   // @Default(generarId())
-  @Default(null)
-  @Column(DataType.STRING)
-  declare token: CreationOptional<string>;
+  @Column({
+    type: DataType.STRING(255),
+    allowNull: true, // Explicitamos que puede ser null
+    defaultValue: null,
+  })
+  declare token: CreationOptional<string | null>;
 
-  @Default(false)
-  @Column(DataType.BOOLEAN)
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
   declare confirmado: CreationOptional<boolean>;
 
-  @Default(false)
-  @Column(DataType.BOOLEAN)
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
   declare estado: CreationOptional<boolean>;
 
-  @Default(1)
-  @Column(DataType.BIGINT)
+  @ForeignKey(() => Department)
+  @Column({
+    type: DataType.BIGINT, // Importante: BIGINT para coincidir con IDs modernos
+    allowNull: false, // Asumo que un usuario SIEMPRE debe tener departamento
+    defaultValue: 1, // Mantenemos tu default(1), aunque cuidado con hardcodear IDs
+  })
   declare departamento_id: CreationOptional<number>;
 
-  @BelongsTo(() => Department, { foreignKey: "departamento_id" })
-  declare departamento: CreationOptional<Department>;
+  @BelongsTo(() => Department)
+  declare departamento?: Department; // Propiedad de navegación
+
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 
   // TODO Faltan las demás relaciones
 

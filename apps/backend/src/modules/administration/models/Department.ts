@@ -1,14 +1,6 @@
-import {
-  AllowNull,
-  AutoIncrement,
-  BeforeSave,
-  Column,
-  DataType,
-  Default,
-  Model,
-  PrimaryKey,
-  Table,
-} from "sequelize-typescript";
+import type { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
+import { BeforeSave, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { User } from "./User";
 
 export interface IDepartment {
   id: number;
@@ -18,22 +10,38 @@ export interface IDepartment {
 
 @Table({
   tableName: "departamento",
-  timestamps: false,
+  timestamps: true,
 })
-export class Department extends Model<IDepartment> implements IDepartment {
-  @PrimaryKey
-  @AutoIncrement
-  @Column(DataType.BIGINT)
-  id!: number;
+export class Department extends Model<
+  InferAttributes<Department>,
+  InferCreationAttributes<Department>
+> {
+  @Column({
+    type: DataType.BIGINT,
+    primaryKey: true,
+    autoIncrement: true,
+  })
+  declare id: CreationOptional<number>;
 
-  @AllowNull(false)
-  @Column(DataType.STRING)
-  nombre!: string;
+  @Column({
+    type: DataType.STRING(100), // Definimos longitud explícita
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: "El nombre del departamento es obligatorio" },
+    },
+  })
+  declare nombre: string;
 
-  @AllowNull(false)
-  @Default(1)
-  @Column(DataType.BIGINT)
-  coordinador_id!: number;
+  @Column({
+    type: DataType.BIGINT, // Coherencia con los IDs de tu sistema
+    allowNull: false,
+    defaultValue: 1,
+  })
+  declare coordinador_id: CreationOptional<number>;
+
+  // --- RELACIONES ---
+  @HasMany(() => User)
+  declare usuarios?: User[];
 
   @BeforeSave
   static trimNombre(departamento: Department) {
