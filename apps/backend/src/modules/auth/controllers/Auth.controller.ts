@@ -8,10 +8,10 @@ import type {
   TokenInput,
   TokenParams,
 } from "@selnic/shared";
+import { User } from "../../../models/User.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
 import { generateToken } from "../../../utils/token.js";
-import { User } from "../../administration/models/User.js";
 import { EmailService } from "../services/email.js";
 
 export class AuthController {

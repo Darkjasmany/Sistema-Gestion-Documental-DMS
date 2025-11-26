@@ -1,15 +1,15 @@
+import bcrypt from "bcrypt";
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../../config/db.config.js";
+import { Tramite } from "../modules/document-management/models/Tramite.model.js";
+import { TramiteArchivo } from "../modules/document-management/models/TramiteArchivo.model.js";
+import { TramiteAsignacion } from "../modules/document-management/models/TramiteAsignacion.model.js";
+import { TramiteEliminacion } from "../modules/document-management/models/TramiteEliminacion.model.js";
+import { TramiteHistorialEstado } from "../modules/document-management/models/TramiteHistorialEstado.model.js";
+import { TramiteObservacion } from "../modules/document-management/models/TramiteObservacion.model.js";
+import { passwordHash } from "../utils/auth.js";
+import { generarId } from "../utils/generarId.js";
 import { Departamento } from "./Departamento.model.js";
-import { Tramite } from "../../document-management/models/Tramite.model.js";
-import { TramiteAsignacion } from "../../document-management/models/TramiteAsignacion.model.js";
-import { TramiteArchivo } from "../../document-management/models/TramiteArchivo.model.js";
-import { TramiteHistorialEstado } from "../../document-management/models/TramiteHistorialEstado.model.js";
-import { TramiteEliminacion } from "../../document-management/models/TramiteEliminacion.model.js";
-import { TramiteObservacion } from "../../document-management/models/TramiteObservacion.model.js";
-import { generarId } from "../../../utils/generarId.js";
-import { passwordHash } from "../../../utils/auth.js";
-import bcrypt from "bcrypt";
 
 export const Usuario = sequelize.define(
   "usuario",

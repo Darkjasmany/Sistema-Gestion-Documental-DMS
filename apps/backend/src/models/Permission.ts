@@ -1,6 +1,6 @@
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
-import { Module } from "./Module";
+import { Module } from "./Module.js";
 
 @Table({
   tableName: "permiso",
@@ -38,9 +38,9 @@ export class Permission extends Model<
   })
   declare modulo_id: CreationOptional<number | null>;
 
-  @BelongsTo(() => Module)
-  declare modulo?: Module; // Propiedad de navegación
-
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  @BelongsTo(() => Module)
+  declare modulo?: Module; // Propiedad de navegación
 }

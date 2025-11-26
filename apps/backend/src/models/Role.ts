@@ -1,7 +1,7 @@
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 
-@Table({ tableName: "Rol", timestamps: true })
+@Table({ tableName: "rol", timestamps: true })
 export class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
   @Column({
     type: DataType.BIGINT,

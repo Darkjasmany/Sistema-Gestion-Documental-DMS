@@ -8,7 +8,7 @@ import {
   Model,
   Table,
 } from "sequelize-typescript";
-import { hashPassword } from "../../../utils/auth.js";
+import { hashPassword } from "../utils/auth.js";
 import { Department } from "./Department.js";
 
 const tipoRol = {
@@ -104,13 +104,14 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   })
   declare departamento_id: CreationOptional<number>;
 
-  @BelongsTo(() => Department)
-  declare departamento?: Department; // Propiedad de navegación
-
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
-  // TODO Faltan las demás relaciones
+  // Relaciones
+  @BelongsTo(() => Department)
+  declare departamento?: Department; // Propiedad de navegación
+
+  // @BelongsToMany(() => Permission)
 
   @BeforeSave
   static async sanitizeAndHash(usuario: User) {

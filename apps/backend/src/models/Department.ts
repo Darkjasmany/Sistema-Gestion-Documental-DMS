@@ -1,6 +1,6 @@
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 import { BeforeSave, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
-import { User } from "./User";
+import { User } from "./User.js";
 
 export interface IDepartment {
   id: number;

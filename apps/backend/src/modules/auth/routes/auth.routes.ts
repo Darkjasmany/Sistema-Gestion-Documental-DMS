@@ -7,7 +7,7 @@ import {
 import { passwordMatchSchema } from "@selnic/shared/validations/auth.validations.js";
 import { Router } from "express";
 import { zodValidateBody, zodValidateParams } from "../../../middlewares/validateZod.js";
-import { AuthController } from "../controllers/Auth.js";
+import { AuthController } from "../controllers/Auth.controller.js";
 
 const router = Router();
 
