@@ -42,7 +42,7 @@ export class Module extends Model<InferAttributes<Module>, InferCreationAttribut
 
   @Column({
     type: DataType.BOOLEAN,
-    defaultValue: false,
+    defaultValue: true,
   })
   declare estado: CreationOptional<boolean>;
 
