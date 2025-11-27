@@ -16,7 +16,7 @@ import { UserRole } from "src/models/UserRole";
 const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
 
 export async function getUserPermissionsAndModules(userId: number) {
-  const cacheKey = `user_permissions_modules:${userId}`;
+  const cacheKey = `user_perms:${userId}`;
 
   if (redis) {
     const cacheData = await redis.get(cacheKey);
@@ -37,7 +37,7 @@ export async function getUserPermissionsAndModules(userId: number) {
     rolePerms = rp.map(x => (x as any).permiso);
   }
 
-  // 2. Permisos override directos (si aplica)
+  // 2. Permisos especificos directos (si aplica)
   const userPerms = await UserPermission.findAll({
     where: { usuario_id: userId },
     include: [{ model: Permission }],
@@ -51,16 +51,17 @@ export async function getUserPermissionsAndModules(userId: number) {
   for (const up of userPerms) {
     const permiso = (up as any).permiso as Permission;
     if (!permiso) continue;
-    if (up.permitido) permMap.set(permiso.codigo, { id: permiso.id, codigo: permiso.codigo });
-    else permMap.delete(permiso.codigo);
+    if (up.permitido)
+      permMap.set(permiso.codigo, { id: permiso.id, codigo: permiso.codigo }); // add
+    else permMap.delete(permiso.codigo); //remove
   }
 
-  const permissions = Array.from(permMap.keys());
+  const permissions = Array.from(permMap.keys()); // Lista final de códigos de permisos
 
   // 3. Modulos relacionados a los permisos
   const permisoRecords = await Permission.findAll({
-    where: { codigo: Array.from(permMap.keys()) },
-    include: [{ model: Module }],
+    where: { codigo: Array.from(permMap.keys()) }, // Busca en BD los detalles de estos permisos finales
+    include: [{ model: Module }], // ¡Trae también el Módulo asociado!
   });
 
   const modulesMap = new Map<number, any>();
@@ -75,7 +76,7 @@ export async function getUserPermissionsAndModules(userId: number) {
   }
   const modules = Array.from(modulesMap.values());
 
-  const result = { permissions, modules };
+  const result = { permissions, modules }; // Resultado final empaqueta los permisos y módulos e un solo objeto
 
   if (redis) await redis.setex(cacheKey, 3600, JSON.stringify(result)); // 1h TTL
   return result;

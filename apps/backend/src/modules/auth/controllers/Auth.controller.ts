@@ -8,6 +8,7 @@ import type {
   TokenInput,
   TokenParams,
 } from "@selnic/shared";
+import { getUserPermissionsAndModules } from "src/modules/administration/services/permissions.service.js";
 import { User } from "../../../models/User.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
@@ -85,7 +86,7 @@ export class AuthController {
     const user = await User.findOne({ where: { email } });
     if (!user) {
       await transaction.rollback();
-      const error = new Error("Usuario no encontrado");
+      const error = new Error("Credenciales inválidas");
       return res.status(404).json({ error: error.message });
     }
 
@@ -120,14 +121,25 @@ export class AuthController {
     try {
       const isPasswordCorrect = await checkPassword(password, user.password);
       if (!isPasswordCorrect) {
-        const error = new Error("Contraseña incorrecta");
+        const error = new Error("Credenciales inválidas");
         return res.status(401).json({ error: error.message });
       }
 
       const jwt = generarJWT({ id: user.id });
-      res.send({
+
+      const { permissions, modules } = await getUserPermissionsAndModules(user.id);
+      res.json({
+        user: {
+          id: user.id,
+          nombres: user.nombres,
+          apellidos: user.apellidos,
+          email: user.email,
+          rol: user.rol, //!este rol es provisional porque lo voy a manejar desde otra tabla
+          departamento_id: user.departamento_id,
+        },
         jwt,
-        // user,
+        permissions,
+        modules,
       });
     } catch (error) {
       await transaction.rollback();
