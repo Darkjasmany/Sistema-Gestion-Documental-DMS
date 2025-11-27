@@ -1,5 +1,5 @@
-import { transporter } from "../../../config/nodemailer.js";
 import { FRONTEND_URL } from "../../../config/env.js";
+import { transporter } from "../../../config/nodemailer.js";
 
 interface IEmail {
   email: string;

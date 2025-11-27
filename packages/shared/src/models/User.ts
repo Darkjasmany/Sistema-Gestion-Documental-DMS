@@ -24,3 +24,13 @@ export const userBaseSchema = z.object({
 
 // Export type inferido
 export type UserBase = z.infer<typeof userBaseSchema>;
+
+// Interface para usuario loggeado
+export interface IUserLogged {
+  id: number;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  rol: string;
+  departamento_id: number | null;
+}
