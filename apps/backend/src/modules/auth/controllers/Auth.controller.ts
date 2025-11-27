@@ -12,7 +12,7 @@ import { User } from "../../../models/User.js";
 import { checkPassword } from "../../../utils/auth.js";
 import { generarJWT } from "../../../utils/generarJWT.js";
 import { generateToken } from "../../../utils/token.js";
-import { EmailService } from "../services/email.js";
+import { EmailService } from "../services/email.services.js";
 
 export class AuthController {
   static createAccount = async (req: Request<{}, {}, RegisterInput>, res: Response) => {
