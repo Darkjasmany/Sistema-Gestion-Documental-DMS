@@ -5,7 +5,6 @@ import { User } from "src/models/User";
 import { JWT_SECRET } from "../config/env.js";
 
 // Extender la interfaz Request para incluir userId
-
 declare global {
   namespace Express {
     interface Request {
@@ -40,7 +39,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
     // Buscamos el usuario en la BD
-    // Excluimos la contraseña por seguridad.
     const user = await User.findByPk(decoded.id, {
       attributes: { exclude: ["password"] },
     });
