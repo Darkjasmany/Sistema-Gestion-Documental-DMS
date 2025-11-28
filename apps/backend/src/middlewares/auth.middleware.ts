@@ -10,7 +10,7 @@ interface JwtPayload {
   exp: number;
 }
 
-export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Obtener el token del encabezado Authorization
     const authHeader = req.headers.authorization;

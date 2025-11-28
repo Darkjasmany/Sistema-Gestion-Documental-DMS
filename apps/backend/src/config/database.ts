@@ -31,6 +31,7 @@ export const conectarDB = async () => {
     console.log(colors.cyan("✅ Autenticación exitosa con la base de datos."));
 
     await sequelize.sync();
+    // await sequelize.sync({ alter: true }); //Sequelize está generando una consulta ALTER TABLE para modificar una tabla existente
     //await sequelize.sync({ force: true });
     console.log(colors.cyan("✅ Modelos sincronizados correctamente."));
 
