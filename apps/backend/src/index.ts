@@ -14,7 +14,7 @@ const PORTENV = Number(PORT);
     await conectarRedis();
 
     app.listen(PORTENV, () => {
-      console.log(colors.cyan.bold(`Server is running on port ${PORT}`));
+      console.log(colors.magenta.bold(`Server is running on port ${PORT}`));
     });
   } catch (err: any) {
     console.error(colors.red("Error during startup:"), err && err.message ? err.message : err);

@@ -1,8 +1,8 @@
-import { Sequelize } from "sequelize-typescript";
-import { exit } from "node:process";
 import colors from "colors";
-import { PG_DATABASE, PG_USER, PG_PASSWORD, PG_HOST, PG_PORT } from "./env.js";
+import { exit } from "node:process";
+import { Sequelize } from "sequelize-typescript";
 import { models } from "../models/index.js";
+import { PG_DATABASE, PG_HOST, PG_PASSWORD, PG_PORT, PG_USER } from "./env.js";
 
 interface TimeRow {
   now: string;
@@ -28,11 +28,11 @@ export const sequelize = new Sequelize(PG_DATABASE, PG_USER, PG_PASSWORD, {
 export const conectarDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log(colors.green("✅ Autenticación exitosa con la base de datos."));
+    console.log(colors.cyan("✅ Autenticación exitosa con la base de datos."));
 
     await sequelize.sync();
     //await sequelize.sync({ force: true });
-    console.log(colors.magenta("✅ Modelos sincronizados correctamente."));
+    console.log(colors.cyan("✅ Modelos sincronizados correctamente."));
 
     const [row] = await sequelize.query("SELECT NOW()");
     const now = (row as TimeRow[])[0]?.now;

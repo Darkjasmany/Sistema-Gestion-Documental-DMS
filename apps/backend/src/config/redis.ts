@@ -1,5 +1,6 @@
 import colors from "colors";
 import Redis from "ioredis";
+import { exit } from "node:process";
 
 const REDIS_URL = process.env.REDIS_URL || null;
 
@@ -18,15 +19,14 @@ if (redis) {
     console.warn(colors.yellow("[ioredis] error:"), err && err.message ? err.message : err);
   });
 
-  redis.on("connect", () => {
-    console.info(colors.green("[ioredis] connected to:"), REDIS_URL);
-  });
+  // LISTENER 'connect'
+  // redis.on("connect", () => {
+  //   console.info(colors.green("[ioredis] connected to:"), REDIS_URL);
+  // });
 }
 
 /**
  * Intenta conectar a Redis y realiza una verificación (PING).
- * Similar a `conectarDB` en `database.ts` — no termina el proceso si falla,
- * solo muestra logs legibles.
  */
 export const conectarRedis = async () => {
   if (!redis) {
@@ -35,8 +35,10 @@ export const conectarRedis = async () => {
   }
 
   try {
-    // lazyConnect: la instancia no conecta hasta que llamamos connect()
+    // 1. Conecta: la instancia no conecta hasta que llamamos connect() (por lazyConnect: true)
     await redis.connect();
+
+    // 2. Verifica (PING)
     const pong = await redis.ping();
     console.log(colors.cyan(`✅ Redis conectado en: ${REDIS_URL} - PING: ${pong}`));
   } catch (error: any) {
@@ -46,6 +48,7 @@ export const conectarRedis = async () => {
       )
     );
     // No hacemos exit(1) — Redis es opcional en desarrollo; la app sigue funcionando.
+    exit(1);
   }
 };
 
