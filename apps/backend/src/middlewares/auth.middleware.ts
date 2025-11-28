@@ -1,17 +1,7 @@
-import type { IUserLogged } from "@selnic/shared";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "src/models/User";
 import { JWT_SECRET } from "../config/env.js";
-
-// Extender la interfaz Request para incluir userId
-declare global {
-  namespace Express {
-    interface Request {
-      user?: IUserLogged;
-    }
-  }
-}
 
 // Interfaz para el contenido desencriptado del Token
 interface JwtPayload {

@@ -12,6 +12,7 @@ declare global {
       EMAIL_PORT: string;
       EMAIL_USER: string;
       EMAIL_PASS: string;
+      REDIS_URL: string;
       FRONTEND_URL: string;
     }
   }

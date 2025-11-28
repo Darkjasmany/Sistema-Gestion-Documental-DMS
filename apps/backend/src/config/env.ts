@@ -15,4 +15,5 @@ export const EMAIL_HOST = getEnv("EMAIL_HOST");
 export const EMAIL_PORT = getEnv("EMAIL_PORT");
 export const EMAIL_USER = getEnv("EMAIL_USER");
 export const EMAIL_PASS = getEnv("EMAIL_PASS");
+export const REDIS_URL = getEnv("REDIS_URL");
 export const FRONTEND_URL = getEnv("FRONTEND_URL");

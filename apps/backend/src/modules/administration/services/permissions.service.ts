@@ -14,6 +14,12 @@ import { UserRole } from "src/models/UserRole";
  */
 
 const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
+if (redis) {
+  // evita errores no manejados y muestra un log conciso
+  redis.on("error", err => {
+    console.warn("[ioredis] error:", err && err.message ? err.message : err);
+  });
+}
 
 export async function getUserPermissionsAndModules(userId: number) {
   const cacheKey = `user_perms:${userId}`;

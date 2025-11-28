@@ -117,9 +117,6 @@ importers:
       '@types/nodemailer':
         specifier: ^7.0.3
         version: 7.0.4
-      '@types/sequelize':
-        specifier: ^6.12.0
-        version: 6.12.0(pg-hstore@2.3.4)(pg@8.16.3)
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
@@ -1613,10 +1610,6 @@ packages:
 
   '@types/send@1.2.1':
     resolution: {integrity: sha512-arsCikDvlU99zl1g69TcAB3mzZPpxgw0UQnaHeC1Nwb015xp8bknZv5rIfri9xTOcMuaVgvabfIRA7PSZVuZIQ==}
-
-  '@types/sequelize@6.12.0':
-    resolution: {integrity: sha512-rJRUf3AkP356HicHSjM2I7+d0FiLvOPZdDxFY0bhmKiZnGOuZZ1cUcDlPyyin9b3pYFvxZfJUTC3nGXLoi6DWA==}
-    deprecated: This is a stub types definition. sequelize provides its own type definitions, so you do not need this installed.
 
   '@types/serve-static@1.15.10':
     resolution: {integrity: sha512-tRs1dB+g8Itk72rlSI2ZrW6vZg0YrLI81iQSTkMmOqnqCaNr/8Ek4VwWcN5vZgCYWbg/JJSGBlUaYGAOP73qBw==}
@@ -5630,21 +5623,6 @@ snapshots:
   '@types/send@1.2.1':
     dependencies:
       '@types/node': 24.10.1
-
-  '@types/sequelize@6.12.0(pg-hstore@2.3.4)(pg@8.16.3)':
-    dependencies:
-      sequelize: 6.37.7(pg-hstore@2.3.4)(pg@8.16.3)
-    transitivePeerDependencies:
-      - ibm_db
-      - mariadb
-      - mysql2
-      - oracledb
-      - pg
-      - pg-hstore
-      - snowflake-sdk
-      - sqlite3
-      - supports-color
-      - tedious
 
   '@types/serve-static@1.15.10':
     dependencies:
