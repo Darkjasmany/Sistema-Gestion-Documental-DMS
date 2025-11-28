@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import redis from "src/config/redis";
 import { Module } from "src/models/Module";
 import { Permission } from "src/models/Permission";
 import { RolePermission } from "src/models/RolePermission";
@@ -13,20 +13,21 @@ import { UserRole } from "src/models/UserRole";
  invalidateUserPermissionsCache: Elimina la caché de permisos de un usuario específico en Redis, útil cuando los permisos del usuario cambian y se necesita actualizar la información almacenada en caché.
  */
 
-const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
-if (redis) {
-  // evita errores no manejados y muestra un log conciso
-  redis.on("error", err => {
-    console.warn("[ioredis] error:", err && err.message ? err.message : err);
-  });
-}
+// Usamos el cliente Redis centralizado desde `src/config/redis`
 
 export async function getUserPermissionsAndModules(userId: number) {
   const cacheKey = `user_perms:${userId}`;
 
   if (redis) {
-    const cacheData = await redis.get(cacheKey);
-    if (cacheData) return JSON.parse(cacheData);
+    try {
+      const cacheData = await redis.get(cacheKey);
+      if (cacheData) return JSON.parse(cacheData);
+    } catch (err: any) {
+      console.warn(
+        "[permissions] Redis get failed, continuing without cache:",
+        err && err.message ? err.message : err
+      );
+    }
   }
 
   // 1. Permisos por roles
@@ -84,11 +85,24 @@ export async function getUserPermissionsAndModules(userId: number) {
 
   const result = { permissions, modules }; // Resultado final empaqueta los permisos y módulos e un solo objeto
 
-  if (redis) await redis.setex(cacheKey, 3600, JSON.stringify(result)); // 1h TTL
+  if (redis) {
+    try {
+      await redis.setex(cacheKey, 3600, JSON.stringify(result)); // 1h TTL
+    } catch (err: any) {
+      console.warn(
+        "[permissions] Redis set failed, continuing:",
+        err && err.message ? err.message : err
+      );
+    }
+  }
   return result;
 }
 
 export async function invalidateUserPermissionsCache(userId: number) {
   if (!redis) return;
-  await redis.del(`user_perms:${userId}`);
+  try {
+    await redis.del(`user_perms:${userId}`);
+  } catch (err: any) {
+    console.warn("[permissions] Redis del failed:", err && err.message ? err.message : err);
+  }
 }
