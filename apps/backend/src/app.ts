@@ -16,5 +16,6 @@ app.use(morgan("dev"));
 app.use("/home/jasmany/uploads/", express.static("/home/jasmany/uploads/")); // Sirve la carpeta "uploads" como estática
 
 app.use("/api/auth", authRoutes);
+app.use("/api/administration", authRoutes);
 
 export default app;

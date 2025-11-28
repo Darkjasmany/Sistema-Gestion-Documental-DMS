@@ -46,6 +46,15 @@ export class Module extends Model<InferAttributes<Module>, InferCreationAttribut
   })
   declare estado: CreationOptional<boolean>;
 
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare createdAt: CreationOptional<Date>;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare updatedAt: CreationOptional<Date>;
 }

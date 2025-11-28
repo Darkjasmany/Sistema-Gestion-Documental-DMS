@@ -6,5 +6,6 @@ import { ModulesController } from "../controllers/Modules.controller";
 const router = Router();
 
 router.get("/", requireAuth, requirePermission("modules.read"), ModulesController.getModules);
+router.get("/", requireAuth, requirePermission("modules.manage"), ModulesController.createModule);
 
 export default router;
