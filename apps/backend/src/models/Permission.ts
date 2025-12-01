@@ -38,7 +38,16 @@ export class Permission extends Model<
   })
   declare modulo_id: CreationOptional<number | null>;
 
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare createdAt: CreationOptional<Date>;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare updatedAt: CreationOptional<Date>;
 
   @BelongsTo(() => Module)

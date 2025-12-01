@@ -104,7 +104,16 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   })
   declare departamento_id: CreationOptional<number>;
 
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare createdAt: CreationOptional<Date>;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare updatedAt: CreationOptional<Date>;
 
   // Relaciones

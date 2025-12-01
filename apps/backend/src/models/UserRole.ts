@@ -20,6 +20,15 @@ export class UserRole extends Model<InferAttributes<UserRole>, InferCreationAttr
   })
   declare rol_id: number;
 
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare createdAt: CreationOptional<Date>;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare updatedAt: CreationOptional<Date>;
 }

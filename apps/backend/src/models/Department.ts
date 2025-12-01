@@ -39,6 +39,18 @@ export class Department extends Model<
   })
   declare coordinador_id: CreationOptional<number>;
 
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
+  declare createdAt: CreationOptional<Date>;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
+  declare updatedAt: CreationOptional<Date>;
+
   // --- RELACIONES ---
   @HasMany(() => User)
   declare usuarios?: User[];

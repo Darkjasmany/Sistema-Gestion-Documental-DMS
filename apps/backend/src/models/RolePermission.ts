@@ -31,7 +31,16 @@ export class RolePermission extends Model<
   })
   declare permiso_id: CreationOptional<number | null>;
 
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare createdAt: CreationOptional<Date>;
+
+  @Column({
+    type: DataType.DATE,
+    defaultValue: DataType.NOW, // Añade DEFAULT now() al esquema de la BD
+  })
   declare updatedAt: CreationOptional<Date>;
 
   @BelongsTo(() => Role)

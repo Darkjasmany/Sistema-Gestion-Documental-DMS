@@ -8,6 +8,8 @@ import type {
   TokenInput,
   TokenParams,
 } from "@selnic/shared";
+import { Role } from "src/models/Role.js";
+import { UserRole } from "src/models/UserRole.js";
 import { getUserPermissionsAndModules } from "src/modules/administration/services/permissions.service.js";
 import { User } from "../../../models/User.js";
 import { checkPassword } from "../../../utils/auth.js";
@@ -66,10 +68,20 @@ export class AuthController {
       userExists.estado = true;
 
       await userExists.save({ transaction });
+
+      // Definir el rol USUARIO por defecto al confirmar la cuenta
+      const rol = await Role.findOne({ where: { nombre: "USUARIO" } });
+      if (rol) {
+        await UserRole.create({ usuario_id: userExists.id, rol_id: rol.id }, { transaction });
+      }
+
       await transaction.commit();
-      res.send(
-        "Cuenta confirmada correctamente, comuniquese con el departamento de Tecnología para que le asigne su rol y departamento"
-      );
+
+      res
+        .status(200)
+        .send(
+          "Cuenta confirmada correctamente, comuniquese con el departamento de Tecnología para que le asigne sus permisos de acceso y departamento"
+        );
     } catch (error) {
       await transaction.rollback();
       console.log(error);

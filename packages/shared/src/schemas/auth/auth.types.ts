@@ -1,4 +1,4 @@
-import { UserBase } from "../../models";
+import type { UserBase } from "../../models";
 
 /**
  * ============================================
