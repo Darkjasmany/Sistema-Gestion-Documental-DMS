@@ -145,7 +145,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.66.1(react@19.2.0))
       '@reduxjs/toolkit':
-        specifier: ^2.10.1
+        specifier: ^2.11.0
         version: 2.11.0(react-redux@9.2.0(@types/react@19.2.7)(react@19.2.0)(redux@5.0.1))(react@19.2.0)
       '@selnic/shared':
         specifier: workspace:*
@@ -207,6 +207,9 @@ importers:
       react-toastify:
         specifier: ^11.0.5
         version: 11.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      redux:
+        specifier: ^5.0.1
+        version: 5.0.1
       tailwindcss:
         specifier: ^4.1.16
         version: 4.1.17
