@@ -4,7 +4,7 @@
  * response en base a la respuesta de la petición http
  * con los interceptors de axios antes de cada request obtenemos el token del localstorage y le enviamos a la peticion http la configuración con headers
  */
-import { clearAuth, getAuthToken } from "@/core/helpers/storage"; // ver abajo: helper de storage
+import { clearAuth, getAuthToken } from "@/core/utils/storage"; // ver abajo: helper de storage
 import type { AxiosInstance } from "axios";
 
 export function registerInterceptors(api: AxiosInstance) {
