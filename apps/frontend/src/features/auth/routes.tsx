@@ -4,7 +4,7 @@ import LoginPages from "@/features/auth/pages/LoginPage";
 import NewPasswordPages from "@/features/auth/pages/NewPasswordPage";
 import RegisterPages from "@/features/auth/pages/RegisterPage";
 import RequestNewCodePages from "@/features/auth/pages/RequestNewCodePage";
-import AuthLayout from "@/layouts/Auth";
+import AuthLayout from "@/layouts/Auth.layout";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 export default function AuthRoutes() {
